@@ -1,6 +1,7 @@
-MIT License
+/*
+The MIT License (MIT)
 
-Copyright (c) 2019 Microting A/S
+Copyright (c) 2007 - 2019 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +20,27 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+using Microting.eFormApi.BasePn.Infrastructure.Database.Entities;
+using Microting.ItemsPlanningBase.Infrastructure.Const;
+
+namespace ItemsPlanning.Pn.Infrastructure.Data.Seed.Data
+{
+    public static class ItemsPlanningPermissionsSeedData
+    {
+        public static PluginPermission[] Data => new[]
+        {
+            new PluginPermission()
+            {
+                PermissionName = "Access ItemsPlanning Plugin",
+                ClaimName = ItemsPlanningClaims.AccessItemsPlanningPlugin
+            },
+            new PluginPermission()
+            {
+                PermissionName = "Create Notification Rules",
+                ClaimName = ItemsPlanningClaims.CreateItemsLists
+            },
+        };
+    }
+}
