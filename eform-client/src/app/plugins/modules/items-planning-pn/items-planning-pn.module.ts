@@ -9,22 +9,22 @@ import {EformSharedModule} from '../../../common/modules/eform-shared/eform-shar
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {ItemsPlanningPnLayoutComponent} from './layouts';
 import {
-  ItemListCaseColumnsModalComponent,
-  ItemsListCreateComponent,
-  ListCasePageComponent,
-  ListCaseResultPageComponent,
-  ListDeleteComponent,
-  ListEditComponent,
-  ListsPageComponent,
-  ItemCaseUploadedDataComponent,
+  PlanningCaseColumnsModalComponent,
+  PlanningCreateComponent,
+  PlanningCasePageComponent,
+  PlanningCaseResultPageComponent,
+  PlanningDeleteComponent,
+  PlanningEditComponent,
+  PlanningsPageComponent,
+  PlanningCaseUploadedDataComponent,
   UploadedDataPdfComponent,
   UploadedDataDeleteComponent,
-  ItemsPlanningPnUnitImportComponent
-} from './components/items-lists';
+  PlanningUnitImportComponent
+} from './components/planning';
 import {ItemsPlanningSettingsComponent} from './components/items-plannings-setting';
 import {RouterModule} from '@angular/router';
 import {ItemsPlanningPnRouting} from './items-planning-pn.routing.module';
-import {ItemsPlanningPnListsService,
+import {ItemsPlanningPnPlanningsService,
   ItemsPlanningPnSettingsService,
   ItemsPlanningPnReportsService,
   ItemsPlanningPnCasesService,
@@ -55,25 +55,25 @@ import {OwlDateTimeModule} from 'ng-pick-datetime-ex';
   ],
   declarations: [
     ItemsPlanningPnLayoutComponent,
-    ItemListCaseColumnsModalComponent,
-    ListsPageComponent,
-    ListCaseResultPageComponent,
-    ItemsListCreateComponent,
-    ListCasePageComponent,
-    ListEditComponent,
-    ListDeleteComponent,
+    PlanningCaseColumnsModalComponent,
+    PlanningsPageComponent,
+    PlanningCaseResultPageComponent,
+    PlanningCreateComponent,
+    PlanningCasePageComponent,
+    PlanningEditComponent,
+    PlanningDeleteComponent,
     ItemsPlanningSettingsComponent,
     ReportGeneratorContainerComponent,
     ReportGeneratorFormComponent,
     ReportPreviewTableComponent,
-    ItemCaseUploadedDataComponent,
+    PlanningCaseUploadedDataComponent,
     UploadedDataPdfComponent,
     UploadedDataDeleteComponent,
-    ItemsPlanningPnUnitImportComponent
+    PlanningUnitImportComponent
   ],
   providers: [
     ItemsPlanningPnSettingsService,
-    ItemsPlanningPnListsService,
+    ItemsPlanningPnPlanningsService,
     ItemsPlanningPnReportsService,
     ItemsPlanningPnCasesService,
     ItemsPlanningPnUploadedDataService

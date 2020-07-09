@@ -3,13 +3,13 @@ import {RouterModule, Routes} from '@angular/router';
 import {AdminGuard, AuthGuard, PermissionGuard} from 'src/app/common/guards';
 import {ItemsPlanningPnLayoutComponent} from './layouts';
 import {
-  ListsPageComponent,
+  PlanningsPageComponent,
   ItemsPlanningSettingsComponent,
   ReportGeneratorContainerComponent,
-  ListCasePageComponent,
-  ListCaseResultPageComponent,
-  ItemCaseUploadedDataComponent,
-  ItemsPlanningPnUnitImportComponent, ListEditComponent, ItemsListCreateComponent
+  PlanningCasePageComponent,
+  PlanningCaseResultPageComponent,
+  PlanningCaseUploadedDataComponent,
+  PlanningUnitImportComponent, PlanningEditComponent, PlanningCreateComponent
 } from './components';
 import {ItemsPlanningPnClaims} from './enums';
 
@@ -23,27 +23,27 @@ export const routes: Routes = [
       {
         path: 'lists',
         canActivate: [AuthGuard],
-        component: ListsPageComponent
+        component: PlanningsPageComponent
       },
       {
         path: 'lists/edit/:id',
         canActivate: [AuthGuard],
-        component: ListEditComponent
+        component: PlanningEditComponent
       },
       {
         path: 'lists/create',
         canActivate: [AuthGuard],
-        component: ItemsListCreateComponent
+        component: PlanningCreateComponent
       },
       {
         path: 'item-cases/:id',
         canActivate: [AuthGuard],
-        component: ListCasePageComponent
+        component: PlanningCasePageComponent
       },
       {
         path: 'item-itemCase-results/:id',
         canActivate: [AuthGuard],
-        component: ListCaseResultPageComponent
+        component: PlanningCaseResultPageComponent
       },
       {
         path: 'settings',
@@ -58,12 +58,12 @@ export const routes: Routes = [
       {
         path: 'item-cases/:id/:id',
         canActivate: [AdminGuard],
-        component: ItemCaseUploadedDataComponent
+        component: PlanningCaseUploadedDataComponent
       },
       {
         path: 'import',
         canActivate: [AdminGuard],
-        component: ItemsPlanningPnUnitImportComponent
+        component: PlanningUnitImportComponent
       }
     ]
   }

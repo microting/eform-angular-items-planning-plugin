@@ -2,7 +2,7 @@ import {BaseService} from '../../../../common/services/base.service';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
-import {UploadedDatasModel} from '../models/list';
+import {UploadedDatasModel} from '../models/plannings';
 import {Observable} from 'rxjs';
 import {OperationDataResult, OperationResult} from '../../../../common/models';
 import {Injectable} from '@angular/core';

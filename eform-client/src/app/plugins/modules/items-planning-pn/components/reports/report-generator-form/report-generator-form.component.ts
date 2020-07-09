@@ -3,10 +3,10 @@ import {LocaleService} from 'src/app/common/services/auth';
 import {format} from 'date-fns';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ReportPnGenerateModel} from '../../../models/report';
-import {ItemsListPnRequestModel, ItemsListsPnModel} from '../../../models/list';
+import {PlanningsRequestModel, PlanningsPnModel} from '../../../models/plannings';
 import {debounceTime, switchMap} from 'rxjs/operators';
-import {ItemsPlanningPnListsService} from '../../../services';
-import {ItemsListPnItemModel} from '../../../models/list';
+import {ItemsPlanningPnPlanningsService} from '../../../services';
+import {PlanningItemModel} from '../../../models/plannings';
 import {DateTimeAdapter} from 'ng-pick-datetime-ex';
 
 @Component({
@@ -19,14 +19,14 @@ export class ReportGeneratorFormComponent implements OnInit {
   @Output() saveReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
   generateForm: FormGroup;
   typeahead = new EventEmitter<string>();
-  itemLists: ItemsListsPnModel = new ItemsListsPnModel();
-  items: Array<ItemsListPnItemModel> = [];
-  listRequestModel: ItemsListPnRequestModel = new ItemsListPnRequestModel();
+  itemLists: PlanningsPnModel = new PlanningsPnModel();
+  items: Array<PlanningItemModel> = [];
+  listRequestModel: PlanningsRequestModel = new PlanningsRequestModel();
 
   constructor(dateTimeAdapter: DateTimeAdapter<any>,
               private localeService: LocaleService,
               private formBuilder: FormBuilder,
-              private listsService: ItemsPlanningPnListsService,
+              private listsService: ItemsPlanningPnPlanningsService,
               private cd: ChangeDetectorRef) {
     dateTimeAdapter.setLocale(this.localeService.getCurrentUserLocale());
     this.typeahead
@@ -34,7 +34,7 @@ export class ReportGeneratorFormComponent implements OnInit {
         debounceTime(200),
         switchMap(term => {
           this.listRequestModel.nameFilter = term;
-          return this.listsService.getAllLists(this.listRequestModel);
+          return this.listsService.getAllPlannings(this.listRequestModel);
         })
       )
       .subscribe(itemLists => {
@@ -62,7 +62,7 @@ export class ReportGeneratorFormComponent implements OnInit {
   }
 
   onItemListSelected(e: any) {
-    this.listsService.getSingleList(e.id)
+    this.listsService.getSinglePlanning(e.id)
       .subscribe(itemList => {
         this.items = itemList.model.items;
         this.cd.markForCheck();

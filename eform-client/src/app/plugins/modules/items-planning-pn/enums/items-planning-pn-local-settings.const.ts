@@ -2,12 +2,12 @@ import {
   ApplicationPageModel,
   PageSettingsModel
 } from 'src/app/common/models/settings';
-import {ItemListResultsPageModel, ItemListResultsSettingsModel} from '../models/list';
-import {ItemListCasesPnRequestModel} from '../models/list/item-list-cases-pn-request.model';
+import {PlanningResultsPageModel, PlanningResultsSettingsModel} from '../models/plannings';
+import {PlanningCasesRequestModel} from '../models/plannings/planning-cases-request.model';
 
 export const ItemsPlanningPnLocalSettings = [
   new ApplicationPageModel({
-      name: 'ItemLists',
+      name: 'Plannings',
       settings: new PageSettingsModel({
         pageSize: 10,
         sort: 'Id',
@@ -16,7 +16,7 @@ export const ItemsPlanningPnLocalSettings = [
     },
   ),
   new ApplicationPageModel({
-      name: 'ItemListCases',
+      name: 'PlanningCases',
       settings: new PageSettingsModel({
         pageSize: 10,
         sort: 'Id',
@@ -24,8 +24,8 @@ export const ItemsPlanningPnLocalSettings = [
       })
     },
   ),
-  new ItemListResultsPageModel({
-      name: 'ItemCaseResults',
+  new PlanningResultsPageModel({
+      name: 'PlanningCaseResults',
       settings: {
         pageSize: 10,
         sort: 'Id',
