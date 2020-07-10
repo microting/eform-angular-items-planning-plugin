@@ -1,4 +1,4 @@
-<eform-page-subheader>
+<eform-page-subheader [title]="'New planning' | translate">
   <div class="p-3">
     <button mdbBtn id="listCreateSaveBtn" class="btn-success btn-small-height" [disabled]="!newPlanningModel.name"
             (click)="createPlanning()">
@@ -69,37 +69,37 @@
                            id="createRepeatType">
                 </ng-select>
             </div>
-            <ng-template [ngIf]="newPlanningModel.repeatType == 2">
-              <div class="col-md-4 col-sm-4 col-xs-6 ng-select-wrapper">
-                <ng-select [items]="[
-                                      {id: 1, name: 'Monday' | translate},
-                                      {id: 2, name: 'Tuesday' | translate},
-                                      {id: 3, name: 'Wednesday' | translate},
-                                      {id: 4, name: 'Thursday' | translate},
-                                      {id: 5, name: 'Friday' | translate},
-                                      {id: 6, name: 'Saturday' | translate},
-                                      {id: 0, name: 'Sunday' | translate}
-                              ]"
-                           bindLabel="name"
-                           [placeholder]="('Day of week' | translate)"
-                           bindValue="id"
-                           [typeahead]="typeahead"
-                           [(ngModel)]="newPlanningModel.dayOfWeek"
-                           id="createDayOfWeek">
-                </ng-select>
-              </div>
-            </ng-template>
-            <ng-template [ngIf]="newPlanningModel.repeatType == 3">
-              <div class="col-md-4 col-sm-4 col-xs-6">
-                <div class="md-form">
-                  <input mdbInput
-                         [(ngModel)]="newPlanningModel.dayOfMonth"
-                         type="text" id="createDayOfMonth"
-                         name="createDayOfMonth" class="form-control">
-                  <label for="createDayOfMonth">{{'Day of month' | translate}}</label>
-                </div>
-              </div>
-            </ng-template>
+<!--            <ng-template [ngIf]="newPlanningModel.repeatType == 2">-->
+<!--              <div class="col-md-4 col-sm-4 col-xs-6 ng-select-wrapper">-->
+<!--                <ng-select [items]="[-->
+<!--                                      {id: 1, name: 'Monday' | translate},-->
+<!--                                      {id: 2, name: 'Tuesday' | translate},-->
+<!--                                      {id: 3, name: 'Wednesday' | translate},-->
+<!--                                      {id: 4, name: 'Thursday' | translate},-->
+<!--                                      {id: 5, name: 'Friday' | translate},-->
+<!--                                      {id: 6, name: 'Saturday' | translate},-->
+<!--                                      {id: 0, name: 'Sunday' | translate}-->
+<!--                              ]"-->
+<!--                           bindLabel="name"-->
+<!--                           [placeholder]="('Day of week' | translate)"-->
+<!--                           bindValue="id"-->
+<!--                           [typeahead]="typeahead"-->
+<!--                           [(ngModel)]="newPlanningModel.dayOfWeek"-->
+<!--                           id="createDayOfWeek">-->
+<!--                </ng-select>-->
+<!--              </div>-->
+<!--            </ng-template>-->
+<!--            <ng-template [ngIf]="newPlanningModel.repeatType == 3">-->
+<!--              <div class="col-md-4 col-sm-4 col-xs-6">-->
+<!--                <div class="md-form">-->
+<!--                  <input mdbInput-->
+<!--                         [(ngModel)]="newPlanningModel.dayOfMonth"-->
+<!--                         type="text" id="createDayOfMonth"-->
+<!--                         name="createDayOfMonth" class="form-control">-->
+<!--                  <label for="createDayOfMonth">{{'Day of month' | translate}}</label>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </ng-template>-->
             <div class="col-md-4 col-sm-4 col-xs-6">
               <div class="md-form" [owlDateTimeTrigger]="dt1">
                 <input mdbInput
@@ -112,22 +112,14 @@
               </div>
             </div>
           </div>
-          <button mdbBtn class="btn-success btn-small-height" id="addItemBtn" (click)="addNewItem()">
-            <fa-icon icon="plus"></fa-icon>
-            {{ 'Add New Item' | translate }}
-          </button>
-          <button mdbBtn class="btn-small-height" id="importItemBtn" name="button" (click)="showImportModal()">
-          <fa-icon icon="file-import"></fa-icon>
-          {{ 'Import New Items' | translate }}
-        </button>
           <div class="row p-1 mt-2 table-responsive no-gutters">
             <table class="table table-sm text-center z-depth-1 pr-2 pl-2">
               <tbody id="tableBody">
-              <tr *ngFor="let item of newPlanningModel.items">
+              <tr>
                 <td id="itemsTableBody">
                   <div class="md-form md-form-sm">
                     <input mdbInput
-                           [(ngModel)]="item.name"
+                           [(ngModel)]="newPlanningModel.item.name"
                            type="text" id="createItemName"
                            name="createItemName" class="form-control">
                     <label for="createItemName">{{'Name' | translate}}</label>
@@ -136,7 +128,7 @@
                 <td id="listName">
                   <div class="md-form md-form-sm">
                     <input mdbInput
-                           [(ngModel)]="item.description"
+                           [(ngModel)]="newPlanningModel.item.description"
                            type="text" id="createItemDescription"
                            name="createItemDescription" class="form-control">
                     <label for="createItemDescription">{{'Description' | translate}}</label>
@@ -145,7 +137,7 @@
                 <td>
                   <div class="md-form md-form-sm">
                     <input mdbInput
-                           [(ngModel)]="item.itemNumber"
+                           [(ngModel)]="newPlanningModel.item.itemNumber"
                            type="text" id="createItemNumber"
                            name="createItemNumber" class="form-control">
                     <label for="createItemNumber">{{'Number' | translate}}</label>
@@ -154,7 +146,7 @@
                 <td>
                   <div class="md-form md-form-sm">
                     <input mdbInput
-                           [(ngModel)]="item.locationCode"
+                           [(ngModel)]="newPlanningModel.item.locationCode"
                            type="text" id="createItemLocationCode"
                            name="createItemLocationCode" class="form-control">
                     <label for="createItemLocationCode">{{'Location code' | translate}}</label>
@@ -163,7 +155,7 @@
                 <td>
                   <div class="md-form md-form-sm">
                     <input mdbInput
-                           [(ngModel)]="item.buildYear"
+                           [(ngModel)]="newPlanningModel.item.buildYear"
                            type="text" id="createItemBuildYear"
                            name="createItemBuildYear" class="form-control">
                     <label for="createItemBuildYear">{{'Build year' | translate}}</label>
@@ -172,19 +164,10 @@
                 <td>
                   <div class="md-form md-form-sm">
                     <input mdbInput
-                           [(ngModel)]="item.type"
+                           [(ngModel)]="newPlanningModel.item.type"
                            type="text" id="createItemType"
                            name="createItemType" class="form-control">
                     <label for="createItemType">{{'Type' | translate}}</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="d-flex flex-row justify-content-center">
-                    <button id="deleteItemBtn" (click)="removeItem(item.id)"
-                            class="btn btn-danger btn-icon mb-2 "
-                            mdbTooltip="{{ 'Delete Item' | translate }}">
-                      <fa-icon icon="trash-alt" size="lg" [fixedWidth]="true"></fa-icon>
-                    </button>
                   </div>
                 </td>
               </tr>
@@ -196,4 +179,3 @@
     </div>
   </div>
 </div>
-<app-planning-unit-import #unitImportModal></app-planning-unit-import>

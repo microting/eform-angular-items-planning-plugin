@@ -19,7 +19,6 @@ import {
   PlanningCaseUploadedDataComponent,
   UploadedDataPdfComponent,
   UploadedDataDeleteComponent,
-  PlanningUnitImportComponent
 } from './components/planning';
 import {ItemsPlanningSettingsComponent} from './components/items-plannings-setting';
 import {RouterModule} from '@angular/router';
@@ -68,8 +67,7 @@ import {OwlDateTimeModule} from 'ng-pick-datetime-ex';
     ReportPreviewTableComponent,
     PlanningCaseUploadedDataComponent,
     UploadedDataPdfComponent,
-    UploadedDataDeleteComponent,
-    PlanningUnitImportComponent
+    UploadedDataDeleteComponent
   ],
   providers: [
     ItemsPlanningPnSettingsService,

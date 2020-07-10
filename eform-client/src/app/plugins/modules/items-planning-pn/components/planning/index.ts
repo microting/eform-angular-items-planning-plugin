@@ -8,4 +8,3 @@ export * from './planning-case-columns-modal/planning-case-columns-modal.compone
 export * from './planning-case-uploaded-data/planning-case-uploaded-data.component';
 export * from './uploaded-data-pdf/uploaded-data-pdf.component';
 export * from './uploaded-data-delete/uploaded-data-delete.component';
-export * from './planning-unit-import/planning-unit-import.component';

@@ -11,5 +11,5 @@ export class PlanningCreateModel {
   repeatUntil: string;
   internalRepeatUntil: Moment | null;
   relatedEFormId: number;
-  items: PlanningItemModel[] = [];
+  item: PlanningItemModel = new PlanningItemModel();
 }

@@ -9,7 +9,7 @@ import {
   PlanningCasePageComponent,
   PlanningCaseResultPageComponent,
   PlanningCaseUploadedDataComponent,
-  PlanningUnitImportComponent, PlanningEditComponent, PlanningCreateComponent
+  PlanningEditComponent, PlanningCreateComponent
 } from './components';
 import {ItemsPlanningPnClaims} from './enums';
 
@@ -21,27 +21,27 @@ export const routes: Routes = [
     data: {requiredPermission: ItemsPlanningPnClaims.accessItemsPlanningPlugin},
     children: [
       {
-        path: 'lists',
+        path: 'plannings',
         canActivate: [AuthGuard],
         component: PlanningsPageComponent
       },
       {
-        path: 'lists/edit/:id',
+        path: 'plannings/edit/:id',
         canActivate: [AuthGuard],
         component: PlanningEditComponent
       },
       {
-        path: 'lists/create',
+        path: 'plannings/create',
         canActivate: [AuthGuard],
         component: PlanningCreateComponent
       },
       {
-        path: 'item-cases/:id',
+        path: 'planning-cases/:id',
         canActivate: [AuthGuard],
         component: PlanningCasePageComponent
       },
       {
-        path: 'item-itemCase-results/:id',
+        path: 'planning-planningCase-results/:id',
         canActivate: [AuthGuard],
         component: PlanningCaseResultPageComponent
       },
@@ -56,14 +56,9 @@ export const routes: Routes = [
         component: ReportGeneratorContainerComponent
       },
       {
-        path: 'item-cases/:id/:id',
+        path: 'planning-cases/:id/:id',
         canActivate: [AdminGuard],
         component: PlanningCaseUploadedDataComponent
-      },
-      {
-        path: 'import',
-        canActivate: [AdminGuard],
-        component: PlanningUnitImportComponent
       }
     ]
   }
