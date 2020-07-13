@@ -15,6 +15,7 @@ import {ItemsPlanningPnClaims} from '../../../enums';
 export class PlanningsPageComponent implements OnInit {
   @ViewChild('deletePlanningModal', {static: false}) deletePlanningModal;
   @ViewChild('modalCasesColumns', {static: false}) modalCasesColumnsModal;
+  @ViewChild('assignSitesModal', {static: false}) assignSitesModal;
 
   localPageSettings: PageSettingsModel = new PageSettingsModel();
   planningsModel: PlanningsPnModel = new PlanningsPnModel();
@@ -91,5 +92,9 @@ export class PlanningsPageComponent implements OnInit {
       }
       this.getAllPlannings();
     }
+  }
+
+  openAssignmentModal(planning: PlanningPnModel) {
+    this.assignSitesModal.show(planning);
   }
 }

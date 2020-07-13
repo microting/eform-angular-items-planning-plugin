@@ -69,28 +69,6 @@
                *ngIf="localPageSettings.sort == 'RepeatType' && planningsRequestModel.isSortDsc">expand_more</i>
           </div>
         </th>
-        <th scope="col" class="table-header-sortable" id="repeatTypeTableHeader"
-            (click)="sortTable('RepeatType')">
-          <div class="d-flex align-items-center justify-content-center">
-            {{'Day of week' | translate}}
-            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'RepeatType'">unfold_more</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'RepeatType' && !planningsRequestModel.isSortDsc">expand_less</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'RepeatType' && planningsRequestModel.isSortDsc">expand_more</i>
-          </div>
-        </th>
-        <th scope="col" class="table-header-sortable" id="repeatTypeTableHeader"
-            (click)="sortTable('RepeatType')">
-          <div class="d-flex align-items-center justify-content-center">
-            {{'Day of month' | translate}}
-            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'RepeatType'">unfold_more</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'RepeatType' && !planningsRequestModel.isSortDsc">expand_less</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'RepeatType' && planningsRequestModel.isSortDsc">expand_more</i>
-          </div>
-        </th>
         <th scope="col" class="table-header-sortable" id="repeatUntilTableHeader"
             (click)="sortTable('RepeatUntil')">
           <div class="d-flex align-items-center justify-content-center">
@@ -102,6 +80,11 @@
                *ngIf="localPageSettings.sort == 'RepeatUntil' && planningsRequestModel.isSortDsc">expand_more</i>
           </div>
         </th>
+        <th scope="col" id="sitesTableHeader">
+          <div class="d-flex align-items-center justify-content-center">
+            {{'Sites' | translate}}
+          </div>
+        </th>
 
         <th scope="col">
           {{ 'Actions' | translate }}
@@ -109,83 +92,100 @@
       </tr>
       </thead>
       <tbody id="tableBody">
-      <tr *ngFor="let list of planningsModel.lists">
+      <tr *ngFor="let planning of planningsModel.plannings">
         <td id="listId">
-          {{list.id}}
+          {{planning.id}}
         </td>
         <td id="listName">
-          {{list.name}}
+          {{planning.name}}
         </td>
         <td id="listDescription">
-          {{list.description}}
+          {{planning.description}}
         </td>
         <td id="listRepeatEvery">
-          {{list.repeatEvery}}
+          {{planning.repeatEvery}}
         </td>
         <td id="listRepeatType">
-          <div *ngIf="list.repeatType == 1">
+          <div *ngIf="planning.repeatType == 1">
             {{'Day' | translate}}
           </div>
-          <div *ngIf="list.repeatType == 2">
+          <div *ngIf="planning.repeatType == 2">
             {{'Week' | translate}}
           </div>
-          <div *ngIf="list.repeatType == 3">
+          <div *ngIf="planning.repeatType == 3">
             {{'Month' | translate}}
           </div>
         </td>
         <td id="listDayOfWeek">
-          <div *ngIf="list.dayOfWeek == 1">
+          <div *ngIf="planning.dayOfWeek == 1">
             {{'Monday' | translate}}
           </div>
-          <div *ngIf="list.dayOfWeek == 2">
+          <div *ngIf="planning.dayOfWeek == 2">
             {{'Tuesday' | translate}}
           </div>
-          <div *ngIf="list.dayOfWeek == 3">
+          <div *ngIf="planning.dayOfWeek == 3">
             {{'Wednesday' | translate}}
           </div>
-          <div *ngIf="list.dayOfWeek == 4">
+          <div *ngIf="planning.dayOfWeek == 4">
             {{'Thursday' | translate}}
           </div>
-          <div *ngIf="list.dayOfWeek == 5">
+          <div *ngIf="planning.dayOfWeek == 5">
             {{'Friday' | translate}}
           </div>
-          <div *ngIf="list.dayOfWeek == 6">
+          <div *ngIf="planning.dayOfWeek == 6">
             {{'Saturday' | translate}}
           </div>
-          <div *ngIf="list.dayOfWeek == 7">
+          <div *ngIf="planning.dayOfWeek == 7">
             {{'Sunday' | translate}}
           </div>
         </td>
         <td id="listDayOfMonth">
-          {{list.dayOfMonth}}
+          {{planning.dayOfMonth}}
         </td>
         <td id="listRepeatUntil">
-          <date-formatter [date]="list.repeatUntil" [Format]="'date'"></date-formatter>
+          <date-formatter [date]="planning.repeatUntil" [Format]="'date'"></date-formatter>
+        </td>
+        <td>
+          <div class="d-flex justify-content-center">
+            <div>
+              <button *ngIf="planning.assignedSites.length > 0"
+                      id="listAssignmentBtn" [ngClass]="planning.assignedSites.length > 0 ? 'btn-success' : ''"
+                      mdbBtn type="button" class="btn-small-height" (click)="openAssignmentModal(planning)"
+                      mdbTooltip="{{ 'Click to edit pairing with user(s)' | translate }}">
+                {{ 'Edit pairing' | translate }}
+              </button>
+              <!--              <ng-container *ngIf="checkEformPermissions(templateDto.id, userClaimsEnum.eFormsPairingRead)">-->
+              <!--                <p class="paragraph-sm" id="eform-paired-username" *ngFor="let deployedSite of templateDto.deployedSites">-->
+              <!--                  {{deployedSite.siteName}}-->
+              <!--                </p>-->
+              <!--              </ng-container>-->
+            </div>
+          </div>
         </td>
         <td>
           <div class="d-flex flex-row justify-content-center">
             <button id="updateListBtn"
               class="btn btn-accent text-black-50 btn-icon mb-2"
                     mdbTooltip="{{ 'Edit List' | translate }}"
-                    [routerLink]="['./edit/' + list.id]">
+                    [routerLink]="['./edit/' + planning.id]">
               <fa-icon icon="pen" size="lg" [fixedWidth]="true"></fa-icon>
             </button>
             <button mdbBtn class="btn-success btn-icon mb-2"
                     id="itemlist-case-results-btn"
-                    [routerLink]="['./planning-planningCase-results', list.id]"
+                    [routerLink]="['./planning-planningCase-results', planning.id]"
                     mdbTooltip="{{ 'Show itemCase results' | translate }}">
               <fa-icon icon="briefcase" [fixedWidth]="true" size="lg"></fa-icon>
             </button>
 
             <button mdbBtn class="btn-success btn-icon mb-2" id="edit-columnts-btn"
-                    (click)="openEditColumnsModal(list)"
+                    (click)="openEditColumnsModal(planning.id)"
                     mdbTooltip="{{ 'Edit columns' | translate }}">
               <fa-icon icon="table" [fixedWidth]="true" size="lg"></fa-icon>
             </button>
             <button id="deleteListBtn"
               class="btn btn-danger btn-icon mb-2 "
                     mdbTooltip="{{ 'Delete List' | translate }}"
-                    (click)="showDeleteListModal(list)">
+                    (click)="showDeleteListModal(planning)">
               <fa-icon icon="trash-alt" size="lg" [fixedWidth]="true"></fa-icon>
             </button>
           </div>
@@ -215,3 +215,4 @@
                      (planningDeleted)="getAllPlannings()"></app-planning-delete>
 
 <app-planning-case-column-modal #modalCasesColumns></app-planning-case-column-modal>
+<app-planning-assign-sites-modal (sitesAssigned)="getAllPlannings()" #assignSitesModal></app-planning-assign-sites-modal>

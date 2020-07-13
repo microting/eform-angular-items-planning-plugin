@@ -5,7 +5,6 @@ import {MDBBootstrapModule} from 'angular-bootstrap-md';
 import {TranslateModule} from '@ngx-translate/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgSelectModule} from '@ng-select/ng-select';
-import {EformSharedModule} from '../../../common/modules/eform-shared/eform-shared.module';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {ItemsPlanningPnLayoutComponent} from './layouts';
 import {
@@ -18,7 +17,7 @@ import {
   PlanningsPageComponent,
   PlanningCaseUploadedDataComponent,
   UploadedDataPdfComponent,
-  UploadedDataDeleteComponent,
+  UploadedDataDeleteComponent, PlanningAssignSitesModalComponent,
 } from './components/planning';
 import {ItemsPlanningSettingsComponent} from './components/items-plannings-setting';
 import {RouterModule} from '@angular/router';
@@ -35,6 +34,7 @@ import {
 } from './components/reports';
 import {FileUploadModule} from 'ng2-file-upload';
 import {OwlDateTimeModule} from 'ng-pick-datetime-ex';
+import {EformSharedModule} from 'src/app/common/modules/eform-shared/eform-shared.module';
 
 @NgModule({
   imports: [
@@ -61,6 +61,7 @@ import {OwlDateTimeModule} from 'ng-pick-datetime-ex';
     PlanningCasePageComponent,
     PlanningEditComponent,
     PlanningDeleteComponent,
+    PlanningAssignSitesModalComponent,
     ItemsPlanningSettingsComponent,
     ReportGeneratorContainerComponent,
     ReportGeneratorFormComponent,
