@@ -22,11 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Abstractions
+namespace ItemsPlanning.Pn.Services.Abstractions
 {
-    public interface IItemsPlanningLocalizationService
+    using System.Threading.Tasks;
+    using Infrastructure.Models.Settings;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+
+    public interface IItemsPlanningPnSettingsService
     {
-        string GetString(string key);
-        string GetString(string format, params object[] args);
+        Task<OperationDataResult<ItemsPlanningBaseSettings>> GetSettings();
+        Task<OperationResult> UpdateSettings(ItemsPlanningBaseSettings itemsPlanningBaseSettings);
+        
     }
 }

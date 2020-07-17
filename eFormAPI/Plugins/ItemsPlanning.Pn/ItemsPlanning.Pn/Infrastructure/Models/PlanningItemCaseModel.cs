@@ -2,7 +2,7 @@ using System;
 
 namespace ItemsPlanning.Pn.Infrastructure.Models
 {
-    public class ItemsListPnItemCaseModel
+    public class PlanningItemCaseModel
     {
         public int Id { get; set; }
         public DateTime Date { get; set; }

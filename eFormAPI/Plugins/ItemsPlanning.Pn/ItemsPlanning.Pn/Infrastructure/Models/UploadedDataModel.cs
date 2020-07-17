@@ -4,7 +4,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
     {
         public int Id { get; set; }
         
-        public int ItemCaseId { get; set; }
+        public int PlanningCaseId { get; set; }
         
         public string Checksum { get; set; }
 

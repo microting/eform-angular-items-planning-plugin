@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using ItemsPlanning.Pn.Infrastructure.Models.Report;
-using ItemsPlanning.Pn.Infrastructure.Models;
-using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-
-namespace ItemsPlanning.Pn.Abstractions
+﻿namespace ItemsPlanning.Pn.Services.Abstractions
 {
+    using System.Threading.Tasks;
+    using Infrastructure.Models;
+    using Infrastructure.Models.Report;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+
     public interface IItemsPlanningReportService
     {
         Task<OperationDataResult<ReportModel>> GenerateReport(GenerateReportModel model);

@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2019 Microting A/S
+Copyright (c) 2007 - 2020 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +22,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Threading.Tasks;
-using ItemsPlanning.Pn.Infrastructure.Models;
-using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-
-namespace ItemsPlanning.Pn.Abstractions
+namespace ItemsPlanning.Pn.Services.Abstractions
 {
-    using Infrastructure.Models.Settings;
+    using System.Threading.Tasks;
+    using Infrastructure.Models;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
 
-    public interface IItemsPlanningPnSettingsService
+    public interface IPlanningService
     {
-        Task<OperationDataResult<ItemsPlanningBaseSettings>> GetSettings();
-        Task<OperationResult> UpdateSettings(ItemsPlanningBaseSettings itemsPlanningBaseSettings);
-        
+        Task<OperationDataResult<PlanningsPnModel>> Index(PlanningsRequestModel requestModel);
+        Task<OperationResult> Create(PlanningPnModel model);
+        Task<OperationDataResult<PlanningPnModel>> Read(int itemListId);
+        Task<OperationResult> Update(PlanningPnModel updateModel);
+        Task<OperationResult> Delete(int id);
+        Task<OperationResult> ImportUnit(UnitImportModel unitImportModel);
     }
 }

@@ -1,34 +1,56 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Math;
-using Microsoft.EntityFrameworkCore;
-using Microting.eFormApi.BasePn.Infrastructure.Extensions;
-using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
-using Microting.ItemsPlanningBase.Infrastructure.Data;
-using ItemsPlanning.Pn.Abstractions;
-using ItemsPlanning.Pn.Infrastructure.Helpers;
-using Microting.eForm.Infrastructure.Constants;
-using Microting.eFormApi.BasePn.Abstractions;
-using Newtonsoft.Json.Linq;
+/*
+The MIT License (MIT)
+
+Copyright (c) 2007 - 2020 Microting A/S
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
 namespace ItemsPlanning.Pn.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
     using System.Security.Claims;
+    using System.Threading.Tasks;
+    using Abstractions;
+    using Infrastructure.Helpers;
     using Infrastructure.Models;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
+    using Microting.eForm.Infrastructure.Constants;
+    using Microting.eFormApi.BasePn.Abstractions;
+    using Microting.eFormApi.BasePn.Infrastructure.Extensions;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+    using Microting.ItemsPlanningBase.Infrastructure.Data;
+    using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
+    using Newtonsoft.Json.Linq;
 
-    public class ItemsListService : IItemsListService
+    public class PlanningService : IPlanningService
     {
         private readonly ItemsPlanningPnDbContext _dbContext;
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEFormCoreService _core;
 
-        public ItemsListService(
+        public PlanningService(
             ItemsPlanningPnDbContext dbContext,
             IItemsPlanningLocalizationService itemsPlanningLocalizationService,
             IHttpContextAccessor httpContextAccessor, IEFormCoreService core)
@@ -39,44 +61,44 @@ namespace ItemsPlanning.Pn.Services
             _core = core;
         }
 
-        public async Task<OperationDataResult<ItemsListsModel>> Index(ItemsListRequestModel pnRequestModel)
+        public async Task<OperationDataResult<PlanningsPnModel>> Index(PlanningsRequestModel pnRequestModel)
         {
             try
             {
-                ItemsListsModel listsModel = new ItemsListsModel();
+                PlanningsPnModel planningsModel = new PlanningsPnModel();
 
-                IQueryable<ItemList> itemListsQuery = _dbContext.ItemLists.AsQueryable();
+                IQueryable<Planning> planningsQuery = _dbContext.Plannings.AsQueryable();
                 if (!string.IsNullOrEmpty(pnRequestModel.Sort))
                 {
                     if (pnRequestModel.IsSortDsc)
                     {
-                        itemListsQuery = itemListsQuery
+                        planningsQuery = planningsQuery
                             .CustomOrderByDescending(pnRequestModel.Sort);
                     }
                     else
                     {
-                        itemListsQuery = itemListsQuery
+                        planningsQuery = planningsQuery
                             .CustomOrderBy(pnRequestModel.Sort);
                     }
                 }
                 else
                 {
-                    itemListsQuery = _dbContext.ItemLists
+                    planningsQuery = _dbContext.Plannings
                         .OrderBy(x => x.Id);
                 }
 
                 if (!string.IsNullOrEmpty(pnRequestModel.NameFilter))
                 {
-                    itemListsQuery = itemListsQuery.Where(x => x.Name.Contains(pnRequestModel.NameFilter));
+                    planningsQuery = planningsQuery.Where(x => x.Name.Contains(pnRequestModel.NameFilter));
                 }
 
-                itemListsQuery
-                    = itemListsQuery
+                planningsQuery
+                    = planningsQuery
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Skip(pnRequestModel.Offset)
                         .Take(pnRequestModel.PageSize);
 
-                List<ItemsListPnModel> lists = await itemListsQuery.Select(x => new ItemsListPnModel()
+                List<PlanningPnModel> lists = await planningsQuery.Select(x => new PlanningPnModel()
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -90,28 +112,28 @@ namespace ItemsPlanning.Pn.Services
                     RelatedEFormName = x.RelatedEFormName,
                 }).ToListAsync();
 
-                listsModel.Total = await _dbContext.ItemLists.CountAsync(x =>
+                planningsModel.Total = await _dbContext.Plannings.CountAsync(x =>
                     x.WorkflowState != Constants.WorkflowStates.Removed);
-                listsModel.Lists = lists;
+                planningsModel.Plannings = lists;
 
-                return new OperationDataResult<ItemsListsModel>(true, listsModel);
+                return new OperationDataResult<PlanningsPnModel>(true, planningsModel);
             }
             catch (Exception e)
             {
                 Trace.TraceError(e.Message);
-                return new OperationDataResult<ItemsListsModel>(false,
+                return new OperationDataResult<PlanningsPnModel>(false,
                     _itemsPlanningLocalizationService.GetString("ErrorObtainingLists"));
             }
         }
 
-        public async Task<OperationResult> Create(ItemsListPnModel model)
+        public async Task<OperationResult> Create(PlanningPnModel model)
         {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
                 try
                 {
                     var template = await _core.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
-                    var itemsList = new ItemList
+                    var itemsList = new Planning
                     {
                         Name = model.Name,
                         Description = model.Description,
@@ -123,33 +145,29 @@ namespace ItemsPlanning.Pn.Services
                         DayOfWeek = model.DayOfWeek,
                         DayOfMonth = model.DayOfMonth,
                         Enabled = true,
-                        Items = new List<Item>(),
                         RelatedEFormId = model.RelatedEFormId,
                         RelatedEFormName = template?.Label
                     };
 
                     await itemsList.Create(_dbContext);
-
-                    foreach (var itemModel in model.Items)
+                    var item = new Item()
                     {
-                        var item = new Item()
-                        {
-                            LocationCode = itemModel.LocationCode,
-                            ItemNumber = itemModel.ItemNumber,
-                            Description = itemModel.Description,
-                            Name = itemModel.Name,
-                            Version = 1,
-                            WorkflowState = Constants.WorkflowStates.Created,
-                            CreatedAt = DateTime.UtcNow,
-                            UpdatedAt = DateTime.UtcNow,
-                            Enabled = true,
-                            BuildYear = itemModel.BuildYear,
-                            Type = itemModel.Type,
-                            ItemListId = itemsList.Id,
-                            CreatedByUserId = UserId,
-                        };
-                        await item.Save(_dbContext);
-                    }
+                        LocationCode = model.Item.LocationCode,
+                        ItemNumber = model.Item.ItemNumber,
+                        Description = model.Item.Description,
+                        Name = model.Item.Name,
+                        Version = 1,
+                        WorkflowState = Constants.WorkflowStates.Created,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        Enabled = true,
+                        BuildYear = model.Item.BuildYear,
+                        Type = model.Item.Type,
+                        PlanningId = itemsList.Id,
+                        CreatedByUserId = UserId,
+                    };
+                    await item.Save(_dbContext);
+
 
                     transaction.Commit();
                     return new OperationResult(
@@ -165,13 +183,13 @@ namespace ItemsPlanning.Pn.Services
                 }
             }
         }
-        public async Task<OperationDataResult<ItemsListPnModel>> Read(int listId)
+        public async Task<OperationDataResult<PlanningPnModel>> Read(int listId)
         {
             try
             {
-                var itemList = await _dbContext.ItemLists
+                var plannings = await _dbContext.Plannings
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == listId)
-                    .Select(x => new ItemsListPnModel()
+                    .Select(x => new PlanningPnModel()
                     {
                         Id = x.Id,
                         RepeatUntil = x.RepeatUntil,
@@ -205,46 +223,46 @@ namespace ItemsPlanning.Pn.Services
                         SdkFieldId9 = x.SdkFieldId9,
                         SdkFieldId10 = x.SdkFieldId10,
                         LastExecutedTime = x.LastExecutedTime,
-                        Items = x.Items.Select(i => new ItemsListPnItemModel()
+                        Item = new PlanningItemModel
                         {
-                            Id = i.Id,
-                            Description = i.Description,
-                            Name = i.Name,
-                            LocationCode = i.LocationCode,
-                            ItemNumber = i.ItemNumber,
-                            BuildYear = i.BuildYear,
-                            Type = i.Type
-                        }).ToList()
+                            Id = x.Item.Id,
+                            BuildYear = x.Item.BuildYear,
+                            Description = x.Item.Description,
+                            ItemNumber = x.Item.ItemNumber,
+                            LocationCode = x.Item.LocationCode,
+                            Name = x.Item.Name,
+                            Type = x.Item.Type,
+                        },
                     }).FirstOrDefaultAsync();
 
-                if (itemList == null)
+                if (plannings == null)
                 {
-                    return new OperationDataResult<ItemsListPnModel>(
+                    return new OperationDataResult<PlanningPnModel>(
                         false,
                         _itemsPlanningLocalizationService.GetString("ListNotFound"));
                 }
 
 
-                return new OperationDataResult<ItemsListPnModel>(
+                return new OperationDataResult<PlanningPnModel>(
                     true,
-                    itemList);
+                    plannings);
             }
             catch (Exception e)
             {
                 Trace.TraceError(e.Message);
-                return new OperationDataResult<ItemsListPnModel>(
+                return new OperationDataResult<PlanningPnModel>(
                     false,
                     _itemsPlanningLocalizationService.GetString("ErrorWhileObtainingList"));
             }
         }
-        public async Task<OperationResult> Update(ItemsListPnModel updateModel)
+        public async Task<OperationResult> Update(PlanningPnModel updateModel)
         {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
                 try
                 {
                     var template = await _core.GetCore().Result.TemplateItemRead(updateModel.RelatedEFormId);
-                    var itemsList = new ItemList
+                    var planning = new Planning
                     {
                         Id = updateModel.Id,
                         RepeatUntil = updateModel.RepeatUntil,
@@ -292,65 +310,28 @@ namespace ItemsPlanning.Pn.Services
                         LastExecutedTime = updateModel.LastExecutedTime
 
                     };
-                    await itemsList.Update(_dbContext);
+                    await planning.Update(_dbContext);
 
-                    // update current items
-                    var items = await _dbContext.Items
-                        .Where(x => x.ItemListId == itemsList.Id)
-                        .ToListAsync();
-
-                    foreach (var item in items)
+                    var item = _dbContext.Items.FirstOrDefault(x => x.Id == updateModel.Item.Id);
+                    if (item == null)
                     {
-                        var itemModel = updateModel.Items.FirstOrDefault(x => x.Id == item.Id);
-                        if (itemModel != null)
+                        var newItem = new Item()
                         {
-                            item.Description = itemModel.Description;
-                            item.ItemNumber = itemModel.ItemNumber;
-                            item.LocationCode = itemModel.LocationCode;
-                            item.Name = itemModel.Name;
-                            item.UpdatedAt = DateTime.UtcNow;
-                            item.UpdatedByUserId = UserId;
-                            item.BuildYear = itemModel.BuildYear;
-                            item.Type = itemModel.Type;
-                            await item.Update(_dbContext);
-                        }
-                    }
-
-                    // Remove old
-                    var itemModelIds = updateModel.Items.Select(x => x.Id).ToArray();
-                    var itemsForRemove = await _dbContext.Items
-                        .Where(x => !itemModelIds.Contains(x.Id) && x.ItemListId == itemsList.Id)
-                        .ToListAsync();
-
-                    foreach (var itemForRemove in itemsForRemove)
-                    {
-                        await itemForRemove.Delete(_dbContext);
-                    }
-
-                    // Create new
-                    foreach (var itemModel in updateModel.Items)
-                    {
-                        var item = items.FirstOrDefault(x => x.Id == itemModel.Id);
-                        if (item == null)
-                        {
-                            var newItem = new Item()
-                            {
-                                LocationCode = itemModel.LocationCode,
-                                ItemNumber = itemModel.ItemNumber,
-                                Description = itemModel.Description,
-                                Name = itemModel.Name,
-                                Version = 1,
-                                WorkflowState = Constants.WorkflowStates.Created,
-                                CreatedAt = DateTime.UtcNow,
-                                CreatedByUserId = UserId,
-                                UpdatedAt = DateTime.UtcNow,
-                                Enabled = true,
-                                BuildYear = itemModel.BuildYear,
-                                Type = itemModel.Type,
-                                ItemListId = itemsList.Id,
-                            };
-                            await newItem.Save(_dbContext);
-                        }
+                            LocationCode = updateModel.Item.LocationCode,
+                            ItemNumber = updateModel.Item.ItemNumber,
+                            Description = updateModel.Item.Description,
+                            Name = updateModel.Item.Name,
+                            Version = 1,
+                            WorkflowState = Constants.WorkflowStates.Created,
+                            CreatedAt = DateTime.UtcNow,
+                            CreatedByUserId = UserId,
+                            UpdatedAt = DateTime.UtcNow,
+                            Enabled = true,
+                            BuildYear = updateModel.Item.BuildYear,
+                            Type = updateModel.Item.Type,
+                            PlanningId = planning.Id,
+                        };
+                        await newItem.Save(_dbContext);
                     }
 
                     transaction.Commit();
@@ -373,12 +354,11 @@ namespace ItemsPlanning.Pn.Services
         {
             try
             {
-//                Debugger.Break();
-                var itemsList = new ItemList
+                var planning = new Planning
                 {
                     Id = id
                 };
-                await itemsList.Delete(_dbContext);
+                await planning.Delete(_dbContext);
 
                 return new OperationResult(
                     true,
@@ -396,7 +376,7 @@ namespace ItemsPlanning.Pn.Services
         
         
         private Item FindItem(bool numberExists, int numberColumn, bool itemNameExists,
-            int itemNameColumn, JToken headers, JToken itemObj)
+            int itemNameColumn, JToken itemObj)
         {
             Item item = null;
 
@@ -420,8 +400,8 @@ namespace ItemsPlanning.Pn.Services
             try
             {
                 {
-                    JToken rawJson = JRaw.Parse(unitAsJson.ImportList);
-                    JToken rawHeadersJson = JRaw.Parse(unitAsJson.Headers);
+                    JToken rawJson = JToken.Parse(unitAsJson.ImportList);
+                    JToken rawHeadersJson = JToken.Parse(unitAsJson.Headers);
 
                     JToken headers = rawHeadersJson;
                     IEnumerable<JToken> itemObjects = rawJson.Skip(1);
@@ -434,11 +414,11 @@ namespace ItemsPlanning.Pn.Services
                         if (numberExists || itemNameExists)
                         {
                             Item existingItem = FindItem(numberExists, numberColumn, itemNameExists,
-                                nameColumn, headers, itemObj);
+                                nameColumn, itemObj);
                             if (existingItem == null)
                             {
-                                ItemsListPnItemModel itemModel =
-                                    ItemsHelper.ComposeValues(new ItemsListPnItemModel(), headers, itemObj);
+                                PlanningItemModel itemModel =
+                                    ItemsHelper.ComposeValues(new PlanningItemModel(), headers, itemObj);
 
                                 Item newItem = new Item
                                 {

@@ -1,6 +1,6 @@
 namespace ItemsPlanning.Pn.Infrastructure.Models
 {
-    public class ItemsListRequestModel
+    public class PlanningsRequestModel
     {
         public string NameFilter { get; set; }
         public string Sort { get; set; }

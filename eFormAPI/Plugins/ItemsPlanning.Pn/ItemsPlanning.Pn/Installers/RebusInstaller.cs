@@ -32,16 +32,16 @@ namespace ItemsPlanning.Pn.Installers
 {
     public class RebusInstaller : IWindsorInstaller
     {
-        private readonly string connectionString;
-        private readonly int maxParallelism;
-        private readonly int numberOfWorkers;
+        private readonly string _connectionString;
+        private readonly int _maxParallelism;
+        private readonly int _numberOfWorkers;
 
         public RebusInstaller(string connectionString, int maxParallelism, int numberOfWorkers)
         {
             if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException(nameof(connectionString));
-            this.connectionString = connectionString;
-            this.maxParallelism = maxParallelism;
-            this.numberOfWorkers = numberOfWorkers;
+            _connectionString = connectionString;
+            _maxParallelism = maxParallelism;
+            _numberOfWorkers = numberOfWorkers;
         }
 
         public void Install(IWindsorContainer container, IConfigurationStore store)
@@ -51,8 +51,8 @@ namespace ItemsPlanning.Pn.Installers
                 .Transport(t => t.UseRabbitMq("amqp://admin:password@localhost", "eform-angular-itemsplanning-plugin"))
                 .Options(o =>
                 {
-                    o.SetMaxParallelism(maxParallelism);
-                    o.SetNumberOfWorkers(numberOfWorkers);
+                    o.SetMaxParallelism(_maxParallelism);
+                    o.SetNumberOfWorkers(_numberOfWorkers);
                 })
                 .Start();
         }

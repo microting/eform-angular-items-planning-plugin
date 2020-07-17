@@ -29,7 +29,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Castle.Core.Internal;
-using ItemsPlanning.Pn.Abstractions;
 using ItemsPlanning.Pn.Infrastructure.Models;
 using ItemsPlanning.Pn.Infrastructure.Models.Report;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +41,8 @@ using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
 
 namespace ItemsPlanning.Pn.Services
 {
+    using Abstractions;
+
     public class ItemsPlanningReportService : IItemsPlanningReportService
     {
         private readonly ILogger<ItemsPlanningReportService> _logger;
@@ -67,11 +68,11 @@ namespace ItemsPlanning.Pn.Services
             try
             {
                 var core = _coreHelper.GetCore();
-                var itemList = await _dbContext.ItemLists.FirstAsync(x => x.Id == model.ItemList);
+                var itemList = await _dbContext.Plannings.FirstAsync(x => x.Id == model.ItemList);
                 var item = await _dbContext.Items.FirstAsync(x => x.Id == model.Item);
                 var template = await core.Result.TemplateRead(itemList.RelatedEFormId);
 
-                var casesQuery = _dbContext.ItemCases.Where(x => x.ItemId == item.Id);
+                var casesQuery = _dbContext.PlanningCases.Where(x => x.ItemId == item.Id);
 
                 if (model.DateFrom != null)
                 {
@@ -148,7 +149,7 @@ namespace ItemsPlanning.Pn.Services
         private ReportModel GetReportData(
             GenerateReportModel model, 
             Item item, 
-            IEnumerable<ItemCase> itemCases,
+            IEnumerable<PlanningCase> itemCases,
             CoreElement template)
         {
             var core = _coreHelper.GetCore();
@@ -205,9 +206,20 @@ namespace ItemsPlanning.Pn.Services
                     finalModel.FormFields.Add(reportFieldModel);
                 }
             }
-            
+
             // Get all answered cases
-            var casesList = core.Result.CaseReadAll(template.Id, null, null).Result
+            TimeZoneInfo timeZoneInfo;
+
+            try
+            {
+                timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Europe/Copenhagen");
+            }
+            catch
+            {
+                timeZoneInfo = TimeZoneInfo.Local;
+            }
+
+            var casesList = core.Result.CaseReadAll(template.Id, null, null, timeZoneInfo).Result
                 .Where(c => itemCases.Select(ic => ic.MicrotingSdkCaseId).Contains(c.Id))
                 .ToList();
 

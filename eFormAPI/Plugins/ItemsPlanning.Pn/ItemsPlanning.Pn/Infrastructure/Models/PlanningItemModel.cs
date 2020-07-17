@@ -1,6 +1,6 @@
 namespace ItemsPlanning.Pn.Infrastructure.Models
 {
-    public class ItemsListPnItemModel
+    public class PlanningItemModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

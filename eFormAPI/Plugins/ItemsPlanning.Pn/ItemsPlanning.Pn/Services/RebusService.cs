@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2019 Microting A/S
+Copyright (c) 2007 - 2020 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,6 @@ using System.Threading.Tasks;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using eFormCore;
-using ItemsPlanning.Pn.Abstractions;
 using ItemsPlanning.Pn.Installers;
 using Microting.eFormApi.BasePn.Abstractions;
 using Microting.ItemsPlanningBase.Infrastructure.Data;
@@ -35,6 +34,8 @@ using Rebus.Bus;
 
 namespace ItemsPlanning.Pn.Services
 {
+    using Abstractions;
+
     public class RebusService : IRebusService
     {
         private IBus _bus;
@@ -71,7 +72,6 @@ namespace ItemsPlanning.Pn.Services
         {
             ItemsPlanningPnContextFactory contextFactory = new ItemsPlanningPnContextFactory();
             return contextFactory.CreateDbContext(new[] {_connectionString});
-
         }
     }
 }

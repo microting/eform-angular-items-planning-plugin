@@ -28,7 +28,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using ItemsPlanning.Pn.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -38,6 +37,7 @@ using Microting.ItemsPlanningBase.Infrastructure.Data;
 
 namespace ItemsPlanning.Pn.Services
 {
+    using Abstractions;
     using Infrastructure.Models.Settings;
 
     public class ItemsPlanningPnSettingsService : IItemsPlanningPnSettingsService

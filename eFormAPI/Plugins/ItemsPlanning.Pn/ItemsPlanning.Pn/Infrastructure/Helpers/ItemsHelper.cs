@@ -29,7 +29,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Helpers
 {
     public static class ItemsHelper
     {
-        public static ItemsListPnItemModel ComposeValues(ItemsListPnItemModel item, JToken headers, JToken itemObj)
+        public static PlanningItemModel ComposeValues(PlanningItemModel item, JToken headers, JToken itemObj)
         {
             if (int.TryParse(headers[0]["headerValue"].ToString(), out var locationId))
             {

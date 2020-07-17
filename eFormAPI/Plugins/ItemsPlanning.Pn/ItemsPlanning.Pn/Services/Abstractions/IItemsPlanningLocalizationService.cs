@@ -22,15 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Threading.Tasks;
-using Rebus.Bus;
-
-namespace ItemsPlanning.Pn.Abstractions
+namespace ItemsPlanning.Pn.Services.Abstractions
 {
-    public interface IRebusService
+    public interface IItemsPlanningLocalizationService
     {
-        Task Start(string connectionString);
-        IBus GetBus();
-
+        string GetString(string key);
+        string GetString(string format, params object[] args);
     }
 }

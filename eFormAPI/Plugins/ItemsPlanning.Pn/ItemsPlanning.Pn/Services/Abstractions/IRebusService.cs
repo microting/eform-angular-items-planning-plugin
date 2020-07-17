@@ -22,21 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using ItemsPlanning.Pn.Infrastructure.Models;
-using ItemsPlanning.Pn.Infrastructure.Models.Report;
-
-namespace ItemsPlanning.Pn.Abstractions
+namespace ItemsPlanning.Pn.Services.Abstractions
 {
-    public interface IExcelService
-    {
-        bool WriteRecordsExportModelsToExcelFile(
-            ReportModel reportModel,
-            GenerateReportModel generateReportModel,
-            string destFile);
-        
-        bool WriteTableToExcel(string name, string description, ItemListPnCaseResultListModel reportModel, ItemListCasesPnRequestModel requestModel, string destFile);
-        
-        string CopyTemplateForNewAccount(string templateName);
+    using System.Threading.Tasks;
+    using Rebus.Bus;
 
+    public interface IRebusService
+    {
+        Task Start(string connectionString);
+        IBus GetBus();
     }
 }

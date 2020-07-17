@@ -22,38 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using Microsoft.Extensions.Localization;
-using Microting.eFormApi.BasePn.Localization.Abstractions;
-
-namespace ItemsPlanning.Pn.Services
+namespace ItemsPlanning.Pn.Infrastructure.Models
 {
-    using Abstractions;
+    using System.Collections.Generic;
 
-    public class ItemsPlanningLocalizationService : IItemsPlanningLocalizationService
+    public class PlanningsPnModel
     {
-        private readonly IStringLocalizer _localizer;
+        public int Total { get; set; }
+        public List<PlanningPnModel> Plannings { get; set; }
 
-        // ReSharper disable once SuggestBaseTypeForParameter
-        public ItemsPlanningLocalizationService(IEformLocalizerFactory factory)
+        public PlanningsPnModel()
         {
-            _localizer = factory.Create(typeof(EformItemsPlanningPlugin));
-        }
-        
-        public string GetString(string key)
-        {
-            var str = _localizer[key];
-            return str.Value;
-        }
-
-        public string GetString(string format, params object[] args)
-        {
-            var message = _localizer[format];
-            if (message?.Value == null)
-            {
-                return null;
-            }
-
-            return string.Format(message.Value, args);
+            Plannings = new List<PlanningPnModel>();
         }
     }
 }

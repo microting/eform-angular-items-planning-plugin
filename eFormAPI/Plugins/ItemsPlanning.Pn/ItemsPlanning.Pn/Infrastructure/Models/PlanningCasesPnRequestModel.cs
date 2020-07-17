@@ -2,7 +2,7 @@ using System;
 
 namespace ItemsPlanning.Pn.Infrastructure.Models
 {
-    public class ItemListCasesPnRequestModel
+    public class PlanningCasesPnRequestModel
     {
         public string NameFilter { get; set; }
         public string Sort { get; set; }
@@ -10,7 +10,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
         public int Offset { get; set; }
         public bool IsSortDsc { get; set; }
         public int PageSize { get; set; }
-        public int ListId { get; set; }
+        public int PlanningId { get; set; }
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
     }

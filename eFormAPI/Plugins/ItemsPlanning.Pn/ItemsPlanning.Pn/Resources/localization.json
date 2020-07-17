@@ -173,5 +173,12 @@
       "da": "Dato til",
       "en-US": "Date to"
     }
+  },
+  {
+    "Key": "Plannings",
+    "LocalizedValue": {
+      "da": "Plannings",
+      "en-US": "Plannings"
+    }
   }
 ]

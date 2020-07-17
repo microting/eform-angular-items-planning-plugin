@@ -2,12 +2,12 @@ using System.Collections.Generic;
 
 namespace ItemsPlanning.Pn.Infrastructure.Models
 {
-    public class ItemListPnCaseResultListModel
+    public class PlanningCaseResultListModel
     {
         public int Total { get; set; }
         
-        public List<ItemsListPnCaseResultModel> Items { get; set; }
-            = new List<ItemsListPnCaseResultModel>();
+        public List<PlanningCaseResultModel> Items { get; set; }
+            = new List<PlanningCaseResultModel>();
         
         public bool FieldEnabled1 { get; set; }
 

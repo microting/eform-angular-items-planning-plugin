@@ -2,7 +2,7 @@ using System;
 
 namespace ItemsPlanning.Pn.Infrastructure.Models
 {
-    public class ItemsListPnCaseResultModel
+    public class PlanningCaseResultModel
     {
         public int Id { get; set; }
         

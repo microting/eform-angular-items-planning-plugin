@@ -22,38 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using Microsoft.Extensions.Localization;
-using Microting.eFormApi.BasePn.Localization.Abstractions;
-
-namespace ItemsPlanning.Pn.Services
+namespace ItemsPlanning.Pn.Services.Abstractions
 {
-    using Abstractions;
+    using Infrastructure.Models;
+    using Infrastructure.Models.Report;
 
-    public class ItemsPlanningLocalizationService : IItemsPlanningLocalizationService
+    public interface IExcelService
     {
-        private readonly IStringLocalizer _localizer;
-
-        // ReSharper disable once SuggestBaseTypeForParameter
-        public ItemsPlanningLocalizationService(IEformLocalizerFactory factory)
-        {
-            _localizer = factory.Create(typeof(EformItemsPlanningPlugin));
-        }
+        bool WriteRecordsExportModelsToExcelFile(
+            ReportModel reportModel,
+            GenerateReportModel generateReportModel,
+            string destFile);
         
-        public string GetString(string key)
-        {
-            var str = _localizer[key];
-            return str.Value;
-        }
+        bool WriteTableToExcel(string name, string description, PlanningCaseResultListModel reportModel, PlanningCasesPnRequestModel requestModel, string destFile);
+        
+        string CopyTemplateForNewAccount(string templateName);
 
-        public string GetString(string format, params object[] args)
-        {
-            var message = _localizer[format];
-            if (message?.Value == null)
-            {
-                return null;
-            }
-
-            return string.Format(message.Value, args);
-        }
     }
 }

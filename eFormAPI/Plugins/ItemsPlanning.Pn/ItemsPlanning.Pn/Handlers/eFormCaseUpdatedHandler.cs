@@ -11,6 +11,7 @@ using Rebus.Handlers;
 
 namespace ItemsPlanning.Pn.Handlers
 {
+    // ReSharper disable once InconsistentNaming
     public class eFormCaseUpdatedHandler : IHandleMessages<eFormCaseUpdated>
     {
         private readonly eFormCore.Core _sdkCore;
@@ -24,180 +25,183 @@ namespace ItemsPlanning.Pn.Handlers
         
         public async Task Handle(eFormCaseUpdated message)
         {
-            ItemCaseSite itemCaseSite = await _dbContext.ItemCaseSites.SingleOrDefaultAsync(x => x.MicrotingSdkCaseId == message.caseId);
+            PlanningCaseSite planningCaseSite = await _dbContext.PlanningCaseSites.SingleOrDefaultAsync(x => x.MicrotingSdkCaseId == message.caseId);
             
-            if (itemCaseSite != null)
+            if (planningCaseSite != null)
             {
                 var caseDto = await _sdkCore.CaseReadByCaseId(message.caseId);
                 var microtingUId = caseDto.MicrotingUId;
                 var microtingCheckUId = caseDto.CheckUId;
                 var theCase = await _sdkCore.CaseRead((int)microtingUId, (int)microtingCheckUId);
 
-                itemCaseSite = await SetFieldValue(itemCaseSite, theCase.Id);
+                planningCaseSite = await SetFieldValue(planningCaseSite, theCase.Id);
 
-                await itemCaseSite.Update(_dbContext);
-                
-                ItemCase itemCase = await _dbContext.ItemCases.SingleOrDefaultAsync(x => x.Id == itemCaseSite.ItemCaseId);
+                await planningCaseSite.Update(_dbContext);
 
-                itemCase = await SetFieldValue(itemCase, theCase.Id);
-                await itemCase.Update(_dbContext);
+                PlanningCase planningCase = await _dbContext.PlanningCases.SingleOrDefaultAsync(x => x.Id == planningCaseSite.PlanningCaseId);
+
+                planningCase = await SetFieldValue(planningCase, theCase.Id);
+                await planningCase.Update(_dbContext);
             }
         }
         
-        private async Task<ItemCaseSite> SetFieldValue(ItemCaseSite itemCaseSite, int caseId)
+        private async Task<PlanningCaseSite> SetFieldValue(PlanningCaseSite planningCaseSite, int caseId)
         {
-            Item item = _dbContext.Items.SingleOrDefault(x => x.Id == itemCaseSite.ItemId);
-            ItemList itemList = _dbContext.ItemLists.SingleOrDefault(x => x.Id == item.ItemListId);
+            Item item = _dbContext.Items.SingleOrDefault(x => x.Id == planningCaseSite.ItemId);
+            Planning planning = _dbContext.Plannings.SingleOrDefault(x => x.Id == item.PlanningId);
             List<int> caseIds = new List<int>();
-            caseIds.Add(itemCaseSite.MicrotingSdkCaseId);
+            caseIds.Add(planningCaseSite.MicrotingSdkCaseId);
             List<FieldValue> fieldValues = await _sdkCore.Advanced_FieldValueReadList(caseIds);
 
-            if (itemList == null) return itemCaseSite;
+            if (planning == null) return planningCaseSite;
 
-            if (itemList.SdkFieldEnabled1)
+            if (planning.SdkFieldEnabled1)
             {
-                itemCaseSite.SdkFieldValue1 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId1)?.ValueReadable;
+                planningCaseSite.SdkFieldValue1 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId1)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled2)
+            if (planning.SdkFieldEnabled2)
             {
-                itemCaseSite.SdkFieldValue2 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId2)?.ValueReadable;
+                planningCaseSite.SdkFieldValue2 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId2)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled3)
+            if (planning.SdkFieldEnabled3)
             {
-                itemCaseSite.SdkFieldValue3 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId3)?.ValueReadable;
+                planningCaseSite.SdkFieldValue3 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId3)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled4)
+            if (planning.SdkFieldEnabled4)
             {
-                itemCaseSite.SdkFieldValue4 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId4)?.ValueReadable;
+                planningCaseSite.SdkFieldValue4 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId4)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled5)
+            if (planning.SdkFieldEnabled5)
             {
-                itemCaseSite.SdkFieldValue5 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId5)?.ValueReadable;
+                planningCaseSite.SdkFieldValue5 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId5)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled6)
+            if (planning.SdkFieldEnabled6)
             {
-                itemCaseSite.SdkFieldValue6 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId6)?.ValueReadable;
+                planningCaseSite.SdkFieldValue6 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId6)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled7)
+            if (planning.SdkFieldEnabled7)
             {
-                itemCaseSite.SdkFieldValue7 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId7)?.ValueReadable;
+                planningCaseSite.SdkFieldValue7 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId7)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled8)
+            if (planning.SdkFieldEnabled8)
             {
-                itemCaseSite.SdkFieldValue8 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId8)?.ValueReadable;
+                planningCaseSite.SdkFieldValue8 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId8)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled9)
+            if (planning.SdkFieldEnabled9)
             {
-                itemCaseSite.SdkFieldValue9 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId9)?.ValueReadable;
+                planningCaseSite.SdkFieldValue9 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId9)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled10)
+            if (planning.SdkFieldEnabled10)
             {
-                itemCaseSite.SdkFieldValue10 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId10)?.ValueReadable;
+                planningCaseSite.SdkFieldValue10 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId10)?.ValueReadable;
             }
-            if (itemList.NumberOfImagesEnabled)
+            if (planning.NumberOfImagesEnabled)
             {
-                itemCaseSite.NumberOfImages = 0;
+                planningCaseSite.NumberOfImages = 0;
                 foreach (FieldValue fieldValue in fieldValues)
                 {
                     if (fieldValue.FieldType == Constants.FieldTypes.Picture)
                     {
                         if (fieldValue.UploadedData != null)
                         {
-                            itemCaseSite.NumberOfImages += 1;
+                            planningCaseSite.NumberOfImages += 1;
                         }
                     }
                 }
             }
 
-            return itemCaseSite;
+            return planningCaseSite;
         }
 
-        private async Task<ItemCase> SetFieldValue(ItemCase itemCase, int caseId)
+        private async Task<PlanningCase> SetFieldValue(PlanningCase planningCase, int caseId)
         {
-            Item item = _dbContext.Items.SingleOrDefault(x => x.Id == itemCase.ItemId);
-            ItemList itemList = _dbContext.ItemLists.SingleOrDefault(x => x.Id == item.ItemListId);
-            List<int> caseIds = new List<int>();
-            caseIds.Add(itemCase.MicrotingSdkCaseId);
+            Item item = _dbContext.Items.SingleOrDefault(x => x.Id == planningCase.ItemId);
+            Planning planning = _dbContext.Plannings.SingleOrDefault(x => x.Id == item.PlanningId);
+            List<int> caseIds = new List<int>
+            {
+                planningCase.MicrotingSdkCaseId
+            };
+
             List<FieldValue> fieldValues = await _sdkCore.Advanced_FieldValueReadList(caseIds);
 
-            if (itemList == null) return itemCase;
+            if (planning == null) return planningCase;
 
-            if (itemList.SdkFieldEnabled1)
+            if (planning.SdkFieldEnabled1)
             {
-                itemCase.SdkFieldValue1 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId1)?.ValueReadable;
+                planningCase.SdkFieldValue1 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId1)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled2)
+            if (planning.SdkFieldEnabled2)
             {
-                itemCase.SdkFieldValue2 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId2)?.ValueReadable;
+                planningCase.SdkFieldValue2 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId2)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled3)
+            if (planning.SdkFieldEnabled3)
             {
-                itemCase.SdkFieldValue3 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId3)?.ValueReadable;
+                planningCase.SdkFieldValue3 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId3)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled4)
+            if (planning.SdkFieldEnabled4)
             {
-                itemCase.SdkFieldValue4 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId4)?.ValueReadable;
+                planningCase.SdkFieldValue4 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId4)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled5)
+            if (planning.SdkFieldEnabled5)
             {
-                itemCase.SdkFieldValue5 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId5)?.ValueReadable;
+                planningCase.SdkFieldValue5 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId5)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled6)
+            if (planning.SdkFieldEnabled6)
             {
-                itemCase.SdkFieldValue6 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId6)?.ValueReadable;
+                planningCase.SdkFieldValue6 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId6)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled7)
+            if (planning.SdkFieldEnabled7)
             {
-                itemCase.SdkFieldValue7 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId7)?.ValueReadable;
+                planningCase.SdkFieldValue7 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId7)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled8)
+            if (planning.SdkFieldEnabled8)
             {
-                itemCase.SdkFieldValue8 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId8)?.ValueReadable;
+                planningCase.SdkFieldValue8 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId8)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled9)
+            if (planning.SdkFieldEnabled9)
             {
-                itemCase.SdkFieldValue9 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId9)?.ValueReadable;
+                planningCase.SdkFieldValue9 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId9)?.ValueReadable;
             }
-            if (itemList.SdkFieldEnabled10)
+            if (planning.SdkFieldEnabled10)
             {
-                itemCase.SdkFieldValue10 =
-                    fieldValues.SingleOrDefault(x => x.FieldId == itemList.SdkFieldId10)?.ValueReadable;
+                planningCase.SdkFieldValue10 =
+                    fieldValues.SingleOrDefault(x => x.FieldId == planning.SdkFieldId10)?.ValueReadable;
             }
-            if (itemList.NumberOfImagesEnabled)
+            if (planning.NumberOfImagesEnabled)
             {
-                itemCase.NumberOfImages = 0;
+                planningCase.NumberOfImages = 0;
                 foreach (FieldValue fieldValue in fieldValues)
                 {
                     if (fieldValue.FieldType == Constants.FieldTypes.Picture)
                     {
                         if (fieldValue.UploadedData != null)
                         {
-                            itemCase.NumberOfImages += 1;
+                            planningCase.NumberOfImages += 1;
                         }
                     }
                 }
             }
 
-            return itemCase;
+            return planningCase;
         }
     }
 }

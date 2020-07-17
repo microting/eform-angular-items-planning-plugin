@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2019 Microting A/S
+Copyright (c) 2007 - 2020 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,11 +23,9 @@ SOFTWARE.
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Security.Claims;
-using ItemsPlanning.Pn.Abstractions;
 using ItemsPlanning.Pn.Infrastructure.Models;
 using ItemsPlanning.Pn.Infrastructure.Models.Report;
 using Microsoft.AspNetCore.Http;
@@ -38,6 +36,8 @@ using OfficeOpenXml.Style;
 
 namespace ItemsPlanning.Pn.Services
 {
+    using Abstractions;
+
     public class ExcelService : IExcelService
     {
         private readonly IHttpContextAccessor _httpAccessor;
@@ -174,8 +174,8 @@ namespace ItemsPlanning.Pn.Services
             return true;
         }
 
-        public bool WriteTableToExcel(string name, string description, ItemListPnCaseResultListModel reportModel,
-            ItemListCasesPnRequestModel requestModel, string destFile)
+        public bool WriteTableToExcel(string name, string description, PlanningCaseResultListModel reportModel,
+            PlanningCasesPnRequestModel requestModel, string destFile)
         {
             var file = new FileInfo(destFile);
             using (var package = new ExcelPackage(file))
@@ -215,7 +215,7 @@ namespace ItemsPlanning.Pn.Services
             return true;
         }
 
-        private ExcelWorksheet SetHeaders(ExcelWorksheet worksheet, int row, int col, ItemListPnCaseResultListModel reportModel)
+        private ExcelWorksheet SetHeaders(ExcelWorksheet worksheet, int row, int col, PlanningCaseResultListModel reportModel)
         {
             worksheet = SetRow(worksheet, row, col, true, true, false, _itemsPlanningLocalizationService.GetString("Id"));
             col += 1;
@@ -305,10 +305,10 @@ namespace ItemsPlanning.Pn.Services
             return worksheet;
         }
 
-        private ExcelWorksheet SetRows(ExcelWorksheet worksheet, int row, int col, ItemListPnCaseResultListModel reportModel)
+        private ExcelWorksheet SetRows(ExcelWorksheet worksheet, int row, int col, PlanningCaseResultListModel reportModel)
         {
             int startColNo = col;
-            foreach (ItemsListPnCaseResultModel itemsListPnCaseResultModel in reportModel.Items)
+            foreach (PlanningCaseResultModel itemsListPnCaseResultModel in reportModel.Items)
             {
                 col = startColNo;
                 worksheet = SetRow(worksheet, row, col, false, true, false, itemsListPnCaseResultModel.Id);

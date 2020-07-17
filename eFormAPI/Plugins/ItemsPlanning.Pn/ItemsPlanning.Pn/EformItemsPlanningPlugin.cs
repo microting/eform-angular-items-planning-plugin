@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2019 Microting A/S
+Copyright (c) 2007 - 2020 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@ SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ItemsPlanning.Pn.Abstractions;
 using ItemsPlanning.Pn.Handlers;
 using ItemsPlanning.Pn.Infrastructure.Data.Seed;
 using ItemsPlanning.Pn.Infrastructure.Data.Seed.Data;
@@ -49,6 +48,8 @@ using Microting.ItemsPlanningBase.Infrastructure.Const;
 
 namespace ItemsPlanning.Pn
 {
+    using Services.Abstractions;
+
     public class EformItemsPlanningPlugin : IEformPlugin
     {
         public string Name => "Microting Items Planning Plugin";
@@ -69,10 +70,10 @@ namespace ItemsPlanning.Pn
         {
             services.AddSingleton<IItemsPlanningLocalizationService, ItemsPlanningLocalizationService>();
             services.AddTransient<IItemsPlanningPnSettingsService, ItemsPlanningPnSettingsService>();
-            services.AddTransient<IItemsListCaseService, ItemListCaseService>();
+            services.AddTransient<IPlanningCaseService, PlanningCaseService>();
             services.AddTransient<IItemsPlanningReportService, ItemsPlanningReportService>();
             services.AddTransient<IExcelService, ExcelService>();
-            services.AddTransient<IItemsListService, ItemsListService>();
+            services.AddTransient<IPlanningService, PlanningService>();
             services.AddTransient<IUploadedDataService, UploadedDataService>();
             services.AddSingleton<IRebusService, RebusService>();
         }
@@ -145,9 +146,9 @@ namespace ItemsPlanning.Pn
                 {
                     new MenuItemModel()
                     {
-                        Name = localizationService.GetString("Lists"),
-                        E2EId = "items-planning-pn-lists",
-                        Link = "/plugins/items-planning-pn/lists",
+                        Name = localizationService.GetString("Plannings"),
+                        E2EId = "items-planning-pn-plannings",
+                        Link = "/plugins/items-planning-pn/plannings",
                         Position = 0,
                     },
                     new MenuItemModel()

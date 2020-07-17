@@ -1,62 +1,75 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using ItemsPlanning.Pn.Abstractions;
-using ItemsPlanning.Pn.Infrastructure.Models;
-using ItemsPlanning.Pn.Messages;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microting.eForm.Dto;
-using Microting.eForm.Infrastructure.Constants;
-using Microting.eFormApi.BasePn.Abstractions;
-using Microting.eFormApi.BasePn.Infrastructure.Database.Entities;
-using Microting.eFormApi.BasePn.Infrastructure.Extensions;
-using Microting.eFormApi.BasePn.Infrastructure.Helpers;
-using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-using Microting.ItemsPlanningBase.Infrastructure.Data;
-using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
-using Rebus.Bus;
+/*
+The MIT License (MIT)
+
+Copyright (c) 2007 - 2020 Microting A/S
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
 namespace ItemsPlanning.Pn.Services
 {
-    public class ItemListCaseService :IItemsListCaseService
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Xml.Linq;
+    using Abstractions;
+    using Infrastructure.Models;
+    using Microsoft.EntityFrameworkCore;
+    using Microting.eForm.Dto;
+    using Microting.eForm.Infrastructure.Constants;
+    using Microting.eFormApi.BasePn.Abstractions;
+    using Microting.eFormApi.BasePn.Infrastructure.Database.Entities;
+    using Microting.eFormApi.BasePn.Infrastructure.Extensions;
+    using Microting.eFormApi.BasePn.Infrastructure.Helpers;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+    using Microting.ItemsPlanningBase.Infrastructure.Data;
+    using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
+
+    public class PlanningCaseService :IPlanningCaseService
     {
         private readonly ItemsPlanningPnDbContext _dbContext;
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
         private readonly IExcelService _excelService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEFormCoreService _core;
-        private readonly IRebusService _rebusService;
-        private readonly IBus _bus;
 
-        public ItemListCaseService(
+        public PlanningCaseService(
             ItemsPlanningPnDbContext dbContext,
             IItemsPlanningLocalizationService itemsPlanningLocalizationService,
             IExcelService excelService,
-            IHttpContextAccessor httpContextAccessor, IEFormCoreService core, 
-            IRebusService rebusService)
+            IEFormCoreService core)
         {
             _dbContext = dbContext;
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
-            _httpContextAccessor = httpContextAccessor;
             _core = core;
             _excelService = excelService;
-            _rebusService = rebusService;
-            _bus = rebusService.GetBus();
         }
 
-        public async Task<OperationDataResult<ItemsListCasePnModel>> GetSingleList(ItemListCasesPnRequestModel requestModel)
+        public async Task<OperationDataResult<PlanningCasesModel>> GetSinglePlanningCase(PlanningCasesPnRequestModel requestModel)
         {
             try
             {
 
-                var newItems = (_dbContext.Items.Where(item => item.ItemListId == requestModel.ListId)
-                    .Join(_dbContext.ItemCases, item => item.Id, itemCase => itemCase.ItemId,
+                var newItems = (_dbContext.Items.Where(item => item.PlanningId == requestModel.PlanningId)
+                    .Join(_dbContext.PlanningCases, item => item.Id, itemCase => itemCase.ItemId,
                         (item, itemCase) => new
                         {
                             itemCase.Id,
@@ -105,8 +118,8 @@ namespace ItemsPlanning.Pn.Services
                 if (newItems.Any())
                 {
                     
-                    ItemsListCasePnModel itemsListCasePnModel = new ItemsListCasePnModel();
-                    itemsListCasePnModel.Items = await newItems.Select(x => new ItemsListPnItemCaseModel()
+                    PlanningCasesModel itemsListCasePnModel = new PlanningCasesModel();
+                    itemsListCasePnModel.Items = await newItems.Select(x => new PlanningItemCaseModel()
                     {
                         Id = x.Id,
                         Date = x.CreatedAt,
@@ -125,53 +138,53 @@ namespace ItemsPlanning.Pn.Services
                         Status = x.Status
                     }).ToListAsync();
                     
-                    itemsListCasePnModel.Total = await (_dbContext.Items.Where(item => item.ItemListId == requestModel.ListId)
-                        .Join(_dbContext.ItemCases, item => item.Id, itemCase => itemCase.ItemId,
+                    itemsListCasePnModel.Total = await (_dbContext.Items.Where(item => item.PlanningId == requestModel.PlanningId)
+                        .Join(_dbContext.PlanningCases, item => item.Id, itemCase => itemCase.ItemId,
                             (item, itemCase) => new
                             {
                                 itemCase.Id
                             })).CountAsync();
 
-                    return new OperationDataResult<ItemsListCasePnModel>(
+                    return new OperationDataResult<PlanningCasesModel>(
                         true,
                         itemsListCasePnModel);
                 }
                 else
                 {
-                    return new OperationDataResult<ItemsListCasePnModel>(
+                    return new OperationDataResult<PlanningCasesModel>(
                         false, "");
                 }
             }
             catch (Exception ex)
             {
-                return new OperationDataResult<ItemsListCasePnModel>(
+                return new OperationDataResult<PlanningCasesModel>(
                     false, ex.Message);
             }
         }
 
-        public async Task<OperationDataResult<ItemListPnCaseResultListModel>> GetSingleListResults(ItemListCasesPnRequestModel requestModel)
+        public async Task<OperationDataResult<PlanningCaseResultListModel>> GetSingleCaseResults(PlanningCasesPnRequestModel requestModel)
         {
-            ItemListPnCaseResultListModel itemListPnCaseResultListModel = await GetTableData(requestModel);
+            PlanningCaseResultListModel itemListPnCaseResultListModel = await GetTableData(requestModel);
             
-            return new OperationDataResult<ItemListPnCaseResultListModel>(true, itemListPnCaseResultListModel);
+            return new OperationDataResult<PlanningCaseResultListModel>(true, itemListPnCaseResultListModel);
         }
 
-        public async Task<OperationDataResult<FileStreamModel>> GenerateSingleListResults(
-            ItemListCasesPnRequestModel requestModel)
+        public async Task<OperationDataResult<FileStreamModel>> GenerateSingleCaseResults(
+            PlanningCasesPnRequestModel requestModel)
         {
             string excelFile = null;
             try
             {
-                ItemListPnCaseResultListModel reportDataResult = await GetTableData(requestModel);
+                PlanningCaseResultListModel reportDataResult = await GetTableData(requestModel);
                 if (reportDataResult == null)
                 {
                     return new OperationDataResult<FileStreamModel>(false, "ERROR");
                 }
 
-                ItemList itemList = await _dbContext.ItemLists.SingleOrDefaultAsync(x => x.Id == requestModel.ListId);
+                Planning planning = await _dbContext.Plannings.SingleOrDefaultAsync(x => x.Id == requestModel.PlanningId);
                 
                 excelFile = _excelService.CopyTemplateForNewAccount("report_template_lists");
-                bool writeResult = _excelService.WriteTableToExcel(itemList.Name,itemList.Description,
+                bool writeResult = _excelService.WriteTableToExcel(planning.Name,planning.Description,
                     reportDataResult,
                     requestModel,
                     excelFile);
@@ -204,14 +217,14 @@ namespace ItemsPlanning.Pn.Services
             }
         }
 
-        private async Task<ItemListPnCaseResultListModel> GetTableData(ItemListCasesPnRequestModel requestModel)
+        private async Task<PlanningCaseResultListModel> GetTableData(PlanningCasesPnRequestModel requestModel)
         {
             PluginConfigurationValue pluginConfigurationValue =
                 await _dbContext.PluginConfigurationValues.SingleOrDefaultAsync(x => x.Name == "ItemsPlanningBaseSettings:Token");
             
-            var itemList = await _dbContext.ItemLists.SingleOrDefaultAsync(x => x.Id == requestModel.ListId);
+            var planning = await _dbContext.Plannings.SingleOrDefaultAsync(x => x.Id == requestModel.PlanningId);
 
-            List<FieldDto> allFields = await _core.GetCore().Result.Advanced_TemplateFieldReadAll(itemList.RelatedEFormId);
+            List<FieldDto> allFields = await _core.GetCore().Result.Advanced_TemplateFieldReadAll(planning.RelatedEFormId);
 
             int i = 0;
             List<int> toBeRemoved = new List<int>();
@@ -229,64 +242,66 @@ namespace ItemsPlanning.Pn.Services
             {
                 allFields.RemoveAt(i1);
             }
-            
-            ItemListPnCaseResultListModel itemListPnCaseResultListModel = new ItemListPnCaseResultListModel();
-            itemListPnCaseResultListModel.Total = 0;
-            itemListPnCaseResultListModel.LabelEnabled = itemList.LabelEnabled;
-            itemListPnCaseResultListModel.DescriptionEnabled = itemList.DescriptionEnabled;
-            itemListPnCaseResultListModel.DeployedAtEnabled = itemList.DeployedAtEnabled;
-            itemListPnCaseResultListModel.DoneAtEnabled = itemList.DoneAtEnabled;
-            itemListPnCaseResultListModel.DoneByUserNameEnabled = itemList.DoneByUserNameEnabled;
-            itemListPnCaseResultListModel.UploadedDataEnabled = itemList.UploadedDataEnabled;
-            itemListPnCaseResultListModel.ItemNumberEnabled = itemList.ItemNumberEnabled;
-            itemListPnCaseResultListModel.LocationCodeEnabled = itemList.LocationCodeEnabled;
-            itemListPnCaseResultListModel.BuildYearEnabled = itemList.BuildYearEnabled;
-            itemListPnCaseResultListModel.TypeEnabled = itemList.TypeEnabled;
-            itemListPnCaseResultListModel.NumberOfImagesEnabled = itemList.NumberOfImagesEnabled;
-            itemListPnCaseResultListModel.SdkeFormId = itemList.RelatedEFormId;
-            
-            itemListPnCaseResultListModel.FieldEnabled1 = itemList.SdkFieldEnabled1;
+
+            var itemListPnCaseResultListModel = new PlanningCaseResultListModel
+            {
+                Total = 0,
+                LabelEnabled = planning.LabelEnabled,
+                DescriptionEnabled = planning.DescriptionEnabled,
+                DeployedAtEnabled = planning.DeployedAtEnabled,
+                DoneAtEnabled = planning.DoneAtEnabled,
+                DoneByUserNameEnabled = planning.DoneByUserNameEnabled,
+                UploadedDataEnabled = planning.UploadedDataEnabled,
+                ItemNumberEnabled = planning.ItemNumberEnabled,
+                LocationCodeEnabled = planning.LocationCodeEnabled,
+                BuildYearEnabled = planning.BuildYearEnabled,
+                TypeEnabled = planning.TypeEnabled,
+                NumberOfImagesEnabled = planning.NumberOfImagesEnabled,
+                SdkeFormId = planning.RelatedEFormId,
+                FieldEnabled1 = planning.SdkFieldEnabled1
+            };
+
             if ( itemListPnCaseResultListModel.FieldEnabled1)
-                itemListPnCaseResultListModel.FieldName1 = allFields.SingleOrDefault(x => x.Id == itemList.SdkFieldId1)?.Label;
+                itemListPnCaseResultListModel.FieldName1 = allFields.SingleOrDefault(x => x.Id == planning.SdkFieldId1)?.Label;
             
-            itemListPnCaseResultListModel.FieldEnabled2 = itemList.SdkFieldEnabled2;
+            itemListPnCaseResultListModel.FieldEnabled2 = planning.SdkFieldEnabled2;
             if (itemListPnCaseResultListModel.FieldEnabled2)
-                itemListPnCaseResultListModel.FieldName2 = allFields.SingleOrDefault(x => x.Id == itemList.SdkFieldId2)?.Label;
+                itemListPnCaseResultListModel.FieldName2 = allFields.SingleOrDefault(x => x.Id == planning.SdkFieldId2)?.Label;
             
-            itemListPnCaseResultListModel.FieldEnabled3 = itemList.SdkFieldEnabled3;
+            itemListPnCaseResultListModel.FieldEnabled3 = planning.SdkFieldEnabled3;
             if (itemListPnCaseResultListModel.FieldEnabled3)
-                itemListPnCaseResultListModel.FieldName3 = allFields.SingleOrDefault(x => x.Id == itemList.SdkFieldId3)?.Label;
+                itemListPnCaseResultListModel.FieldName3 = allFields.SingleOrDefault(x => x.Id == planning.SdkFieldId3)?.Label;
             
-            itemListPnCaseResultListModel.FieldEnabled4 = itemList.SdkFieldEnabled4;
+            itemListPnCaseResultListModel.FieldEnabled4 = planning.SdkFieldEnabled4;
             if (itemListPnCaseResultListModel.FieldEnabled4)
-                itemListPnCaseResultListModel.FieldName4 = allFields.SingleOrDefault(x => x.Id == itemList.SdkFieldId4)?.Label;
+                itemListPnCaseResultListModel.FieldName4 = allFields.SingleOrDefault(x => x.Id == planning.SdkFieldId4)?.Label;
             
-            itemListPnCaseResultListModel.FieldEnabled5 = itemList.SdkFieldEnabled5;
+            itemListPnCaseResultListModel.FieldEnabled5 = planning.SdkFieldEnabled5;
             if (itemListPnCaseResultListModel.FieldEnabled5)
-                itemListPnCaseResultListModel.FieldName5 = allFields.SingleOrDefault(x => x.Id == itemList.SdkFieldId5)?.Label;
+                itemListPnCaseResultListModel.FieldName5 = allFields.SingleOrDefault(x => x.Id == planning.SdkFieldId5)?.Label;
             
-            itemListPnCaseResultListModel.FieldEnabled6 = itemList.SdkFieldEnabled6;
+            itemListPnCaseResultListModel.FieldEnabled6 = planning.SdkFieldEnabled6;
             if (itemListPnCaseResultListModel.FieldEnabled6)
-                itemListPnCaseResultListModel.FieldName6 = allFields.SingleOrDefault(x => x.Id == itemList.SdkFieldId6)?.Label;
+                itemListPnCaseResultListModel.FieldName6 = allFields.SingleOrDefault(x => x.Id == planning.SdkFieldId6)?.Label;
             
-            itemListPnCaseResultListModel.FieldEnabled7 = itemList.SdkFieldEnabled7;
+            itemListPnCaseResultListModel.FieldEnabled7 = planning.SdkFieldEnabled7;
             if (itemListPnCaseResultListModel.FieldEnabled7)
-                itemListPnCaseResultListModel.FieldName7 = allFields.SingleOrDefault(x => x.Id == itemList.SdkFieldId7)?.Label;
+                itemListPnCaseResultListModel.FieldName7 = allFields.SingleOrDefault(x => x.Id == planning.SdkFieldId7)?.Label;
             
-            itemListPnCaseResultListModel.FieldEnabled8 = itemList.SdkFieldEnabled8;
+            itemListPnCaseResultListModel.FieldEnabled8 = planning.SdkFieldEnabled8;
             if (itemListPnCaseResultListModel.FieldEnabled8)
-                itemListPnCaseResultListModel.FieldName8 = allFields.SingleOrDefault(x => x.Id == itemList.SdkFieldId8)?.Label;
+                itemListPnCaseResultListModel.FieldName8 = allFields.SingleOrDefault(x => x.Id == planning.SdkFieldId8)?.Label;
             
-            itemListPnCaseResultListModel.FieldEnabled9 = itemList.SdkFieldEnabled9;
+            itemListPnCaseResultListModel.FieldEnabled9 = planning.SdkFieldEnabled9;
             if (itemListPnCaseResultListModel.FieldEnabled9)
-                itemListPnCaseResultListModel.FieldName9 = allFields.SingleOrDefault(x => x.Id == itemList.SdkFieldId9)?.Label;
+                itemListPnCaseResultListModel.FieldName9 = allFields.SingleOrDefault(x => x.Id == planning.SdkFieldId9)?.Label;
             
-            itemListPnCaseResultListModel.FieldEnabled10 = itemList.SdkFieldEnabled10;
+            itemListPnCaseResultListModel.FieldEnabled10 = planning.SdkFieldEnabled10;
             if (itemListPnCaseResultListModel.FieldEnabled10)
-                itemListPnCaseResultListModel.FieldName10 = allFields.SingleOrDefault(x => x.Id == itemList.SdkFieldId10)?.Label;
+                itemListPnCaseResultListModel.FieldName10 = allFields.SingleOrDefault(x => x.Id == planning.SdkFieldId10)?.Label;
             
-            var newItems = (_dbContext.Items.Where(item => item.ItemListId == requestModel.ListId)
-                .Join(_dbContext.ItemCases, item => item.Id, itemCase => itemCase.ItemId,
+            var newItems = (_dbContext.Items.Where(item => item.PlanningId == requestModel.PlanningId)
+                .Join(_dbContext.PlanningCases, item => item.Id, itemCase => itemCase.ItemId,
                     (item, itemCase) => new
                     {
                         itemCase.Id,
@@ -354,7 +369,7 @@ namespace ItemsPlanning.Pn.Services
                     .Skip(requestModel.Offset)
                     .Take(requestModel.PageSize);
 
-            itemListPnCaseResultListModel.Items = new List<ItemsListPnCaseResultModel>();
+            itemListPnCaseResultListModel.Items = new List<PlanningCaseResultModel>();
             
             foreach (var item in newItems.ToList())
             {
@@ -362,7 +377,7 @@ namespace ItemsPlanning.Pn.Services
 
                 try
                 {
-                    ItemsListPnCaseResultModel newItem = new ItemsListPnCaseResultModel()
+                    PlanningCaseResultModel newItem = new PlanningCaseResultModel()
                     {
                         Id = item.Id,
                         DoneAt = item.MicrotingSdkCaseDoneAt,
@@ -386,7 +401,7 @@ namespace ItemsPlanning.Pn.Services
                         Field9 = item.SdkFieldValue9,
                         Field10 = item.SdkFieldValue10,
                         SdkCaseId = item.MicrotingSdkCaseId,
-                        SdkeFormId = itemList.RelatedEFormId,
+                        SdkeFormId = planning.RelatedEFormId,
                         Status = item.Status,
                         Token = pluginConfigurationValue.Value
                     };
@@ -401,13 +416,13 @@ namespace ItemsPlanning.Pn.Services
             return itemListPnCaseResultListModel;
         }
 
-        public async Task<OperationDataResult<ItemsListPnItemCaseModel>> GetSingleCase(int caseId)
+        public async Task<OperationDataResult<PlanningItemCaseModel>> GetSingleCase(int caseId)
         {
             try
             {
-                ItemsListPnItemCaseModel itemCaseModel = new ItemsListPnItemCaseModel();
+                PlanningItemCaseModel itemCaseModel = new PlanningItemCaseModel();
 
-                var itemCase = await _dbContext.ItemCases.FirstOrDefaultAsync(x => x.Id == caseId);
+                var itemCase = await _dbContext.PlanningCases.FirstOrDefaultAsync(x => x.Id == caseId);
                 var item = await _dbContext.Items.FirstOrDefaultAsync(x => x.Id == itemCase.ItemId);
                 
                                 
@@ -426,14 +441,14 @@ namespace ItemsPlanning.Pn.Services
 //                    return new OperationDataResult<ItemsListPnItemCaseModel>(false,
 //                        _itemsPlanningLocalizationService.GetString(($"ListItemCase with ID: {caseId} does not exist")));
 //                }
-                return new OperationDataResult<ItemsListPnItemCaseModel>(true, itemCaseModel);
+                return new OperationDataResult<PlanningItemCaseModel>(true, itemCaseModel);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-            return new OperationDataResult<ItemsListPnItemCaseModel>(false, "Not done yet.");
+            return new OperationDataResult<PlanningItemCaseModel>(false, "Not done yet.");
         }
 
         public async Task<string> DownloadEFormPdf(int caseId, string token, string fileType)
@@ -446,9 +461,9 @@ namespace ItemsPlanning.Pn.Services
                 {
                     var core = _core.GetCore();
                     int eFormId = 0;
-                    ItemCase itemCase = await _dbContext.ItemCases.FirstOrDefaultAsync(x => x.Id == caseId);
+                    PlanningCase itemCase = await _dbContext.PlanningCases.FirstOrDefaultAsync(x => x.Id == caseId);
                     Item item = await _dbContext.Items.SingleOrDefaultAsync(x => x.Id == itemCase.ItemId);
-                    ItemList itemList = await _dbContext.ItemLists.SingleOrDefaultAsync(x => x.Id == item.ItemListId);
+                    Planning itemList = await _dbContext.Plannings.SingleOrDefaultAsync(x => x.Id == item.PlanningId);
                     if (itemList != null)
                     {
                         eFormId = itemList.RelatedEFormId;    

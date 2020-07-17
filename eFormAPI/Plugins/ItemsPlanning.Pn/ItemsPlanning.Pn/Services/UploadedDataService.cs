@@ -1,44 +1,59 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microting.eFormApi.BasePn.Infrastructure.Extensions;
-using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
-using Microting.ItemsPlanningBase.Infrastructure.Data;
-using ItemsPlanning.Pn.Abstractions;
-using Microsoft.AspNetCore.Http;
-using Microting.eForm.Infrastructure.Constants;
-using Microting.eFormApi.BasePn.Abstractions;
-using System.Security.Claims;
-using Amazon.S3.Transfer;
-using ItemsPlanning.Pn.Infrastructure.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microting.eForm.Infrastructure.Models.reply;
-using OpenStack.NetCoreSwiftClient.Extensions;
-using SQLitePCL;
-using Settings = Microting.eForm.Dto.Settings;
+/*
+The MIT License (MIT)
+
+Copyright (c) 2007 - 2020 Microting A/S
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
 namespace ItemsPlanning.Pn.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Abstractions;
+    using Microsoft.EntityFrameworkCore;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+    using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
+    using Microting.ItemsPlanningBase.Infrastructure.Data;
+    using Microting.eForm.Infrastructure.Constants;
+    using Microting.eFormApi.BasePn.Abstractions;
+    using Infrastructure.Models;
+    using Microsoft.AspNetCore.Mvc;
+    using Settings = Microting.eForm.Dto.Settings;
+
     public class UploadedDataService : IUploadedDataService
     {
         private readonly ItemsPlanningPnDbContext _dbContext;
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEFormCoreService _core;
 
-        public UploadedDataService(ItemsPlanningPnDbContext dbContext,
+        public UploadedDataService(
+            ItemsPlanningPnDbContext dbContext,
             IItemsPlanningLocalizationService itemsPlanningLocalizationService,
-            IHttpContextAccessor httpContextAccessor, IEFormCoreService core)
+            IEFormCoreService core)
         {
             _dbContext = dbContext;
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
-            _httpContextAccessor = httpContextAccessor;
             _core = core;
         }
 
@@ -53,7 +68,7 @@ namespace ItemsPlanning.Pn.Services
 
                 uploadedDataQuery
                     = uploadedDataQuery
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.ItemCaseId == itemCaseId);
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.PlanningCaseId == itemCaseId);
 
                 List<UploadedDataModel> uploadedDatas = await uploadedDataQuery.Select(x => new UploadedDataModel()
                 {
@@ -63,7 +78,7 @@ namespace ItemsPlanning.Pn.Services
                     Extension = x.Extension,
                     FileLocation = x.FileLocation,
                     FileName = x.FileName,
-                    ItemCaseId = x.ItemCaseId,
+                    PlanningCaseId = x.PlanningCaseId,
                     UploaderType = x.UploaderType
                 }).ToListAsync();
 
@@ -89,7 +104,7 @@ namespace ItemsPlanning.Pn.Services
                 UploadedDataModel uploadedDataModel = new UploadedDataModel();
 
                 var uploadedData =
-                   await _dbContext.UploadedDatas.FirstOrDefaultAsync(x => x.ItemCaseId == selectedListItemCaseId);
+                   await _dbContext.UploadedDatas.FirstOrDefaultAsync(x => x.PlanningCaseId == selectedListItemCaseId);
 
                 uploadedDataModel.Checksum = uploadedData.Checksum;
                 uploadedDataModel.Extension = uploadedData.Extension;
@@ -97,7 +112,7 @@ namespace ItemsPlanning.Pn.Services
                 uploadedDataModel.FileLocation = uploadedData.FileLocation;
                 uploadedDataModel.FileName = uploadedData.FileName;
                 uploadedDataModel.UploaderType = uploadedData.UploaderType;
-                uploadedDataModel.ItemCaseId = uploadedData.ItemCaseId;
+                uploadedDataModel.PlanningCaseId = uploadedData.PlanningCaseId;
                 
                 return new OperationDataResult<UploadedDataModel>(true, uploadedDataModel);
             }
@@ -125,7 +140,7 @@ namespace ItemsPlanning.Pn.Services
                 uploadedData.FileLocation = uploadedDataModel.FileLocation;
                 uploadedData.FileName = uploadedDataModel.FileName;
                 uploadedData.UploaderType = uploadedDataModel.UploaderType;
-                uploadedData.ItemCaseId = uploadedDataModel.ItemCaseId;
+                uploadedData.PlanningCaseId = uploadedDataModel.PlanningCaseId;
 
                 await uploadedData.Update(_dbContext);
                 return new OperationResult(true);
@@ -173,7 +188,7 @@ namespace ItemsPlanning.Pn.Services
                 UploadedData uploadedData = new UploadedData();
                 uploadedData.FileLocation = saveFolder;
                 uploadedData.FileName = fileName;
-                uploadedData.ItemCaseId = pdfUploadModel.ItemCaseId;
+                uploadedData.PlanningCaseId = pdfUploadModel.ItemCaseId;
                 
                 await uploadedData.Create(_dbContext);
                 
