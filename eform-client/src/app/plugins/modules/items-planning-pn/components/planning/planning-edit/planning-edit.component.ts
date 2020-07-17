@@ -46,7 +46,6 @@ export class PlanningEditComponent implements OnInit {
 
   ngOnInit() {
     this.getSelectedList(this.selectedListId);
-    // this.frame.show();
   }
 
   getSelectedList(id: number) {
@@ -54,8 +53,9 @@ export class PlanningEditComponent implements OnInit {
       if (data && data.success) {
         this.selectedPlanningModel = data.model;
         this.selectedPlanningModel.internalRepeatUntil = this.selectedPlanningModel.repeatUntil;
-        // @ts-ignore
-        this.templatesModel.templates = [{id: this.selectedPlanningModel.relatedEFormId, label: this.selectedPlanningModel.relatedEFormName}];
+        this.templatesModel.templates = [
+          {id: this.selectedPlanningModel.relatedEFormId, label: this.selectedPlanningModel.relatedEFormName} as any
+        ];
       }
     });
   }
@@ -69,7 +69,7 @@ export class PlanningEditComponent implements OnInit {
       const datTime = moment.utc(tempDate, 'DD/MM/YYYY');
       this.selectedPlanningModel.repeatUntil = datTime.format('YYYY-MM-DDT00:00:00').toString();
     }
-    const model = new PlanningUpdateModel(this.selectedPlanningModel);
+    const model = {...this.selectedPlanningModel} as PlanningUpdateModel;
     this.itemsPlanningPnPlanningsService.updatePlanning(model)
       .subscribe((data) => {
       if (data && data.success) {
@@ -78,26 +78,5 @@ export class PlanningEditComponent implements OnInit {
         this.goBack();
       }
     });
-  }
-  showImportModal() {
-    this.importUnitModal.show();
-  }
-  onSelectedChanged(e: any) {
-    // debugger;
-    // this.selectedListModel.eFormId = e.id;
-  }
-  addNewItem() {
-    const newItem = new PlanningItemModel();
-    // set corresponding id
-    if (!this.selectedPlanningModel.items.length) {
-      newItem.id = this.selectedPlanningModel.items.length;
-    } else {
-      newItem.id = this.selectedPlanningModel.items[this.selectedPlanningModel.items.length - 1].id + 1;
-    }
-    this.selectedPlanningModel.items.push(newItem);
-  }
-
-  removeItem(id: number) {
-    this.selectedPlanningModel.items = this.selectedPlanningModel.items.filter(x => x.id !== id);
   }
 }

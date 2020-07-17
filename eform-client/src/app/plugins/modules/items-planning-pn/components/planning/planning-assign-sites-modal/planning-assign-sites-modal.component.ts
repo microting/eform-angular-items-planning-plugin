@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {SiteNameDto} from 'src/app/common/models';
 import {EFormService} from 'src/app/common/services/eform';
 import {SitesService} from 'src/app/common/services/advanced';
@@ -7,6 +7,7 @@ import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {PlanningAssignmentSiteModel, PlanningAssignSitesModel} from '../../../models/plannings/planning-assign-sites.model';
 import {ItemsPlanningPnPlanningsService} from 'src/app/plugins/modules/items-planning-pn/services';
 import {PlanningPnModel} from 'src/app/plugins/modules/items-planning-pn/models/plannings';
+import {Subscription} from 'rxjs';
 
 @AutoUnsubscribe()
 @Component({
@@ -14,7 +15,7 @@ import {PlanningPnModel} from 'src/app/plugins/modules/items-planning-pn/models/
   templateUrl: './planning-assign-sites-modal.component.html',
   styleUrls: ['./planning-assign-sites-modal.component.scss']
 })
-export class PlanningAssignSitesModalComponent implements OnInit {
+export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
 
   @ViewChild('frame', { static: true }) frame;
   @Output() sitesAssigned: EventEmitter<void> = new EventEmitter<void>();
@@ -22,6 +23,8 @@ export class PlanningAssignSitesModalComponent implements OnInit {
   assignViewModel: PlanningAssignSitesModel = new PlanningAssignSitesModel();
   selectedPlanning: PlanningPnModel = new PlanningPnModel();
   sitesDto: Array<SiteNameDto> = [];
+  assignPlanning$: Subscription;
+  getAllSites$: Subscription;
   matchFound = false;
 
   get userClaims() {
@@ -40,7 +43,7 @@ export class PlanningAssignSitesModalComponent implements OnInit {
 
   loadAllSites() {
     if (this.userClaims.eformsPairingRead) {
-      this.sitesService.getAllSitesForPairing().subscribe(operation => {
+      this.getAllSites$ = this.sitesService.getAllSitesForPairing().subscribe(operation => {
         if (operation && operation.success) {
           this.sitesDto = operation.model;
           this.fillCheckboxes();
@@ -88,12 +91,15 @@ export class PlanningAssignSitesModalComponent implements OnInit {
 
   submitAssignment() {
     this.assignModel.planningId = this.selectedPlanning.id;
-    this.itemsPlanningPnPlanningsService.assignPlanning(this.assignModel).subscribe(operation => {
+    this.assignPlanning$ = this.itemsPlanningPnPlanningsService.assignPlanning(this.assignModel).subscribe(operation => {
       if (operation && operation.success) {
         this.assignModel = new PlanningAssignSitesModel();
         this.frame.hide();
         this.sitesAssigned.emit();
       }
     });
+  }
+
+  ngOnDestroy(): void {
   }
 }

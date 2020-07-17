@@ -34,7 +34,7 @@ export class PlanningCaseResultPageComponent implements OnInit {
               private itemsPlanningPnCasesService: ItemsPlanningPnCasesService,
               private toastrService: ToastrService) {
     const activatedRouteSub = this.activateRoute.params.subscribe(params => {
-      this.planningCaseRequestModel.listId = +params['id'];
+      this.planningCaseRequestModel.planningId = +params['id'];
     });
   }
 
@@ -69,13 +69,13 @@ export class PlanningCaseResultPageComponent implements OnInit {
     const itemsPlanningPnSettings = JSON.parse(localStorage.getItem('itemsPlanningPnSettings'));
     const settings = itemsPlanningPnSettings.find(x => x.name === 'PlanningCaseResults').settings;
 
-    if (settings.listId === this.planningCaseRequestModel.listId) {
+    if (settings.planningId === this.planningCaseRequestModel.planningId) {
       this.planningCaseRequestModel = {
         offset: settings.offset,
         dateFrom: settings.dateFrom,
         dateTo: settings.dateTo,
         isSortDsc: settings.isSortDsc,
-        listId: settings.listId,
+        planningId: settings.planningId,
         nameFilter: settings.nameFilter,
         pageIndex: settings.pageIndex,
         pageSize: settings.pageSize,

@@ -49,7 +49,7 @@ export class PlanningCaseColumnsModalComponent implements OnInit {
   }
 
   updatePlanning() {
-    const model = new PlanningUpdateModel(this.selectedPlanningModel);
+    const model = {...this.selectedPlanningModel} as PlanningUpdateModel;
     if (this.selectedPlanningModel.repeatUntil) {
       const datTime = moment(this.selectedPlanningModel.repeatUntil);
     }

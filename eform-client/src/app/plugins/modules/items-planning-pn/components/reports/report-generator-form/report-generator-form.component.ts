@@ -64,7 +64,8 @@ export class ReportGeneratorFormComponent implements OnInit {
   onItemListSelected(e: any) {
     this.listsService.getSinglePlanning(e.id)
       .subscribe(itemList => {
-        this.items = itemList.model.items;
+        // TODO: FIX
+        // this.items = itemList.model.item;
         this.cd.markForCheck();
       });
   }

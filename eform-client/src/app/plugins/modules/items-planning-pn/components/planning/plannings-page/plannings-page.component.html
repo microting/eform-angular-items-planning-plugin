@@ -116,49 +116,17 @@
             {{'Month' | translate}}
           </div>
         </td>
-        <td id="listDayOfWeek">
-          <div *ngIf="planning.dayOfWeek == 1">
-            {{'Monday' | translate}}
-          </div>
-          <div *ngIf="planning.dayOfWeek == 2">
-            {{'Tuesday' | translate}}
-          </div>
-          <div *ngIf="planning.dayOfWeek == 3">
-            {{'Wednesday' | translate}}
-          </div>
-          <div *ngIf="planning.dayOfWeek == 4">
-            {{'Thursday' | translate}}
-          </div>
-          <div *ngIf="planning.dayOfWeek == 5">
-            {{'Friday' | translate}}
-          </div>
-          <div *ngIf="planning.dayOfWeek == 6">
-            {{'Saturday' | translate}}
-          </div>
-          <div *ngIf="planning.dayOfWeek == 7">
-            {{'Sunday' | translate}}
-          </div>
-        </td>
-        <td id="listDayOfMonth">
-          {{planning.dayOfMonth}}
-        </td>
         <td id="listRepeatUntil">
-          <date-formatter [date]="planning.repeatUntil" [Format]="'date'"></date-formatter>
+          <date-formatter [date]="planning.repeatUntil" [Format]="'datetime'"></date-formatter>
         </td>
         <td>
           <div class="d-flex justify-content-center">
             <div>
-              <button *ngIf="planning.assignedSites.length > 0"
-                      id="listAssignmentBtn" [ngClass]="planning.assignedSites.length > 0 ? 'btn-success' : ''"
+              <button id="listAssignmentBtn" [ngClass]="planning?.assignedSites?.length > 0 ? 'btn-success' : ''"
                       mdbBtn type="button" class="btn-small-height" (click)="openAssignmentModal(planning)"
                       mdbTooltip="{{ 'Click to edit pairing with user(s)' | translate }}">
                 {{ 'Edit pairing' | translate }}
               </button>
-              <!--              <ng-container *ngIf="checkEformPermissions(templateDto.id, userClaimsEnum.eFormsPairingRead)">-->
-              <!--                <p class="paragraph-sm" id="eform-paired-username" *ngFor="let deployedSite of templateDto.deployedSites">-->
-              <!--                  {{deployedSite.siteName}}-->
-              <!--                </p>-->
-              <!--              </ng-container>-->
             </div>
           </div>
         </td>
@@ -166,26 +134,26 @@
           <div class="d-flex flex-row justify-content-center">
             <button id="updateListBtn"
               class="btn btn-accent text-black-50 btn-icon mb-2"
-                    mdbTooltip="{{ 'Edit List' | translate }}"
+                    mdbTooltip="{{ 'Edit Planning' | translate }}"
                     [routerLink]="['./edit/' + planning.id]">
               <fa-icon icon="pen" size="lg" [fixedWidth]="true"></fa-icon>
             </button>
             <button mdbBtn class="btn-success btn-icon mb-2"
                     id="itemlist-case-results-btn"
-                    [routerLink]="['./planning-planningCase-results', planning.id]"
+                    [routerLink]="['../planning-planningCase-results', planning.id]"
                     mdbTooltip="{{ 'Show itemCase results' | translate }}">
               <fa-icon icon="briefcase" [fixedWidth]="true" size="lg"></fa-icon>
             </button>
 
             <button mdbBtn class="btn-success btn-icon mb-2" id="edit-columnts-btn"
-                    (click)="openEditColumnsModal(planning.id)"
+                    (click)="openEditColumnsModal(planning)"
                     mdbTooltip="{{ 'Edit columns' | translate }}">
               <fa-icon icon="table" [fixedWidth]="true" size="lg"></fa-icon>
             </button>
             <button id="deleteListBtn"
               class="btn btn-danger btn-icon mb-2 "
-                    mdbTooltip="{{ 'Delete List' | translate }}"
-                    (click)="showDeleteListModal(planning)">
+                    mdbTooltip="{{ 'Delete Planning' | translate }}"
+                    (click)="showDeletePlanningModal(planning)">
               <fa-icon icon="trash-alt" size="lg" [fixedWidth]="true"></fa-icon>
             </button>
           </div>

@@ -50,5 +50,11 @@
   "Selected date range": "Valgt datointerval",
   "Generate": "Generer",
   "Item List": "Gruppe",
-  "Item": "Enhed"
+  "Item": "Enhed",
+
+  "Create Planning": "Create Planning",
+  "New Planning": "New Planning",
+  "Edit Planning": "Edit Planning",
+  "Delete Planning": "Delete Planning"
+
 }
