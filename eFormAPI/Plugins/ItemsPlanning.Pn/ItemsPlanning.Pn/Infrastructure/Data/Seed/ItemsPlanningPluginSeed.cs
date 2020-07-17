@@ -1,7 +1,7 @@
-/*
+/*/*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2019 Microting A/S
+Copyright (c) 2007 - 2020 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,15 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using ItemsPlanning.Pn.Infrastructure.Data.Seed.Data;
-using Microting.ItemsPlanningBase.Infrastructure.Data;
-using Microting.eFormApi.BasePn.Infrastructure.Database.Entities;
-using System;
-using System.Linq;
-using Microting.eForm.Infrastructure.Constants;
-
 namespace ItemsPlanning.Pn.Infrastructure.Data.Seed
 {
+    using System;
+    using System.Linq;
+    using Data;
+    using Microting.eForm.Infrastructure.Constants;
+    using Microting.eFormApi.BasePn.Infrastructure.Database.Entities;
+    using Microting.ItemsPlanningBase.Infrastructure.Data;
+
     public class ItemsPlanningPluginSeed
     {
         public static void SeedData(ItemsPlanningPnDbContext dbContext)

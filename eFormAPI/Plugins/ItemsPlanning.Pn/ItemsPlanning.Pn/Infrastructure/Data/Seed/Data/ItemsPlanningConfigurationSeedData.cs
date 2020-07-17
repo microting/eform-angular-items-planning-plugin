@@ -22,11 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using Microting.eFormApi.BasePn.Abstractions;
-using Microting.eFormApi.BasePn.Infrastructure.Database.Entities;
-
 namespace ItemsPlanning.Pn.Infrastructure.Data.Seed.Data
 {
+    using Microting.eFormApi.BasePn.Abstractions;
+    using Microting.eFormApi.BasePn.Infrastructure.Database.Entities;
+
     public class ItemsPlanningConfigurationSeedData : IPluginConfigurationSeedData
     {
         public PluginConfigurationValue[] Data => new[]

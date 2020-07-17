@@ -22,32 +22,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using ItemsPlanning.Pn.Handlers;
-using ItemsPlanning.Pn.Infrastructure.Data.Seed;
-using ItemsPlanning.Pn.Infrastructure.Data.Seed.Data;
-using ItemsPlanning.Pn.Messages;
-using ItemsPlanning.Pn.Services;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microting.eFormApi.BasePn;
-using Microting.eFormApi.BasePn.Infrastructure.Database.Extensions;
-using Microting.eFormApi.BasePn.Infrastructure.Delegates.CaseUpdate;
-using Microting.eFormApi.BasePn.Infrastructure.Models.Application;
-using Microting.eFormApi.BasePn.Infrastructure.Settings;
-using Microting.ItemsPlanningBase.Infrastructure.Data;
-using Microting.ItemsPlanningBase.Infrastructure.Data.Factories;
-using Rebus.Bus;
-using ItemsPlanning.Pn.Infrastructure.Models.Settings;
-using Microting.eFormApi.BasePn.Infrastructure.Helpers;
-using Microting.ItemsPlanningBase.Infrastructure.Const;
-
 namespace ItemsPlanning.Pn
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using Handlers;
+    using Infrastructure.Data.Seed;
+    using Infrastructure.Data.Seed.Data;
+    using Infrastructure.Models.Settings;
+    using Messages;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microting.eFormApi.BasePn;
+    using Microting.eFormApi.BasePn.Infrastructure.Database.Extensions;
+    using Microting.eFormApi.BasePn.Infrastructure.Helpers;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.Application;
+    using Microting.eFormApi.BasePn.Infrastructure.Settings;
+    using Microting.ItemsPlanningBase.Infrastructure.Const;
+    using Microting.ItemsPlanningBase.Infrastructure.Data;
+    using Microting.ItemsPlanningBase.Infrastructure.Data.Factories;
+    using Rebus.Bus;
+    using Services;
     using Services.Abstractions;
 
     public class EformItemsPlanningPlugin : IEformPlugin
