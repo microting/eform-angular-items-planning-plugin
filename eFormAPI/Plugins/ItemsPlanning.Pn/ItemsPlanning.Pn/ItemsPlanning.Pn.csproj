@@ -26,7 +26,7 @@
       <PackageReference Include="Microting.eForm" Version="3.3.14" />
       <PackageReference Include="Microting.eFormApi.BasePn" Version="1.2.78" />
       <PackageReference Include="McMaster.NETCore.Plugins" Version="0.2.1" />
-      <PackageReference Include="Microting.ItemsPlanningBase" Version="1.1.130" />
+      <!--<PackageReference Include="Microting.ItemsPlanningBase" Version="1.1.130" />-->
     </ItemGroup>
 
     <ItemGroup>
@@ -39,8 +39,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="testhost">
-        <HintPath>..\..\..\..\..\..\..\..\Users\Leonid\.nuget\packages\microsoft.testplatform.testhost\16.4.0\lib\netcoreapp2.1\testhost.dll</HintPath>
+      <Reference Include="Microting.ItemsPlanningBase">
+        <HintPath>..\..\..\..\..\eform-items-planning-base\Microting.ItemsPlanningBase\bin\Debug\netcoreapp2.2\Microting.ItemsPlanningBase.dll</HintPath>
       </Reference>
     </ItemGroup>
 

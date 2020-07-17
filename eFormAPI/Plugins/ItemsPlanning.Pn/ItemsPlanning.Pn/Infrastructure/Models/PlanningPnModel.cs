@@ -25,6 +25,7 @@ SOFTWARE.
 namespace ItemsPlanning.Pn.Infrastructure.Models
 {
     using System;
+    using System.Collections.Generic;
     using Microting.ItemsPlanningBase.Infrastructure.Enums;
 
     public class PlanningPnModel
@@ -115,5 +116,8 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
 
         public PlanningItemModel Item { get; set; }
             = new PlanningItemModel();
+
+        public List<PlanningAssignedSitesModel> AssignedSites { get; set; }
+            = new List<PlanningAssignedSitesModel>();
     }
 }

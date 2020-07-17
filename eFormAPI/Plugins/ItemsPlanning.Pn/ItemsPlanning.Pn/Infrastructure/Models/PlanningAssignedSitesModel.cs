@@ -1,4 +1,4 @@
-/*
+﻿/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2020 Microting A/S
@@ -22,21 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Services.Abstractions
+namespace ItemsPlanning.Pn.Infrastructure.Models
 {
-    using System.Threading.Tasks;
-    using Infrastructure.Models;
-    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-
-    public interface IPlanningService
+    public class PlanningAssignedSitesModel
     {
-        Task<OperationDataResult<PlanningsPnModel>> Index(PlanningsRequestModel requestModel);
-
-        Task<OperationResult> AssignPlanning(PlanningAssignSitesModel requestModel);
-        Task<OperationResult> Create(PlanningPnModel model);
-        Task<OperationDataResult<PlanningPnModel>> Read(int itemListId);
-        Task<OperationResult> Update(PlanningPnModel updateModel);
-        Task<OperationResult> Delete(int id);
-        Task<OperationResult> ImportUnit(UnitImportModel unitImportModel);
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int SiteId { get; set; }
     }
 }

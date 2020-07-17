@@ -39,6 +39,7 @@ namespace ItemsPlanning.Pn.Services
     using Microting.eFormApi.BasePn.Abstractions;
     using Microting.eFormApi.BasePn.Infrastructure.Extensions;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
     using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
     using Newtonsoft.Json.Linq;
@@ -48,17 +49,17 @@ namespace ItemsPlanning.Pn.Services
         private readonly ItemsPlanningPnDbContext _dbContext;
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IEFormCoreService _core;
+        private readonly IEFormCoreService _coreService;
 
         public PlanningService(
             ItemsPlanningPnDbContext dbContext,
             IItemsPlanningLocalizationService itemsPlanningLocalizationService,
-            IHttpContextAccessor httpContextAccessor, IEFormCoreService core)
+            IHttpContextAccessor httpContextAccessor, IEFormCoreService coreService)
         {
             _dbContext = dbContext;
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
             _httpContextAccessor = httpContextAccessor;
-            _core = core;
+            _coreService = coreService;
         }
 
         public async Task<OperationDataResult<PlanningsPnModel>> Index(PlanningsRequestModel pnRequestModel)
@@ -98,7 +99,7 @@ namespace ItemsPlanning.Pn.Services
                         .Skip(pnRequestModel.Offset)
                         .Take(pnRequestModel.PageSize);
 
-                List<PlanningPnModel> lists = await planningsQuery.Select(x => new PlanningPnModel()
+                List<PlanningPnModel> plannings = await planningsQuery.Select(x => new PlanningPnModel()
                 {
                     Id = x.Id,
                     Name = x.Name,
@@ -110,11 +111,46 @@ namespace ItemsPlanning.Pn.Services
                     DayOfMonth = x.DayOfMonth,
                     RelatedEFormId = x.RelatedEFormId,
                     RelatedEFormName = x.RelatedEFormName,
+                    AssignedSites = x.PlanningSites
+                        .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Select(y => new PlanningAssignedSitesModel
+                        {
+                            Id = y.Id,
+                            SiteId = y.SiteId,
+                        }).ToList(),
                 }).ToListAsync();
+
+                // get site names
+                var core = await _coreService.GetCore();
+                using (var dbContext = core.dbContextHelper.GetDbContext())
+                {
+                    var sites = await dbContext.sites
+                        .AsNoTracking()
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Select(x => new CommonDictionaryModel
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                        }).ToListAsync();
+
+                    foreach (var planning in plannings)
+                    {
+                        foreach (var assignedSite in planning.AssignedSites)
+                        {
+                            foreach (var site in sites)
+                            {
+                                if (site.Id == assignedSite.SiteId)
+                                {
+                                    assignedSite.Name = site.Name;
+                                }
+                            }
+                        }
+                    }
+                }
 
                 planningsModel.Total = await _dbContext.Plannings.CountAsync(x =>
                     x.WorkflowState != Constants.WorkflowStates.Removed);
-                planningsModel.Plannings = lists;
+                planningsModel.Plannings = plannings;
 
                 return new OperationDataResult<PlanningsPnModel>(true, planningsModel);
             }
@@ -126,13 +162,83 @@ namespace ItemsPlanning.Pn.Services
             }
         }
 
+        public async Task<OperationResult> AssignPlanning(PlanningAssignSitesModel requestModel)
+        {
+            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var planning = await _dbContext.Plannings
+                        .Include(x => x.PlanningSites)
+                        .Where(x => x.Id == requestModel.PlanningId)
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                        .FirstOrDefaultAsync();
+
+                    if (planning == null)
+                    {
+                        transaction.Rollback();
+                        return new OperationDataResult<PlanningsPnModel>(false,
+                            _itemsPlanningLocalizationService.GetString("PlanningNotFound"));
+                    }
+
+                    // for remove
+                    var assignmentsForRemoveIds = requestModel.Assignments
+                        .Where(x => !x.IsChecked)
+                        .Select(x => x.SiteId)
+                        .ToList();
+
+                    var forRemove = planning.PlanningSites
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Where(x => assignmentsForRemoveIds.Contains(x.SiteId))
+                        .ToList();
+
+                    foreach (var planningSite in forRemove)
+                    {
+                        await planningSite.Delete(_dbContext);
+                    }
+
+                    // for create
+                    var assignmentsIds = planning.PlanningSites
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Select(x => x.SiteId)
+                        .ToList();
+
+                    var assignmentsForCreate = requestModel.Assignments
+                        .Where(x => x.IsChecked)
+                        .Where(x => !assignmentsIds.Contains(x.SiteId))
+                        .ToList();
+
+                    foreach (var assignmentSiteModel in assignmentsForCreate)
+                    {
+                        var planningSite = new PlanningSite
+                        {
+                            PlanningId = planning.Id,
+                            SiteId = assignmentSiteModel.SiteId,
+                        };
+
+                        await planningSite.Create(_dbContext);
+                    }
+
+                    transaction.Commit();
+                    return new OperationResult(true,
+                        _itemsPlanningLocalizationService.GetString("SitesAssignedSuccessfully"));
+                }
+                catch (Exception e)
+                {
+                    Trace.TraceError(e.Message);
+                    return new OperationDataResult<PlanningsPnModel>(false,
+                        _itemsPlanningLocalizationService.GetString("ErrorObtainingLists"));
+                }
+            }
+        }
+
         public async Task<OperationResult> Create(PlanningPnModel model)
         {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    var template = await _core.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
+                    var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
                     var itemsList = new Planning
                     {
                         Name = model.Name,
@@ -187,7 +293,7 @@ namespace ItemsPlanning.Pn.Services
         {
             try
             {
-                var plannings = await _dbContext.Plannings
+                var planning = await _dbContext.Plannings
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == listId)
                     .Select(x => new PlanningPnModel()
                     {
@@ -233,19 +339,50 @@ namespace ItemsPlanning.Pn.Services
                             Name = x.Item.Name,
                             Type = x.Item.Type,
                         },
+                        AssignedSites = x.PlanningSites
+                            .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Select(y => new PlanningAssignedSitesModel
+                            {
+                                Id = y.Id,
+                                SiteId = y.SiteId,
+                            }).ToList(),
                     }).FirstOrDefaultAsync();
 
-                if (plannings == null)
+                if (planning == null)
                 {
                     return new OperationDataResult<PlanningPnModel>(
                         false,
                         _itemsPlanningLocalizationService.GetString("ListNotFound"));
                 }
 
+                // get site names
+                var core = await _coreService.GetCore();
+                using (var dbContext = core.dbContextHelper.GetDbContext())
+                {
+                    var sites = await dbContext.sites
+                        .AsNoTracking()
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Select(x => new CommonDictionaryModel
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                        }).ToListAsync();
+
+                    foreach (var assignedSite in planning.AssignedSites)
+                    {
+                        foreach (var site in sites)
+                        {
+                            if (site.Id == assignedSite.SiteId)
+                            {
+                                assignedSite.Name = site.Name;
+                            }
+                        }
+                    }
+                }
 
                 return new OperationDataResult<PlanningPnModel>(
                     true,
-                    plannings);
+                    planning);
             }
             catch (Exception e)
             {
@@ -261,7 +398,7 @@ namespace ItemsPlanning.Pn.Services
             {
                 try
                 {
-                    var template = await _core.GetCore().Result.TemplateItemRead(updateModel.RelatedEFormId);
+                    var template = await _coreService.GetCore().Result.TemplateItemRead(updateModel.RelatedEFormId);
                     var planning = new Planning
                     {
                         Id = updateModel.Id,
@@ -358,6 +495,7 @@ namespace ItemsPlanning.Pn.Services
                 {
                     Id = id
                 };
+
                 await planning.Delete(_dbContext);
 
                 return new OperationResult(
@@ -459,7 +597,7 @@ namespace ItemsPlanning.Pn.Services
             catch (Exception e)
             {
                 Trace.TraceError(e.Message);
-                _core.LogException(e.Message);
+                _coreService.LogException(e.Message);
                 return new OperationResult(false,
                     _itemsPlanningLocalizationService.GetString("ErrorWhileImportingItems"));
             }

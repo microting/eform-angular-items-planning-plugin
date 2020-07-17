@@ -180,5 +180,19 @@
       "da": "Plannings",
       "en-US": "Plannings"
     }
+  },
+  {
+    "Key": "PlanningNotFound",
+    "LocalizedValue": {
+      "da": "Planlægning ikke fundet",
+      "en-US": "Planning not found"
+    }
+  },
+  {
+    "Key": "SitesAssignedSuccessfully",
+    "LocalizedValue": {
+      "da": "Websteder tildelt med succes",
+      "en-US": "Sites assigned successfully"
+    }
   }
 ]
