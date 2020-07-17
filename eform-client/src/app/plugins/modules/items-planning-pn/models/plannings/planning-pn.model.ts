@@ -17,7 +17,7 @@ export class PlanningPnModel {
   internalRepeatUntil: string;
   relatedEFormId: number;
   relatedEFormName: string;
-  items: PlanningItemModel[] = [];
+  item: PlanningItemModel;
   deployedAtEnabled: boolean;
   doneAtEnabled: boolean;
   doneByUserNameEnabled: boolean;

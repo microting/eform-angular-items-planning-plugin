@@ -9,7 +9,7 @@ export class PlanningUpdateModel {
   repeatType: number;
   dayOfWeek: number;
   dayOfMonth: number;
-  repeatUntil: Moment | null;
+  repeatUntil: string | null;
   relatedEFormId: number;
   deployedAtEnabled: boolean;
   doneAtEnabled: boolean;
@@ -32,41 +32,5 @@ export class PlanningUpdateModel {
   sdkFieldId8: number;
   sdkFieldId9: number;
   sdkFieldId10: number;
-  items: PlanningItemModel[] = [];
-
-  constructor(data?: any) {
-    if (data) {
-      this.id = data.id;
-      this.name = data.name;
-      this.description = data.description;
-      this.repeatEvery = data.repeatEvery;
-      this.repeatType = data.repeatType;
-      this.dayOfWeek = data.dayOfWeek;
-      this.dayOfMonth = data.dayOfMonth;
-      this.repeatUntil = data.repeatUntil;
-      this.relatedEFormId = data.relatedEFormId;
-      this.items = data.items;
-      this.doneAtEnabled = data.doneAtEnabled;
-      this.deployedAtEnabled = data.deployedAtEnabled;
-      this.doneByUserNameEnabled = data.doneByUserNameEnabled;
-      this.uploadedDataEnabled = data.uploadedDataEnabled;
-      this.labelEnabled = data.labelEnabled;
-      this.descriptionEnabled = data.descriptionEnabled;
-      this.itemNumberEnabled = data.itemNumberEnabled;
-      this.locationCodeEnabled = data.locationCodeEnabled;
-      this.buildYearEnabled = data.buildYearEnabled;
-      this.typeEnabled = data.typeEnabled;
-      this.numberOfImagesEnabled = data.numberOfImagesEnabled;
-      this.sdkFieldId1 = data.sdkFieldId1;
-      this.sdkFieldId2 = data.sdkFieldId2;
-      this.sdkFieldId3 = data.sdkFieldId3;
-      this.sdkFieldId4 = data.sdkFieldId4;
-      this.sdkFieldId5 = data.sdkFieldId5;
-      this.sdkFieldId6 = data.sdkFieldId6;
-      this.sdkFieldId7 = data.sdkFieldId7;
-      this.sdkFieldId8 = data.sdkFieldId8;
-      this.sdkFieldId9 = data.sdkFieldId9;
-      this.sdkFieldId10 = data.sdkFieldId10;
-    }
-  }
+  item: PlanningItemModel;
 }

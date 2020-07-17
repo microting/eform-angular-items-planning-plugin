@@ -53,7 +53,7 @@ export class PlanningCasePageComponent implements OnInit {
     this.planningCaseRequestModel.isSortDsc = this.localPageSettings.isSortDsc;
     this.planningCaseRequestModel.sort = this.localPageSettings.sort;
     this.planningCaseRequestModel.pageSize = this.localPageSettings.pageSize;
-    this.planningCaseRequestModel.listId = this.id;
+    this.planningCaseRequestModel.planningId = this.id;
     this.itemsPlanningPnCasesService.getAllCases(this.planningCaseRequestModel).subscribe((data) => {
       if (data && data.success) {
         this.casesModel = data.model;

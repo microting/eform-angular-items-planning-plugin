@@ -63,12 +63,12 @@ export class PlanningsPageComponent implements OnInit {
     });
   }
 
-  showDeleteListModal(list: PlanningPnModel) {
-    this.deletePlanningModal.show(list);
+  showDeletePlanningModal(planning: PlanningPnModel) {
+    this.deletePlanningModal.show(planning);
   }
 
-  openEditColumnsModal(templateId: number) {
-    this.modalCasesColumnsModal.show(templateId);
+  openEditColumnsModal(planning: PlanningPnModel) {
+    this.modalCasesColumnsModal.show(planning);
   }
 
   sortTable(sort: string) {

@@ -5,7 +5,7 @@ export class PlanningCasesRequestModel {
   isSortDsc: boolean;
   offset: number;
   nameFilter: string;
-  listId: number;
+  planningId: number;
   dateTo: string;
   dateFrom: string;
 

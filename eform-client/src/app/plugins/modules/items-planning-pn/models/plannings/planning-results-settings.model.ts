@@ -17,7 +17,7 @@ export class PlanningResultsSettingsModel {
   sort: string;
   isSortDsc: boolean;
   offset: number;
-  listId: number;
+  planningId: number;
   dateFrom: string;
   dateTo: string;
 
@@ -27,7 +27,7 @@ export class PlanningResultsSettingsModel {
       this.sort = data.sort;
       this.isSortDsc = data.isSortDsc;
       this.offset = data.offset;
-      this.listId = data.listId;
+      this.planningId = data.listId;
       this.dateFrom = data.dateFrom;
       this.dateTo = data.dateTo;
     }

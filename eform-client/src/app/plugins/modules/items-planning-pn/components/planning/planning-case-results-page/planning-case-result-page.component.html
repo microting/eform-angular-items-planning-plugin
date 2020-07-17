@@ -3,8 +3,7 @@
 </subheader-pn>
 
 <form [formGroup]="generateForm">
-  <div class="row pl-1">
-
+  <div class="row ml-1" style="margin-right: 0 !important;">
     <div class="col-md-3">
       <div class="md-form" [owlDateTimeTrigger]="dateRangePicker">
         <i class="material-icons prefix">
@@ -25,7 +24,6 @@
         {{ 'Download' | translate }}
       </button>
     </div>
-
   </div>
 </form>
 
@@ -342,7 +340,7 @@
           <button mdbBtn class="btn-success btn-icon mb-2" *ngIf="itemCase.status === 100"
                   [routerLink]="['/cases/edit/' + itemCase.sdkCaseId + '/' + casesModel.sdkeFormId]"
                   [queryParams]="{'reverseRoute': '/plugins/items-planning-pn/item-itemCase-results/'
-                    + this.planningCaseRequestModel.listId}"
+                    + this.planningCaseRequestModel.planningId}"
                   mdbTooltip="{{ 'Edit Case' | translate }}">
             <fa-icon icon="pen" size="lg" [fixedWidth]="true"></fa-icon>
           </button>

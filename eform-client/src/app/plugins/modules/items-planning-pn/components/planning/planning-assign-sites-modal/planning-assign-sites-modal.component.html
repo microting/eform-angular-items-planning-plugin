@@ -18,11 +18,11 @@
             <td class="align-middle">{{siteDto.siteUId}}</td>
             <td class="align-middle">{{siteDto.siteName}}</td>
             <td class="align-middle">
-              <ng-container *ngFor="let checkboxModel of assignViewModel.deployCheckboxes">
-                <div class="mat-checkbox" *ngIf="checkboxModel.id == siteDto.siteUId">
-                  <input id="checkbox{{checkboxModel.id}}" (change)="addToArray($event, checkboxModel.id)"
-                         [checked]="checkboxModel.isChecked" [value]="checkboxModel.isChecked" color="primary" type="checkbox">
-                  <label for="checkbox{{checkboxModel.id}}"></label>
+              <ng-container *ngFor="let assignment of assignViewModel.assignments">
+                <div class="mat-checkbox" *ngIf="assignment.id == siteDto.siteUId">
+                  <input id="checkbox{{assignment.id}}" (change)="addToArray($event, assignment.id)"
+                         [checked]="assignment.isChecked" [value]="assignment.isChecked" color="primary" type="checkbox">
+                  <label for="checkbox{{assignment.id}}"></label>
                 </div>
               </ng-container>
             </td>
