@@ -1,9 +1,8 @@
 import {PlanningItemModel} from './planning-item.model';
-import {Moment} from 'moment';
 
 export class PlanningsPnModel {
   total: number;
-  lists: Array<PlanningPnModel> = [];
+  plannings: Array<PlanningPnModel> = [];
 }
 
 export class PlanningPnModel {
@@ -50,4 +49,12 @@ export class PlanningPnModel {
   sdkFieldId8: number;
   sdkFieldId9: number;
   sdkFieldId10: number;
+
+  assignedSites: PlanningAssignedSitesModel[] = [];
+}
+
+export class PlanningAssignedSitesModel {
+  id: number;
+  name: string;
+  siteUId: number;
 }
