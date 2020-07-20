@@ -182,14 +182,13 @@ namespace ItemsPlanning.Pn.Services
                     }
 
                     // for remove
-                    var assignmentsForRemoveIds = requestModel.Assignments
-                        .Where(x => !x.IsChecked)
+                    var assignmentsRequestIds = requestModel.Assignments
                         .Select(x => x.SiteId)
                         .ToList();
 
                     var forRemove = planning.PlanningSites
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Where(x => assignmentsForRemoveIds.Contains(x.SiteId))
+                        .Where(x => !assignmentsRequestIds.Contains(x.SiteId))
                         .ToList();
 
                     foreach (var planningSite in forRemove)
@@ -204,16 +203,16 @@ namespace ItemsPlanning.Pn.Services
                         .ToList();
 
                     var assignmentsForCreate = requestModel.Assignments
-                        .Where(x => x.IsChecked)
                         .Where(x => !assignmentsIds.Contains(x.SiteId))
+                        .Select(x => x.SiteId)
                         .ToList();
 
-                    foreach (var assignmentSiteModel in assignmentsForCreate)
+                    foreach (var assignmentSiteId in assignmentsForCreate)
                     {
                         var planningSite = new PlanningSite
                         {
                             PlanningId = planning.Id,
-                            SiteId = assignmentSiteModel.SiteId,
+                            SiteId = assignmentSiteId,
                         };
 
                         await planningSite.Create(_dbContext);

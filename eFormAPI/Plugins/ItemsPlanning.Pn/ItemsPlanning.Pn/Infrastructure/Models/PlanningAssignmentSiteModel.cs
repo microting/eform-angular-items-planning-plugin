@@ -26,6 +26,5 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
     public class PlanningAssignmentSiteModel
     {
         public int SiteId { get; set; }
-        public bool IsChecked { get; set; }
     }
 }
