@@ -12,6 +12,7 @@ import {PlanningAssignSitesModel} from '../models/plannings/planning-assign-site
 
 export let ItemsPlanningPnPlanningsMethods = {
   Plannings: 'api/items-planning-pn/plannings',
+  PlanningsAssign: 'api/items-planning-pn/plannings/assign-sites',
 };
 @Injectable({
   providedIn: 'root'
@@ -26,8 +27,8 @@ export class ItemsPlanningPnPlanningsService extends BaseService {
     return this.get(ItemsPlanningPnPlanningsMethods.Plannings, model);
   }
 
-  getSinglePlanning(listId: number): Observable<OperationDataResult<PlanningPnModel>> {
-    return this.get(ItemsPlanningPnPlanningsMethods.Plannings + '/' + listId);
+  getSinglePlanning(planningId: number): Observable<OperationDataResult<PlanningPnModel>> {
+    return this.get(ItemsPlanningPnPlanningsMethods.Plannings + '/' + planningId);
   }
 
   updatePlanning(model: PlanningUpdateModel): Observable<OperationResult> {
@@ -43,6 +44,6 @@ export class ItemsPlanningPnPlanningsService extends BaseService {
   }
 
   assignPlanning(model: PlanningAssignSitesModel): Observable<OperationResult> {
-    return this.post(ItemsPlanningPnPlanningsMethods.Plannings, model);
+    return this.post(ItemsPlanningPnPlanningsMethods.PlanningsAssign, model);
   }
 }

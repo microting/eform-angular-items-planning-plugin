@@ -4,6 +4,6 @@ export class PlanningAssignSitesModel {
 }
 
 export class PlanningAssignmentSiteModel {
-  id: number;
+  siteId: number;
   isChecked: boolean;
 }

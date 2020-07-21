@@ -23,7 +23,6 @@ export class ReportGeneratorContainerComponent implements OnInit {
       if (data && data.success) {
         this.reportModel = data.model;
       }
-
     });
   }
 

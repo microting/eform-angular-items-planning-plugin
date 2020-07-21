@@ -46,7 +46,6 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
       this.getAllSites$ = this.sitesService.getAllSitesForPairing().subscribe(operation => {
         if (operation && operation.success) {
           this.sitesDto = operation.model;
-          this.fillCheckboxes();
         }
       });
     }
@@ -55,37 +54,39 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
   show(planningModel: PlanningPnModel) {
     this.selectedPlanning = planningModel;
     this.assignModel = new PlanningAssignSitesModel();
-    this.assignViewModel = new PlanningAssignSitesModel();
+    this.fillCheckboxes();
     this.frame.show();
   }
 
   addToArray(e: any, assignmentId: number) {
     const assignmentObject = new PlanningAssignmentSiteModel();
-    assignmentObject.id = assignmentId;
+    assignmentObject.siteId = assignmentId;
     if (e.target.checked) {
       assignmentObject.isChecked = true;
       this.assignModel.assignments.push(assignmentObject);
     } else {
-      this.assignModel.assignments = this.assignModel.assignments.filter(x => x.id !== assignmentId);
+      this.assignModel.assignments = this.assignModel.assignments.filter(x => x.siteId !== assignmentId);
     }
   }
 
   fillCheckboxes() {
+    this.assignViewModel = new PlanningAssignSitesModel();
     for (const siteDto of this.sitesDto) {
       const deployObject = new PlanningAssignmentSiteModel();
+      const x = this.selectedPlanning.assignedSites;
       for (const assignedSite of this.selectedPlanning.assignedSites) {
-        if (assignedSite.siteUId === siteDto.siteUId) {
+        if (assignedSite.siteId === siteDto.id) {
           this.matchFound = true;
-          deployObject.id = siteDto.siteUId;
+          deployObject.siteId = siteDto.id;
           deployObject.isChecked = true;
           this.assignModel.assignments.push(deployObject);
         }
       }
       this.assignViewModel.planningId = this.selectedPlanning.id;
-      deployObject.id = siteDto.siteUId;
+      deployObject.siteId = siteDto.id;
       deployObject.isChecked = this.matchFound === true;
       this.matchFound = false;
-      this.assignViewModel.assignments.push(deployObject);
+      this.assignViewModel.assignments = [...this.assignViewModel.assignments, deployObject];
     }
   }
 

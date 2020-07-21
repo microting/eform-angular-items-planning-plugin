@@ -18,36 +18,16 @@ export class ReportGeneratorFormComponent implements OnInit {
   @Output() generateReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
   @Output() saveReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
   generateForm: FormGroup;
-  typeahead = new EventEmitter<string>();
-  itemLists: PlanningsPnModel = new PlanningsPnModel();
-  items: Array<PlanningItemModel> = [];
-  listRequestModel: PlanningsRequestModel = new PlanningsRequestModel();
 
   constructor(dateTimeAdapter: DateTimeAdapter<any>,
               private localeService: LocaleService,
-              private formBuilder: FormBuilder,
-              private listsService: ItemsPlanningPnPlanningsService,
-              private cd: ChangeDetectorRef) {
+              private formBuilder: FormBuilder) {
     dateTimeAdapter.setLocale(this.localeService.getCurrentUserLocale());
-    this.typeahead
-      .pipe(
-        debounceTime(200),
-        switchMap(term => {
-          this.listRequestModel.nameFilter = term;
-          return this.listsService.getAllPlannings(this.listRequestModel);
-        })
-      )
-      .subscribe(itemLists => {
-        this.itemLists = itemLists.model;
-        this.cd.markForCheck();
-      });
   }
 
   ngOnInit() {
     this.generateForm = this.formBuilder.group({
       dateRange: ['', Validators.required],
-      itemList: [null, Validators.required],
-      item: [null, Validators.required]
     });
   }
 
@@ -61,20 +41,9 @@ export class ReportGeneratorFormComponent implements OnInit {
     this.saveReport.emit(model);
   }
 
-  onItemListSelected(e: any) {
-    this.listsService.getSinglePlanning(e.id)
-      .subscribe(itemList => {
-        // TODO: FIX
-        // this.items = itemList.model.item;
-        this.cd.markForCheck();
-      });
-  }
-
   private extractData(formValue: any): ReportPnGenerateModel {
     return new ReportPnGenerateModel(
       {
-        itemList: formValue.itemList,
-        item: formValue.item,
         dateFrom: format(formValue.dateRange[0], 'YYYY-MM-DD'),
         dateTo: format(formValue.dateRange[1], 'YYYY-MM-DD')
       }

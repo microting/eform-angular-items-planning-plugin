@@ -54,7 +54,7 @@ export class PlanningPnModel {
 }
 
 export class PlanningAssignedSitesModel {
-  id: number;
+  siteId: number;
   name: string;
   siteUId: number;
 }
