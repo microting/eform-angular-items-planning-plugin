@@ -1,6 +1,7 @@
-MIT License
+/*
+The MIT License (MIT)
 
-Copyright (c) 2019 Microting A/S
+Copyright (c) 2007 - 2020 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +20,23 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+namespace ItemsPlanning.Pn.Services.Abstractions
+{
+    using System.Threading.Tasks;
+    using Infrastructure.Models;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+
+    public interface IPlanningService
+    {
+        Task<OperationDataResult<PlanningsPnModel>> Index(PlanningsRequestModel requestModel);
+
+        Task<OperationResult> AssignPlanning(PlanningAssignSitesModel requestModel);
+        Task<OperationResult> Create(PlanningPnModel model);
+        Task<OperationDataResult<PlanningPnModel>> Read(int itemListId);
+        Task<OperationResult> Update(PlanningPnModel updateModel);
+        Task<OperationResult> Delete(int id);
+        Task<OperationResult> ImportUnit(UnitImportModel unitImportModel);
+    }
+}

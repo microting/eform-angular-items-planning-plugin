@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <OutputPath>../../../eFormAPI.Web/Plugins/ItemsPlanning/</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <OutputPath>../../../eFormAPI.Web/Plugins/ItemsPlanning</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="EPPlus.Core" Version="1.5.4" />
+      <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.2.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.6" />
+      <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.8" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
+      <PackageReference Include="Microting.eForm" Version="3.3.15" />
+      <PackageReference Include="Microting.eFormApi.BasePn" Version="1.2.78" />
+      <PackageReference Include="McMaster.NETCore.Plugins" Version="0.2.1" />
+      <PackageReference Include="Microting.ItemsPlanningBase" Version="1.1.131" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\Templates\report_template.xlsx" />
+      <EmbeddedResource Include="Resources\Templates\report_template_lists.xlsx" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\localization.json" />
+    </ItemGroup>
+
+</Project>

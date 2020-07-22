@@ -1,6 +1,7 @@
-MIT License
+/*
+The MIT License (MIT)
 
-Copyright (c) 2019 Microting A/S
+Copyright (c) 2007 - 2020 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +20,22 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+namespace ItemsPlanning.Pn.Infrastructure.Models
+{
+    using System;
+
+    public class PlanningCasesPnRequestModel
+    {
+        public string NameFilter { get; set; }
+        public string Sort { get; set; }
+        public int PageIndex { get; set; }
+        public int Offset { get; set; }
+        public bool IsSortDsc { get; set; }
+        public int PageSize { get; set; }
+        public int PlanningId { get; set; }
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
+    }
+}

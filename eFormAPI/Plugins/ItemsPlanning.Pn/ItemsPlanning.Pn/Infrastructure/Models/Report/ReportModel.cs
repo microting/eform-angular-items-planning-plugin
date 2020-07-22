@@ -1,6 +1,7 @@
-MIT License
+﻿/*
+The MIT License (MIT)
 
-Copyright (c) 2019 Microting A/S
+Copyright (c) 2007 - 2020 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +20,23 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+namespace ItemsPlanning.Pn.Infrastructure.Models.Report
+{
+    using System;
+    using System.Collections.Generic;
+
+    public class ReportModel
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
+        public List<DateTime?> Dates { get; set; } = new List<DateTime?>();
+        public List<DateTime?> DatesDoneAt { get; set; } = new List<DateTime?>();
+        public List<string> Ids { get; set; } = new List<string>();
+        public List<string> DoneBy { get; set; } = new List<string>();
+        public List<ReportFormFieldModel> FormFields { get; set; } = new List<ReportFormFieldModel>();
+    }
+}
