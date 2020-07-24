@@ -21,12 +21,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-namespace ItemsPlanning.Pn.Services.Abstractions
+namespace ItemsPlanning.Pn.Services.PlanningCaseService
 {
-    public interface IItemsPlanningLocalizationService
+    using System.Threading.Tasks;
+    using Infrastructure.Models;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+
+    public interface IPlanningCaseService
     {
-        string GetString(string key);
-        string GetString(string format, params object[] args);
+        Task<OperationDataResult<PlanningCasesModel>> GetSinglePlanningCase(PlanningCasesPnRequestModel requestModel);
+
+        Task<OperationDataResult<PlanningCaseResultListModel>> GetSingleCaseResults(
+            PlanningCasesPnRequestModel requestModel);
+        Task<OperationDataResult<FileStreamModel>> GenerateSingleCaseResults(
+            PlanningCasesPnRequestModel requestModel);
+        Task<OperationDataResult<PlanningItemCaseModel>> GetSingleCase(int caseId);
+        Task<string> DownloadEFormPdf(int caseId, string token, string fileType);
+
     }
 }

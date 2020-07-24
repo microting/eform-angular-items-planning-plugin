@@ -22,23 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Claims;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microting.eFormApi.BasePn.Infrastructure.Helpers.PluginDbOptions;
-using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-using Microting.ItemsPlanningBase.Infrastructure.Data;
-
-namespace ItemsPlanning.Pn.Services
+namespace ItemsPlanning.Pn.Services.ItemsPlanningPnSettingsService
 {
-    using Abstractions;
+    using System;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
     using Infrastructure.Models.Settings;
+    using ItemsPlanningLocalizationService;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+    using Microting.eFormApi.BasePn.Infrastructure.Helpers.PluginDbOptions;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+    using Microting.ItemsPlanningBase.Infrastructure.Data;
 
     public class ItemsPlanningPnSettingsService : IItemsPlanningPnSettingsService
     {

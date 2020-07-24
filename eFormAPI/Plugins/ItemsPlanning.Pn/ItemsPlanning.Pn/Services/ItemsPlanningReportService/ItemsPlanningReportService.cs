@@ -22,26 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Castle.Core.Internal;
-using ItemsPlanning.Pn.Infrastructure.Models;
-using ItemsPlanning.Pn.Infrastructure.Models.Report;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microting.eForm.Infrastructure.Models;
-using Microting.eFormApi.BasePn.Abstractions;
-using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-using Microting.ItemsPlanningBase.Infrastructure.Data;
-using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
-
-namespace ItemsPlanning.Pn.Services
+namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 {
-    using Abstractions;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Castle.Core.Internal;
+    using ExcelService;
+    using Infrastructure.Models;
+    using Infrastructure.Models.Report;
+    using ItemsPlanningLocalizationService;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+    using Microting.eForm.Infrastructure.Models;
+    using Microting.eFormApi.BasePn.Abstractions;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+    using Microting.ItemsPlanningBase.Infrastructure.Data;
+    using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
 
     public class ItemsPlanningReportService : IItemsPlanningReportService
     {

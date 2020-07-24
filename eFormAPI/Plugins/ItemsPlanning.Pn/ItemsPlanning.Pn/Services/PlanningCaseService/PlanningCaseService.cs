@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Services
+namespace ItemsPlanning.Pn.Services.PlanningCaseService
 {
     using System;
     using System.Collections.Generic;
@@ -31,8 +31,9 @@ namespace ItemsPlanning.Pn.Services
     using System.Linq;
     using System.Threading.Tasks;
     using System.Xml.Linq;
-    using Abstractions;
+    using ExcelService;
     using Infrastructure.Models;
+    using ItemsPlanningLocalizationService;
     using Microsoft.EntityFrameworkCore;
     using Microting.eForm.Dto;
     using Microting.eForm.Infrastructure.Constants;

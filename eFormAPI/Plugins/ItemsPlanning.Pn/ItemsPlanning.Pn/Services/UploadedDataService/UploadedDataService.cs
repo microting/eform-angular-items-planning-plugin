@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Services
+namespace ItemsPlanning.Pn.Services.UploadedDataService
 {
     using System;
     using System.Collections.Generic;
@@ -30,15 +30,15 @@ namespace ItemsPlanning.Pn.Services
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using Abstractions;
+    using Infrastructure.Models;
+    using ItemsPlanningLocalizationService;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-    using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
-    using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.eForm.Infrastructure.Constants;
     using Microting.eFormApi.BasePn.Abstractions;
-    using Infrastructure.Models;
-    using Microsoft.AspNetCore.Mvc;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+    using Microting.ItemsPlanningBase.Infrastructure.Data;
+    using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
     using Settings = Microting.eForm.Dto.Settings;
 
     public class UploadedDataService : IUploadedDataService

@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Services
+namespace ItemsPlanning.Pn.Services.PlanningService
 {
     using System;
     using System.Collections.Generic;
@@ -30,9 +30,9 @@ namespace ItemsPlanning.Pn.Services
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
-    using Abstractions;
     using Infrastructure.Helpers;
     using Infrastructure.Models;
+    using ItemsPlanningLocalizationService;
     using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Microting.eForm.Infrastructure.Constants;

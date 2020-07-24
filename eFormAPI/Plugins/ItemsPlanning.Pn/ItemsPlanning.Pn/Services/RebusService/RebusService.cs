@@ -22,19 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Threading.Tasks;
-using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-using eFormCore;
-using ItemsPlanning.Pn.Installers;
-using Microting.eFormApi.BasePn.Abstractions;
-using Microting.ItemsPlanningBase.Infrastructure.Data;
-using Microting.ItemsPlanningBase.Infrastructure.Data.Factories;
-using Rebus.Bus;
-
-namespace ItemsPlanning.Pn.Services
+namespace ItemsPlanning.Pn.Services.RebusService
 {
-    using Abstractions;
+    using System.Threading.Tasks;
+    using Castle.MicroKernel.Registration;
+    using Castle.Windsor;
+    using eFormCore;
+    using Installers;
+    using Microting.eFormApi.BasePn.Abstractions;
+    using Microting.ItemsPlanningBase.Infrastructure.Data;
+    using Microting.ItemsPlanningBase.Infrastructure.Data.Factories;
+    using Rebus.Bus;
 
     public class RebusService : IRebusService
     {

@@ -27,6 +27,7 @@
       <PackageReference Include="Microting.eFormApi.BasePn" Version="1.2.78" />
       <PackageReference Include="McMaster.NETCore.Plugins" Version="0.2.1" />
       <PackageReference Include="Microting.ItemsPlanningBase" Version="1.1.131" />
+      <PackageReference Include="HtmlToOpenXml.dll" Version="2.0.3" />
     </ItemGroup>
 
     <ItemGroup>

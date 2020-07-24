@@ -32,7 +32,7 @@ namespace ItemsPlanning.Pn.Controllers
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-    using Services.Abstractions;
+    using Services.ItemsPlanningReportService;
 
     [Authorize]
     public class ItemsPlanningReportsController : Controller

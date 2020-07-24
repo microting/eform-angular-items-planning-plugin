@@ -1,4 +1,4 @@
-/*
+﻿/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2020 Microting A/S
@@ -21,39 +21,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-using Microsoft.Extensions.Localization;
-using Microting.eFormApi.BasePn.Localization.Abstractions;
-
-namespace ItemsPlanning.Pn.Services
+namespace ItemsPlanning.Pn.Services.WordService
 {
-    using Abstractions;
+    using ItemsPlanningLocalizationService;
+    using Microsoft.Extensions.Logging;
 
-    public class ItemsPlanningLocalizationService : IItemsPlanningLocalizationService
+    public class WordService : IWordService
     {
-        private readonly IStringLocalizer _localizer;
+        private readonly ILogger<WordService> _logger;
+        private readonly IItemsPlanningLocalizationService _localizationService;
 
-        // ReSharper disable once SuggestBaseTypeForParameter
-        public ItemsPlanningLocalizationService(IEformLocalizerFactory factory)
+        public WordService(
+            ILogger<WordService> logger,
+            IItemsPlanningLocalizationService localizationService)
         {
-            _localizer = factory.Create(typeof(EformItemsPlanningPlugin));
-        }
-        
-        public string GetString(string key)
-        {
-            var str = _localizer[key];
-            return str.Value;
-        }
-
-        public string GetString(string format, params object[] args)
-        {
-            var message = _localizer[format];
-            if (message?.Value == null)
-            {
-                return null;
-            }
-
-            return string.Format(message.Value, args);
+            _logger = logger;
+            _localizationService = localizationService;
         }
     }
 }

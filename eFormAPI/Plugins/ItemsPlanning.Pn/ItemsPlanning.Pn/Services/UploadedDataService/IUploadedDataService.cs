@@ -21,15 +21,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-namespace ItemsPlanning.Pn.Services.Abstractions
+namespace ItemsPlanning.Pn.Services.UploadedDataService
 {
     using System.Threading.Tasks;
-    using Rebus.Bus;
+    using Infrastructure.Models;
+    using Microsoft.AspNetCore.Mvc;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
 
-    public interface IRebusService
+    public interface IUploadedDataService
     {
-        Task Start(string connectionString);
-        IBus GetBus();
+        Task<OperationDataResult<UploadedDatasModel>> Index(int itemCaseId);
+        Task<OperationDataResult<UploadedDataModel>> Read(int selectedListItemCaseId);
+        Task<OperationResult> Update(UploadedDataModel uploadedDataModel);
+        Task<OperationResult> Delete(int id);
+        Task<IActionResult> UploadUploadedDataPdf(UploadedDataPDFUploadModel pdfUploadModel);
+        Task<IActionResult> DownloadUploadedDataPdf(string fileName);
     }
 }

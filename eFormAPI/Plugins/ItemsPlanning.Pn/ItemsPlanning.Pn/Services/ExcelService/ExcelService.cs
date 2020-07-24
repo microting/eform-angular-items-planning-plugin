@@ -22,21 +22,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System;
-using System.IO;
-using System.Reflection;
-using System.Security.Claims;
-using ItemsPlanning.Pn.Infrastructure.Models;
-using ItemsPlanning.Pn.Infrastructure.Models.Report;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Microting.eFormApi.BasePn.Infrastructure.Helpers;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
-
-namespace ItemsPlanning.Pn.Services
+namespace ItemsPlanning.Pn.Services.ExcelService
 {
-    using Abstractions;
+    using System;
+    using System.IO;
+    using System.Reflection;
+    using System.Security.Claims;
+    using Infrastructure.Models;
+    using Infrastructure.Models.Report;
+    using ItemsPlanningLocalizationService;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+    using Microting.eFormApi.BasePn.Infrastructure.Helpers;
+    using OfficeOpenXml;
+    using OfficeOpenXml.Style;
 
     public class ExcelService : IExcelService
     {

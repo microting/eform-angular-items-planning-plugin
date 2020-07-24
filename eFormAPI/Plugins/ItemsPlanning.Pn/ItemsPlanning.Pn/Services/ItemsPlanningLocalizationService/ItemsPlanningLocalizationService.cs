@@ -22,16 +22,36 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Services.Abstractions
+namespace ItemsPlanning.Pn.Services.ItemsPlanningLocalizationService
 {
-    using System.Threading.Tasks;
-    using Infrastructure.Models.Settings;
-    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+    using Microsoft.Extensions.Localization;
+    using Microting.eFormApi.BasePn.Localization.Abstractions;
 
-    public interface IItemsPlanningPnSettingsService
+    public class ItemsPlanningLocalizationService : IItemsPlanningLocalizationService
     {
-        Task<OperationDataResult<ItemsPlanningBaseSettings>> GetSettings();
-        Task<OperationResult> UpdateSettings(ItemsPlanningBaseSettings itemsPlanningBaseSettings);
+        private readonly IStringLocalizer _localizer;
+
+        // ReSharper disable once SuggestBaseTypeForParameter
+        public ItemsPlanningLocalizationService(IEformLocalizerFactory factory)
+        {
+            _localizer = factory.Create(typeof(EformItemsPlanningPlugin));
+        }
         
+        public string GetString(string key)
+        {
+            var str = _localizer[key];
+            return str.Value;
+        }
+
+        public string GetString(string format, params object[] args)
+        {
+            var message = _localizer[format];
+            if (message?.Value == null)
+            {
+                return null;
+            }
+
+            return string.Format(message.Value, args);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿/*
+/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2020 Microting A/S
@@ -21,16 +21,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-namespace ItemsPlanning.Pn.Services.Abstractions
+
+namespace ItemsPlanning.Pn.Services.ExcelService
 {
-    using System.Threading.Tasks;
     using Infrastructure.Models;
     using Infrastructure.Models.Report;
-    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
 
-    public interface IItemsPlanningReportService
+    public interface IExcelService
     {
-        Task<OperationDataResult<ReportModel>> GenerateReport(GenerateReportModel model);
-        Task<OperationDataResult<FileStreamModel>> GenerateReportFile(GenerateReportModel model);
+        bool WriteRecordsExportModelsToExcelFile(
+            ReportModel reportModel,
+            GenerateReportModel generateReportModel,
+            string destFile);
+        
+        bool WriteTableToExcel(string name, string description, PlanningCaseResultListModel reportModel, PlanningCasesPnRequestModel requestModel, string destFile);
+        
+        string CopyTemplateForNewAccount(string templateName);
+
     }
 }

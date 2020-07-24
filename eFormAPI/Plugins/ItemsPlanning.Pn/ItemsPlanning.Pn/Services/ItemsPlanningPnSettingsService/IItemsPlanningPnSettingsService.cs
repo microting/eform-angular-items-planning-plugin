@@ -22,21 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Services.Abstractions
+namespace ItemsPlanning.Pn.Services.ItemsPlanningPnSettingsService
 {
     using System.Threading.Tasks;
-    using Infrastructure.Models;
+    using Infrastructure.Models.Settings;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
 
-    public interface IPlanningService
+    public interface IItemsPlanningPnSettingsService
     {
-        Task<OperationDataResult<PlanningsPnModel>> Index(PlanningsRequestModel requestModel);
-
-        Task<OperationResult> AssignPlanning(PlanningAssignSitesModel requestModel);
-        Task<OperationResult> Create(PlanningPnModel model);
-        Task<OperationDataResult<PlanningPnModel>> Read(int itemListId);
-        Task<OperationResult> Update(PlanningPnModel updateModel);
-        Task<OperationResult> Delete(int id);
-        Task<OperationResult> ImportUnit(UnitImportModel unitImportModel);
+        Task<OperationDataResult<ItemsPlanningBaseSettings>> GetSettings();
+        Task<OperationResult> UpdateSettings(ItemsPlanningBaseSettings itemsPlanningBaseSettings);
+        
     }
 }
