@@ -10,13 +10,13 @@ import {PlanningItemModel} from '../../../models/plannings';
 import {DateTimeAdapter} from 'ng-pick-datetime-ex';
 
 @Component({
-  selector: 'app-items-planning-pn-report-generator-form',
-  templateUrl: './report-generator-form.component.html',
-  styleUrls: ['./report-generator-form.component.scss']
+  selector: 'app-items-planning-pn-report-header',
+  templateUrl: './report-header.component.html',
+  styleUrls: ['./report-header.component.scss']
 })
-export class ReportGeneratorFormComponent implements OnInit {
+export class ReportHeaderComponent implements OnInit {
   @Output() generateReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
-  @Output() saveReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
+  @Output() downloadReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
   generateForm: FormGroup;
 
   constructor(dateTimeAdapter: DateTimeAdapter<any>,
@@ -38,14 +38,14 @@ export class ReportGeneratorFormComponent implements OnInit {
 
   onSave() {
     const model = this.extractData(this.generateForm.value);
-    this.saveReport.emit(model);
+    this.downloadReport.emit(model);
   }
 
   private extractData(formValue: any): ReportPnGenerateModel {
     return new ReportPnGenerateModel(
       {
-        dateFrom: format(formValue.dateRange[0], 'YYYY-MM-DD'),
-        dateTo: format(formValue.dateRange[1], 'YYYY-MM-DD')
+        dateFrom: format(formValue.dateRange[0], 'yyyy-MM-dd'),
+        dateTo: format(formValue.dateRange[1], 'yyyy-MM-dd')
       }
     );
   }
