@@ -26,12 +26,10 @@ namespace ItemsPlanning.Pn.Services.PlanningCaseService
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using System.Xml.Linq;
-    using ExcelService;
     using Infrastructure.Models;
     using ItemsPlanningLocalizationService;
     using Microsoft.EntityFrameworkCore;
@@ -49,19 +47,16 @@ namespace ItemsPlanning.Pn.Services.PlanningCaseService
     {
         private readonly ItemsPlanningPnDbContext _dbContext;
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
-        private readonly IExcelService _excelService;
         private readonly IEFormCoreService _core;
 
         public PlanningCaseService(
             ItemsPlanningPnDbContext dbContext,
             IItemsPlanningLocalizationService itemsPlanningLocalizationService,
-            IExcelService excelService,
             IEFormCoreService core)
         {
             _dbContext = dbContext;
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
             _core = core;
-            _excelService = excelService;
         }
 
         public async Task<OperationDataResult<PlanningCasesModel>> GetSinglePlanningCase(PlanningCasesPnRequestModel requestModel)
@@ -168,54 +163,6 @@ namespace ItemsPlanning.Pn.Services.PlanningCaseService
             PlanningCaseResultListModel itemListPnCaseResultListModel = await GetTableData(requestModel);
             
             return new OperationDataResult<PlanningCaseResultListModel>(true, itemListPnCaseResultListModel);
-        }
-
-        public async Task<OperationDataResult<FileStreamModel>> GenerateSingleCaseResults(
-            PlanningCasesPnRequestModel requestModel)
-        {
-            string excelFile = null;
-            try
-            {
-                PlanningCaseResultListModel reportDataResult = await GetTableData(requestModel);
-                if (reportDataResult == null)
-                {
-                    return new OperationDataResult<FileStreamModel>(false, "ERROR");
-                }
-
-                Planning planning = await _dbContext.Plannings.SingleOrDefaultAsync(x => x.Id == requestModel.PlanningId);
-                
-                excelFile = _excelService.CopyTemplateForNewAccount("report_template_lists");
-                bool writeResult = _excelService.WriteTableToExcel(planning.Name,planning.Description,
-                    reportDataResult,
-                    requestModel,
-                    excelFile);
-
-                if (!writeResult)
-                {
-                    throw new Exception($"Error while writing excel file {excelFile}");
-                }
-
-                FileStreamModel result = new FileStreamModel()
-                {
-                    FilePath = excelFile,
-                    FileStream = new FileStream(excelFile, FileMode.Open),
-                };
-
-                return new OperationDataResult<FileStreamModel>(true, result);
-            }
-            catch (Exception e)
-            {
-                if (!string.IsNullOrEmpty(excelFile) && File.Exists(excelFile))
-                {
-                    File.Delete(excelFile);
-                }
-
-                Trace.TraceError(e.Message);
-//                _logger.LogError(e.Message);
-                return new OperationDataResult<FileStreamModel>(
-                    false,
-                    _itemsPlanningLocalizationService.GetString("ErrorWhileGeneratingReportFile"));
-            }
         }
 
         private async Task<PlanningCaseResultListModel> GetTableData(PlanningCasesPnRequestModel requestModel)

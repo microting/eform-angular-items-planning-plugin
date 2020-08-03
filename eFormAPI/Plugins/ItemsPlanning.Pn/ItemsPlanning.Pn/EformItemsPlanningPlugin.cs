@@ -45,7 +45,6 @@ namespace ItemsPlanning.Pn
     using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.ItemsPlanningBase.Infrastructure.Data.Factories;
     using Rebus.Bus;
-    using Services.ExcelService;
     using Services.ItemsPlanningLocalizationService;
     using Services.ItemsPlanningPnSettingsService;
     using Services.ItemsPlanningReportService;

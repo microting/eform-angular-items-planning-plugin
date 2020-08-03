@@ -33,8 +33,6 @@ namespace ItemsPlanning.Pn.Services.PlanningCaseService
 
         Task<OperationDataResult<PlanningCaseResultListModel>> GetSingleCaseResults(
             PlanningCasesPnRequestModel requestModel);
-        Task<OperationDataResult<FileStreamModel>> GenerateSingleCaseResults(
-            PlanningCasesPnRequestModel requestModel);
         Task<OperationDataResult<PlanningItemCaseModel>> GetSingleCase(int caseId);
         Task<string> DownloadEFormPdf(int caseId, string token, string fileType);
 
