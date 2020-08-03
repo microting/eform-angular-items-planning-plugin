@@ -119,20 +119,40 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     }
 
                     // images
-                    var images = await microtingDbContext.field_values
+                    var templateCaseIds = groupedCase.cases.Select(x => (int?)x.Id).ToArray();
+                    var imagesForEform = await microtingDbContext.field_values
                         .Where(x => x.Field.FieldTypeId == 5)
-                        .Where(x => x.CheckListId == groupedCase.templateId)
+                        .Where(x => templateCaseIds.Contains(x.CaseId))
                         .ToListAsync();
 
+                    // TODO reportModel.ImagesNames.AddRange();
+
                     // posts
-                    var casePostRequest = new CasePostsRequestCommonModel()
+                    var casePostRequest = new CasePostsRequestCommonModel
                     {
                         Offset = 0,
                         PageSize = int.MaxValue,
                         TemplateId = groupedCase.templateId,
                     };
 
-                    var casePostList = _casePostBaseService.GetCommonPosts(casePostRequest);
+                    var casePostListResult = await _casePostBaseService.GetCommonPosts(casePostRequest);
+
+                    if (!casePostListResult.Success)
+                    {
+                        return new OperationDataResult<List<ReportEformModel>>(
+                            false,
+                            _itemsPlanningLocalizationService.GetString(""));
+                    }
+
+                    foreach (var casePostCommonModel in casePostListResult.Model.Entities)
+                    {
+                        reportModel.Posts.Add(new ReportEformPostModel
+                        {
+                            CaseId = casePostCommonModel.Id,
+                            Comment = casePostCommonModel.Text,
+                            SentTo = casePostCommonModel.ToRecipients,
+                        });
+                    }
 
                     // add cases
                     foreach (var caseDto in groupedCase.cases)
@@ -160,6 +180,11 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             .Where(x => x.CaseId == caseDto.Id)
                             .Select(x => x.Id)
                             .FirstOrDefaultAsync();
+
+                        item.PostsCount = casePostListResult.Model.Entities
+                            .Where(x => x.Id == caseDto.Id)
+                            .Select(x => x.Id)
+                            .Count();
                     }
 
                     result.Add(reportModel);
