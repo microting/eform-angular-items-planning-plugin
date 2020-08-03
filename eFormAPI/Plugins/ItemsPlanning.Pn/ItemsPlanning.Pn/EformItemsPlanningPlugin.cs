@@ -77,7 +77,6 @@ namespace ItemsPlanning.Pn
             services.AddTransient<IItemsPlanningPnSettingsService, ItemsPlanningPnSettingsService>();
             services.AddTransient<IPlanningCaseService, PlanningCaseService>();
             services.AddTransient<IItemsPlanningReportService, ItemsPlanningReportService>();
-            services.AddTransient<IExcelService, ExcelService>();
             services.AddTransient<IPlanningService, PlanningService>();
             services.AddTransient<IUploadedDataService, UploadedDataService>();
             services.AddSingleton<IRebusService, RebusService>();

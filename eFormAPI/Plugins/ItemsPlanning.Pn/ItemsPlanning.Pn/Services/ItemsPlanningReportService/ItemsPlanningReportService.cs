@@ -30,264 +30,180 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using Castle.Core.Internal;
-    using ExcelService;
-    using Infrastructure.Models;
     using Infrastructure.Models.Report;
     using ItemsPlanningLocalizationService;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
-    using Microting.eForm.Infrastructure.Models;
     using Microting.eFormApi.BasePn.Abstractions;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-    using Microting.ItemsPlanningBase.Infrastructure.Data;
-    using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.Application.CasePosts;
+    using WordService;
 
     public class ItemsPlanningReportService : IItemsPlanningReportService
     {
         private readonly ILogger<ItemsPlanningReportService> _logger;
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
-        private readonly IExcelService _excelService;
-        private readonly ItemsPlanningPnDbContext _dbContext;
+        private readonly IWordService _wordService;
         private readonly IEFormCoreService _coreHelper;
+        private readonly ICasePostBaseService _casePostBaseService;
 
         // ReSharper disable once SuggestBaseTypeForParameter
-        public ItemsPlanningReportService(IItemsPlanningLocalizationService itemsPlanningLocalizationService,
-            ILogger<ItemsPlanningReportService> logger, IExcelService excelService, ItemsPlanningPnDbContext dbContext,
-            IEFormCoreService coreHelper)
+        public ItemsPlanningReportService(
+            IItemsPlanningLocalizationService itemsPlanningLocalizationService,
+            ILogger<ItemsPlanningReportService> logger,
+            IEFormCoreService coreHelper,
+            IWordService wordService,
+            ICasePostBaseService casePostBaseService)
         {
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
             _logger = logger;
-            _excelService = excelService;
-            _dbContext = dbContext;
             _coreHelper = coreHelper;
+            _wordService = wordService;
+            _casePostBaseService = casePostBaseService;
         }
 
-        public async Task<OperationDataResult<ReportModel>> GenerateReport(GenerateReportModel model)
+        public async Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model)
         {
             try
             {
-                var core = _coreHelper.GetCore();
-                var itemList = await _dbContext.Plannings.FirstAsync(x => x.Id == model.ItemList);
-                var item = await _dbContext.Items.FirstAsync(x => x.Id == model.Item);
-                var template = await core.Result.TemplateRead(itemList.RelatedEFormId);
-
-                var casesQuery = _dbContext.PlanningCases.Where(x => x.ItemId == item.Id);
+                Debugger.Break();
+                var core = await _coreHelper.GetCore();
+                await using var microtingDbContext = core.dbContextHelper.GetDbContext();
+                var casesQuery = microtingDbContext.cases
+                    .Include(x => x.Site)
+                    .AsQueryable();
 
                 if (model.DateFrom != null)
                 {
-                    casesQuery = casesQuery.Where(x => 
-                        x.CreatedAt >= new DateTime(model.DateFrom.Value.Year, model.DateFrom.Value.Month, model.DateFrom.Value.Day, 0, 0, 0));
+                    casesQuery = casesQuery.Where(x =>
+                        x.CreatedAt >= new DateTime(model.DateFrom.Value.Year, model.DateFrom.Value.Month,
+                            model.DateFrom.Value.Day, 0, 0, 0));
                 }
 
                 if (model.DateTo != null)
                 {
-                    casesQuery = casesQuery.Where(x => 
-                        x.CreatedAt <= new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month, model.DateTo.Value.Day, 23, 59, 59));
+                    casesQuery = casesQuery.Where(x =>
+                        x.CreatedAt <= new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month,
+                            model.DateTo.Value.Day, 23, 59, 59));
                 }
-                
+
                 var itemCases = await casesQuery.ToListAsync();
 
-                var reportModel = GetReportData(model, item, itemCases, template);
+                var groupedCases = itemCases
+                    .Where(x => x.CheckListId != null)
+                    .GroupBy(x => x.CheckListId)
+                    .Select(x => new
+                    {
+                        templateId = (int)x.Key,
+                        cases = x.ToList(),
+                    })
+                    .ToList();
 
-                return new OperationDataResult<ReportModel>(true, reportModel);
+                var result = new List<ReportEformModel>();
+                foreach (var groupedCase in groupedCases)
+                {
+                    var template = await core.TemplateRead(groupedCase.templateId);
+                    var fields =
+                        await core.Advanced_TemplateFieldReadAll(groupedCase.templateId); // .label = headers[]
+
+                    // Posts - check mailing in main app
+                    var reportModel = new ReportEformModel
+                    {
+                        Name = template.Label,
+                    };
+
+                    // add headers
+                    foreach (var fieldDto in fields)
+                    {
+                        reportModel.ItemHeaders.Add(fieldDto.Label);
+                    }
+
+                    // images
+                    var images = await microtingDbContext.field_values
+                        .Where(x => x.Field.FieldTypeId == 5)
+                        .Where(x => x.CheckListId == groupedCase.templateId)
+                        .ToListAsync();
+
+                    // posts
+                    var casePostRequest = new CasePostsRequestCommonModel()
+                    {
+                        Offset = 0,
+                        PageSize = int.MaxValue,
+                        TemplateId = groupedCase.templateId,
+                    };
+
+                    var casePostList = _casePostBaseService.GetCommonPosts(casePostRequest);
+
+                    // add cases
+                    foreach (var caseDto in groupedCase.cases)
+                    {
+                        var item = new ReportEformItemModel
+                        {
+                            Id = caseDto.Id,
+                            CreatedAt = caseDto.CreatedAt,
+                            DoneBy = caseDto.Site.Name,
+                        };
+
+                        item.CaseFields.Add(caseDto.FieldValue1);
+                        item.CaseFields.Add(caseDto.FieldValue2);
+                        item.CaseFields.Add(caseDto.FieldValue3);
+                        item.CaseFields.Add(caseDto.FieldValue4);
+                        item.CaseFields.Add(caseDto.FieldValue5);
+                        item.CaseFields.Add(caseDto.FieldValue6);
+                        item.CaseFields.Add(caseDto.FieldValue7);
+                        item.CaseFields.Add(caseDto.FieldValue8);
+                        item.CaseFields.Add(caseDto.FieldValue9);
+                        item.CaseFields.Add(caseDto.FieldValue10);
+
+                        item.ImagesCount = await microtingDbContext.field_values
+                            .Where(x => x.Field.FieldTypeId == 5)
+                            .Where(x => x.CaseId == caseDto.Id)
+                            .Select(x => x.Id)
+                            .FirstOrDefaultAsync();
+                    }
+
+                    result.Add(reportModel);
+                }
+
+                return new OperationDataResult<List<ReportEformModel>>(true, result);
             }
             catch (Exception e)
             {
                 Trace.TraceError(e.Message);
                 _logger.LogError(e.Message);
-                return new OperationDataResult<ReportModel>(false,
+                return new OperationDataResult<List<ReportEformModel>>(false,
                     _itemsPlanningLocalizationService.GetString("ErrorWhileGeneratingReport"));
             }
         }
 
-        public async Task<OperationDataResult<FileStreamModel>> GenerateReportFile(GenerateReportModel model)
+        public async Task<OperationDataResult<Stream>> GenerateReportFile(GenerateReportModel model)
         {
-            string excelFile = null;
             try
             {
-                OperationDataResult<ReportModel> reportDataResult = await GenerateReport(model);
+                var reportDataResult = await GenerateReport(model);
                 if (!reportDataResult.Success)
                 {
-                    return new OperationDataResult<FileStreamModel>(false, reportDataResult.Message);
+                    return new OperationDataResult<Stream>(false, reportDataResult.Message);
                 }
 
-                excelFile = _excelService.CopyTemplateForNewAccount("report_template");
-                bool writeResult = _excelService.WriteRecordsExportModelsToExcelFile(
-                    reportDataResult.Model,
-                    model,
-                    excelFile);
+                var wordDataResult = await _wordService
+                    .GenerateWordDashboard(reportDataResult.Model);
 
-                if (!writeResult)
+                if (!wordDataResult.Success)
                 {
-                    throw new Exception($"Error while writing excel file {excelFile}");
+                    return new OperationDataResult<Stream>(false, wordDataResult.Message);
                 }
 
-                FileStreamModel result = new FileStreamModel()
-                {
-                    FilePath = excelFile,
-                    FileStream = new FileStream(excelFile, FileMode.Open),
-                };
-
-                return new OperationDataResult<FileStreamModel>(true, result);
+                return new OperationDataResult<Stream>(true, wordDataResult.Model);
             }
             catch (Exception e)
             {
-                if (!string.IsNullOrEmpty(excelFile) && File.Exists(excelFile))
-                {
-                    File.Delete(excelFile);
-                }
-
                 Trace.TraceError(e.Message);
                 _logger.LogError(e.Message);
-                return new OperationDataResult<FileStreamModel>(
+                return new OperationDataResult<Stream>(
                     false,
                     _itemsPlanningLocalizationService.GetString("ErrorWhileGeneratingReportFile"));
             }
-        }
-        
-        private ReportModel GetReportData(
-            GenerateReportModel model, 
-            Item item, 
-            IEnumerable<PlanningCase> itemCases,
-            CoreElement template)
-        {
-            var core = _coreHelper.GetCore();
-
-            var finalModel = new ReportModel
-            {
-                Name = item.Name,
-                Description = item.Description,
-                DateFrom = model.DateFrom,
-                DateTo = model.DateTo
-            };
-
-            // Go through template elements and get fields and options labels
-            foreach (var element in template.ElementList)
-            {
-                if (!(element is DataElement dataElement)) 
-                    continue;
-
-                var dataItems = dataElement.DataItemList;
-
-                foreach (var dataItem in dataItems)
-                {
-                    var reportFieldModel = new ReportFormFieldModel()
-                    {
-                        DataItemId = dataItem.Id,
-                        Label = dataItem.Label
-                    };
-
-                    switch (dataItem)
-                    {
-                        case MultiSelect multiSelect:
-                            // Add label for each option
-                            reportFieldModel.Options = multiSelect.KeyValuePairList.Select(x => new ReportFormFieldOptionModel()
-                            {
-                                Key = x.Key,
-                                Label = x.Value
-                            }).ToList();
-                            break;
-                        case SingleSelect singleSelect:
-                        case CheckBox checkBox:
-                        case Number number:
-                        case Text text:
-                            // No option label needed for these types
-                            reportFieldModel.Options.Add(new ReportFormFieldOptionModel()
-                            {
-                                Key = string.Empty,
-                                Label = string.Empty
-                            });
-                            break;
-                        default:
-                            continue;
-                    }
-
-                    finalModel.FormFields.Add(reportFieldModel);
-                }
-            }
-
-            // Get all answered cases
-            TimeZoneInfo timeZoneInfo;
-
-            try
-            {
-                timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Europe/Copenhagen");
-            }
-            catch
-            {
-                timeZoneInfo = TimeZoneInfo.Local;
-            }
-
-            var casesList = core.Result.CaseReadAll(template.Id, null, null, timeZoneInfo).Result
-                .Where(c => itemCases.Select(ic => ic.MicrotingSdkCaseId).Contains(c.Id))
-                .ToList();
-
-            // Go through all itemCases
-            foreach (var ic in itemCases)
-            {
-                finalModel.Ids.Add($"{ic.Id} / {ic.MicrotingSdkCaseId}");
-                finalModel.Dates.Add(ic.CreatedAt);
-
-                var @case = casesList.FirstOrDefault(c => c.Id == ic.MicrotingSdkCaseId);
-
-                // Fill with empty values, if this itemCase was not replied
-                if (@case == null)
-                {
-                    foreach (var fieldModel in finalModel.FormFields)
-                    {
-                        foreach (var optionModel in fieldModel.Options)
-                        {
-                            optionModel.Values.Add("");
-                        }
-                    }
-
-                    finalModel.DatesDoneAt.Add(null);
-                    finalModel.DoneBy.Add(null);
-
-                    continue;
-                }
-                else
-                {
-                    finalModel.DoneBy.Add(@case.WorkerName);
-                    finalModel.DatesDoneAt.Add(@case.DoneAt);
-                }
-
-                // Get the reply and work with its ElementList
-                foreach (var element in core.Result.CaseRead((int)@case.MicrotingUId, (int)@case.CheckUIid).Result.ElementList)
-                {
-                    if (!(element is CheckListValue checkListValue)) 
-                        continue;
-
-                    // Get the values for each field from the reply
-                    foreach (var fieldModel in finalModel.FormFields)
-                    {
-                        if (!(checkListValue.DataItemList.First(x => x.Id == fieldModel.DataItemId) is Field field))
-                            continue;
-
-                        // Fill values for field options
-                        foreach (var optionModel in fieldModel.Options)
-                        {
-                            if (optionModel.Key.IsNullOrEmpty())
-                            {
-                                optionModel.Values.Add(field.FieldValues[0].ValueReadable);
-                            }
-                            else
-                            {
-                                var selectedKeys = field.FieldValues[0].Value.Split('|');
-
-                                optionModel.Values.Add(
-                                    selectedKeys.Contains(optionModel.Key) 
-                                        ? _itemsPlanningLocalizationService.GetString("Yes") 
-                                        : ""
-                                );
-                            }
-                        }
-                    }
-                }
-            }
-
-            return finalModel;
         }
     }
 }

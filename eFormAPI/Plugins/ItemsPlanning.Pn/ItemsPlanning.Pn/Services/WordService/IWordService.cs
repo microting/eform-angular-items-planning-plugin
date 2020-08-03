@@ -23,7 +23,14 @@ SOFTWARE.
 */
 namespace ItemsPlanning.Pn.Services.WordService
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Threading.Tasks;
+    using Infrastructure.Models.Report;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+
     public interface IWordService
     {
+        Task<OperationDataResult<Stream>> GenerateWordDashboard(List<ReportEformModel> reportModel);
     }
 }

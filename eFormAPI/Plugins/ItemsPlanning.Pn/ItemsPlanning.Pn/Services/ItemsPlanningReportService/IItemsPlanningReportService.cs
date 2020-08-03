@@ -21,16 +21,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
 namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 {
+    using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
-    using Infrastructure.Models;
     using Infrastructure.Models.Report;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
 
     public interface IItemsPlanningReportService
     {
-        Task<OperationDataResult<ReportModel>> GenerateReport(GenerateReportModel model);
-        Task<OperationDataResult<FileStreamModel>> GenerateReportFile(GenerateReportModel model);
+        Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model);
+        Task<OperationDataResult<Stream>> GenerateReportFile(GenerateReportModel model);
     }
 }

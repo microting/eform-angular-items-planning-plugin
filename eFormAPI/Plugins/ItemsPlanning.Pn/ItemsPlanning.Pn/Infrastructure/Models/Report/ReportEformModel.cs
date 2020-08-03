@@ -1,4 +1,4 @@
-/*
+﻿/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2020 Microting A/S
@@ -22,21 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Services.ExcelService
+namespace ItemsPlanning.Pn.Infrastructure.Models.Report
 {
-    using Infrastructure.Models;
-    using Infrastructure.Models.Report;
+    using System.Collections.Generic;
 
-    public interface IExcelService
+    public class ReportEformModel
     {
-        bool WriteRecordsExportModelsToExcelFile(
-            ReportModel reportModel,
-            GenerateReportModel generateReportModel,
-            string destFile);
-        
-        bool WriteTableToExcel(string name, string description, PlanningCaseResultListModel reportModel, PlanningCasesPnRequestModel requestModel, string destFile);
-        
-        string CopyTemplateForNewAccount(string templateName);
+        public string Name { get; set; }
+        public List<string> ImagesNames { get; set; }
+            = new List<string>();
+        public List<string> ItemHeaders { get; set; }
+            = new List<string>();
 
+        public List<ReportEformItemModel> Items { get; set; }
+            = new List<ReportEformItemModel>();
+
+        public List<ReportEformPostModel> Posts { get; set; }
+            = new List<ReportEformPostModel>();
     }
 }

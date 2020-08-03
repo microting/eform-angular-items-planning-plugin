@@ -21,16 +21,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 namespace ItemsPlanning.Pn.Infrastructure.Models.Report
 {
     using System.Collections.Generic;
 
-    public class ReportFormFieldModel
+    public class ReportEformPostModel
     {
-        public int DataItemId { get; set; }
-        public string Label { get; set; }
-        public List<ReportFormFieldOptionModel> Options { get; set; } =
-            new List<ReportFormFieldOptionModel>();
+        public int PostId { get; set; }
+        public int CaseId { get; set; }
+        public string Comment { get; set; }
+
+        public List<string> SentTo { get; set; }
+            = new List<string>();
     }
 }
