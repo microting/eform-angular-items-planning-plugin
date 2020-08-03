@@ -32,6 +32,7 @@ namespace ItemsPlanning.Pn.Services.WordService
     using System.Threading.Tasks;
     using Infrastructure.Models.Report;
     using ItemsPlanningLocalizationService;
+    using Microsoft.EntityFrameworkCore.Internal;
     using Microsoft.Extensions.Logging;
     using Microting.eForm.Dto;
     using Microting.eFormApi.BasePn.Abstractions;
@@ -191,7 +192,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                         itemsHtml += @"<tr>";
                         itemsHtml += $@"<td>{dataModel.PostId}</td>";
                         itemsHtml += $@"<td>{dataModel.CaseId}</td>";
-                        itemsHtml += $@"<td>{dataModel.SentTo}</td>";
+                        itemsHtml += $@"<td>{dataModel.SentTo.Join()} {dataModel.SentToTags.Join()}</td>";
                         itemsHtml += $@"<td>{dataModel.Comment}</td>";
                         itemsHtml += @"</tr>";
                     }

@@ -198,6 +198,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             CaseId = casePostCommonModel.Id,
                             Comment = casePostCommonModel.Text,
                             SentTo = casePostCommonModel.ToRecipients,
+                            SentToTags = casePostCommonModel.ToRecipientsTags
                         });
                     }
 

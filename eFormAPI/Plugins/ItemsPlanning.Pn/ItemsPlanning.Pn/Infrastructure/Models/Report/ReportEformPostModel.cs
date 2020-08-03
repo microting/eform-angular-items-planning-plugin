@@ -33,5 +33,8 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Report
 
         public List<string> SentTo { get; set; }
             = new List<string>();
+
+        public List<string> SentToTags { get; set; }
+            = new List<string>();
     }
 }
