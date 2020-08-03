@@ -104,6 +104,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 var result = new List<ReportEformModel>();
                 foreach (var groupedCase in groupedCases)
                 {
+                    var templateDto = await core.TemplateItemRead(groupedCase.templateId);
                     var template = await core.TemplateRead(groupedCase.templateId);
                     var fields =
                         await core.Advanced_TemplateFieldReadAll(groupedCase.templateId); // .label = headers[]
@@ -114,11 +115,48 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         Name = template.Label,
                     };
 
-                    // add headers
-                    foreach (var fieldDto in fields)
+
+                    if (templateDto.Field1 != null)
                     {
-                        reportModel.ItemHeaders.Add(fieldDto.Label);
+                        reportModel.ItemHeaders.Add(templateDto.Field1.Label);
                     }
+                    if (templateDto.Field2 != null)
+                    {
+                        reportModel.ItemHeaders.Add(templateDto.Field2.Label);
+                    }
+                    if (templateDto.Field3 != null)
+                    {
+                        reportModel.ItemHeaders.Add(templateDto.Field3.Label);
+                    }
+                    if (templateDto.Field4 != null)
+                    {
+                        reportModel.ItemHeaders.Add(templateDto.Field4.Label);
+                    }
+                    if (templateDto.Field5 != null)
+                    {
+                        reportModel.ItemHeaders.Add(templateDto.Field5.Label);
+                    }
+                    if (templateDto.Field6 != null)
+                    {
+                        reportModel.ItemHeaders.Add(templateDto.Field6.Label);
+                    }
+                    if (templateDto.Field7 != null)
+                    {
+                        reportModel.ItemHeaders.Add(templateDto.Field7.Label);
+                    }
+                    if (templateDto.Field8 != null)
+                    {
+                        reportModel.ItemHeaders.Add(templateDto.Field8.Label);
+                    }
+                    if (templateDto.Field9 != null)
+                    {
+                        reportModel.ItemHeaders.Add(templateDto.Field9.Label);
+                    }
+                    if (templateDto.Field10 != null)
+                    {
+                        reportModel.ItemHeaders.Add(templateDto.Field10.Label);
+                    }
+
 
                     // images
                     var templateCaseIds = groupedCase.cases.Select(x => (int?)x.Id).ToArray();
@@ -173,28 +211,70 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             DoneBy = caseDto.Site.Name,
                         };
 
-                        item.CaseFields.Add(caseDto.FieldValue1);
-                        item.CaseFields.Add(caseDto.FieldValue2);
-                        item.CaseFields.Add(caseDto.FieldValue3);
-                        item.CaseFields.Add(caseDto.FieldValue4);
-                        item.CaseFields.Add(caseDto.FieldValue5);
-                        item.CaseFields.Add(caseDto.FieldValue6);
-                        item.CaseFields.Add(caseDto.FieldValue7);
-                        item.CaseFields.Add(caseDto.FieldValue8);
-                        item.CaseFields.Add(caseDto.FieldValue9);
-                        item.CaseFields.Add(caseDto.FieldValue10);
+                        if (templateDto.Field1 != null)
+                        {
+                            item.CaseFields.Add(caseDto.FieldValue1);
+
+                        }
+                        if (templateDto.Field2 != null)
+                        {
+                            item.CaseFields.Add(caseDto.FieldValue2);
+
+                        }
+                        if (templateDto.Field3 != null)
+                        {
+                            item.CaseFields.Add(caseDto.FieldValue3);
+                            
+                        }
+                        if (templateDto.Field4 != null)
+                        {
+                            item.CaseFields.Add(caseDto.FieldValue4);
+                            
+                        }
+                        if (templateDto.Field5 != null)
+                        {
+                            item.CaseFields.Add(caseDto.FieldValue5);
+                            
+                        }
+                        if (templateDto.Field6 != null)
+                        {
+                            item.CaseFields.Add(caseDto.FieldValue6);
+                            
+                        }
+                        if (templateDto.Field7 != null)
+                        {
+                            item.CaseFields.Add(caseDto.FieldValue7);
+                            
+                        }
+                        if (templateDto.Field8 != null)
+                        {
+                            item.CaseFields.Add(caseDto.FieldValue8);
+                            
+                        }
+                        if (templateDto.Field9 != null)
+                        {
+                            item.CaseFields.Add(caseDto.FieldValue9);
+                            
+                        }
+                        if (templateDto.Field10 != null)
+                        {
+                            item.CaseFields.Add(caseDto.FieldValue10);
+                        }
+                        
 
                         item.ImagesCount = await microtingDbContext.field_values
                             .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                             .Where(x => x.Field.FieldTypeId == 5)
                             .Where(x => x.CaseId == caseDto.Id)
                             .Select(x => x.Id)
-                            .FirstOrDefaultAsync();
+                            .CountAsync();
 
                         item.PostsCount = casePostListResult.Model.Entities
                             .Where(x => x.Id == caseDto.Id)
                             .Select(x => x.Id)
                             .Count();
+
+                        reportModel.Items.Add(item);
                     }
 
                     result.Add(reportModel);
