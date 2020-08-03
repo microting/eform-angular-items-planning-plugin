@@ -34,6 +34,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
     using ItemsPlanningLocalizationService;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
+    using Microting.eForm.Infrastructure.Constants;
     using Microting.eFormApi.BasePn.Abstractions;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Microting.eFormApi.BasePn.Infrastructure.Models.Application.CasePosts;
@@ -70,6 +71,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 var core = await _coreHelper.GetCore();
                 await using var microtingDbContext = core.dbContextHelper.GetDbContext();
                 var casesQuery = microtingDbContext.cases
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                     .Include(x => x.Site)
                     .AsQueryable();
 
@@ -121,11 +123,18 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     // images
                     var templateCaseIds = groupedCase.cases.Select(x => (int?)x.Id).ToArray();
                     var imagesForEform = await microtingDbContext.field_values
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Where(x => x.Field.FieldTypeId == 5)
                         .Where(x => templateCaseIds.Contains(x.CaseId))
                         .ToListAsync();
 
-                    // TODO reportModel.ImagesNames.AddRange();
+                    foreach (var imageField in imagesForEform)
+                    {
+                        if (!string.IsNullOrEmpty(imageField.UploadedData?.FileName))
+                        {
+                            reportModel.ImagesNames.Add(imageField.UploadedData.FileName);
+                        }
+                    }
 
                     // posts
                     var casePostRequest = new CasePostsRequestCommonModel
@@ -176,6 +185,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         item.CaseFields.Add(caseDto.FieldValue10);
 
                         item.ImagesCount = await microtingDbContext.field_values
+                            .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                             .Where(x => x.Field.FieldTypeId == 5)
                             .Where(x => x.CaseId == caseDto.Id)
                             .Select(x => x.Id)
