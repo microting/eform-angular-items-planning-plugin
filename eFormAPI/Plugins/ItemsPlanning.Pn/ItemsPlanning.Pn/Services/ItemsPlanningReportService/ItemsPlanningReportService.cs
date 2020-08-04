@@ -79,6 +79,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 //    .AsQueryable();
 
                 var casesQuery = _dbContext.PlanningCases
+                    .Include(x=>x.Item)
+                    .ThenInclude(x=>x.Planning)
                     .Where(x => x.WorkflowState == Constants.WorkflowStates.Processed)
                     .AsQueryable();
 
@@ -213,6 +215,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             Id = caseDto.Id,
                             CreatedAt = caseDto.CreatedAt,
                             DoneBy = caseDto.DoneByUserName,
+                            ItemName = caseDto.Item.Planning.Name,
                         };
 
                         if (templateDto.Field1 != null)
