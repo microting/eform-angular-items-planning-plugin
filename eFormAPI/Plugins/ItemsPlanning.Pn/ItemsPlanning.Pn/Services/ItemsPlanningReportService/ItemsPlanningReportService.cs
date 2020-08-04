@@ -67,7 +67,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
         {
             try
             {
-                Debugger.Break();
                 var core = await _coreHelper.GetCore();
                 await using var microtingDbContext = core.dbContextHelper.GetDbContext();
                 var casesQuery = microtingDbContext.cases
