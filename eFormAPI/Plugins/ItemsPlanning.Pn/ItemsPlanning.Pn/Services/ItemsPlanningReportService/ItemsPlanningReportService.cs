@@ -157,7 +157,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         reportModel.ItemHeaders.Add(templateDto.Field10.Label);
                     }
 
-
                     // images
                     var templateCaseIds = groupedCase.cases.Select(x => (int?)x.Id).ToArray();
                     var imagesForEform = await microtingDbContext.field_values
@@ -188,14 +187,15 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     {
                         return new OperationDataResult<List<ReportEformModel>>(
                             false,
-                            _itemsPlanningLocalizationService.GetString(""));
+                            casePostListResult.Message);
                     }
 
                     foreach (var casePostCommonModel in casePostListResult.Model.Entities)
                     {
                         reportModel.Posts.Add(new ReportEformPostModel
                         {
-                            CaseId = casePostCommonModel.Id,
+                            CaseId = casePostCommonModel.CaseId,
+                            PostId = casePostCommonModel.PostId,
                             Comment = casePostCommonModel.Text,
                             SentTo = casePostCommonModel.ToRecipients,
                             SentToTags = casePostCommonModel.ToRecipientsTags
@@ -271,8 +271,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             .CountAsync();
 
                         item.PostsCount = casePostListResult.Model.Entities
-                            .Where(x => x.Id == caseDto.Id)
-                            .Select(x => x.Id)
+                            .Where(x => x.CaseId == caseDto.Id)
+                            .Select(x => x.PostId)
                             .Count();
 
                         reportModel.Items.Add(item);
