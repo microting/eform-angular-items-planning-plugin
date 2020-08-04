@@ -45,8 +45,14 @@ namespace ItemsPlanning.Pn
     using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.ItemsPlanningBase.Infrastructure.Data.Factories;
     using Rebus.Bus;
-    using Services;
-    using Services.Abstractions;
+    using Services.ItemsPlanningLocalizationService;
+    using Services.ItemsPlanningPnSettingsService;
+    using Services.ItemsPlanningReportService;
+    using Services.PlanningCaseService;
+    using Services.PlanningService;
+    using Services.RebusService;
+    using Services.UploadedDataService;
+    using Services.WordService;
 
     public class EformItemsPlanningPlugin : IEformPlugin
     {
@@ -70,10 +76,10 @@ namespace ItemsPlanning.Pn
             services.AddTransient<IItemsPlanningPnSettingsService, ItemsPlanningPnSettingsService>();
             services.AddTransient<IPlanningCaseService, PlanningCaseService>();
             services.AddTransient<IItemsPlanningReportService, ItemsPlanningReportService>();
-            services.AddTransient<IExcelService, ExcelService>();
             services.AddTransient<IPlanningService, PlanningService>();
             services.AddTransient<IUploadedDataService, UploadedDataService>();
             services.AddSingleton<IRebusService, RebusService>();
+            services.AddTransient<IWordService, WordService>();
         }
 
         public void AddPluginConfig(IConfigurationBuilder builder, string connectionString)

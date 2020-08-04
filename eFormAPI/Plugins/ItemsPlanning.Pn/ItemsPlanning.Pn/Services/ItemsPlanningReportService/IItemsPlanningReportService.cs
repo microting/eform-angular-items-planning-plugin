@@ -22,13 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Infrastructure.Models.Report
+namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 {
-    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Threading.Tasks;
+    using Infrastructure.Models.Report;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
 
-    public class GenerateReportModel
+    public interface IItemsPlanningReportService
     {
-        public DateTime? DateFrom { get; set; }
-        public DateTime? DateTo { get; set; }
+        Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model);
+        Task<OperationDataResult<Stream>> GenerateReportFile(GenerateReportModel model);
     }
 }

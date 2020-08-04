@@ -24,11 +24,20 @@ SOFTWARE.
 
 namespace ItemsPlanning.Pn.Infrastructure.Models.Report
 {
-    using System;
+    using System.Collections.Generic;
 
-    public class GenerateReportModel
+    public class ReportEformModel
     {
-        public DateTime? DateFrom { get; set; }
-        public DateTime? DateTo { get; set; }
+        public string Name { get; set; }
+        public List<string> ImagesNames { get; set; }
+            = new List<string>();
+        public List<string> ItemHeaders { get; set; }
+            = new List<string>();
+
+        public List<ReportEformItemModel> Items { get; set; }
+            = new List<ReportEformItemModel>();
+
+        public List<ReportEformPostModel> Posts { get; set; }
+            = new List<ReportEformPostModel>();
     }
 }

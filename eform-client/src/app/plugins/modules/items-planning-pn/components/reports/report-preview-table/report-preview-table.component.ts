@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ReportPnFullModel} from '../../../models/report';
+import {ReportEformPnModel} from '../../../models/report';
 
 @Component({
   selector: 'app-items-planning-pn-report-preview-table',
@@ -7,7 +7,7 @@ import {ReportPnFullModel} from '../../../models/report';
   styleUrls: ['./report-preview-table.component.scss']
 })
 export class ReportPreviewTableComponent implements OnInit {
-  @Input() reportData: ReportPnFullModel = new ReportPnFullModel();
+  @Input() reportData: ReportEformPnModel = new ReportEformPnModel();
   constructor() { }
 
   ngOnInit() {

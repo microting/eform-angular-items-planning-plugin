@@ -21,14 +21,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 namespace ItemsPlanning.Pn.Infrastructure.Models.Report
 {
-    using System;
+    using System.Collections.Generic;
 
-    public class GenerateReportModel
+    public class ReportEformPostModel
     {
-        public DateTime? DateFrom { get; set; }
-        public DateTime? DateTo { get; set; }
+        public int PostId { get; set; }
+        public int CaseId { get; set; }
+        public string Comment { get; set; }
+
+        public List<string> SentTo { get; set; }
+            = new List<string>();
+
+        public List<string> SentToTags { get; set; }
+            = new List<string>();
     }
 }

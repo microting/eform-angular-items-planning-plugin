@@ -1,4 +1,4 @@
-﻿/*
+/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2020 Microting A/S
@@ -22,13 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Infrastructure.Models.Report
+namespace ItemsPlanning.Pn.Services.RebusService
 {
-    using System;
+    using System.Threading.Tasks;
+    using Rebus.Bus;
 
-    public class GenerateReportModel
+    public interface IRebusService
     {
-        public DateTime? DateFrom { get; set; }
-        public DateTime? DateTo { get; set; }
+        Task Start(string connectionString);
+        IBus GetBus();
     }
 }

@@ -1,4 +1,4 @@
-﻿/*
+/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2020 Microting A/S
@@ -22,13 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Infrastructure.Models.Report
+namespace ItemsPlanning.Pn.Services.ItemsPlanningLocalizationService
 {
-    using System;
-
-    public class GenerateReportModel
+    public interface IItemsPlanningLocalizationService
     {
-        public DateTime? DateFrom { get; set; }
-        public DateTime? DateTo { get; set; }
+        string GetString(string key);
+        string GetString(string format, params object[] args);
     }
 }
