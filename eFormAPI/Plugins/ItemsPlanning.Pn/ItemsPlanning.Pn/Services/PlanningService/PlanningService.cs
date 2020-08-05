@@ -102,8 +102,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 List<PlanningPnModel> plannings = await planningsQuery.Select(x => new PlanningPnModel()
                 {
                     Id = x.Id,
-                    Name = x.Name,
-                    Description = x.Description,
+                    Name = x.Item.Name,
+                    Description = x.Item.Description,
                     RepeatEvery = x.RepeatEvery,
                     RepeatType = x.RepeatType,
                     RepeatUntil = x.RepeatUntil,
