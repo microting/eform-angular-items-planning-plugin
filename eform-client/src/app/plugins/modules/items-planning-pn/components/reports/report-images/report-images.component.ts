@@ -21,7 +21,7 @@ export class ReportImagesComponent implements OnChanges, OnDestroy {
 
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes && changes.fieldValues) {
+    if (changes && changes.imageNames) {
       this.imageNames.forEach(value => {
         this.imageSub$ = this.imageService.getImage(value).subscribe(blob => {
           const imageUrl = URL.createObjectURL(blob);

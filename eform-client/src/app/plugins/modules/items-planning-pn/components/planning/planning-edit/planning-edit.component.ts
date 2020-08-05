@@ -21,7 +21,7 @@ export class PlanningEditComponent implements OnInit {
   templateRequestModel: TemplateRequestModel = new TemplateRequestModel();
   templatesModel: TemplateListModel = new TemplateListModel();
   typeahead = new EventEmitter<string>();
-  selectedListId: number;
+  selectedPlanningId: number;
   constructor(private activateRoute: ActivatedRoute,
               private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
               private cd: ChangeDetectorRef,
@@ -40,15 +40,15 @@ export class PlanningEditComponent implements OnInit {
         this.cd.markForCheck();
       });
     const activatedRouteSub = this.activateRoute.params.subscribe(params => {
-      this.selectedListId = +params['id'];
+      this.selectedPlanningId = +params['id'];
     });
   }
 
   ngOnInit() {
-    this.getSelectedList(this.selectedListId);
+    this.getSelectedPlanning(this.selectedPlanningId);
   }
 
-  getSelectedList(id: number) {
+  getSelectedPlanning(id: number) {
     this.itemsPlanningPnPlanningsService.getSinglePlanning(id).subscribe((data) => {
       if (data && data.success) {
         this.selectedPlanningModel = data.model;
@@ -64,7 +64,7 @@ export class PlanningEditComponent implements OnInit {
     this.location.back();
   }
 
-  updateList() {if (this.selectedPlanningModel.internalRepeatUntil) {
+  updatePlanning() {if (this.selectedPlanningModel.internalRepeatUntil) {
       const tempDate = moment(this.selectedPlanningModel.internalRepeatUntil).format('DD/MM/YYYY');
       const datTime = moment.utc(tempDate, 'DD/MM/YYYY');
       this.selectedPlanningModel.repeatUntil = datTime.format('YYYY-MM-DDT00:00:00').toString();

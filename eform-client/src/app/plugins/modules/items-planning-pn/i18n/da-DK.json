@@ -52,9 +52,11 @@
   "Item List": "Gruppe",
   "Item": "Enhed",
 
-  "Create Planning": "Create Planning",
-  "New Planning": "New Planning",
-  "Edit Planning": "Edit Planning",
-  "Delete Planning": "Delete Planning"
+  "Plannings": "Planningen",
+  "Planning": "Planning",
+  "New planning": "Nieuwe planning",
+  "Edit Planning": "Planning Bewerken",
+  "Delete Planning": "Planning Verwijderen",
+  "Assign Sites": "Toewijzen Sites"
 
 }
