@@ -79,9 +79,9 @@ export class ItemsPlanningModalPage extends Page {
     return $(`//*[contains(@id, 'editPlanningSelector')]//*[contains(@class, 'ng-value')]//div[contains(@class, 'ng-star-inserted')]`);
   }
   public get editPlanningDescription() {
-    $('#editPlanningDescription').waitForDisplayed({timeout: 20000});
-    $('#editPlanningDescription').waitForClickable({timeout: 20000});
-    return $('#editPlanningDescription');
+    $('#editPlanningItemDescription').waitForDisplayed({timeout: 20000});
+    $('#editPlanningItemDescription').waitForClickable({timeout: 20000});
+    return $('#editPlanningItemDescription');
   }
 
   public get editRepeatEvery() {
