@@ -1,7 +1,7 @@
 <eform-page-subheader [title]="'Edit Planning' | translate">
   <div class="p-3">
     <button mdbBtn id="planningEditSaveBtn" class="btn-success btn-small-height"
-            [disabled]="!selectedPlanningModel.name" (click)="updateList()">
+            [disabled]="!selectedPlanningModel.name" (click)="updatePlanning()">
       {{ 'Save' | translate }}
     </button>
     <button mdbBtn id="planningEditCancelBtn" class="btn-accent text-black-50 btn-small-height"
@@ -19,9 +19,9 @@
               <div class="md-form">
                 <input mdbInput
                        [(ngModel)]="selectedPlanningModel.name"
-                       type="text" id="editListItemName"
-                       name="editListItemName" class="form-control">
-                <label for="editListItemName">{{'List Name' | translate}}</label>
+                       type="text" id="editPlanningItemName"
+                       name="editPlanningItemName" class="form-control">
+                <label for="editPlanningItemName">{{'Planning Name' | translate}}</label>
               </div>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4 ng-select-wrapper">
@@ -31,16 +31,16 @@
                          bindValue="id"
                          [typeahead]="typeahead"
                          [(ngModel)]="selectedPlanningModel.relatedEFormId"
-                         id="editListSelector">
+                         id="editPlanningSelector">
               </ng-select>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-4">
               <div class="md-form">
                 <input mdbInput
                        [(ngModel)]="selectedPlanningModel.description"
-                       type="text" id="editListDescription"
+                       type="text" id="editPlanningDescription"
                        name="editItemDescription" class="form-control">
-                <label for="editListDescription">{{'Description' | translate}}</label>
+                <label for="editPlanningDescription">{{'Description' | translate}}</label>
               </div>
             </div>
 
@@ -94,7 +94,7 @@
                     <label for="editItemNumber">{{'Number' | translate}}</label>
                   </div>
                 </td>
-                <td id="listId">
+                <td id="planningId">
                   <div class="md-form md-form-sm">
                     <input mdbInput
                            [(ngModel)]="selectedPlanningModel.item.name"
@@ -103,7 +103,7 @@
                     <label for="editItemName">{{'Name' | translate}}</label>
                   </div>
                 </td>
-                <td id="listName">
+                <td id="planningName">
                   <div class="md-form md-form-sm">
                     <input mdbInput
                            [(ngModel)]="selectedPlanningModel.item.description"

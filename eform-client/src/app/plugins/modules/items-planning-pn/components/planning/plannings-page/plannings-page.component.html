@@ -132,25 +132,18 @@
         </td>
         <td>
           <div class="d-flex flex-row justify-content-center">
-            <button id="updateListBtn"
+            <button id="updatePlanningBtn"
               class="btn btn-accent text-black-50 btn-icon mb-2"
                     mdbTooltip="{{ 'Edit Planning' | translate }}"
                     [routerLink]="['./edit/' + planning.id]">
               <fa-icon icon="pen" size="lg" [fixedWidth]="true"></fa-icon>
             </button>
-            <button mdbBtn class="btn-success btn-icon mb-2"
-                    id="itemlist-case-results-btn"
-                    [routerLink]="['../planning-planningCase-results', planning.id]"
-                    mdbTooltip="{{ 'Show itemCase results' | translate }}">
-              <fa-icon icon="briefcase" [fixedWidth]="true" size="lg"></fa-icon>
-            </button>
-
-            <button mdbBtn class="btn-success btn-icon mb-2" id="edit-columnts-btn"
-                    (click)="openEditColumnsModal(planning)"
-                    mdbTooltip="{{ 'Edit columns' | translate }}">
-              <fa-icon icon="table" [fixedWidth]="true" size="lg"></fa-icon>
-            </button>
-            <button id="deleteListBtn"
+<!--            <button mdbBtn class="btn-success btn-icon mb-2" id="edit-columnts-btn"-->
+<!--                    (click)="openEditColumnsModal(planning)"-->
+<!--                    mdbTooltip="{{ 'Edit columns' | translate }}">-->
+<!--              <fa-icon icon="table" [fixedWidth]="true" size="lg"></fa-icon>-->
+<!--            </button>-->
+            <button id="deletePlanningBtn"
               class="btn btn-danger btn-icon mb-2 "
                     mdbTooltip="{{ 'Delete Planning' | translate }}"
                     (click)="showDeletePlanningModal(planning)">
@@ -181,6 +174,4 @@
 </div>
 <app-planning-delete #deletePlanningModal
                      (planningDeleted)="getAllPlannings()"></app-planning-delete>
-
-<app-planning-case-column-modal #modalCasesColumns></app-planning-case-column-modal>
 <app-planning-assign-sites-modal (sitesAssigned)="getAllPlannings()" #assignSitesModal></app-planning-assign-sites-modal>

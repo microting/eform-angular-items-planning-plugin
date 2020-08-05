@@ -23,7 +23,7 @@ export class PlanningDeleteComponent implements OnInit {
     this.frame.show();
   }
 
-  deleteList() {
+  deletePlanning() {
     this.itemsPlanningPnPlanningsService.deletePlanning(this.planningModel.id).subscribe((data) => {
       if (data && data.success) {
         this.planningDeleted.emit();

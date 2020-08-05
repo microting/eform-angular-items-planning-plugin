@@ -5,7 +5,10 @@
       <th>{{'Id' | translate}}</th>
       <th>{{'Created at' | translate}}</th>
       <th>{{'Done by' | translate}}</th>
-      <th>{{'Item name' | translate}}</th>
+      <th>{{'Planning' | translate}}</th>
+      <th *ngFor="let itemHeader of itemHeaders">{{itemHeader}}</th>
+      <th>{{'Images' | translate}}</th>
+      <th>{{'Posts' | translate}}</th>
     </tr>
     </thead>
     <tbody id="tableBody">
@@ -27,6 +30,8 @@
           {{field}}
         </td>
       </ng-container>
+      <td>{{item.imagesCount}}</td>
+      <td>{{item.postsCount}}</td>
     </tr>
     </tbody>
   </table>
