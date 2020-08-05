@@ -1,6 +1,6 @@
 <eform-page-subheader [title]="'New planning' | translate">
   <div class="p-3">
-    <button mdbBtn id="planningCreateSaveBtn" class="btn-success btn-small-height" [disabled]="!newPlanningModel.name"
+    <button mdbBtn id="planningCreateSaveBtn" class="btn-success btn-small-height" [disabled]="!newPlanningModel.item.name"
             (click)="createPlanning()">
       {{ 'Create' | translate }}
     </button>
@@ -10,7 +10,7 @@
 </eform-page-subheader>
 
 <div class="container-fluid">
-  <div class="row">
+  <div class="row mt-4">
     <div  class="col-md-12 col-xs-12" role="main">
       <mdb-card>
         <mdb-card-body>
@@ -68,18 +68,18 @@
                   <div class="md-form md-form-sm">
                     <input mdbInput
                            [(ngModel)]="newPlanningModel.item.name"
-                           type="text" id="createItemName"
-                           name="createItemName" class="form-control">
-                    <label for="createItemName">{{'Name' | translate}}</label>
+                           type="text" id="createPlanningItemName"
+                           name="createPlanningItemName" class="form-control">
+                    <label for="createPlanningItemName">{{'Name' | translate}}</label>
                   </div>
                 </td>
                 <td id="planningName">
                   <div class="md-form md-form-sm">
                     <input mdbInput
                            [(ngModel)]="newPlanningModel.item.description"
-                           type="text" id="createItemDescription"
-                           name="createItemDescription" class="form-control">
-                    <label for="createItemDescription">{{'Description' | translate}}</label>
+                           type="text" id="createPlanningItemDescription"
+                           name="createPlanningItemDescription" class="form-control">
+                    <label for="createPlanningItemDescription">{{'Description' | translate}}</label>
                   </div>
                 </td>
                 <td>
