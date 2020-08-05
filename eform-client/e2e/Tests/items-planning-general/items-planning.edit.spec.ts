@@ -1,64 +1,64 @@
 import loginPage from '../../Page objects/Login.page';
-import itemsPlanningListPage, {ListRowObject} from '../../Page objects/ItemsPlanning/ItemsPlanningList.page';
+import itemsPlanningPlanningPage, {PlanningRowObject} from '../../Page objects/ItemsPlanning/ItemsPlanningPlanningPage';
 import itemsPlanningModalPage from '../../Page objects/ItemsPlanning/ItemsPlanningModal.page';
 
 const expect = require('chai').expect;
 
-describe('Items planning actions', function () {
+describe('Items planning actions - Edit', function () {
     before(function () {
         loginPage.open('/auth');
         loginPage.login();
-        itemsPlanningListPage.goToListsPage();
+        itemsPlanningPlanningPage.goToPlanningsPage();
     });
-  it('should create a new list', function () {
-      itemsPlanningListPage.listCreateBtn.click();
+  it('should create a new planning', function () {
+      itemsPlanningPlanningPage.planningCreateBtn.click();
       $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-      const listData = {
-        name: 'Test list',
+      const planningData = {
+        name: 'Test Planning',
         template: 'Number 1',
         description: 'Description',
         repeatEvery: '1',
         repeatType: '1',
         repeatUntil: '5/15/2020'
       };
-    itemsPlanningModalPage.createList(listData);
+    itemsPlanningModalPage.createPlanning(planningData);
   });
   it ('should change all fields after edit', function () {
         $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-        let listRowObject = new ListRowObject(itemsPlanningListPage.rowNum());
-        listRowObject.clickUpdateList();
-        const listData = {
-            name: 'Test list 2',
+        let planningRowObject = new PlanningRowObject(itemsPlanningPlanningPage.rowNum());
+        planningRowObject.clickUpdatePlanning();
+        const planningData = {
+            name: 'Test planning 2',
             template: '',
             description: 'Description 2',
             repeatEvery: '2',
             repeatType: '1',
             repeatUntil: '5/15/2023'
         };
-        itemsPlanningModalPage.editList(listData);
+        itemsPlanningModalPage.editPlanning(planningData);
         // Check that list is edited successfully in table
-        listRowObject = new ListRowObject(itemsPlanningListPage.rowNum());
-        expect(listRowObject.name, 'Name in table is incorrect').equal(listData.name);
-        expect(listRowObject.description, 'Description in table is incorrect').equal(listData.description);
+        planningRowObject = new PlanningRowObject(itemsPlanningPlanningPage.rowNum());
+        expect(planningRowObject.name, 'Name in table is incorrect').equal(planningData.name);
+        expect(planningRowObject.description, 'Description in table is incorrect').equal(planningData.description);
         // Check that all list fields are saved
-        listRowObject.clickUpdateList();
-        expect(itemsPlanningModalPage.editListItemName.getValue(), 'Saved Name is incorrect').equal(listData.name);
-        expect(itemsPlanningModalPage.editListSelector.getValue(), 'Saved Template is incorrect').equal(listData.template);
-        expect(itemsPlanningModalPage.editListDescription.getValue(), 'Saved Description is incorrect').equal(listData.description);
-        expect(itemsPlanningModalPage.editRepeatEvery.getValue(), 'Saved Repeat Every is incorrect').equal(listData.repeatEvery);
-        const repeatUntil = new Date(listData.repeatUntil);
+        planningRowObject.clickUpdatePlanning();
+        expect(itemsPlanningModalPage.editPlanningItemName.getValue(), 'Saved Name is incorrect').equal(planningData.name);
+        expect(itemsPlanningModalPage.editPlanningSelector.getValue(), 'Saved Template is incorrect').equal(planningData.template);
+        expect(itemsPlanningModalPage.editPlanningDescription.getValue(), 'Saved Description is incorrect').equal(planningData.description);
+        expect(itemsPlanningModalPage.editRepeatEvery.getValue(), 'Saved Repeat Every is incorrect').equal(planningData.repeatEvery);
+        const repeatUntil = new Date(planningData.repeatUntil);
         const repeatUntilSaved = new Date(itemsPlanningModalPage.editRepeatUntil.getValue());
         expect(repeatUntilSaved.getDate(), 'Saved Repeat Until is incorrect').equal(repeatUntil.getDate());
 
         $('#editRepeatType').click();
         $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-        const editRepeatTypeSelected = $$('#editRepeatType .ng-option')[listData.repeatType];
+        const editRepeatTypeSelected = $$('#editRepeatType .ng-option')[planningData.repeatType];
         expect(editRepeatTypeSelected.getAttribute('class'), 'Saved Repeat Type is incorrect').contains('ng-option-selected');
 
-        itemsPlanningModalPage.listEditCancelBtn.click();
+        itemsPlanningModalPage.planningEditCancelBtn.click();
         $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-        listRowObject.clickDeleteList();
-        itemsPlanningModalPage.listDeleteDeleteBtn.click();
+        planningRowObject.clickDeletePlanning();
+        itemsPlanningModalPage.planningDeleteDeleteBtn.click();
         $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
     });
 });

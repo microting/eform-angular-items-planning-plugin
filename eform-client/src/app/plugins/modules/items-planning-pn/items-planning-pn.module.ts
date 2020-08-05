@@ -8,14 +8,11 @@ import {NgSelectModule} from '@ng-select/ng-select';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {ItemsPlanningPnLayoutComponent} from './layouts';
 import {
-  PlanningCaseColumnsModalComponent,
   PlanningCreateComponent,
   PlanningCasePageComponent,
-  PlanningCaseResultPageComponent,
   PlanningDeleteComponent,
   PlanningEditComponent,
   PlanningsPageComponent,
-  PlanningCaseUploadedDataComponent,
   UploadedDataPdfComponent,
   UploadedDataDeleteComponent, PlanningAssignSitesModalComponent,
 } from './components/planning';
@@ -30,7 +27,7 @@ import {ItemsPlanningPnPlanningsService,
 import {
   ReportContainerComponent,
   ReportHeaderComponent, ReportImagesComponent, ReportPostsComponent,
-  ReportPreviewTableComponent, ReportTableComponent
+  ReportTableComponent
 } from './components/reports';
 import {FileUploadModule} from 'ng2-file-upload';
 import {OwlDateTimeModule} from 'ng-pick-datetime-ex';
@@ -54,9 +51,7 @@ import {EformSharedModule} from 'src/app/common/modules/eform-shared/eform-share
   ],
   declarations: [
     ItemsPlanningPnLayoutComponent,
-    PlanningCaseColumnsModalComponent,
     PlanningsPageComponent,
-    PlanningCaseResultPageComponent,
     PlanningCreateComponent,
     PlanningCasePageComponent,
     PlanningEditComponent,
@@ -65,11 +60,9 @@ import {EformSharedModule} from 'src/app/common/modules/eform-shared/eform-share
     ItemsPlanningSettingsComponent,
     ReportContainerComponent,
     ReportHeaderComponent,
-    ReportPreviewTableComponent,
     ReportTableComponent,
     ReportPostsComponent,
     ReportImagesComponent,
-    PlanningCaseUploadedDataComponent,
     UploadedDataPdfComponent,
     UploadedDataDeleteComponent
   ],

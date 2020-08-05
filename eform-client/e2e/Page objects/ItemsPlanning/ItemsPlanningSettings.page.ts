@@ -31,10 +31,6 @@ export class ItemsPlanningSettingsPage extends Page {
     return browser.$('#numberOfWorkers');
   }
 
-  public get siteIds() {
-    return browser.$('#siteIds');
-  }
-
   public get itemsPlanningBtn() {
     return browser.$('#items-planning-pn');
   }
@@ -57,7 +53,6 @@ export class ItemsPlanningSettingsPage extends Page {
     this.logLimit.setValue(data.logLimit);
     this.maxParallelism.setValue(data.maxParallelism);
     this.numberOfWorkers.setValue(data.numberOfWorkers);
-    this.siteIds.setValue(data.siteIds);
     this.saveSettingsBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
@@ -78,7 +73,6 @@ export class ItemsPlanningSettings {
     this.logLimit = itemsPlanningSettingsPage.logLimit.getValue();
     this.maxParallelism = itemsPlanningSettingsPage.maxParallelism.getValue();
     this.numberOfWorkers = itemsPlanningSettingsPage.numberOfWorkers.getValue();
-    this.siteIds = itemsPlanningSettingsPage.siteIds.getValue();
   }
 
   public sdkConnectionString;
@@ -86,5 +80,4 @@ export class ItemsPlanningSettings {
   public logLimit;
   public maxParallelism;
   public numberOfWorkers;
-  public siteIds;
 }

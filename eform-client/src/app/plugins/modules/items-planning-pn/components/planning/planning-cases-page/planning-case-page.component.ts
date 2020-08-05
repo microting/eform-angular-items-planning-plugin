@@ -46,7 +46,7 @@ export class PlanningCasePageComponent implements OnInit {
   getAllInitialData() {
     this.getAllCases();
   }
-  showListCasePdfModal(itemCase: PlanningCaseModel) {
+  showPlanningCasePdfModal(itemCase: PlanningCaseModel) {
     this.uploadedDataModal.show(itemCase);
   }
   getAllCases() {

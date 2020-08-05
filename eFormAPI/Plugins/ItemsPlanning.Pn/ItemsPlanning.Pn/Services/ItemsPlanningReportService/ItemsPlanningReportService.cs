@@ -215,7 +215,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             Id = caseDto.Id,
                             CreatedAt = caseDto.CreatedAt,
                             DoneBy = caseDto.DoneByUserName,
-                            ItemName = caseDto.Item.Planning.Name,
+                            ItemName = caseDto.Item.Name,
+                            ItemDescription = caseDto.Item.Description,
                         };
 
                         if (templateDto.Field1 != null)
