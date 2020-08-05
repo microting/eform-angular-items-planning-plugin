@@ -1,37 +1,37 @@
 import loginPage from '../../Page objects/Login.page';
-import itemsPlanningListPage, {ListRowObject} from '../../Page objects/ItemsPlanning/ItemsPlanningList.page';
+import itemsPlanningPlanningPage, {PlanningRowObject} from '../../Page objects/ItemsPlanning/ItemsPlanningPlanningPage';
 import itemsPlanningModalPage from '../../Page objects/ItemsPlanning/ItemsPlanningModal.page';
 
 const expect = require('chai').expect;
 
-describe('Items planning actions', function () {
+describe('Items planning actions - Delete', function () {
     before(function () {
         loginPage.open('/auth');
         loginPage.login();
-        itemsPlanningListPage.goToListsPage();
+        itemsPlanningPlanningPage.goToPlanningsPage();
     });
-  it('should should create List', function () {
-    itemsPlanningListPage.listCreateBtn.click();
+  it('should should create planning', function () {
+    itemsPlanningPlanningPage.planningCreateBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-    const listData = {
-      name: 'Test list',
+    const planningData = {
+      name: 'Test Planning',
       template: 'Number 1',
       description: 'Description',
       repeatEvery: '1',
       repeatType: '1',
       repeatUntil: '5/15/2020'
     };
-    itemsPlanningModalPage.createList(listData);
+    itemsPlanningModalPage.createPlanning(planningData);
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   });
-  it ('should delete existing list', function () {
+  it ('should delete existing planning', function () {
         $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
 
-        let listRowObject = new ListRowObject(itemsPlanningListPage.rowNum());
-        listRowObject.clickDeleteList();
-        itemsPlanningModalPage.listDeleteDeleteBtn.click();
+        let planningRowObject = new PlanningRowObject(itemsPlanningPlanningPage.rowNum());
+        planningRowObject.clickDeletePlanning();
+        itemsPlanningModalPage.planningDeleteDeleteBtn.click();
         $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-        listRowObject = new ListRowObject(1);
-        expect(listRowObject.id === null, 'List is not deleted');
+        planningRowObject = new PlanningRowObject(1);
+        expect(planningRowObject.id === null, 'Planning is not deleted');
     });
 });

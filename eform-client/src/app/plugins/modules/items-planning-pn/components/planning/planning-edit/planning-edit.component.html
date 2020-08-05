@@ -11,20 +11,20 @@
 
 <div class="container-fluid">
   <div class="row">
-    <div  class="col-md-12 col-xs-12" role="main">
+    <div class="col-md-12 col-xs-12" role="main">
       <mdb-card>
         <mdb-card-body>
           <div class="row">
-            <div class="col-md-4 col-sm-4 col-xs-4">
-              <div class="md-form">
-                <input mdbInput
-                       [(ngModel)]="selectedPlanningModel.name"
-                       type="text" id="editPlanningItemName"
-                       name="editPlanningItemName" class="form-control">
-                <label for="editPlanningItemName">{{'Planning Name' | translate}}</label>
-              </div>
-            </div>
-            <div class="col-md-4 col-sm-4 col-xs-4 ng-select-wrapper">
+            <!--            <div class="col-md-4 col-sm-4 col-xs-4">-->
+            <!--              <div class="md-form">-->
+            <!--                <input mdbInput-->
+            <!--                       [(ngModel)]="selectedPlanningModel.name"-->
+            <!--                       type="text" id="editPlanningItemName"-->
+            <!--                       name="editPlanningItemName" class="form-control">-->
+            <!--                <label for="editPlanningItemName">{{'Planning Name' | translate}}</label>-->
+            <!--              </div>-->
+            <!--            </div>-->
+            <div class="col-md-3 col-sm-4 col-xs-4 ng-select-wrapper">
               <ng-select [items]="templatesModel.templates"
                          bindLabel="label"
                          [placeholder]="('Selected template' | translate)"
@@ -34,19 +34,7 @@
                          id="editPlanningSelector">
               </ng-select>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-4">
-              <div class="md-form">
-                <input mdbInput
-                       [(ngModel)]="selectedPlanningModel.description"
-                       type="text" id="editPlanningDescription"
-                       name="editItemDescription" class="form-control">
-                <label for="editPlanningDescription">{{'Description' | translate}}</label>
-              </div>
-            </div>
-
-          </div>
-          <div class="row mb-1">
-            <div class="col-md-4 col-sm-4 col-xs-6">
+            <div class="col-md-3 col-sm-4 col-xs-6">
               <div class="md-form">
                 <input mdbInput
                        [(ngModel)]="selectedPlanningModel.repeatEvery"
@@ -55,7 +43,7 @@
                 <label for="editRepeatEvery">{{'Repeat every' | translate}}</label>
               </div>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-6 ng-select-wrapper">
+            <div class="col-md-3 col-sm-4 col-xs-6 ng-select-wrapper">
               <ng-select [items]="[
                 {id: 1, name: 'Day' | translate},
                 {id: 2, name: 'Week' | translate},
@@ -69,7 +57,7 @@
                          id="editRepeatType">
               </ng-select>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-6">
+            <div class="col-md-3 col-sm-4 col-xs-6">
               <div class="md-form" [owlDateTimeTrigger]="dt1">
                 <input mdbInput
                        [owlDateTime]="dt1"
@@ -80,6 +68,16 @@
                 <label for="editRepeatUntil">{{'Repeat until' | translate}}</label>
               </div>
             </div>
+            <!--            <div class="col-md-4 col-sm-4 col-xs-4">-->
+            <!--              <div class="md-form">-->
+            <!--                <input mdbInput-->
+            <!--                       [(ngModel)]="selectedPlanningModel.description"-->
+            <!--                       type="text" id="editPlanningDescription"-->
+            <!--                       name="editItemDescription" class="form-control">-->
+            <!--                <label for="editPlanningDescription">{{'Description' | translate}}</label>-->
+            <!--              </div>-->
+            <!--            </div>-->
+
           </div>
           <div class="row p-1 mt-2 table-responsive no-gutters" *ngIf="selectedPlanningModel.item">
             <table mdbTable small="true" class="z-depth-1 text-center">

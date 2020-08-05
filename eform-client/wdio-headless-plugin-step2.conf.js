@@ -16,7 +16,7 @@ exports.config = {
         'e2e/Tests/items-planning-general/items-planning.edit.spec.ts',
         'e2e/Tests/items-planning-general/items-planning.delete.spec.ts',
         'e2e/Tests/items-planning-general/items-planning.settings.spec.ts',
-        'e2e/Tests/items-planning-general/items-planning.sorting.spec.ts'
+        // 'e2e/Tests/items-planning-general/items-planning.sorting.spec.ts'
     ],
     suites: {
         settings: [
