@@ -16,7 +16,7 @@ describe('Items planning - Add', function () {
         itemsPlanningPlanningPage.planningCreateBtn.click();
         $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
         const planningData = {
-            name: 'Test Planning',
+            name: 'Test item',
             template: 'Number 1',
             description: 'Description',
             repeatEvery: '1',

@@ -26,9 +26,9 @@ export class ItemsPlanningModalPage extends Page {
   }
 
   public get createPlanningDescription() {
-    $('#createPlanningDescription').waitForDisplayed({timeout: 20000});
-    $('#createPlanningDescription').waitForClickable({timeout: 20000});
-    return $('#createPlanningDescription');
+    $('#createPlanningItemDescription').waitForDisplayed({timeout: 20000});
+    $('#createPlanningItemDescription').waitForClickable({timeout: 20000});
+    return $('#createPlanningItemDescription');
   }
 
   public get createRepeatEvery() {

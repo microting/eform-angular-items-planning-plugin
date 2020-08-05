@@ -15,16 +15,7 @@
       <mdb-card>
         <mdb-card-body>
           <div class="row">
-            <div class="col-md-4 col-sm-4 col-xs-6">
-              <div class="md-form">
-                <input mdbInput
-                       [(ngModel)]="newPlanningModel.name"
-                       type="text" id="createPlanningItemName"
-                       name="createPlanningItemName" class="form-control">
-                <label for="createPlanningItemName">{{'Name' | translate}}</label>
-              </div>
-            </div>
-            <div class="col-md-4 col-sm-4 col-xs-6 ng-select-wrapper">
+            <div class="col-md-3 col-sm-4 col-xs-6 ng-select-wrapper">
               <ng-select [items]="templatesModel.templates"
                          bindLabel="label"
                          [placeholder]="('Selected template' | translate)"
@@ -34,19 +25,7 @@
                          id="createPlanningSelector">
               </ng-select>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-6">
-              <div class="md-form">
-                <input mdbInput
-                       [(ngModel)]="newPlanningModel.description"
-                       type="text" id="createPlanningDescription"
-                       name="createItemDescription" class="form-control">
-                <label for="createItemDescription">{{'Description' | translate}}</label>
-              </div>
-            </div>
-
-          </div>
-          <div class="row mb-1">
-            <div class="col-md-4 col-sm-4 col-xs-6">
+            <div class="col-md-3 col-sm-4 col-xs-6">
               <div class="md-form">
                 <input mdbInput
                        [(ngModel)]="newPlanningModel.repeatEvery"
@@ -55,52 +34,21 @@
                 <label for="createRepeatEvery">{{'Repeat every' | translate}}</label>
               </div>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-6 ng-select-wrapper">
-                <ng-select [items]="[
+            <div class="col-md-3 col-sm-4 col-xs-6 ng-select-wrapper">
+              <ng-select [items]="[
                 {id: 1, name: 'Day' | translate},
                 {id: 2, name: 'Week' | translate},
                 {id: 3, name: 'Month' | translate}
                 ]"
-                           bindLabel="name"
-                           [placeholder]="('Repeat Type' | translate)"
-                           bindValue="id"
-                           [typeahead]="typeahead"
-                           [(ngModel)]="newPlanningModel.repeatType"
-                           id="createRepeatType">
-                </ng-select>
+                         bindLabel="name"
+                         [placeholder]="('Repeat Type' | translate)"
+                         bindValue="id"
+                         [typeahead]="typeahead"
+                         [(ngModel)]="newPlanningModel.repeatType"
+                         id="createRepeatType">
+              </ng-select>
             </div>
-<!--            <ng-template [ngIf]="newPlanningModel.repeatType == 2">-->
-<!--              <div class="col-md-4 col-sm-4 col-xs-6 ng-select-wrapper">-->
-<!--                <ng-select [items]="[-->
-<!--                                      {id: 1, name: 'Monday' | translate},-->
-<!--                                      {id: 2, name: 'Tuesday' | translate},-->
-<!--                                      {id: 3, name: 'Wednesday' | translate},-->
-<!--                                      {id: 4, name: 'Thursday' | translate},-->
-<!--                                      {id: 5, name: 'Friday' | translate},-->
-<!--                                      {id: 6, name: 'Saturday' | translate},-->
-<!--                                      {id: 0, name: 'Sunday' | translate}-->
-<!--                              ]"-->
-<!--                           bindLabel="name"-->
-<!--                           [placeholder]="('Day of week' | translate)"-->
-<!--                           bindValue="id"-->
-<!--                           [typeahead]="typeahead"-->
-<!--                           [(ngModel)]="newPlanningModel.dayOfWeek"-->
-<!--                           id="createDayOfWeek">-->
-<!--                </ng-select>-->
-<!--              </div>-->
-<!--            </ng-template>-->
-<!--            <ng-template [ngIf]="newPlanningModel.repeatType == 3">-->
-<!--              <div class="col-md-4 col-sm-4 col-xs-6">-->
-<!--                <div class="md-form">-->
-<!--                  <input mdbInput-->
-<!--                         [(ngModel)]="newPlanningModel.dayOfMonth"-->
-<!--                         type="text" id="createDayOfMonth"-->
-<!--                         name="createDayOfMonth" class="form-control">-->
-<!--                  <label for="createDayOfMonth">{{'Day of month' | translate}}</label>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </ng-template>-->
-            <div class="col-md-4 col-sm-4 col-xs-6">
+            <div class="col-md-3 col-sm-4 col-xs-6">
               <div class="md-form" [owlDateTimeTrigger]="dt1">
                 <input mdbInput
                        [owlDateTime]="dt1"

@@ -40,7 +40,7 @@ describe('Items planning plannings - Sorting', function () {
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   });
   it ('should be able to sort by Name', function () {
-    const listBefore = $$('#listName').map(item => {
+    const planningBefore = $$('#planningName').map(item => {
       return item.getText();
     });
 
@@ -48,7 +48,7 @@ describe('Items planning plannings - Sorting', function () {
     for (let i = 0; i < 2; i ++) {
       itemsPlanningPlanningPage.clickNameTableHeader();
 
-      const planningAfter = $$('#listName').map(item => {
+      const planningAfter = $$('#planningName').map(item => {
         return item.getText();
       });
 
@@ -56,11 +56,11 @@ describe('Items planning plannings - Sorting', function () {
       const sortIcon = $('#nameTableHeader i').getText();
       let sorted;
       if (sortIcon === 'expand_more') {
-        sorted = listBefore.sort().reverse();
+        sorted = planningBefore.sort().reverse();
       } else if (sortIcon === 'expand_less') {
-        sorted = listBefore.sort();
+        sorted = planningBefore.sort();
       } else {
-        sorted = listBefore;
+        sorted = planningBefore;
       }
 
       $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
@@ -69,7 +69,7 @@ describe('Items planning plannings - Sorting', function () {
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   });
   it ('should be able to sort by Description', function () {
-    const listBefore = $$('#planningDescription').map(item => {
+    const planningBefore = $$('#planningDescription').map(item => {
       return item.getText();
     });
 
@@ -77,7 +77,7 @@ describe('Items planning plannings - Sorting', function () {
     for (let i = 0; i < 2; i ++) {
       itemsPlanningPlanningPage.clickDescriptionTableHeader();
 
-      const listAfter = $$('#planningDescription').map(item => {
+      const planningAfter = $$('#planningDescription').map(item => {
         return item.getText();
       });
 
@@ -85,14 +85,14 @@ describe('Items planning plannings - Sorting', function () {
       const sortIcon = $('#descriptionTableHeader i').getText();
       let sorted;
       if (sortIcon === 'expand_more') {
-        sorted = listBefore.sort().reverse();
+        sorted = planningBefore.sort().reverse();
       } else if (sortIcon === 'expand_less') {
-        sorted = listBefore.sort();
+        sorted = planningBefore.sort();
       } else {
-        sorted = listBefore;
+        sorted = planningBefore;
       }
 
-      expect(sorted, 'Sort by Description incorrect').deep.equal(listAfter);
+      expect(sorted, 'Sort by Description incorrect').deep.equal(planningAfter);
     }
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   });

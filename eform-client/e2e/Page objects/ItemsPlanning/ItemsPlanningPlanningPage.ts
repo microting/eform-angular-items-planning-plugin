@@ -90,15 +90,17 @@ return $('#items-planning-pn-plannings');
   public createDummyPlannings() {
     for (let i = 0; i < 3; i++) {
       this.planningCreateBtn.click();
-      itemsPlanningModalPage.createPlanningItemName.setValue(Guid.create().toString());
-      itemsPlanningModalPage.createPlanningDescription.setValue(Guid.create().toString());
+      const planningData = {
+        name: Guid.create().toString(),
+        template: 'Number 1',
+        description: Guid.create().toString(),
+        repeatEvery: '1',
+        repeatType: '1',
+        repeatUntil: '5/15/2020'
+      };
       $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-      itemsPlanningModalPage.createPlanningSelector.addValue('Number 1');
       $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
       itemsPlanningModalPage.createPlanningSelectorOption.click();
-      itemsPlanningModalPage.createRepeatEvery.setValue(1);
-      itemsPlanningModalPage.selectCreateRepeatType(1);
-      itemsPlanningModalPage.createRepeatUntil.setValue('5/15/2020');
       itemsPlanningModalPage.planningCreateSaveBtn.click();
       $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
     }
