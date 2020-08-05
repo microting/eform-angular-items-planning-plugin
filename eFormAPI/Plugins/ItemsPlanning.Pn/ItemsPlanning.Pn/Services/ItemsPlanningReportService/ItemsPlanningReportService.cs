@@ -38,6 +38,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
     using Microting.eFormApi.BasePn.Abstractions;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Microting.eFormApi.BasePn.Infrastructure.Models.Application.CasePosts;
+    using Microting.ItemsPlanningBase.Infrastructure.Data;
     using WordService;
 
     public class ItemsPlanningReportService : IItemsPlanningReportService
@@ -47,6 +48,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
         private readonly IWordService _wordService;
         private readonly IEFormCoreService _coreHelper;
         private readonly ICasePostBaseService _casePostBaseService;
+        private readonly ItemsPlanningPnDbContext _dbContext;
 
         // ReSharper disable once SuggestBaseTypeForParameter
         public ItemsPlanningReportService(
@@ -54,13 +56,15 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             ILogger<ItemsPlanningReportService> logger,
             IEFormCoreService coreHelper,
             IWordService wordService,
-            ICasePostBaseService casePostBaseService)
+            ICasePostBaseService casePostBaseService,
+            ItemsPlanningPnDbContext dbContext)
         {
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
             _logger = logger;
             _coreHelper = coreHelper;
             _wordService = wordService;
             _casePostBaseService = casePostBaseService;
+            _dbContext = dbContext;
         }
 
         public async Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model)
@@ -69,9 +73,15 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             {
                 var core = await _coreHelper.GetCore();
                 await using var microtingDbContext = core.dbContextHelper.GetDbContext();
-                var casesQuery = microtingDbContext.cases
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                    .Include(x => x.Site)
+                //var casesQuery = microtingDbContext.cases
+                //    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                //    .Include(x => x.Site)
+                //    .AsQueryable();
+
+                var casesQuery = _dbContext.PlanningCases
+                    .Include(x=>x.Item)
+                    .ThenInclude(x=>x.Planning)
+                    .Where(x => x.WorkflowState == Constants.WorkflowStates.Processed)
                     .AsQueryable();
 
                 if (model.DateFrom != null)
@@ -91,11 +101,10 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 var itemCases = await casesQuery.ToListAsync();
 
                 var groupedCases = itemCases
-                    .Where(x => x.CheckListId != null)
-                    .GroupBy(x => x.CheckListId)
+                    .GroupBy(x => x.MicrotingSdkeFormId)
                     .Select(x => new
                     {
-                        templateId = (int)x.Key,
+                        templateId = x.Key,
                         cases = x.ToList(),
                     })
                     .ToList();
@@ -105,15 +114,12 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 {
                     var templateDto = await core.TemplateItemRead(groupedCase.templateId);
                     var template = await core.TemplateRead(groupedCase.templateId);
-                    var fields =
-                        await core.Advanced_TemplateFieldReadAll(groupedCase.templateId); // .label = headers[]
 
                     // Posts - check mailing in main app
                     var reportModel = new ReportEformModel
                     {
                         Name = template.Label,
                     };
-
 
                     if (templateDto.Field1 != null)
                     {
@@ -208,57 +214,58 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         {
                             Id = caseDto.Id,
                             CreatedAt = caseDto.CreatedAt,
-                            DoneBy = caseDto.Site.Name,
+                            DoneBy = caseDto.DoneByUserName,
+                            ItemName = caseDto.Item.Planning.Name,
                         };
 
                         if (templateDto.Field1 != null)
                         {
-                            item.CaseFields.Add(caseDto.FieldValue1);
+                            item.CaseFields.Add(caseDto.SdkFieldValue1);
 
                         }
                         if (templateDto.Field2 != null)
                         {
-                            item.CaseFields.Add(caseDto.FieldValue2);
+                            item.CaseFields.Add(caseDto.SdkFieldValue2);
 
                         }
                         if (templateDto.Field3 != null)
                         {
-                            item.CaseFields.Add(caseDto.FieldValue3);
+                            item.CaseFields.Add(caseDto.SdkFieldValue3);
                             
                         }
                         if (templateDto.Field4 != null)
                         {
-                            item.CaseFields.Add(caseDto.FieldValue4);
+                            item.CaseFields.Add(caseDto.SdkFieldValue4);
                             
                         }
                         if (templateDto.Field5 != null)
                         {
-                            item.CaseFields.Add(caseDto.FieldValue5);
+                            item.CaseFields.Add(caseDto.SdkFieldValue5);
                             
                         }
                         if (templateDto.Field6 != null)
                         {
-                            item.CaseFields.Add(caseDto.FieldValue6);
+                            item.CaseFields.Add(caseDto.SdkFieldValue6);
                             
                         }
                         if (templateDto.Field7 != null)
                         {
-                            item.CaseFields.Add(caseDto.FieldValue7);
+                            item.CaseFields.Add(caseDto.SdkFieldValue7);
                             
                         }
                         if (templateDto.Field8 != null)
                         {
-                            item.CaseFields.Add(caseDto.FieldValue8);
+                            item.CaseFields.Add(caseDto.SdkFieldValue8);
                             
                         }
                         if (templateDto.Field9 != null)
                         {
-                            item.CaseFields.Add(caseDto.FieldValue9);
+                            item.CaseFields.Add(caseDto.SdkFieldValue9);
                             
                         }
                         if (templateDto.Field10 != null)
                         {
-                            item.CaseFields.Add(caseDto.FieldValue10);
+                            item.CaseFields.Add(caseDto.SdkFieldValue10);
                         }
                         
 
