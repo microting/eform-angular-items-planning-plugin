@@ -1,0 +1,16 @@
+<subheader-pn [title]="'Generate Report' | translate">
+
+</subheader-pn>
+
+<div class="container-fluid">
+  <app-items-planning-pn-report-header
+    (downloadReport)="onDownloadReport($event)"
+    (generateReport)="onGenerateReport($event)">
+  </app-items-planning-pn-report-header>
+  <ng-container *ngFor="let report of reportsModel">
+    <h4>{{report.name}}</h4>
+    <app-report-table [items]="report.items" [itemHeaders]="report.itemHeaders"></app-report-table>
+    <app-report-images [imageNames]="report.imagesNames"></app-report-images>
+    <app-report-posts [posts]="report.posts"></app-report-posts>
+  </ng-container>
+</div>

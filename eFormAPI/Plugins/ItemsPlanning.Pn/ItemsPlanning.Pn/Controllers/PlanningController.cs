@@ -30,7 +30,7 @@ namespace ItemsPlanning.Pn.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Microting.ItemsPlanningBase.Infrastructure.Const;
-    using Services.Abstractions;
+    using Services.PlanningService;
 
     [Authorize]
     public class PlanningController : Controller

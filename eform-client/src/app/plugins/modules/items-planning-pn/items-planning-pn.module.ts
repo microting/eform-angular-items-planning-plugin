@@ -28,9 +28,9 @@ import {ItemsPlanningPnPlanningsService,
   ItemsPlanningPnCasesService,
   ItemsPlanningPnUploadedDataService} from './services';
 import {
-  ReportGeneratorContainerComponent,
-  ReportGeneratorFormComponent,
-  ReportPreviewTableComponent
+  ReportContainerComponent,
+  ReportHeaderComponent, ReportImagesComponent, ReportPostsComponent,
+  ReportPreviewTableComponent, ReportTableComponent
 } from './components/reports';
 import {FileUploadModule} from 'ng2-file-upload';
 import {OwlDateTimeModule} from 'ng-pick-datetime-ex';
@@ -63,9 +63,12 @@ import {EformSharedModule} from 'src/app/common/modules/eform-shared/eform-share
     PlanningDeleteComponent,
     PlanningAssignSitesModalComponent,
     ItemsPlanningSettingsComponent,
-    ReportGeneratorContainerComponent,
-    ReportGeneratorFormComponent,
+    ReportContainerComponent,
+    ReportHeaderComponent,
     ReportPreviewTableComponent,
+    ReportTableComponent,
+    ReportPostsComponent,
+    ReportImagesComponent,
     PlanningCaseUploadedDataComponent,
     UploadedDataPdfComponent,
     UploadedDataDeleteComponent

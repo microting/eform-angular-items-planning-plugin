@@ -28,7 +28,7 @@ namespace ItemsPlanning.Pn.Controllers
     using Infrastructure.Models;
     using Microsoft.AspNetCore.Mvc;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-    using Services.Abstractions;
+    using Services.UploadedDataService;
 
     public class UploadedDataController : Controller
     {
