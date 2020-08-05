@@ -10,7 +10,7 @@ describe('Items planning plannings - Sorting', function () {
     itemsPlanningPlanningPage.goToPlanningsPage();
   });
   it('should create dummy plannings', function () {
-    itemsPlanningPlanningPage.createDummyLists();
+    itemsPlanningPlanningPage.createDummyPlannings();
   });
   it ('should be able to sort by ID', function () {
     const planningBefore = $$('#planningId').map(item => {
