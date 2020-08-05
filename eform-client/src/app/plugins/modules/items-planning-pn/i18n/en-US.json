@@ -42,5 +42,13 @@
 
   "Day": "Day",
   "Week": "Week",
-  "Month": "Month"
+  "Month": "Month",
+
+  "Plannings": "Plannings",
+  "Planning": "Planning",
+  "New planning": "New planning",
+  "Edit Planning": "Edit Planning",
+  "Delete Planning": "Delete Planning",
+  "Assign Sites": "Assign Sites"
+
 }

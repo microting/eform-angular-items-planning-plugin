@@ -15,8 +15,7 @@ describe('Items planning plugin settings page', function () {
       logLevel: '4',
       logLimit: '25000',
       maxParallelism: '1',
-      numberOfWorkers: '1',
-      siteIds: '1,2,3'
+      numberOfWorkers: '1'
     };
     itemsPlanningSettingsPage.saveSettings(settingsData);
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
@@ -27,6 +26,5 @@ describe('Items planning plugin settings page', function () {
     expect(savedSettings.logLimit, 'Log Limit is incorrect').equal(settingsData.logLimit);
     expect(savedSettings.maxParallelism, 'Max parallelism is incorrect').equal(settingsData.maxParallelism);
     expect(savedSettings.numberOfWorkers, 'Number of workers is incorrect').equal(settingsData.numberOfWorkers);
-    expect(savedSettings.siteIds, 'Site ids is incorrect').equal(settingsData.siteIds);
   });
 });

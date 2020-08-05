@@ -35,7 +35,7 @@ export class ItemsPlanningPnPlanningsService extends BaseService {
     return this.put(ItemsPlanningPnPlanningsMethods.Plannings, model);
   }
 
-  createList(model: PlanningCreateModel): Observable<OperationResult> {
+  createPlanning(model: PlanningCreateModel): Observable<OperationResult> {
     return this.post(ItemsPlanningPnPlanningsMethods.Plannings, model);
   }
 

@@ -62,7 +62,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
       this.newPlanningModel.repeatUntil = datTime.format('YYYY-MM-DD');
     }
 
-    this.createSub$ = this.itemsPlanningPnPlanningsService.createList(this.newPlanningModel).subscribe((data) => {
+    this.createSub$ = this.itemsPlanningPnPlanningsService.createPlanning(this.newPlanningModel).subscribe((data) => {
       if (data && data.success) {
         this.location.back();
       }

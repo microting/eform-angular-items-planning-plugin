@@ -7,8 +7,6 @@ import {
   ItemsPlanningSettingsComponent,
   ReportContainerComponent,
   PlanningCasePageComponent,
-  PlanningCaseResultPageComponent,
-  PlanningCaseUploadedDataComponent,
   PlanningEditComponent, PlanningCreateComponent
 } from './components';
 import {ItemsPlanningPnClaims} from './enums';
@@ -41,11 +39,6 @@ export const routes: Routes = [
         component: PlanningCasePageComponent
       },
       {
-        path: 'planning-planningCase-results/:id',
-        canActivate: [AuthGuard],
-        component: PlanningCaseResultPageComponent
-      },
-      {
         path: 'settings',
         canActivate: [AdminGuard],
         component: ItemsPlanningSettingsComponent
@@ -54,11 +47,6 @@ export const routes: Routes = [
         path: 'reports',
         canActivate: [AdminGuard],
         component: ReportContainerComponent
-      },
-      {
-        path: 'planning-cases/:id/:id',
-        canActivate: [AdminGuard],
-        component: PlanningCaseUploadedDataComponent
       }
     ]
   }

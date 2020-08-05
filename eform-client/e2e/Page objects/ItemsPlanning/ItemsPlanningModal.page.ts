@@ -6,19 +6,18 @@ export class ItemsPlanningModalPage extends Page {
   }
 
   // Create page elements
-  public get createListItemName() {
-    $('#createListItemName').waitForDisplayed({timeout: 20000});
-    //$('#createListItemName').waitForClickable({timeout: 20000});
-    return $('#createListItemName');
+  public get createPlanningItemName() {
+    $('#createPlanningItemName').waitForDisplayed({timeout: 20000});
+    return $('#createPlanningItemName');
   }
 
-  public get createListSelector() {
-    $('#createListSelector input').waitForDisplayed({timeout: 20000});
-    $('#createListSelector input').waitForClickable({timeout: 20000});
-    return $('#createListSelector input');
+  public get createPlanningSelector() {
+    $('#createPlanningSelector input').waitForDisplayed({timeout: 20000});
+    $('#createPlanningSelector input').waitForClickable({timeout: 20000});
+    return $('#createPlanningSelector input');
   }
 
-  public get createListSelectorOption() {
+  public get createPlanningSelectorOption() {
     browser.pause(1000);
     const ele = $(`//*[contains(@class, 'ng-option')]`);
     ele.waitForDisplayed({timeout: 20000});
@@ -26,10 +25,10 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
 
-  public get createListDescription() {
-    $('#createListDescription').waitForDisplayed({timeout: 20000});
-    $('#createListDescription').waitForClickable({timeout: 20000});
-    return $('#createListDescription');
+  public get createPlanningDescription() {
+    $('#createPlanningDescription').waitForDisplayed({timeout: 20000});
+    $('#createPlanningDescription').waitForClickable({timeout: 20000});
+    return $('#createPlanningDescription');
   }
 
   public get createRepeatEvery() {
@@ -52,37 +51,37 @@ export class ItemsPlanningModalPage extends Page {
     return $('#createRepeatUntil');
   }
 
-  public get listCreateSaveBtn() {
-    $('#listCreateSaveBtn').waitForDisplayed({timeout: 20000});
-    $('#listCreateSaveBtn').waitForClickable({timeout: 20000});
-    return $('#listCreateSaveBtn');
+  public get planningCreateSaveBtn() {
+    $('#planningCreateSaveBtn').waitForDisplayed({timeout: 20000});
+    $('#planningCreateSaveBtn').waitForClickable({timeout: 20000});
+    return $('#planningCreateSaveBtn');
   }
 
-  public get listCreateCancelBtn() {
-    $('#listCreateCancelBtn').waitForDisplayed({timeout: 20000});
-    $('#listCreateCancelBtn').waitForClickable({timeout: 20000});
-    return $('#listCreateCancelBtn');
+  public get planningCreateCancelBtn() {
+    $('#planningCreateCancelBtn').waitForDisplayed({timeout: 20000});
+    $('#planningCreateCancelBtn').waitForClickable({timeout: 20000});
+    return $('#planningCreateCancelBtn');
   }
 
   // Edit page elements
-  public get editListItemName() {
-    $('#editListItemName').waitForDisplayed({timeout: 20000});
-    $('#editListItemName').waitForClickable({timeout: 20000});
-    return $('#editListItemName');
+  public get editPlanningItemName() {
+    $('#editPlanningItemName').waitForDisplayed({timeout: 20000});
+    $('#editPlanningItemName').waitForClickable({timeout: 20000});
+    return $('#editPlanningItemName');
   }
 
-  public get editListSelector() {
-    $('#editListSelector input').waitForDisplayed({timeout: 20000});
-    $('#editListSelector input').waitForClickable({timeout: 20000});
-    return $('#editListSelector input');
+  public get editPlanningSelector() {
+    $('#editPlanningSelector input').waitForDisplayed({timeout: 20000});
+    $('#editPlanningSelector input').waitForClickable({timeout: 20000});
+    return $('#editPlanningSelector input');
   }
-  public get editListSelectorValue() {
-    return $(`//*[contains(@id, 'editListSelector')]//*[contains(@class, 'ng-value')]//div[contains(@class, 'ng-star-inserted')]`);
+  public get editPlanningSelectorValue() {
+    return $(`//*[contains(@id, 'editPlanningSelector')]//*[contains(@class, 'ng-value')]//div[contains(@class, 'ng-star-inserted')]`);
   }
-  public get editListDescription() {
-    $('#editListDescription').waitForDisplayed({timeout: 20000});
-    $('#editListDescription').waitForClickable({timeout: 20000});
-    return $('#editListDescription');
+  public get editPlanningDescription() {
+    $('#editPlanningDescription').waitForDisplayed({timeout: 20000});
+    $('#editPlanningDescription').waitForClickable({timeout: 20000});
+    return $('#editPlanningDescription');
   }
 
   public get editRepeatEvery() {
@@ -105,16 +104,16 @@ export class ItemsPlanningModalPage extends Page {
     return $('#editRepeatUntil');
   }
 
-  public get listEditSaveBtn() {
-    $('#listEditSaveBtn').waitForDisplayed({timeout: 20000});
-    $('#listEditSaveBtn').waitForClickable({timeout: 20000});
-    return $('#listEditSaveBtn');
+  public get planningEditSaveBtn() {
+    $('#planningEditSaveBtn').waitForDisplayed({timeout: 20000});
+    $('#planningEditSaveBtn').waitForClickable({timeout: 20000});
+    return $('#planningEditSaveBtn');
   }
 
-  public get listEditCancelBtn() {
-    $('#listEditCancelBtn').waitForDisplayed({timeout: 20000});
-    $('#listEditCancelBtn').waitForClickable({timeout: 20000});
-    return $('#listEditCancelBtn');
+  public get planningEditCancelBtn() {
+    $('#planningEditCancelBtn').waitForDisplayed({timeout: 20000});
+    $('#planningEditCancelBtn').waitForClickable({timeout: 20000});
+    return $('#planningEditCancelBtn');
   }
 
   // Add item elements
@@ -125,38 +124,38 @@ export class ItemsPlanningModalPage extends Page {
   }
 
   // Delete page elements
-  public get listDeleteDeleteBtn() {
-    $('#listDeleteDeleteBtn').waitForDisplayed({timeout: 20000});
-    $('#listDeleteDeleteBtn').waitForClickable({timeout: 20000});
-    return $('#listDeleteDeleteBtn');
+  public get planningDeleteDeleteBtn() {
+    $('#planningDeleteDeleteBtn').waitForDisplayed({timeout: 20000});
+    $('#planningDeleteDeleteBtn').waitForClickable({timeout: 20000});
+    return $('#planningDeleteDeleteBtn');
   }
 
-  public get listDeleteCancelBtn() {
-    $('#listDeleteCancelBtn').waitForDisplayed({timeout: 20000});
-    $('#listDeleteCancelBtn').waitForClickable({timeout: 20000});
-    return $('#listDeleteCancelBtn');
+  public get planningDeleteCancelBtn() {
+    $('#planningDeleteCancelBtn').waitForDisplayed({timeout: 20000});
+    $('#planningDeleteCancelBtn').waitForClickable({timeout: 20000});
+    return $('#planningDeleteCancelBtn');
   }
 
-  public createList(data: any) {
-    this.createListItemName.setValue(data.name);
-    this.createListSelector.addValue(data.template);
-    this.createListSelectorOption.click();
-    this.createListDescription.setValue(data.description);
+  public createPlanning(data: any) {
+    this.createPlanningItemName.setValue(data.name);
+    this.createPlanningSelector.addValue(data.template);
+    this.createPlanningSelectorOption.click();
+    this.createPlanningDescription.setValue(data.description);
     this.createRepeatEvery.setValue(data.repeatEvery);
     this.selectCreateRepeatType(data.repeatType);
     this.createRepeatUntil.setValue(data.repeatUntil);
-    this.listCreateSaveBtn.click();
+    this.planningCreateSaveBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
-  public editList(data: any) {
-    this.editListItemName.setValue(data.name);
-    this.editListSelector.setValue(data.template);
-    this.editListDescription.setValue(data.description);
+  public editPlanning(data: any) {
+    this.editPlanningItemName.setValue(data.name);
+    this.editPlanningSelector.setValue(data.template);
+    this.editPlanningDescription.setValue(data.description);
     this.editRepeatEvery.setValue(data.repeatEvery);
     this.selectEditRepeatType(data.repeatType);
     this.editRepeatUntil.setValue(data.repeatUntil);
-    this.listEditSaveBtn.click();
+    this.planningEditSaveBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
@@ -170,7 +169,7 @@ export class ItemsPlanningModalPage extends Page {
 const itemsPlanningModalPage = new ItemsPlanningModalPage();
 export default itemsPlanningModalPage;
 
-export class ListItemRowObject {
+export class PlanningItemRowObject {
   constructor(rowNumber) {
     this.name = $$('#createItemName')[rowNumber - 1].getText();
     this.description = $$('#createItemDescription')[rowNumber - 1].getText();

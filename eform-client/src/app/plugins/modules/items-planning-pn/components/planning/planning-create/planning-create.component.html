@@ -1,10 +1,10 @@
 <eform-page-subheader [title]="'New planning' | translate">
   <div class="p-3">
-    <button mdbBtn id="listCreateSaveBtn" class="btn-success btn-small-height" [disabled]="!newPlanningModel.name"
+    <button mdbBtn id="planningCreateSaveBtn" class="btn-success btn-small-height" [disabled]="!newPlanningModel.name"
             (click)="createPlanning()">
       {{ 'Create' | translate }}
     </button>
-    <button mdbBtn id="listCreateCancelBtn" class="btn-accent text-black-50 btn-small-height"
+    <button mdbBtn id="planningCreateCancelBtn" class="btn-accent text-black-50 btn-small-height"
             (click)="goBack()">{{'Cancel' | translate}}</button>
   </div>
 </eform-page-subheader>
@@ -19,9 +19,9 @@
               <div class="md-form">
                 <input mdbInput
                        [(ngModel)]="newPlanningModel.name"
-                       type="text" id="createListItemName"
-                       name="createListItemName" class="form-control">
-                <label for="createListItemName">{{'List Name' | translate}}</label>
+                       type="text" id="createPlanningItemName"
+                       name="createPlanningItemName" class="form-control">
+                <label for="createPlanningItemName">{{'Name' | translate}}</label>
               </div>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-6 ng-select-wrapper">
@@ -31,14 +31,14 @@
                          bindValue="id"
                          [typeahead]="typeahead"
                          [(ngModel)]="newPlanningModel.relatedEFormId"
-                         id="createListSelector">
+                         id="createPlanningSelector">
               </ng-select>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-6">
               <div class="md-form">
                 <input mdbInput
                        [(ngModel)]="newPlanningModel.description"
-                       type="text" id="createListDescription"
+                       type="text" id="createPlanningDescription"
                        name="createItemDescription" class="form-control">
                 <label for="createItemDescription">{{'Description' | translate}}</label>
               </div>
@@ -125,7 +125,7 @@
                     <label for="createItemName">{{'Name' | translate}}</label>
                   </div>
                 </td>
-                <td id="listName">
+                <td id="planningName">
                   <div class="md-form md-form-sm">
                     <input mdbInput
                            [(ngModel)]="newPlanningModel.item.description"

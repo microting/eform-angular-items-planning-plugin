@@ -21,13 +21,13 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.reportsModel = [...testData];
+    // this.reportsModel = [...testData];
   }
 
   onGenerateReport(model: ReportPnGenerateModel) {
     this.generateReportSub$ = this.reportService.generateReport(model).subscribe((data) => {
       if (data && data.success) {
-        // this.reportsModel = data.model;
+        this.reportsModel = data.model;
       }
     });
   }
@@ -48,28 +48,34 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
 const testData = [
   {
     name: 'Test Eform 1',
-    itemHeaders: ['Header 1', 'Header 2', 'Header 3'],
+    itemHeaders: ['Header 1', 'Header 2', 'Header 3', 'Header 4'],
     items: [
       {
         id: 1,
         createdAt: '2019/02/02',
         doneBy: 'Not Ukrainian',
         itemName: 'Hey Item',
-        caseFields: ['Field 1', 'Field 2', 'Field 3', 'Field 4']
+        caseFields: ['Field 1', 'Field 2', 'Field 3', 'Field 4'],
+        imagesCount: 0,
+        postsCount: 0
       },
       {
         id: 1,
         createdAt: '2019/02/02',
         doneBy: 'Not Ukrainian',
         itemName: 'Hey Item',
-        caseFields: ['Field 1', 'Field 2', 'Field 3', 'Field 4']
+        caseFields: ['Field 1', 'Field 2', 'Field 3', 'Field 4'],
+        imagesCount: 0,
+        postsCount: 0
       },
       {
         id: 1,
         createdAt: '2019/02/02',
         doneBy: 'Not Ukrainian',
         itemName: 'Hey Item',
-        caseFields: ['Field 1', 'Field 2', 'Field 3', 'Field 4']
+        caseFields: ['Field 1', 'Field 2', 'Field 3', 'Field 4'],
+        imagesCount: 0,
+        postsCount: 0
       }
     ],
     imagesNames: [],

@@ -5,5 +5,7 @@ export class ReportEformItemModel {
   createdAt: string;
   doneBy: string;
   itemName: string;
+  postsCount: number;
+  imagesCount: number;
   caseFields: string[] = [];
 }

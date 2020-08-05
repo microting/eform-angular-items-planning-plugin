@@ -1,7 +1,7 @@
 <subheader-pn [title]="'Plannings' | translate">
   <div class="p-3">
     <button mdbBtn *ngIf="pluginClaimsHelper.check(itemsPlanningPnClaims.createPlannings)"
-      id="listCreateBtn"
+      id="planningCreateBtn"
       class="btn-success btn-small-height"
       mdbTooltip="{{ 'Create Planning' | translate }}"
       [routerLink]="['./create']">{{ 'New Planning' | translate }}
@@ -93,19 +93,19 @@
       </thead>
       <tbody id="tableBody">
       <tr *ngFor="let planning of planningsModel.plannings">
-        <td id="listId">
+        <td id="planningId">
           {{planning.id}}
         </td>
-        <td id="listName">
+        <td id="planningName">
           {{planning.name}}
         </td>
-        <td id="listDescription">
+        <td id="planningDescription">
           {{planning.description}}
         </td>
-        <td id="listRepeatEvery">
+        <td id="planningRepeatEvery">
           {{planning.repeatEvery}}
         </td>
-        <td id="listRepeatType">
+        <td id="planningRepeatType">
           <div *ngIf="planning.repeatType == 1">
             {{'Day' | translate}}
           </div>
@@ -116,13 +116,13 @@
             {{'Month' | translate}}
           </div>
         </td>
-        <td id="listRepeatUntil">
+        <td id="planningRepeatUntil">
           <date-formatter [date]="planning.repeatUntil" [Format]="'datetime'"></date-formatter>
         </td>
         <td>
           <div class="d-flex justify-content-center">
             <div>
-              <button id="listAssignmentBtn" [ngClass]="planning?.assignedSites?.length > 0 ? 'btn-success' : ''"
+              <button id="planningAssignmentBtn" [ngClass]="planning?.assignedSites?.length > 0 ? 'btn-success' : ''"
                       mdbBtn type="button" class="btn-small-height" (click)="openAssignmentModal(planning)"
                       mdbTooltip="{{ 'Click to edit pairing with user(s)' | translate }}">
                 {{ 'Edit pairing' | translate }}
@@ -132,25 +132,18 @@
         </td>
         <td>
           <div class="d-flex flex-row justify-content-center">
-            <button id="updateListBtn"
+            <button id="updatePlanningBtn"
               class="btn btn-accent text-black-50 btn-icon mb-2"
                     mdbTooltip="{{ 'Edit Planning' | translate }}"
                     [routerLink]="['./edit/' + planning.id]">
               <fa-icon icon="pen" size="lg" [fixedWidth]="true"></fa-icon>
             </button>
-            <button mdbBtn class="btn-success btn-icon mb-2"
-                    id="itemlist-case-results-btn"
-                    [routerLink]="['../planning-planningCase-results', planning.id]"
-                    mdbTooltip="{{ 'Show itemCase results' | translate }}">
-              <fa-icon icon="briefcase" [fixedWidth]="true" size="lg"></fa-icon>
-            </button>
-
-            <button mdbBtn class="btn-success btn-icon mb-2" id="edit-columnts-btn"
-                    (click)="openEditColumnsModal(planning)"
-                    mdbTooltip="{{ 'Edit columns' | translate }}">
-              <fa-icon icon="table" [fixedWidth]="true" size="lg"></fa-icon>
-            </button>
-            <button id="deleteListBtn"
+<!--            <button mdbBtn class="btn-success btn-icon mb-2" id="edit-columnts-btn"-->
+<!--                    (click)="openEditColumnsModal(planning)"-->
+<!--                    mdbTooltip="{{ 'Edit columns' | translate }}">-->
+<!--              <fa-icon icon="table" [fixedWidth]="true" size="lg"></fa-icon>-->
+<!--            </button>-->
+            <button id="deletePlanningBtn"
               class="btn btn-danger btn-icon mb-2 "
                     mdbTooltip="{{ 'Delete Planning' | translate }}"
                     (click)="showDeletePlanningModal(planning)">
@@ -181,6 +174,4 @@
 </div>
 <app-planning-delete #deletePlanningModal
                      (planningDeleted)="getAllPlannings()"></app-planning-delete>
-
-<app-planning-case-column-modal #modalCasesColumns></app-planning-case-column-modal>
 <app-planning-assign-sites-modal (sitesAssigned)="getAllPlannings()" #assignSitesModal></app-planning-assign-sites-modal>
