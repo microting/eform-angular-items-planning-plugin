@@ -22,40 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Controllers
+namespace ItemsPlanning.Pn.Services.ItemsPlanningPnSettingsService
 {
     using System.Threading.Tasks;
     using Infrastructure.Models.Settings;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using Microting.eFormApi.BasePn.Infrastructure.Database.Entities;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-    using Services.ItemsPlanningPnSettingsService;
 
-    public class ItemsPlanningSettingsController : Controller
+    public interface IItemsPlanningPnSettingsService
     {
-        private readonly IItemsPlanningPnSettingsService _itemsPlanningPnSettingsService;
-
-        public ItemsPlanningSettingsController(IItemsPlanningPnSettingsService itemsPlanningPnSettingsService)
-        {
-            _itemsPlanningPnSettingsService = itemsPlanningPnSettingsService;
-        }
-
-        [HttpGet]
-        [Authorize(Roles = EformRole.Admin)]
-        [Route("api/items-planning-pn/settings")]
-        public async Task<OperationDataResult<ItemsPlanningBaseSettings>> GetSettings()
-        {
-            return await _itemsPlanningPnSettingsService.GetSettings();
-        }
+        Task<OperationDataResult<ItemsPlanningBaseSettings>> GetSettings();
+        Task<OperationResult> UpdateSettings(ItemsPlanningBaseSettings itemsPlanningBaseSettings);
         
-        [HttpPost]
-        [Authorize(Roles = EformRole.Admin)]
-        [Route("api/items-planning-pn/settings")]
-        public async Task<OperationResult> UpdateSettings([FromBody] ItemsPlanningBaseSettings itemsPlanningBaseSettings)
-        {
-            return await _itemsPlanningPnSettingsService.UpdateSettings(itemsPlanningBaseSettings);
-        }
-
     }
 }

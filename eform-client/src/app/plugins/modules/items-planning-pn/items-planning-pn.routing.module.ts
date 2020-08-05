@@ -5,7 +5,7 @@ import {ItemsPlanningPnLayoutComponent} from './layouts';
 import {
   PlanningsPageComponent,
   ItemsPlanningSettingsComponent,
-  ReportGeneratorContainerComponent,
+  ReportContainerComponent,
   PlanningCasePageComponent,
   PlanningCaseResultPageComponent,
   PlanningCaseUploadedDataComponent,
@@ -53,7 +53,7 @@ export const routes: Routes = [
       {
         path: 'reports',
         canActivate: [AdminGuard],
-        component: ReportGeneratorContainerComponent
+        component: ReportContainerComponent
       },
       {
         path: 'planning-cases/:id/:id',

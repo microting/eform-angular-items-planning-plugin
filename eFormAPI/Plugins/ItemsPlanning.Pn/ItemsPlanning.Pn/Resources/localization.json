@@ -194,5 +194,54 @@
       "da": "Websteder tildelt med succes",
       "en-US": "Sites assigned successfully"
     }
+  },
+  {
+    "Key": "Id",
+    "LocalizedValue": {
+      "da": "Id",
+      "en-US": "Id"
+    }
+  },
+  {
+    "Key": "CreatedAt",
+    "LocalizedValue": {
+      "da": "Oprettet kl",
+      "en-US": "Created At"
+    }
+  },
+  {
+    "Key": "DoneBy",
+    "LocalizedValue": {
+      "da": "Gøres ved",
+      "en-US": "Done By"
+    }
+  },
+  {
+    "Key": "Pictures",
+    "LocalizedValue": {
+      "da": "Billeder",
+      "en-US": "Pictures"
+    }
+  },
+  {
+    "Key": "Posts",
+    "LocalizedValue": {
+      "da": "Indlæg",
+      "en-US": "Posts"
+    }
+  },
+  {
+    "Key": "SentTo",
+    "LocalizedValue": {
+      "da": "Sendt til",
+      "en-US": "Sent To"
+    }
+  },
+  {
+    "Key": "Comment",
+    "LocalizedValue": {
+      "da": "Kommentar",
+      "en-US": "Comment"
+    }
   }
 ]

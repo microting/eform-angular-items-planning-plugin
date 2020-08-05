@@ -21,14 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-namespace ItemsPlanning.Pn.Infrastructure.Models.Report
+namespace ItemsPlanning.Pn.Services.WordService
 {
-    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Threading.Tasks;
+    using Infrastructure.Models.Report;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
 
-    public class GenerateReportModel
+    public interface IWordService
     {
-        public DateTime? DateFrom { get; set; }
-        public DateTime? DateTo { get; set; }
+        Task<OperationDataResult<Stream>> GenerateWordDashboard(List<ReportEformModel> reportModel);
     }
 }
