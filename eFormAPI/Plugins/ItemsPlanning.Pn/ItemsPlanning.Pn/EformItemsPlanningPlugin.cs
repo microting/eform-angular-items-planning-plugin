@@ -57,7 +57,7 @@ namespace ItemsPlanning.Pn
     public class EformItemsPlanningPlugin : IEformPlugin
     {
         public string Name => "Microting Items Planning Plugin";
-        public string PluginId => "eform-angular-itemsplanning-plugin";
+        public string PluginId => "eform-angular-items-planning-plugin";
         public string PluginPath => PluginAssembly().Location;
         public string PluginBaseUrl => "items-planning-pn";
 
