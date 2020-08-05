@@ -27,27 +27,27 @@ install:
   - wget http://localhost:15672/cli/rabbitmqadmin
   - chmod +x rabbitmqadmin
   - ./rabbitmqadmin declare queue name=eformsdk-input durable=true
-  - ./rabbitmqadmin declare queue name=eform-angular-itemsplanning-plugin durable=true
+  - ./rabbitmqadmin declare queue name=eform-angular-items-planning-plugin durable=true
 script:
   - dotnet build eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
   - dotnet test -v n eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.Test/ItemsPlanning.Pn.Test.csproj
   - cd ../..
   - git clone --depth=50 --branch=$TRAVIS_BRANCH https://github.com/microting/eform-angular-frontend.git microting/eform-angular-frontend
-  - cp -av microting/eform-angular-itemsplanning-plugin/eform-client/src/app/plugins/modules/items-planning-pn microting/eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
-  - cp -av microting/eform-angular-itemsplanning-plugin/eform-client/e2e/Tests/items-planning-settings microting/eform-angular-frontend/eform-client/e2e/Tests/items-planning-settings
-  - cp -av microting/eform-angular-itemsplanning-plugin/eform-client/e2e/Tests/items-planning-general microting/eform-angular-frontend/eform-client/e2e/Tests/items-planning-general
-  - cp -av microting/eform-angular-itemsplanning-plugin/eform-client/e2e/Page\ objects/ItemsPlanning microting/eform-angular-frontend/eform-client/e2e/Page\ objects/ItemsPlanning
-  - cp -av microting/eform-angular-itemsplanning-plugin/eform-client/wdio-headless-plugin-step2.conf.js microting/eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.js
-  - cp -av microting/eform-angular-itemsplanning-plugin/eform-client/wdio-plugin-step2.conf.js microting/eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
+  - cp -av microting/eform-angular-items-planning-plugin/eform-client/src/app/plugins/modules/items-planning-pn microting/eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
+  - cp -av microting/eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-settings microting/eform-angular-frontend/eform-client/e2e/Tests/items-planning-settings
+  - cp -av microting/eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-general microting/eform-angular-frontend/eform-client/e2e/Tests/items-planning-general
+  - cp -av microting/eform-angular-items-planning-plugin/eform-client/e2e/Page\ objects/ItemsPlanning microting/eform-angular-frontend/eform-client/e2e/Page\ objects/ItemsPlanning
+  - cp -av microting/eform-angular-items-planning-plugin/eform-client/wdio-headless-plugin-step2.conf.js microting/eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.js
+  - cp -av microting/eform-angular-items-planning-plugin/eform-client/wdio-plugin-step2.conf.js microting/eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
   - cd microting/eform-angular-frontend
   - dotnet build eFormAPI/eFormAPI.sln > dotnet_log 2>&1 &
   - cd ../..
   - mkdir -p microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
-  - cp -av microting/eform-angular-itemsplanning-plugin/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
+  - cp -av microting/eform-angular-items-planning-plugin/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
   - cd microting/eform-angular-frontend
   - mkdir -p /home/travis/build/microting/eform-angular-frontend/eform-client/errorShots
   - cd eform-client && npm install
-  - ../../eform-angular-itemsplanning-plugin/testinginstallpn.sh
+  - ../../eform-angular-items-planning-plugin/testinginstallpn.sh
   - npm start &
   - sleep 75
   - dotnet run --project ../eFormAPI/eFormAPI.Web/eFormAPI.Web.csproj > dotnet_log 2>&1 &
