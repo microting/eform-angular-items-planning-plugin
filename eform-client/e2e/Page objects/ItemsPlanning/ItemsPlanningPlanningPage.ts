@@ -10,52 +10,58 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public rowNum(): number {
-      browser.pause(500);
+    browser.pause(500);
     return $$('#tableBody > tr').length;
   }
+
   public get newEformBtn() {
     $('#newEFormBtn').waitForDisplayed({timeout: 20000});
-$('#newEFormBtn').waitForClickable({timeout: 20000});
-return $('#newEFormBtn');
+    $('#newEFormBtn').waitForClickable({timeout: 20000});
+    return $('#newEFormBtn');
   }
+
   public get xmlTextArea() {
     $('#eFormXml').waitForDisplayed({timeout: 20000});
-$('#eFormXml').waitForClickable({timeout: 20000});
-return $('#eFormXml');
+    $('#eFormXml').waitForClickable({timeout: 20000});
+    return $('#eFormXml');
   }
+
   public get createEformBtn() {
     $('#createEformBtn').waitForDisplayed({timeout: 20000});
-$('#createEformBtn').waitForClickable({timeout: 20000});
-return $('#createEformBtn');
+    $('#createEformBtn').waitForClickable({timeout: 20000});
+    return $('#createEformBtn');
   }
+
   public get createEformTagSelector() {
     $('#createEFormMultiSelector').waitForDisplayed({timeout: 20000});
-$('#createEFormMultiSelector').waitForClickable({timeout: 20000});
-return $('#createEFormMultiSelector');
+    $('#createEFormMultiSelector').waitForClickable({timeout: 20000});
+    return $('#createEFormMultiSelector');
   }
+
   public get createEformNewTagInput() {
     $('#addTagInput').waitForDisplayed({timeout: 20000});
-$('#addTagInput').waitForClickable({timeout: 20000});
-return $('#addTagInput');
+    $('#addTagInput').waitForClickable({timeout: 20000});
+    return $('#addTagInput');
   }
+
   public clickIdTableHeader() {
-    $(`//*[contains(@id, 'idTableHeader')]`).click();
+    $(`/ /*[contains(@id, 'idTableHeader')]`).click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
   public clickNameTableHeader() {
-    $(`//*[contains(@id, 'nameTableHeader')]`).click();
+    $(`/ /*[contains(@id, 'nameTableHeader')]`).click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
   public clickDescriptionTableHeader() {
-    $(`//*[contains(@id, 'descriptionTableHeader')]`).click();
+    $(`/ /*[contains(@id, 'descriptionTableHeader')]`).click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
   public getPlanningValue(selector: any, row: number) {
     if (selector === 'planningId') {
-      return  parseInt( $('#tableBody').$(`tr:nth-child(${row})`).$('#' + selector).getText(), 10);
+      return parseInt($('#tableBody').$(`tr:nth-child(${row})`).$('#' + selector).getText(), 10);
     } else {
       return $('#tableBody').$(`tr:nth-child(${row})`).$('#' + selector).getText();
     }
@@ -63,20 +69,20 @@ return $('#addTagInput');
 
   public get itemPlanningButton() {
     $('#items-planning-pn').waitForDisplayed({timeout: 20000});
-$('#items-planning-pn').waitForClickable({timeout: 20000});
-return $('#items-planning-pn');
+    $('#items-planning-pn').waitForClickable({timeout: 20000});
+    return $('#items-planning-pn');
   }
 
   public get planningCreateBtn() {
     $('#planningCreateBtn').waitForDisplayed({timeout: 20000});
-$('#planningCreateBtn').waitForClickable({timeout: 20000});
-return $('#planningCreateBtn');
+    $('#planningCreateBtn').waitForClickable({timeout: 20000});
+    return $('#planningCreateBtn');
   }
 
   public get planningsButton() {
     $('#items-planning-pn-plannings').waitForDisplayed({timeout: 20000});
-$('#items-planning-pn-plannings').waitForClickable({timeout: 20000});
-return $('#items-planning-pn-plannings');
+    $('#items-planning-pn-plannings').waitForClickable({timeout: 20000});
+    return $('#items-planning-pn-plannings');
   }
 
   public goToPlanningsPage() {
@@ -115,6 +121,7 @@ return $('#items-planning-pn-plannings');
       $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
     }
   }
+
   createNewEform(eFormLabel, newTagsPlanning = [], tagAddedNum = 0) {
     this.newEformBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
@@ -157,16 +164,20 @@ export class PlanningRowObject {
     if ($$('#planningId')[rowNumber - 1]) {
       try {
         this.name = $$('#planningName')[rowNumber - 1].getText();
-      } catch (e) {}
+      } catch (e) {
+      }
       try {
         this.description = $$('#planningDescription')[rowNumber - 1].getText();
-      } catch (e) {}
+      } catch (e) {
+      }
       try {
         this.updateBtn = $$('#updatePlanningBtn')[rowNumber - 1];
-      } catch (e) {}
+      } catch (e) {
+      }
       try {
         this.deleteBtn = $$('#deletePlanningBtn')[rowNumber - 1];
-      } catch (e) {}
+      } catch (e) {
+      }
     }
   }
 
@@ -184,6 +195,7 @@ export class PlanningRowObject {
   public clickUpdatePlanning() {
     this.updateBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    browser.pause(500);
   }
 }
 

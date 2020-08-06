@@ -15,15 +15,6 @@
       <mdb-card>
         <mdb-card-body>
           <div class="row">
-            <!--            <div class="col-md-4 col-sm-4 col-xs-4">-->
-            <!--              <div class="md-form">-->
-            <!--                <input mdbInput-->
-            <!--                       [(ngModel)]="selectedPlanningModel.name"-->
-            <!--                       type="text" id="editPlanningItemName"-->
-            <!--                       name="editPlanningItemName" class="form-control">-->
-            <!--                <label for="editPlanningItemName">{{'Planning Name' | translate}}</label>-->
-            <!--              </div>-->
-            <!--            </div>-->
             <div class="col-md-3 col-sm-4 col-xs-4 ng-select-wrapper">
               <ng-select [items]="templatesModel.templates"
                          bindLabel="label"
@@ -96,18 +87,18 @@
                   <div class="md-form md-form-sm">
                     <input mdbInput
                            [(ngModel)]="selectedPlanningModel.item.name"
-                           type="text" id="editItemName"
-                           name="editItemName" class="form-control">
-                    <label for="editItemName">{{'Name' | translate}}</label>
+                           type="text" id="editPlanningItemName"
+                           name="editPlanningItemName" class="form-control">
+                    <label for="editPlanningItemName">{{'Name' | translate}}</label>
                   </div>
                 </td>
                 <td id="planningName">
                   <div class="md-form md-form-sm">
                     <input mdbInput
                            [(ngModel)]="selectedPlanningModel.item.description"
-                           type="text" id="editItemDescription"
-                           name="editItemDescription" class="form-control">
-                    <label for="editItemDescription">{{'Description' | translate}}</label>
+                           type="text" id="editPlanningItemDescription"
+                           name="editPlanningItemDescription" class="form-control">
+                    <label for="editPlanningItemDescription">{{'Description' | translate}}</label>
                   </div>
                 </td>
                 <td>
