@@ -481,7 +481,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         item.BuildYear = updateModel.Item.BuildYear;
                         item.Type = updateModel.Item.Type;
                         item.PlanningId = planning.Id;
-
                         await item.Update(_dbContext);
                     }
 
