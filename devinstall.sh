@@ -6,6 +6,8 @@ rm -fR Documents/workspace/microting/eform-angular-frontend/eform-client/src/app
 
 cp -a Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/src/app/plugins/modules/items-planning-pn Documents/workspace/microting/eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
 
+mkdir Documents/workspace/microting/eform-angular-frontend/eFormAPI/Plugins
+
 rm -fR Documents/workspace/microting/eform-angular-frontend/eFormAPI/Plugins/ItemsPlanning.Pn
 
 cp -a Documents/workspace/microting/eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn Documents/workspace/microting/eform-angular-frontend/eFormAPI/Plugins/ItemsPlanning.Pn
