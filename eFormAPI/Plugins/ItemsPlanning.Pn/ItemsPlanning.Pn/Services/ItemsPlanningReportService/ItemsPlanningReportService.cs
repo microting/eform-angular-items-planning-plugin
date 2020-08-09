@@ -112,56 +112,28 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 var result = new List<ReportEformModel>();
                 foreach (var groupedCase in groupedCases)
                 {
-                    var templateDto = await core.TemplateItemRead(groupedCase.templateId);
                     var template = await core.TemplateRead(groupedCase.templateId);
-
+                    
                     // Posts - check mailing in main app
                     var reportModel = new ReportEformModel
                     {
                         Name = template.Label,
                     };
 
-                    if (templateDto.Field1 != null)
-                    {
-                        reportModel.ItemHeaders.Add(templateDto.Field1.Label);
-                    }
-                    if (templateDto.Field2 != null)
-                    {
-                        reportModel.ItemHeaders.Add(templateDto.Field2.Label);
-                    }
-                    if (templateDto.Field3 != null)
-                    {
-                        reportModel.ItemHeaders.Add(templateDto.Field3.Label);
-                    }
-                    if (templateDto.Field4 != null)
-                    {
-                        reportModel.ItemHeaders.Add(templateDto.Field4.Label);
-                    }
-                    if (templateDto.Field5 != null)
-                    {
-                        reportModel.ItemHeaders.Add(templateDto.Field5.Label);
-                    }
-                    if (templateDto.Field6 != null)
-                    {
-                        reportModel.ItemHeaders.Add(templateDto.Field6.Label);
-                    }
-                    if (templateDto.Field7 != null)
-                    {
-                        reportModel.ItemHeaders.Add(templateDto.Field7.Label);
-                    }
-                    if (templateDto.Field8 != null)
-                    {
-                        reportModel.ItemHeaders.Add(templateDto.Field8.Label);
-                    }
-                    if (templateDto.Field9 != null)
-                    {
-                        reportModel.ItemHeaders.Add(templateDto.Field9.Label);
-                    }
-                    if (templateDto.Field10 != null)
-                    {
-                        reportModel.ItemHeaders.Add(templateDto.Field10.Label);
-                    }
+                    var fields = await core.Advanced_TemplateFieldReadAll(
+                        groupedCase.templateId);
 
+                    foreach (var fieldDto in fields)
+                    {
+                        var kvp = new Microting.eForm.Dto.KeyValuePair(
+                            fieldDto.Id.ToString(),
+                            fieldDto.Label,
+                            true,
+                            string.Empty);
+
+                        reportModel.ItemHeaders.Add(kvp);
+                    }
+                    
                     // images
                     var templateCaseIds = groupedCase.cases.Select(x => (int?)x.Id).ToArray();
                     var imagesForEform = await microtingDbContext.field_values
@@ -219,56 +191,23 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             ItemDescription = caseDto.Item.Description,
                         };
 
-                        if (templateDto.Field1 != null)
-                        {
-                            item.CaseFields.Add(caseDto.SdkFieldValue1);
 
-                        }
-                        if (templateDto.Field2 != null)
-                        {
-                            item.CaseFields.Add(caseDto.SdkFieldValue2);
+                        var caseFields = await core.Advanced_FieldValueReadList(
+                            new List<int>()
+                            {
+                                caseDto.Id
+                            });
 
-                        }
-                        if (templateDto.Field3 != null)
+                        foreach (var itemHeader in reportModel.ItemHeaders)
                         {
-                            item.CaseFields.Add(caseDto.SdkFieldValue3);
-                            
+                            var caseField = caseFields
+                                .FirstOrDefault(x => x.FieldId == int.Parse(itemHeader.Key));
+
+                            if (caseField != null)
+                            {
+                                item.CaseFields.Add(caseField.Value);
+                            }
                         }
-                        if (templateDto.Field4 != null)
-                        {
-                            item.CaseFields.Add(caseDto.SdkFieldValue4);
-                            
-                        }
-                        if (templateDto.Field5 != null)
-                        {
-                            item.CaseFields.Add(caseDto.SdkFieldValue5);
-                            
-                        }
-                        if (templateDto.Field6 != null)
-                        {
-                            item.CaseFields.Add(caseDto.SdkFieldValue6);
-                            
-                        }
-                        if (templateDto.Field7 != null)
-                        {
-                            item.CaseFields.Add(caseDto.SdkFieldValue7);
-                            
-                        }
-                        if (templateDto.Field8 != null)
-                        {
-                            item.CaseFields.Add(caseDto.SdkFieldValue8);
-                            
-                        }
-                        if (templateDto.Field9 != null)
-                        {
-                            item.CaseFields.Add(caseDto.SdkFieldValue9);
-                            
-                        }
-                        if (templateDto.Field10 != null)
-                        {
-                            item.CaseFields.Add(caseDto.SdkFieldValue10);
-                        }
-                        
 
                         item.ImagesCount = await microtingDbContext.field_values
                             .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
