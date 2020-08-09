@@ -195,7 +195,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         var caseFields = await core.Advanced_FieldValueReadList(
                             new List<int>()
                             {
-                                caseDto.Id
+                                caseDto.MicrotingSdkCaseId
                             });
 
                         foreach (var itemHeader in reportModel.ItemHeaders)
@@ -217,7 +217,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             .CountAsync();
 
                         item.PostsCount = casePostListResult.Model.Entities
-                            .Where(x => x.CaseId == caseDto.Id)
+                            .Where(x => x.CaseId == caseDto.MicrotingSdkCaseId)
                             .Select(x => x.PostId)
                             .Count();
 
