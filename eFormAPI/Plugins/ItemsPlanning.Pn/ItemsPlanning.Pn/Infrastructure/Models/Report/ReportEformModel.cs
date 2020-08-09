@@ -25,14 +25,15 @@ SOFTWARE.
 namespace ItemsPlanning.Pn.Infrastructure.Models.Report
 {
     using System.Collections.Generic;
+    using KeyValuePair = Microting.eForm.Dto.KeyValuePair;
 
     public class ReportEformModel
     {
         public string Name { get; set; }
         public List<string> ImagesNames { get; set; }
             = new List<string>();
-        public List<string> ItemHeaders { get; set; }
-            = new List<string>();
+        public List<KeyValuePair> ItemHeaders { get; set; }
+            = new List<KeyValuePair>();
 
         public List<ReportEformItemModel> Items { get; set; }
             = new List<ReportEformItemModel>();

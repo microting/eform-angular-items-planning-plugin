@@ -9,7 +9,7 @@ import {ReportEformItemModel} from '../../../models/report';
 })
 export class ReportTableComponent implements OnInit {
   @Input() items: ReportEformItemModel[] = [];
-  @Input() itemHeaders: string[] = [];
+  @Input() itemHeaders: {key: string, value: string}[] = [];
   constructor() { }
 
   ngOnInit(): void {

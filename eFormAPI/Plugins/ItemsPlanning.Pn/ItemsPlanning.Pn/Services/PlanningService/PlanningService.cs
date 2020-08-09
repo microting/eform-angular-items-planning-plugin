@@ -469,6 +469,21 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         };
                         await newItem.Save(_dbContext);
                     }
+                    else
+                    {
+                        item.LocationCode = updateModel.Item.LocationCode;
+                        item.ItemNumber = updateModel.Item.ItemNumber;
+                        item.Description = updateModel.Item.Description;
+                        item.Name = updateModel.Item.Name;
+                        item.UpdatedByUserId = UserId;
+                        item.UpdatedAt = DateTime.UtcNow;
+                        item.Enabled = true;
+                        item.BuildYear = updateModel.Item.BuildYear;
+                        item.Type = updateModel.Item.Type;
+                        item.PlanningId = planning.Id;
+
+                        await item.Update(_dbContext);
+                    }
 
                     transaction.Commit();
                     return new OperationResult(
