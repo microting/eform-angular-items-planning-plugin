@@ -163,7 +163,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     }
 
                     // images
-                    var templateCaseIds = groupedCase.cases.Select(x => (int?)x.Id).ToArray();
+                    var templateCaseIds = groupedCase.cases.Select(x => (int?)x.MicrotingSdkCaseId).ToArray();
                     var imagesForEform = await microtingDbContext.field_values
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Where(x => x.Field.FieldTypeId == 5)
@@ -273,7 +273,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         item.ImagesCount = await microtingDbContext.field_values
                             .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                             .Where(x => x.Field.FieldTypeId == 5)
-                            .Where(x => x.CaseId == caseDto.Id)
+                            .Where(x => x.CaseId == caseDto.MicrotingSdkCaseId)
                             .Select(x => x.Id)
                             .CountAsync();
 
