@@ -110,6 +110,10 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     .ToList();
 
                 var result = new List<ReportEformModel>();
+                List<int> excludedFieldTypeIds = new List<int>()
+                {
+                    3,5,17,18
+                };
                 foreach (var groupedCase in groupedCases)
                 {
                     var template = await core.TemplateRead(groupedCase.templateId);
@@ -125,13 +129,16 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 
                     foreach (var fieldDto in fields)
                     {
-                        var kvp = new Microting.eForm.Dto.KeyValuePair(
-                            fieldDto.Id.ToString(),
-                            fieldDto.Label,
-                            true,
-                            string.Empty);
+                        if (!excludedFieldTypeIds.Contains(fieldDto.FieldTypeId))
+                        {
+                            var kvp = new Microting.eForm.Dto.KeyValuePair(
+                                fieldDto.Id.ToString(),
+                                fieldDto.Label,
+                                true,
+                                string.Empty);
 
-                        reportModel.ItemHeaders.Add(kvp);
+                            reportModel.ItemHeaders.Add(kvp);
+                        }
                     }
                     
                     // images
