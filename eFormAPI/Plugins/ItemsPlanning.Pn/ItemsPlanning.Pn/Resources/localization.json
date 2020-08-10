@@ -72,7 +72,7 @@
   {
     "Key": "ErrorWhileObtainingList",
     "LocalizedValue": {
-      "da": "Fejl under opnåelse af liste",
+      "da": "Kunne ikke hente listen",
       "en-US": "Error while obtaining list"
     }
   },
@@ -177,7 +177,7 @@
   {
     "Key": "Plannings",
     "LocalizedValue": {
-      "da": "Plannings",
+      "da": "Planlægninger",
       "en-US": "Plannings"
     }
   },
@@ -191,7 +191,7 @@
   {
     "Key": "SitesAssignedSuccessfully",
     "LocalizedValue": {
-      "da": "Websteder tildelt med succes",
+      "da": "Lokationer tildelt med succes",
       "en-US": "Sites assigned successfully"
     }
   },
@@ -212,7 +212,7 @@
   {
     "Key": "DoneBy",
     "LocalizedValue": {
-      "da": "Gøres ved",
+      "da": "Udført af",
       "en-US": "Done By"
     }
   },
