@@ -103,7 +103,7 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                     foreach (var itemHeader in reportEformModel.ItemHeaders)
                     {
-                        itemsHtml += $@"<td>{itemHeader}</td>";
+                        itemsHtml += $@"<td>{itemHeader.Value}</td>";
                     }
 
                     itemsHtml += $@"<td>{_localizationService.GetString("Pictures")}</td>";
@@ -134,8 +134,6 @@ namespace ItemsPlanning.Pn.Services.WordService
                     itemsHtml += $@"<p><b>{reportEformModel.Name} Images</b></p>";
                     foreach (var imagesName in reportEformModel.ImagesNames)
                     {
-                        itemsHtml += $@"<p><b>{imagesName}</b></p>";
-
                         var filePath = Path.Combine(await core.GetSdkSetting(Settings.fileLocationPicture), imagesName);
 
                         Stream stream;
