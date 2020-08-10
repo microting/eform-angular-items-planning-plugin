@@ -12,4 +12,5 @@ export class PlanningCreateModel {
   internalRepeatUntil: Moment | null;
   relatedEFormId: number;
   item: PlanningItemModel = new PlanningItemModel();
+  eFormSdkFolderId: number;
 }

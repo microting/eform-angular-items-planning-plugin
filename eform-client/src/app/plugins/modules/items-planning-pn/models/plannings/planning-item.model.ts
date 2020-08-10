@@ -6,4 +6,5 @@ export class PlanningItemModel {
   locationCode: string;
   buildYear: string;
   type: string;
+  eFormSdkFolderId: number;
 }

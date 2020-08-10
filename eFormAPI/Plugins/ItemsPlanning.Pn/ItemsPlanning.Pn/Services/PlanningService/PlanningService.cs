@@ -270,6 +270,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         Type = model.Item.Type,
                         PlanningId = itemsList.Id,
                         CreatedByUserId = UserId,
+                        eFormSdkFolderId = model.Item.eFormSdkFolderId
                     };
                     await item.Save(_dbContext);
 
@@ -317,16 +318,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         BuildYearEnabled = x.BuildYearEnabled,
                         TypeEnabled = x.TypeEnabled,
                         NumberOfImagesEnabled = x.NumberOfImagesEnabled,
-                        SdkFieldId1 = x.SdkFieldId1,
-                        SdkFieldId2 = x.SdkFieldId2,
-                        SdkFieldId3 = x.SdkFieldId3,
-                        SdkFieldId4 = x.SdkFieldId4,
-                        SdkFieldId5 = x.SdkFieldId5,
-                        SdkFieldId6 = x.SdkFieldId6,
-                        SdkFieldId7 = x.SdkFieldId7,
-                        SdkFieldId8 = x.SdkFieldId8,
-                        SdkFieldId9 = x.SdkFieldId9,
-                        SdkFieldId10 = x.SdkFieldId10,
                         LastExecutedTime = x.LastExecutedTime,
                         Item = new PlanningItemModel
                         {
@@ -337,6 +328,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             LocationCode = x.Item.LocationCode,
                             Name = x.Item.Name,
                             Type = x.Item.Type,
+                            eFormSdkFolderId = x.Item.eFormSdkFolderId
                         },
                         AssignedSites = x.PlanningSites
                             .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
@@ -423,26 +415,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         BuildYearEnabled = updateModel.BuildYearEnabled,
                         TypeEnabled = updateModel.TypeEnabled,
                         NumberOfImagesEnabled = updateModel.NumberOfImagesEnabled,
-                        SdkFieldId1 = updateModel.SdkFieldId1,
-                        SdkFieldId2 = updateModel.SdkFieldId2,
-                        SdkFieldId3 = updateModel.SdkFieldId3,
-                        SdkFieldId4 = updateModel.SdkFieldId4,
-                        SdkFieldId5 = updateModel.SdkFieldId5,
-                        SdkFieldId6 = updateModel.SdkFieldId6,
-                        SdkFieldId7 = updateModel.SdkFieldId7,
-                        SdkFieldId8 = updateModel.SdkFieldId8,
-                        SdkFieldId9 = updateModel.SdkFieldId9,
-                        SdkFieldId10 = updateModel.SdkFieldId10,
-                        SdkFieldEnabled1 = updateModel.SdkFieldId1 != null,
-                        SdkFieldEnabled2 = updateModel.SdkFieldId2 != null,
-                        SdkFieldEnabled3 = updateModel.SdkFieldId3 != null,
-                        SdkFieldEnabled4 = updateModel.SdkFieldId4 != null,
-                        SdkFieldEnabled5 = updateModel.SdkFieldId5 != null,
-                        SdkFieldEnabled6 = updateModel.SdkFieldId6 != null,
-                        SdkFieldEnabled7 = updateModel.SdkFieldId7 != null,
-                        SdkFieldEnabled8 = updateModel.SdkFieldId8 != null,
-                        SdkFieldEnabled9 = updateModel.SdkFieldId9 != null,
-                        SdkFieldEnabled10 = updateModel.SdkFieldId10 != null,
                         LastExecutedTime = updateModel.LastExecutedTime
 
                     };
@@ -466,6 +438,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             BuildYear = updateModel.Item.BuildYear,
                             Type = updateModel.Item.Type,
                             PlanningId = planning.Id,
+                            eFormSdkFolderId = updateModel.Item.eFormSdkFolderId
                         };
                         await newItem.Save(_dbContext);
                     }
@@ -481,6 +454,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         item.BuildYear = updateModel.Item.BuildYear;
                         item.Type = updateModel.Item.Type;
                         item.PlanningId = planning.Id;
+                        item.eFormSdkFolderId = updateModel.Item.eFormSdkFolderId;
 
                         await item.Update(_dbContext);
                     }

@@ -100,6 +100,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                     itemsHtml += $@"<td>{_localizationService.GetString("Id")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("CreatedAt")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("DoneBy")}</td>";
+                    itemsHtml += $@"<td>{_localizationService.GetString("ItemName")}</td>";
 
                     foreach (var itemHeader in reportEformModel.ItemHeaders)
                     {
@@ -117,6 +118,7 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                         itemsHtml += $@"<td>{dataModel.CreatedAt:dd-MM-yyyy}</td>";
                         itemsHtml += $@"<td>{dataModel.DoneBy}</td>";
+                        itemsHtml += $@"<td>{dataModel.ItemName}</td>";
 
                         foreach (var dataModelCaseField in dataModel.CaseFields)
                         {

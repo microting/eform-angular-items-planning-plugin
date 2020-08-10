@@ -1,7 +1,7 @@
 <eform-page-subheader [title]="'Edit Planning' | translate">
   <div class="p-3">
     <button mdbBtn id="planningEditSaveBtn" class="btn-success btn-small-height"
-            [disabled]="!selectedPlanningModel.item.name" (click)="updatePlanning()">
+            [disabled]="saveButtonDisabled || (selectedPlanningModel.item.name == null || selectedPlanningModel.item.name == '')" (click)="updatePlanning()">
       {{ 'Save' | translate }}
     </button>
     <button mdbBtn id="planningEditCancelBtn" class="btn-accent text-black-50 btn-small-height"
@@ -15,7 +15,30 @@
       <mdb-card>
         <mdb-card-body>
           <div class="row">
-            <div class="col-md-3 col-sm-4 col-xs-4 ng-select-wrapper">
+            <div class="col-md-3 col-sm-6 col-xs-6" *ngIf="selectedPlanningModel.item">
+              <div class="md-form">
+                <input mdbInput
+                       [(ngModel)]="selectedPlanningModel.item.name"
+                       type="text" id="editPlanningItemName"
+                       name="editPlanningItemName" class="form-control">
+                <label for="editPlanningItemName">{{'Name' | translate}}</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper" *ngIf="foldersDto.length > 0">
+              <ng-select
+                class="custom"
+                dropdownPosition="'bottom'"
+                [placeholder]="'Folders' | translate"
+                [items]="foldersDto"
+                [(ngModel)]="selectedPlanningModel.item.eFormSdkFolderId"
+                (ngModelChange)="updateSaveButtonDisabled($event)"
+                [clearable]="false"
+                [bindLabel]="'name'"
+                [bindValue]="'id'"
+                id="folderSelector"
+                [multiple]="false"></ng-select>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
               <ng-select [items]="templatesModel.templates"
                          bindLabel="label"
                          [placeholder]="('Selected template' | translate)"
@@ -25,7 +48,7 @@
                          id="editPlanningSelector">
               </ng-select>
             </div>
-            <div class="col-md-3 col-sm-4 col-xs-6">
+            <div class="col-md-3 col-sm-6 col-xs-6">
               <div class="md-form">
                 <input mdbInput
                        [(ngModel)]="selectedPlanningModel.repeatEvery"
@@ -34,7 +57,7 @@
                 <label for="editRepeatEvery">{{'Repeat every' | translate}}</label>
               </div>
             </div>
-            <div class="col-md-3 col-sm-4 col-xs-6 ng-select-wrapper">
+            <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
               <ng-select [items]="[
                 {id: 1, name: 'Day' | translate},
                 {id: 2, name: 'Week' | translate},
@@ -48,7 +71,7 @@
                          id="editRepeatType">
               </ng-select>
             </div>
-            <div class="col-md-3 col-sm-4 col-xs-6">
+            <div class="col-md-3 col-sm-6 col-xs-6">
               <div class="md-form" [owlDateTimeTrigger]="dt1">
                 <input mdbInput
                        [owlDateTime]="dt1"
@@ -59,78 +82,53 @@
                 <label for="editRepeatUntil">{{'Repeat until' | translate}}</label>
               </div>
             </div>
-            <!--            <div class="col-md-4 col-sm-4 col-xs-4">-->
-            <!--              <div class="md-form">-->
-            <!--                <input mdbInput-->
-            <!--                       [(ngModel)]="selectedPlanningModel.description"-->
-            <!--                       type="text" id="editPlanningDescription"-->
-            <!--                       name="editItemDescription" class="form-control">-->
-            <!--                <label for="editPlanningDescription">{{'Description' | translate}}</label>-->
-            <!--              </div>-->
-            <!--            </div>-->
-
           </div>
-          <div class="row p-1 mt-2 table-responsive no-gutters" *ngIf="selectedPlanningModel.item">
-            <table mdbTable small="true" class="z-depth-1 text-center">
-              <tbody id="itemsTableBody">
-              <tr>
-                <td>
-                  <div class="md-form md-form-sm">
-                    <input mdbInput
-                           [(ngModel)]="selectedPlanningModel.item.itemNumber"
-                           type="text" id="editItemNumber"
-                           name="editItemNumber" class="form-control">
-                    <label for="editItemNumber">{{'Number' | translate}}</label>
-                  </div>
-                </td>
-                <td id="planningId">
-                  <div class="md-form md-form-sm">
-                    <input mdbInput
-                           [(ngModel)]="selectedPlanningModel.item.name"
-                           type="text" id="editPlanningItemName"
-                           name="editPlanningItemName" class="form-control">
-                    <label for="editPlanningItemName">{{'Name' | translate}}</label>
-                  </div>
-                </td>
-                <td id="planningName">
-                  <div class="md-form md-form-sm">
-                    <input mdbInput
-                           [(ngModel)]="selectedPlanningModel.item.description"
-                           type="text" id="editPlanningItemDescription"
-                           name="editPlanningItemDescription" class="form-control">
-                    <label for="editPlanningItemDescription">{{'Description' | translate}}</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="md-form md-form-sm">
-                    <input mdbInput
-                           [(ngModel)]="selectedPlanningModel.item.locationCode"
-                           type="text" id="editItemLocationCode"
-                           name="editItemLocationCode" class="form-control">
-                    <label for="editItemLocationCode">{{'Location code' | translate}}</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="md-form md-form-sm">
-                    <input mdbInput
-                           [(ngModel)]="selectedPlanningModel.item.buildYear"
-                           type="text" id="editItemBuildYear"
-                           name="editItemBuildYear" class="form-control">
-                    <label for="editItemBuildYear">{{'Build year' | translate}}</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="md-form md-form-sm">
-                    <input mdbInput
-                           [(ngModel)]="selectedPlanningModel.item.type"
-                           type="text" id="editItemType"
-                           name="editItemType" class="form-control">
-                    <label for="editItemType">{{'Type' | translate}}</label>
-                  </div>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+          <div class="row" *ngIf="selectedPlanningModel.item">
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input mdbInput
+                       [(ngModel)]="selectedPlanningModel.item.itemNumber"
+                       type="text" id="editItemNumber"
+                       name="editItemNumber" class="form-control">
+                <label for="editItemNumber">{{'Number' | translate}}</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input mdbInput
+                       [(ngModel)]="selectedPlanningModel.item.description"
+                       type="text" id="editPlanningItemDescription"
+                       name="editPlanningItemDescription" class="form-control">
+                <label for="editPlanningItemDescription">{{'Description' | translate}}</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input mdbInput
+                       [(ngModel)]="selectedPlanningModel.item.locationCode"
+                       type="text" id="editItemLocationCode"
+                       name="editItemLocationCode" class="form-control">
+                <label for="editItemLocationCode">{{'Location code' | translate}}</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input mdbInput
+                       [(ngModel)]="selectedPlanningModel.item.buildYear"
+                       type="text" id="editItemBuildYear"
+                       name="editItemBuildYear" class="form-control">
+                <label for="editItemBuildYear">{{'Build year' | translate}}</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input mdbInput
+                       [(ngModel)]="selectedPlanningModel.item.type"
+                       type="text" id="editItemType"
+                       name="editItemType" class="form-control">
+                <label for="editItemType">{{'Type' | translate}}</label>
+              </div>
+            </div>
           </div>
         </mdb-card-body>
       </mdb-card>

@@ -1,6 +1,6 @@
 <eform-page-subheader [title]="'New planning' | translate">
   <div class="p-3">
-    <button mdbBtn id="planningCreateSaveBtn" class="btn-success btn-small-height" [disabled]="!newPlanningModel.item.name"
+    <button mdbBtn id="planningCreateSaveBtn" class="btn-success btn-small-height" [disabled]="saveButtonDisabled || (newPlanningModel.item.name == null || newPlanningModel.item.name == '')"
             (click)="createPlanning()">
       {{ 'Create' | translate }}
     </button>
@@ -15,7 +15,30 @@
       <mdb-card>
         <mdb-card-body>
           <div class="row">
-            <div class="col-md-3 col-sm-4 col-xs-6 ng-select-wrapper">
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input mdbInput
+                       [(ngModel)]="newPlanningModel.item.name"
+                       type="text" id="createPlanningItemName"
+                       name="createPlanningItemName" class="form-control">
+                <label for="createPlanningItemName">{{'Name' | translate}}</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper" *ngIf="foldersDto.length > 0">
+              <ng-select
+                class="custom"
+                dropdownPosition="'bottom'"
+                [placeholder]="'Folders' | translate"
+                [items]="foldersDto"
+                [(ngModel)]="newPlanningModel.eFormSdkFolderId"
+                (ngModelChange)="updateSaveButtonDisabled($event)"
+                [clearable]="false"
+                [bindLabel]="'name'"
+                [bindValue]="'id'"
+                id="folderSelector"
+                [multiple]="false"></ng-select>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
               <ng-select [items]="templatesModel.templates"
                          bindLabel="label"
                          [placeholder]="('Selected template' | translate)"
@@ -25,7 +48,7 @@
                          id="createPlanningSelector">
               </ng-select>
             </div>
-            <div class="col-md-3 col-sm-4 col-xs-6">
+            <div class="col-md-3 col-sm-6 col-xs-6">
               <div class="md-form">
                 <input mdbInput
                        [(ngModel)]="newPlanningModel.repeatEvery"
@@ -34,7 +57,7 @@
                 <label for="createRepeatEvery">{{'Repeat every' | translate}}</label>
               </div>
             </div>
-            <div class="col-md-3 col-sm-4 col-xs-6 ng-select-wrapper">
+            <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
               <ng-select [items]="[
                 {id: 1, name: 'Day' | translate},
                 {id: 2, name: 'Week' | translate},
@@ -48,7 +71,7 @@
                          id="createRepeatType">
               </ng-select>
             </div>
-            <div class="col-md-3 col-sm-4 col-xs-6">
+            <div class="col-md-3 col-sm-6 col-xs-6">
               <div class="md-form" [owlDateTimeTrigger]="dt1">
                 <input mdbInput
                        [owlDateTime]="dt1"
@@ -60,67 +83,52 @@
               </div>
             </div>
           </div>
-          <div class="row p-1 mt-2 table-responsive no-gutters">
-            <table class="table table-sm text-center z-depth-1 pr-2 pl-2">
-              <tbody id="tableBody">
-              <tr>
-                <td id="itemsTableBody">
-                  <div class="md-form md-form-sm">
-                    <input mdbInput
-                           [(ngModel)]="newPlanningModel.item.name"
-                           type="text" id="createPlanningItemName"
-                           name="createPlanningItemName" class="form-control">
-                    <label for="createPlanningItemName">{{'Name' | translate}}</label>
-                  </div>
-                </td>
-                <td id="planningName">
-                  <div class="md-form md-form-sm">
-                    <input mdbInput
-                           [(ngModel)]="newPlanningModel.item.description"
-                           type="text" id="createPlanningItemDescription"
-                           name="createPlanningItemDescription" class="form-control">
-                    <label for="createPlanningItemDescription">{{'Description' | translate}}</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="md-form md-form-sm">
-                    <input mdbInput
-                           [(ngModel)]="newPlanningModel.item.itemNumber"
-                           type="text" id="createItemNumber"
-                           name="createItemNumber" class="form-control">
-                    <label for="createItemNumber">{{'Number' | translate}}</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="md-form md-form-sm">
-                    <input mdbInput
-                           [(ngModel)]="newPlanningModel.item.locationCode"
-                           type="text" id="createItemLocationCode"
-                           name="createItemLocationCode" class="form-control">
-                    <label for="createItemLocationCode">{{'Location code' | translate}}</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="md-form md-form-sm">
-                    <input mdbInput
-                           [(ngModel)]="newPlanningModel.item.buildYear"
-                           type="text" id="createItemBuildYear"
-                           name="createItemBuildYear" class="form-control">
-                    <label for="createItemBuildYear">{{'Build year' | translate}}</label>
-                  </div>
-                </td>
-                <td>
-                  <div class="md-form md-form-sm">
-                    <input mdbInput
-                           [(ngModel)]="newPlanningModel.item.type"
-                           type="text" id="createItemType"
-                           name="createItemType" class="form-control">
-                    <label for="createItemType">{{'Type' | translate}}</label>
-                  </div>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+          <div class="row">
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input mdbInput
+                       [(ngModel)]="newPlanningModel.item.description"
+                       type="text" id="createPlanningItemDescription"
+                       name="createPlanningItemDescription" class="form-control">
+                <label for="createPlanningItemDescription">{{'Description' | translate}}</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input mdbInput
+                       [(ngModel)]="newPlanningModel.item.itemNumber"
+                       type="text" id="createItemNumber"
+                       name="createItemNumber" class="form-control">
+                <label for="createItemNumber">{{'Number' | translate}}</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input mdbInput
+                       [(ngModel)]="newPlanningModel.item.locationCode"
+                       type="text" id="createItemLocationCode"
+                       name="createItemLocationCode" class="form-control">
+                <label for="createItemLocationCode">{{'Location code' | translate}}</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input mdbInput
+                       [(ngModel)]="newPlanningModel.item.buildYear"
+                       type="text" id="createItemBuildYear"
+                       name="createItemBuildYear" class="form-control">
+                <label for="createItemBuildYear">{{'Build year' | translate}}</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input mdbInput
+                       [(ngModel)]="newPlanningModel.item.type"
+                       type="text" id="createItemType"
+                       name="createItemType" class="form-control">
+                <label for="createItemType">{{'Type' | translate}}</label>
+              </div>
+            </div>
           </div>
         </mdb-card-body>
       </mdb-card>

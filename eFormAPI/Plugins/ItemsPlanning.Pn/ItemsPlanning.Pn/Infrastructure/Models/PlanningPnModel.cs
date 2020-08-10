@@ -73,46 +73,6 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
         public bool TypeEnabled { get; set; }
         
         public bool NumberOfImagesEnabled { get; set; }
-        
-        public string FieldName1 { get; set; }
-
-        public string FieldName2 { get; set; }
-
-        public string FieldName3 { get; set; }
-
-        public string FieldName4 { get; set; }
-
-        public string FieldName5 { get; set; }
-
-        public string FieldName6 { get; set; }
-
-        public string FieldName7 { get; set; }
-
-        public string FieldName8 { get; set; }
-
-        public string FieldName9 { get; set; }
-
-        public string FieldName10 { get; set; }
-        
-        public int? SdkFieldId1 { get; set; }
-        
-        public int? SdkFieldId2 { get; set; }
-        
-        public int? SdkFieldId3 { get; set; }
-        
-        public int? SdkFieldId4 { get; set; }
-        
-        public int? SdkFieldId5 { get; set; }
-        
-        public int? SdkFieldId6 { get; set; }
-        
-        public int? SdkFieldId7 { get; set; }
-        
-        public int? SdkFieldId8 { get; set; }
-        
-        public int? SdkFieldId9 { get; set; }
-        
-        public int? SdkFieldId10 { get; set; }
 
         public PlanningItemModel Item { get; set; }
             = new PlanningItemModel();

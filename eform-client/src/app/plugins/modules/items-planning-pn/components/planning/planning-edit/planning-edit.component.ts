@@ -7,6 +7,8 @@ import {EFormService} from 'src/app/common/services/eform';
 import * as moment from 'moment';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
+import {FolderDto} from 'src/app/common/models/dto/folder.dto';
+import {FoldersService} from 'src/app/common/services/advanced/folders.service';
 
 @Component({
   selector: 'app-planning-edit',
@@ -22,7 +24,11 @@ export class PlanningEditComponent implements OnInit {
   templatesModel: TemplateListModel = new TemplateListModel();
   typeahead = new EventEmitter<string>();
   selectedPlanningId: number;
-  constructor(private activateRoute: ActivatedRoute,
+  foldersDto: Array<FolderDto> = [];
+  saveButtonDisabled = true;
+
+  constructor(private foldersService: FoldersService,
+              private activateRoute: ActivatedRoute,
               private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
               private cd: ChangeDetectorRef,
               private eFormService: EFormService,
@@ -48,11 +54,18 @@ export class PlanningEditComponent implements OnInit {
     this.getSelectedPlanning(this.selectedPlanningId);
   }
 
+  updateSaveButtonDisabled(event) {
+    if (this.selectedPlanningModel.item.eFormSdkFolderId != null) {
+      this.saveButtonDisabled = false;
+    }
+  }
+
   getSelectedPlanning(id: number) {
     this.itemsPlanningPnPlanningsService.getSinglePlanning(id).subscribe((data) => {
       if (data && data.success) {
         this.selectedPlanningModel = data.model;
         this.selectedPlanningModel.internalRepeatUntil = this.selectedPlanningModel.repeatUntil;
+        this.loadAllFolders();
         this.templatesModel.templates = [
           {id: this.selectedPlanningModel.relatedEFormId, label: this.selectedPlanningModel.relatedEFormName} as any
         ];
@@ -76,6 +89,14 @@ export class PlanningEditComponent implements OnInit {
         this.planningUpdated.emit();
         this.selectedPlanningModel = new PlanningPnModel();
         this.goBack();
+      }
+    });
+  }
+
+  loadAllFolders() {
+    this.foldersService.getAllFolders().subscribe((operation) => {
+      if (operation && operation.success) {
+        this.foldersDto = operation.model;
       }
     });
   }

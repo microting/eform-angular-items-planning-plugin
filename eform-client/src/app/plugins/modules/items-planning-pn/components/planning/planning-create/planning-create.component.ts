@@ -10,6 +10,8 @@ import {Location} from '@angular/common';
 import moment = require('moment');
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {Subscription} from 'rxjs';
+import {FoldersService} from 'src/app/common/services/advanced/folders.service';
+import {FolderDto} from 'src/app/common/models/dto/folder.dto';
 
 @AutoUnsubscribe()
 @Component({
@@ -24,12 +26,15 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   templatesModel: TemplateListModel = new TemplateListModel();
   typeahead = new EventEmitter<string>();
   createSub$: Subscription;
+  foldersDto: Array<FolderDto> = [];
+  saveButtonDisabled = true;
 
   get userClaims() {
     return this.authService.userClaims;
   }
 
-  constructor(private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
+  constructor(private foldersService: FoldersService,
+              private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
               private sitesService: SitesService,
               private authService: AuthService,
               private eFormService: EFormService,
@@ -49,7 +54,15 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadAllFolders();
+  }
+
+  updateSaveButtonDisabled(event) {
+    if (this.newPlanningModel.eFormSdkFolderId != null) {
+      this.saveButtonDisabled = false;
+    }
+  }
 
   goBack() {
     this.location.back();
@@ -74,5 +87,13 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+  }
+
+  loadAllFolders() {
+    this.foldersService.getAllFolders().subscribe((operation) => {
+      if (operation && operation.success) {
+        this.foldersDto = operation.model;
+      }
+    });
   }
 }
