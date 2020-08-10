@@ -110,9 +110,10 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     .ToList();
 
                 var result = new List<ReportEformModel>();
+                // Exclude field types: None, Picture, Audio, Movie, Signature, Show PDF, FieldGroup, SaveButton
                 List<int> excludedFieldTypeIds = new List<int>()
                 {
-                    3,5,17,18
+                    3,5,6,7,12,16,17,18
                 };
                 foreach (var groupedCase in groupedCases)
                 {
