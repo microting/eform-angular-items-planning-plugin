@@ -21,7 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 {
     using System;
@@ -213,7 +212,19 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 
                             if (caseField != null)
                             {
-                                item.CaseFields.Add(caseField.Value);
+                                switch (caseField.FieldType)
+                                {
+                                    case Constants.FieldTypes.MultiSelect:
+                                        item.CaseFields.Add(caseField.ValueReadable.Replace("|", "<br>"));
+                                        break;
+                                    case Constants.FieldTypes.EntitySearch:
+                                    case Constants.FieldTypes.EntitySelect:
+                                        item.CaseFields.Add(caseField.ValueReadable);
+                                        break;
+                                    default:
+                                        item.CaseFields.Add(caseField.Value);
+                                        break;
+                                }
                             }
                         }
 

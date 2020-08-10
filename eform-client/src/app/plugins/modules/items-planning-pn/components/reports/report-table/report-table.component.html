@@ -27,7 +27,7 @@
       </td>
       <ng-container *ngFor="let field of item.caseFields">
         <td>
-          {{field}}
+          <div [innerHTML]=field></div>
         </td>
       </ng-container>
       <td>{{item.imagesCount}}</td>
