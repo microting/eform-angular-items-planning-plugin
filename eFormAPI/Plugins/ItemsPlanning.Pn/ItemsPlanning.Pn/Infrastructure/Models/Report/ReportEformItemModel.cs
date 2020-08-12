@@ -29,7 +29,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Report
     public class ReportEformItemModel
     {
         public int Id { get; set; }
-        public DateTime? CreatedAt { get; set; }
+        public DateTime? MicrotingSdkCaseDoneAt { get; set; }
         public string ItemName { get; set; }
         public string ItemDescription { get; set; }
         public string DoneBy { get; set; } // worker name

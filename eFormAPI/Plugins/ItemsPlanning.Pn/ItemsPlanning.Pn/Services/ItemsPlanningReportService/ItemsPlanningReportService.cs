@@ -189,12 +189,12 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     }
 
                     // add cases
-                    foreach (var caseDto in groupedCase.cases)
+                    foreach (var caseDto in groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt))
                     {
                         var item = new ReportEformItemModel
                         {
                             Id = caseDto.Id,
-                            CreatedAt = caseDto.CreatedAt,
+                            MicrotingSdkCaseDoneAt = caseDto.MicrotingSdkCaseDoneAt,
                             DoneBy = caseDto.DoneByUserName,
                             ItemName = caseDto.Item.Name,
                             ItemDescription = caseDto.Item.Description,

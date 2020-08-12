@@ -116,7 +116,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                         itemsHtml += @"<tr>";
                         itemsHtml += $@"<td>{dataModel.Id}</td>";
 
-                        itemsHtml += $@"<td>{dataModel.CreatedAt:dd-MM-yyyy}</td>";
+                        itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseDoneAt:dd-MM-yyyy}</td>";
                         // itemsHtml += $@"<td>{dataModel.DoneBy}</td>";
                         itemsHtml += $@"<td>{dataModel.ItemName}</td>";
 
