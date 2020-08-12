@@ -73,13 +73,39 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 {
                     if (pnRequestModel.IsSortDsc)
                     {
-                        planningsQuery = planningsQuery
-                            .CustomOrderByDescending(pnRequestModel.Sort);
+                        switch (pnRequestModel.Sort)
+                        {
+                            case "Name":
+                                planningsQuery = planningsQuery
+                                    .OrderByDescending(x => x.Item.Name);
+                                break;
+                            case "Description":
+                                planningsQuery = planningsQuery
+                                    .OrderByDescending(x => x.Item.Description);
+                                break;
+                            default:
+                                planningsQuery = planningsQuery
+                                    .CustomOrderByDescending(pnRequestModel.Sort);
+                                break;
+                        }
                     }
                     else
                     {
-                        planningsQuery = planningsQuery
-                            .CustomOrderBy(pnRequestModel.Sort);
+                        switch (pnRequestModel.Sort)
+                        {
+                            case "Name":
+                                planningsQuery = planningsQuery
+                                    .OrderBy(x => x.Item.Name);
+                                break;
+                            case "Description":
+                                planningsQuery = planningsQuery
+                                    .OrderBy(x => x.Item.Description);
+                                break;
+                            default:
+                                planningsQuery = planningsQuery
+                                    .CustomOrderBy(pnRequestModel.Sort);
+                                break;
+                        }
                     }
                 }
                 else
@@ -90,8 +116,17 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 if (!string.IsNullOrEmpty(pnRequestModel.NameFilter))
                 {
-                    planningsQuery = planningsQuery.Where(x => x.Name.Contains(pnRequestModel.NameFilter));
+                    planningsQuery = planningsQuery.Where(x =>
+                        x.Item.Name.Contains(pnRequestModel.NameFilter, StringComparison.CurrentCultureIgnoreCase));
                 }
+
+                if (!string.IsNullOrEmpty(pnRequestModel.DescriptionFilter))
+                {
+                    planningsQuery = planningsQuery.Where(x =>
+                        x.Item.Description.Contains(pnRequestModel.DescriptionFilter,
+                            StringComparison.CurrentCultureIgnoreCase));
+                }
+
 
                 planningsQuery
                     = planningsQuery
