@@ -1,5 +1,5 @@
 <eform-page-subheader [title]="'Edit Planning' | translate">
-  <div class="p-3">
+  <div class="p-3" *ngIf="selectedPlanningModel.item">
     <button mdbBtn id="planningEditSaveBtn" class="btn-success btn-small-height"
             [disabled]="saveButtonDisabled || (selectedPlanningModel.item.name == null || selectedPlanningModel.item.name == '')" (click)="updatePlanning()">
       {{ 'Save' | translate }}
@@ -24,7 +24,7 @@
                 <label for="editPlanningItemName">{{'Name' | translate}}</label>
               </div>
             </div>
-            <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper" *ngIf="foldersDto.length > 0">
+            <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper" *ngIf="foldersDto.length > 0 && selectedPlanningModel.item">
               <ng-select
                 class="custom"
                 dropdownPosition="'bottom'"

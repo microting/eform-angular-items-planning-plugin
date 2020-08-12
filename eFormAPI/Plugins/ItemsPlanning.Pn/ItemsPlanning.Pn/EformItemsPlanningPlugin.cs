@@ -27,7 +27,6 @@ namespace ItemsPlanning.Pn
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using Handlers;
     using Infrastructure.Data.Seed;
     using Infrastructure.Data.Seed.Data;
     using Infrastructure.Models.Settings;
@@ -48,7 +47,6 @@ namespace ItemsPlanning.Pn
     using Services.ItemsPlanningLocalizationService;
     using Services.ItemsPlanningPnSettingsService;
     using Services.ItemsPlanningReportService;
-    using Services.PlanningCaseService;
     using Services.PlanningService;
     using Services.RebusService;
     using Services.UploadedDataService;
@@ -62,7 +60,6 @@ namespace ItemsPlanning.Pn
         public string PluginBaseUrl => "items-planning-pn";
 
         private string _connectionString;
-        private eFormCaseUpdatedHandler _eFormCaseUpdatedHandler;
         private IBus _bus;
 
         public Assembly PluginAssembly()
@@ -74,7 +71,6 @@ namespace ItemsPlanning.Pn
         {
             services.AddSingleton<IItemsPlanningLocalizationService, ItemsPlanningLocalizationService>();
             services.AddTransient<IItemsPlanningPnSettingsService, ItemsPlanningPnSettingsService>();
-            services.AddTransient<IPlanningCaseService, PlanningCaseService>();
             services.AddTransient<IItemsPlanningReportService, ItemsPlanningReportService>();
             services.AddTransient<IPlanningService, PlanningService>();
             services.AddTransient<IUploadedDataService, UploadedDataService>();

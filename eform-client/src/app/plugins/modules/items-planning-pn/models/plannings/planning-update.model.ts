@@ -22,15 +22,5 @@ export class PlanningUpdateModel {
   buildYearEnabled: boolean;
   typeEnabled: boolean;
   numberOfImagesEnabled: boolean;
-  sdkFieldId1: number;
-  sdkFieldId2: number;
-  sdkFieldId3: number;
-  sdkFieldId4: number;
-  sdkFieldId5: number;
-  sdkFieldId6: number;
-  sdkFieldId7: number;
-  sdkFieldId8: number;
-  sdkFieldId9: number;
-  sdkFieldId10: number;
   item: PlanningItemModel;
 }

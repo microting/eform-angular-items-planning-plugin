@@ -120,6 +120,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     DayOfMonth = x.DayOfMonth,
                     RelatedEFormId = x.RelatedEFormId,
                     RelatedEFormName = x.RelatedEFormName,
+                    SdkFolderName = x.SdkFolderName,
                     AssignedSites = x.PlanningSites
                         .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                         .Select(y => new PlanningAssignedSitesModel
@@ -242,60 +243,62 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
         public async Task<OperationResult> Create(PlanningPnModel model)
         {
-            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            await using var sdkDbContext =
+                _coreService.GetCore().GetAwaiter().GetResult().dbContextHelper.GetDbContext();
+            try
             {
-                try
+                var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
+                var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
+                var itemsList = new Planning
                 {
-                    var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
-                    var itemsList = new Planning
-                    {
-                        Name = model.Item.Name,
-                        Description = model.Item.Description,
-                        CreatedByUserId = UserId,
-                        CreatedAt = DateTime.UtcNow,
-                        RepeatEvery = model.RepeatEvery,
-                        RepeatUntil = model.RepeatUntil,
-                        RepeatType = model.RepeatType,
-                        DayOfWeek = model.DayOfWeek,
-                        DayOfMonth = model.DayOfMonth,
-                        Enabled = true,
-                        RelatedEFormId = model.RelatedEFormId,
-                        RelatedEFormName = template?.Label
-                    };
+                    Name = model.Item.Name,
+                    Description = model.Item.Description,
+                    CreatedByUserId = UserId,
+                    CreatedAt = DateTime.UtcNow,
+                    RepeatEvery = model.RepeatEvery,
+                    RepeatUntil = model.RepeatUntil,
+                    RepeatType = model.RepeatType,
+                    DayOfWeek = model.DayOfWeek,
+                    DayOfMonth = model.DayOfMonth,
+                    Enabled = true,
+                    RelatedEFormId = model.RelatedEFormId,
+                    RelatedEFormName = template?.Label,
+                    SdkFolderName = sdkFolderName.Name
+                };
 
-                    await itemsList.Create(_dbContext);
-                    var item = new Item()
-                    {
-                        LocationCode = model.Item.LocationCode,
-                        ItemNumber = model.Item.ItemNumber,
-                        Description = model.Item.Description,
-                        Name = model.Item.Name,
-                        Version = 1,
-                        WorkflowState = Constants.WorkflowStates.Created,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        Enabled = true,
-                        BuildYear = model.Item.BuildYear,
-                        Type = model.Item.Type,
-                        PlanningId = itemsList.Id,
-                        CreatedByUserId = UserId,
-                        eFormSdkFolderId = model.Item.eFormSdkFolderId
-                    };
-                    await item.Save(_dbContext);
-
-
-                    transaction.Commit();
-                    return new OperationResult(
-                        true,
-                        _itemsPlanningLocalizationService.GetString("ListCreatedSuccessfully"));
-                }
-                catch (Exception e)
+                await itemsList.Create(_dbContext);
+                var item = new Item()
                 {
-                    transaction.Rollback();
-                    Trace.TraceError(e.Message);
-                    return new OperationResult(false,
-                        _itemsPlanningLocalizationService.GetString("ErrorWhileCreatingList"));
-                }
+                    LocationCode = model.Item.LocationCode,
+                    ItemNumber = model.Item.ItemNumber,
+                    Description = model.Item.Description,
+                    Name = model.Item.Name,
+                    Version = 1,
+                    WorkflowState = Constants.WorkflowStates.Created,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    Enabled = true,
+                    BuildYear = model.Item.BuildYear,
+                    Type = model.Item.Type,
+                    PlanningId = itemsList.Id,
+                    CreatedByUserId = UserId,
+                    eFormSdkFolderId = model.Item.eFormSdkFolderId
+                };
+                await item.Save(_dbContext);
+
+
+                await transaction.CommitAsync();
+                return new OperationResult(
+                    true,
+                    _itemsPlanningLocalizationService.GetString("ListCreatedSuccessfully"));
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                Trace.TraceError(e.Message);
+                return new OperationResult(false,
+                    _itemsPlanningLocalizationService.GetString("ErrorWhileCreatingList"));
             }
         }
         public async Task<OperationDataResult<PlanningPnModel>> Read(int listId)
@@ -394,93 +397,97 @@ namespace ItemsPlanning.Pn.Services.PlanningService
         }
         public async Task<OperationResult> Update(PlanningPnModel updateModel)
         {
-            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            // await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            var _sdkCore =
+                await _coreService.GetCore();
+            var sdkDbContext = _sdkCore.dbContextHelper.GetDbContext();
+            try
             {
-                try
+                var template = await _sdkCore.TemplateItemRead(updateModel.RelatedEFormId);
+                var sdkFolder = await sdkDbContext.folders.SingleAsync(x => x.Id == updateModel.Item.eFormSdkFolderId);
+                var folderName = sdkFolder.Name;
+                var planning = new Planning
                 {
-                    var template = await _coreService.GetCore().Result.TemplateItemRead(updateModel.RelatedEFormId);
-                    var planning = new Planning
+                    Id = updateModel.Id,
+                    RepeatUntil = updateModel.RepeatUntil,
+                    RepeatEvery = updateModel.RepeatEvery,
+                    RepeatType = updateModel.RepeatType,
+                    DayOfWeek = updateModel.DayOfWeek,
+                    DayOfMonth = updateModel.DayOfMonth,
+                    Description = updateModel.Item.Description,
+                    Name = updateModel.Item.Name,
+                    UpdatedAt = DateTime.UtcNow,
+                    UpdatedByUserId = UserId,
+                    RelatedEFormId = updateModel.RelatedEFormId,
+                    RelatedEFormName = template?.Label,
+                    LabelEnabled = updateModel.LabelEnabled,
+                    DescriptionEnabled = updateModel.DescriptionEnabled,
+                    DeployedAtEnabled = updateModel.DeployedAtEnabled,
+                    DoneAtEnabled = updateModel.DoneAtEnabled,
+                    DoneByUserNameEnabled = updateModel.DoneByUserNameEnabled,
+                    UploadedDataEnabled = updateModel.UploadedDataEnabled,
+                    ItemNumberEnabled = updateModel.ItemNumberEnabled,
+                    LocationCodeEnabled = updateModel.LocationCodeEnabled,
+                    BuildYearEnabled = updateModel.BuildYearEnabled,
+                    TypeEnabled = updateModel.TypeEnabled,
+                    NumberOfImagesEnabled = updateModel.NumberOfImagesEnabled,
+                    LastExecutedTime = updateModel.LastExecutedTime,
+                    SdkFolderName = folderName
+
+                };
+                await planning.Update(_dbContext);
+
+                var item = _dbContext.Items.FirstOrDefault(x => x.Id == updateModel.Item.Id);
+                if (item == null)
+                {
+                    var newItem = new Item()
                     {
-                        Id = updateModel.Id,
-                        RepeatUntil = updateModel.RepeatUntil,
-                        RepeatEvery = updateModel.RepeatEvery,
-                        RepeatType = updateModel.RepeatType,
-                        DayOfWeek = updateModel.DayOfWeek,
-                        DayOfMonth = updateModel.DayOfMonth,
+                        LocationCode = updateModel.Item.LocationCode,
+                        ItemNumber = updateModel.Item.ItemNumber,
                         Description = updateModel.Item.Description,
                         Name = updateModel.Item.Name,
+                        Version = 1,
+                        WorkflowState = Constants.WorkflowStates.Created,
+                        CreatedAt = DateTime.UtcNow,
+                        CreatedByUserId = UserId,
                         UpdatedAt = DateTime.UtcNow,
-                        UpdatedByUserId = UserId,
-                        RelatedEFormId = updateModel.RelatedEFormId,
-                        RelatedEFormName = template?.Label,
-                        LabelEnabled = updateModel.LabelEnabled,
-                        DescriptionEnabled = updateModel.DescriptionEnabled,
-                        DeployedAtEnabled = updateModel.DeployedAtEnabled,
-                        DoneAtEnabled = updateModel.DoneAtEnabled,
-                        DoneByUserNameEnabled = updateModel.DoneByUserNameEnabled,
-                        UploadedDataEnabled = updateModel.UploadedDataEnabled,
-                        ItemNumberEnabled = updateModel.ItemNumberEnabled,
-                        LocationCodeEnabled = updateModel.LocationCodeEnabled,
-                        BuildYearEnabled = updateModel.BuildYearEnabled,
-                        TypeEnabled = updateModel.TypeEnabled,
-                        NumberOfImagesEnabled = updateModel.NumberOfImagesEnabled,
-                        LastExecutedTime = updateModel.LastExecutedTime
-
+                        Enabled = true,
+                        BuildYear = updateModel.Item.BuildYear,
+                        Type = updateModel.Item.Type,
+                        PlanningId = planning.Id,
+                        eFormSdkFolderId = updateModel.Item.eFormSdkFolderId
                     };
-                    await planning.Update(_dbContext);
-
-                    var item = _dbContext.Items.FirstOrDefault(x => x.Id == updateModel.Item.Id);
-                    if (item == null)
-                    {
-                        var newItem = new Item()
-                        {
-                            LocationCode = updateModel.Item.LocationCode,
-                            ItemNumber = updateModel.Item.ItemNumber,
-                            Description = updateModel.Item.Description,
-                            Name = updateModel.Item.Name,
-                            Version = 1,
-                            WorkflowState = Constants.WorkflowStates.Created,
-                            CreatedAt = DateTime.UtcNow,
-                            CreatedByUserId = UserId,
-                            UpdatedAt = DateTime.UtcNow,
-                            Enabled = true,
-                            BuildYear = updateModel.Item.BuildYear,
-                            Type = updateModel.Item.Type,
-                            PlanningId = planning.Id,
-                            eFormSdkFolderId = updateModel.Item.eFormSdkFolderId
-                        };
-                        await newItem.Save(_dbContext);
-                    }
-                    else
-                    {
-                        item.LocationCode = updateModel.Item.LocationCode;
-                        item.ItemNumber = updateModel.Item.ItemNumber;
-                        item.Description = updateModel.Item.Description;
-                        item.Name = updateModel.Item.Name;
-                        item.UpdatedByUserId = UserId;
-                        item.UpdatedAt = DateTime.UtcNow;
-                        item.Enabled = true;
-                        item.BuildYear = updateModel.Item.BuildYear;
-                        item.Type = updateModel.Item.Type;
-                        item.PlanningId = planning.Id;
-                        item.eFormSdkFolderId = updateModel.Item.eFormSdkFolderId;
-
-                        await item.Update(_dbContext);
-                    }
-
-                    transaction.Commit();
-                    return new OperationResult(
-                        true,
-                        _itemsPlanningLocalizationService.GetString("ListUpdatedSuccessfully"));
+                    await newItem.Save(_dbContext);
                 }
-                catch (Exception e)
+                else
                 {
-                    Trace.TraceError(e.Message);
-                    transaction.Rollback();
-                    return new OperationResult(
-                        false,
-                        _itemsPlanningLocalizationService.GetString("ErrorWhileUpdatingList"));
+                    item.LocationCode = updateModel.Item.LocationCode;
+                    item.ItemNumber = updateModel.Item.ItemNumber;
+                    item.Description = updateModel.Item.Description;
+                    item.Name = updateModel.Item.Name;
+                    item.UpdatedByUserId = UserId;
+                    item.UpdatedAt = DateTime.UtcNow;
+                    item.Enabled = true;
+                    item.BuildYear = updateModel.Item.BuildYear;
+                    item.Type = updateModel.Item.Type;
+                    item.PlanningId = planning.Id;
+                    item.eFormSdkFolderId = updateModel.Item.eFormSdkFolderId;
+
+                    await item.Update(_dbContext);
                 }
+
+                // transaction.Commit();
+                return new OperationResult(
+                    true,
+                    _itemsPlanningLocalizationService.GetString("ListUpdatedSuccessfully"));
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message);
+                // transaction.Rollback();
+                return new OperationResult(
+                    false,
+                    _itemsPlanningLocalizationService.GetString("ErrorWhileUpdatingList"));
             }
         }
 

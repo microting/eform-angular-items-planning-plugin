@@ -47,6 +47,17 @@
                *ngIf="localPageSettings.sort == 'Description' && planningsRequestModel.isSortDsc">expand_more</i>
           </div>
         </th>
+        <th scope="col" class="table-header-sortable" id="sdkFolderNameTableHeader"
+            (click)="sortTable('SdkFolderName')">
+          <div class="d-flex align-items-center justify-content-center">
+            {{'Folder name' | translate}}
+            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'SdkFolderName'">unfold_more</i>
+            <i class="material-icons"
+               *ngIf="localPageSettings.sort == 'SdkFolderName' && !planningsRequestModel.isSortDsc">expand_less</i>
+            <i class="material-icons"
+               *ngIf="localPageSettings.sort == 'SdkFolderName' && planningsRequestModel.isSortDsc">expand_more</i>
+          </div>
+        </th>
         <th scope="col" class="table-header-sortable" id="repeatEveryTableHeader"
             (click)="sortTable('RepeatEvery')">
           <div class="d-flex align-items-center justify-content-center">
@@ -101,6 +112,9 @@
         </td>
         <td id="planningDescription">
           {{planning.description}}
+        </td>
+        <td id="planningFolderName">
+          {{planning.sdkFolderName}}
         </td>
         <td id="planningRepeatEvery">
           {{planning.repeatEvery}}

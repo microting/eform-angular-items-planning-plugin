@@ -74,7 +74,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
         
         public bool NumberOfImagesEnabled { get; set; }
 
-        public string FolderName { get; set; }
+        public string SdkFolderName { get; set; }
 
         public PlanningItemModel Item { get; set; }
             = new PlanningItemModel();

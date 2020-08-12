@@ -44,4 +44,8 @@
       <EmbeddedResource Include="Resources\Templates\WordExport\page.html" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Handlers" />
+    </ItemGroup>
+
 </Project>
