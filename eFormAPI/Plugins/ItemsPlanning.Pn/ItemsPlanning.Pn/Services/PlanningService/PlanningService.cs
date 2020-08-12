@@ -73,39 +73,13 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 {
                     if (pnRequestModel.IsSortDsc)
                     {
-                        switch (pnRequestModel.Sort)
-                        {
-                            case "Name":
-                                planningsQuery = planningsQuery
-                                    .OrderByDescending(x => x.Item.Name);
-                                break;
-                            case "Description":
-                                planningsQuery = planningsQuery
-                                    .OrderByDescending(x => x.Item.Description);
-                                break;
-                            default:
-                                planningsQuery = planningsQuery
-                                    .CustomOrderByDescending(pnRequestModel.Sort);
-                                break;
-                        }
+                        planningsQuery = planningsQuery
+                            .CustomOrderByDescending(pnRequestModel.Sort);
                     }
                     else
                     {
-                        switch (pnRequestModel.Sort)
-                        {
-                            case "Name":
-                                planningsQuery = planningsQuery
-                                    .OrderBy(x => x.Item.Name);
-                                break;
-                            case "Description":
-                                planningsQuery = planningsQuery
-                                    .OrderBy(x => x.Item.Description);
-                                break;
-                            default:
-                                planningsQuery = planningsQuery
-                                    .CustomOrderBy(pnRequestModel.Sort);
-                                break;
-                        }
+                        planningsQuery = planningsQuery
+                            .CustomOrderBy(pnRequestModel.Sort);
                     }
                 }
                 else
@@ -275,8 +249,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
                     var itemsList = new Planning
                     {
-                        Name = model.Name,
-                        Description = model.Description,
+                        Name = model.Item.Name,
+                        Description = model.Item.Description,
                         CreatedByUserId = UserId,
                         CreatedAt = DateTime.UtcNow,
                         RepeatEvery = model.RepeatEvery,
@@ -433,8 +407,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         RepeatType = updateModel.RepeatType,
                         DayOfWeek = updateModel.DayOfWeek,
                         DayOfMonth = updateModel.DayOfMonth,
-                        Description = updateModel.Description,
-                        Name = updateModel.Name,
+                        Description = updateModel.Item.Description,
+                        Name = updateModel.Item.Name,
                         UpdatedAt = DateTime.UtcNow,
                         UpdatedByUserId = UserId,
                         RelatedEFormId = updateModel.RelatedEFormId,

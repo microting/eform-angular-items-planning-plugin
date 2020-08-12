@@ -97,6 +97,9 @@ export class PlanningEditComponent implements OnInit {
     this.foldersService.getAllFolders().subscribe((operation) => {
       if (operation && operation.success) {
         this.foldersDto = operation.model;
+        if (this.selectedPlanningModel.item.eFormSdkFolderId != null) {
+          this.saveButtonDisabled = false;
+        }
       }
     });
   }
