@@ -116,7 +116,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                         itemsHtml += @"<tr>";
                         itemsHtml += $@"<td>{dataModel.Id}</td>";
 
-                        itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseDoneAt:dd-MM-yyyy}</td>";
+                        itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}</td>";
                         // itemsHtml += $@"<td>{dataModel.DoneBy}</td>";
                         itemsHtml += $@"<td>{dataModel.ItemName}</td>";
 
@@ -192,7 +192,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                         itemsHtml += @"<tr>";
                         // itemsHtml += $@"<td>{dataModel.PostId}</td>";
                         itemsHtml += $@"<td>{dataModel.CaseId}</td>";
-                        itemsHtml += $@"<td>{dataModel.PostDate}</td>";
+                        itemsHtml += $@"<td>{dataModel.PostDate:dd.MM.yyyy HH:mm:ss}</td>";
                         itemsHtml += $@"<td>{dataModel.SentTo.Join()} {dataModel.SentToTags.Join()}</td>";
                         itemsHtml += $@"<td>{dataModel.Comment}</td>";
                         itemsHtml += @"</tr>";
