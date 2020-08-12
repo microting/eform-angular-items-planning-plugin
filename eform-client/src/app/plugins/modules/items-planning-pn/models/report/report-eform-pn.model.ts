@@ -5,6 +5,6 @@ export class ReportEformPnModel {
   name: string;
   items: ReportEformItemModel[] = [];
   itemHeaders: {key: string, value: string}[] = [];
-  imagesNames: string[] = [];
+  imagesNames: {key: string, value: string}[] = [];
   posts: ReportEformPostModel[] = [];
 }

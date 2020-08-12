@@ -12,7 +12,7 @@ import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
   styleUrls: ['./report-images.component.scss']
 })
 export class ReportImagesComponent implements OnChanges, OnDestroy {
-  @Input() imageNames: string[];
+  @Input() imageNames: {key: string, value: string}[] = [];
   images = [];
   galleryImages: GalleryItem[] = [];
   imageSub$: Subscription;
@@ -22,12 +22,13 @@ export class ReportImagesComponent implements OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && changes.imageNames) {
-      this.imageNames.forEach(value => {
-        this.imageSub$ = this.imageService.getImage(value).subscribe(blob => {
+      this.imageNames.forEach(imageValue => {
+        this.imageSub$ = this.imageService.getImage(imageValue.value).subscribe(blob => {
           const imageUrl = URL.createObjectURL(blob);
           this.images.push({
             src: imageUrl,
             thumbnail: imageUrl,
+            name: imageValue.key
             // fileName: value.uploadedDataObj.fileName,
             // text: value.id.toString(),
             // uploadedObjId: value.uploadedDataObj.id

@@ -80,7 +80,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 var casesQuery = _dbContext.PlanningCases
                     .Include(x=>x.Item)
                     .ThenInclude(x=>x.Planning)
-                    .Where(x => x.WorkflowState == Constants.WorkflowStates.Processed)
+                    .Where(x => x.Status == 100)
                     .AsQueryable();
 
                 if (model.DateFrom != null)
@@ -131,11 +131,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     {
                         if (!excludedFieldTypeIds.Contains(fieldDto.FieldTypeId))
                         {
-                            var kvp = new Microting.eForm.Dto.KeyValuePair(
-                                fieldDto.Id.ToString(),
-                                fieldDto.Label,
-                                true,
-                                string.Empty);
+                            KeyValuePair<int, string> kvp = new KeyValuePair<int, string>(fieldDto.Id, fieldDto.Label);
 
                             reportModel.ItemHeaders.Add(kvp);
                         }
@@ -153,7 +149,10 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     {
                         if (!string.IsNullOrEmpty(imageField.UploadedData?.FileName))
                         {
-                            reportModel.ImagesNames.Add(imageField.UploadedData.FileName);
+                            var bla = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
+                            DateTime doneAt = (DateTime)bla.MicrotingSdkCaseDoneAt;
+                            var label = $"{doneAt:yyyy-MM-dd HH:mm:ss}; {bla.Item.Name}";
+                            reportModel.ImagesNames.Add(new KeyValuePair<string, string>(label, imageField.UploadedData.FileName));
                         }
                     }
 
@@ -208,7 +207,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         foreach (var itemHeader in reportModel.ItemHeaders)
                         {
                             var caseField = caseFields
-                                .FirstOrDefault(x => x.FieldId == int.Parse(itemHeader.Key));
+                                .FirstOrDefault(x => x.FieldId == itemHeader.Key);
 
                             if (caseField != null)
                             {

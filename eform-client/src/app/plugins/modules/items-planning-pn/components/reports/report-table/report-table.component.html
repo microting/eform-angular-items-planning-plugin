@@ -2,12 +2,12 @@
   <table mdbTable striped="true" hover="true" small="true" class="z-depth-1 text-center">
     <thead>
     <tr>
-      <th>{{'Id' | translate}}</th>
+      <th>{{'Case Id' | translate}}</th>
       <th>{{'Created at' | translate}}</th>
-      <th>{{'Done by' | translate}}</th>
+<!--      <th>{{'Done by' | translate}}</th>-->
       <th>{{'Item name' | translate}}</th>
       <th *ngFor="let itemHeader of itemHeaders">{{itemHeader.value}}</th>
-      <th>{{'Images' | translate}}</th>
+<!--      <th>{{'Images' | translate}}</th>-->
       <th>{{'Posts' | translate}}</th>
     </tr>
     </thead>
@@ -19,9 +19,9 @@
       <td>
         {{item.createdAt | date: 'yyyy/MM/dd'}}
       </td>
-      <td>
-        {{item.doneBy}}
-      </td>
+<!--      <td>-->
+<!--        {{item.doneBy}}-->
+<!--      </td>-->
       <td>
         {{item.itemName}}
       </td>
@@ -30,7 +30,7 @@
           <div [innerHTML]=field></div>
         </td>
       </ng-container>
-      <td>{{item.imagesCount}}</td>
+<!--      <td>{{item.imagesCount}}</td>-->
       <td>{{item.postsCount}}</td>
     </tr>
     </tbody>

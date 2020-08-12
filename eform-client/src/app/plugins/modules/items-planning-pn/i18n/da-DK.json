@@ -4,6 +4,7 @@
 	"Are you sure you want to delete": "Er du sikker på, at du vil slette",
 	"Cancel": "Annuller",
 	"Create": "Opret",
+  "Created at": "Dato",
 	"Create List": "Opret liste",
 	"Creation Date": "Oprettelsesdato",
   "Day of week": "Ugedag",
@@ -23,7 +24,7 @@
 	"New List": "Ny liste",
 	"Number": "Nummer",
 	"Number of workers": "Antal arbejdstagere",
-	"Repeat Type": "Gentag Type",
+	"Repeat type": "Gentag type",
 	"Repeat every": "Gentag hver gang",
 	"Repeat until": "Gentag indtil",
 	"SDK connection string": "SDK-forbindelsesstreng",
@@ -32,6 +33,10 @@
   "Build year": "Årgang",
   "Type": "Type",
   "File name": "Filnavn",
+  "Posts": "Indlæg",
+  "Case Id": "Sagsnummer",
+  "Sent to": "Sendt til",
+  "Comment": "Kommentar",
 
   "Monday": "Mandag",
   "Tuesday": "Tirsdag",
@@ -47,17 +52,17 @@
   "Issued on": "Udsendt den",
   "Done at": "Udført den",
   "Done by": "Udført af",
-  "Item name": "Enhedsnavn",
+  "Item name": "Område",
   "Selected date range": "Valgt datointerval",
   "Generate": "Generer",
   "Item List": "Gruppe",
   "Item": "Enhed",
 
-  "Plannings": "Planningen",
-  "Planning": "Planning",
-  "New planning": "Nieuwe planning",
-  "Edit Planning": "Planning Bewerken",
-  "Delete Planning": "Planning Verwijderen",
-  "Assign Sites": "Toewijzen Sites"
+  "Plannings": "Enheder",
+  "Planning": "Enheder",
+  "New planning": "Ny enhed",
+  "Edit Planning": "Redigér enhed",
+  "Delete Planning": "Slet enhed",
+  "Assign Sites": "Par lokationer"
 
 }

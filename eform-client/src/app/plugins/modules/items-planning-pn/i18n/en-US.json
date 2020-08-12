@@ -4,6 +4,7 @@
 	"Are you sure you want to delete": "Are you sure you want to delete",
 	"Cancel": "Cancel",
 	"Create": "Create",
+  "Created at": "Created at",
 	"Create List": "Create List",
 	"Creation Date": "Creation Date",
   "Day of week": "Day of week",
@@ -31,6 +32,10 @@
 	"Selected template": "Selected template",
   "Build year": "Build year",
   "Type": "Type",
+  "Posts": "Posts",
+  "Case Id": "Case Id",
+  "Sent to": "Sent to",
+  "Comment": "Comment",
 
   "Monday": "Monday",
   "Tuesday": "Tuesday",

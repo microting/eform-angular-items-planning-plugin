@@ -97,9 +97,9 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                     // Table header
                     itemsHtml += @"<tr style=""background-color:#f5f5f5;font-weight:bold"">";
-                    itemsHtml += $@"<td>{_localizationService.GetString("Id")}</td>";
+                    // itemsHtml += $@"<td>{_localizationService.GetString("Id")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("CreatedAt")}</td>";
-                    itemsHtml += $@"<td>{_localizationService.GetString("DoneBy")}</td>";
+                    // itemsHtml += $@"<td>{_localizationService.GetString("DoneBy")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("ItemName")}</td>";
 
                     foreach (var itemHeader in reportEformModel.ItemHeaders)
@@ -107,17 +107,17 @@ namespace ItemsPlanning.Pn.Services.WordService
                         itemsHtml += $@"<td>{itemHeader.Value}</td>";
                     }
 
-                    itemsHtml += $@"<td>{_localizationService.GetString("Pictures")}</td>";
+                    // itemsHtml += $@"<td>{_localizationService.GetString("Pictures")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("Posts")}</td>";
                     itemsHtml += @"</tr>";
 
                     foreach (var dataModel in reportEformModel.Items)
                     {
                         itemsHtml += @"<tr>";
-                        itemsHtml += $@"<td>{dataModel.Id}</td>";
+                        // itemsHtml += $@"<td>{dataModel.Id}</td>";
 
                         itemsHtml += $@"<td>{dataModel.CreatedAt:dd-MM-yyyy}</td>";
-                        itemsHtml += $@"<td>{dataModel.DoneBy}</td>";
+                        // itemsHtml += $@"<td>{dataModel.DoneBy}</td>";
                         itemsHtml += $@"<td>{dataModel.ItemName}</td>";
 
                         foreach (var dataModelCaseField in dataModel.CaseFields)
@@ -125,7 +125,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                             itemsHtml += $@"<td>{dataModelCaseField}</td>";
                         }
 
-                        itemsHtml += $@"<td>{dataModel.ImagesCount}</td>";
+                        // itemsHtml += $@"<td>{dataModel.ImagesCount}</td>";
                         itemsHtml += $@"<td>{dataModel.PostsCount}</td>";
                         itemsHtml += @"</tr>";
                     }
@@ -133,19 +133,19 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                     itemsHtml += @"<br/>";
 
-                    itemsHtml += $@"<p><b>{reportEformModel.Name} Images</b></p>";
                     foreach (var imagesName in reportEformModel.ImagesNames)
                     {
-                        var filePath = Path.Combine(await core.GetSdkSetting(Settings.fileLocationPicture), imagesName);
+                        itemsHtml += $@"<p><b>{imagesName.Key}</b></p>";
+                        var filePath = Path.Combine(await core.GetSdkSetting(Settings.fileLocationPicture), imagesName.Value);
 
                         Stream stream;
                         if (core.GetSdkSetting(Settings.swiftEnabled).Result.ToLower() == "true")
                         {
-                            var storageResult = await core.GetFileFromSwiftStorage(imagesName);
+                            var storageResult = await core.GetFileFromSwiftStorage(imagesName.Value);
                             stream = storageResult.ObjectStreamContent;
                         } else if (core.GetSdkSetting(Settings.s3Enabled).Result.ToLower() == "true")
                         {
-                            var storageResult = await core.GetFileFromS3Storage(imagesName);
+                            var storageResult = await core.GetFileFromS3Storage(imagesName.Value);
                             stream = storageResult.ResponseStream;
                         } else if (!File.Exists(filePath))
                         {
