@@ -39,4 +39,4 @@ su ubuntu -c \
 su ubuntu -c \
 "export NODE_OPTIONS=--max_old_space_size=8192 && GENERATE_SOURCEMAP=false npm run build"
 echo "Recompiling angular done"
-/rabbitmqadmin declare queue name=eform-angular-items-planning-plugin durable=true
+/root/rabbitmqadmin declare queue name=eform-angular-items-planning-plugin durable=true
