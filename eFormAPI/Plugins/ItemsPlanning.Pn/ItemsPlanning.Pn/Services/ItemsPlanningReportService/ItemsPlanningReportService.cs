@@ -78,8 +78,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 //    .AsQueryable();
 
                 var casesQuery = _dbContext.PlanningCases
-                    .Include(x=>x.Item)
-                    .ThenInclude(x=>x.Planning)
+                    .Include(x => x.Item)
+                    .ThenInclude(x => x.Planning)
                     .Where(x => x.Status == 100)
                     .AsQueryable();
 
@@ -97,7 +97,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             model.DateTo.Value.Day, 23, 59, 59));
                 }
 
-                var itemCases = await casesQuery.ToListAsync();
+                var itemCases = await casesQuery
+                    .OrderBy(x => x.Item.Planning.RelatedEFormName)
+                    .ToListAsync();
 
                 var groupedCases = itemCases
                     .GroupBy(x => x.MicrotingSdkeFormId)
@@ -181,17 +183,18 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             PostId = casePostCommonModel.PostId,
                             Comment = casePostCommonModel.Text,
                             SentTo = casePostCommonModel.ToRecipients,
-                            SentToTags = casePostCommonModel.ToRecipientsTags
+                            SentToTags = casePostCommonModel.ToRecipientsTags,
+                            PostDate = casePostCommonModel.PostDate
                         });
                     }
 
                     // add cases
-                    foreach (var caseDto in groupedCase.cases)
+                    foreach (var caseDto in groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt))
                     {
                         var item = new ReportEformItemModel
                         {
                             Id = caseDto.Id,
-                            CreatedAt = caseDto.CreatedAt,
+                            MicrotingSdkCaseDoneAt = caseDto.MicrotingSdkCaseDoneAt,
                             DoneBy = caseDto.DoneByUserName,
                             ItemName = caseDto.Item.Name,
                             ItemDescription = caseDto.Item.Description,

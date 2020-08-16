@@ -5,6 +5,7 @@ export class PlanningsRequestModel {
   isSortDsc: boolean;
   offset: number;
   nameFilter: string;
+  descriptionFilter: string;
 
   constructor() {
     this.sort = 'Id';
@@ -13,5 +14,6 @@ export class PlanningsRequestModel {
     this.pageIndex = 1;
     this.offset = 0;
     this.nameFilter = '';
+    this.descriptionFilter = '';
   }
 }

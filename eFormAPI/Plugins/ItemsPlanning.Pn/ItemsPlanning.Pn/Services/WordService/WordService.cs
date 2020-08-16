@@ -85,19 +85,19 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                 var itemsHtml = "";
 
+                int i = 0;
                 foreach (var reportEformModel in reportModel)
                 {
                     if (!string.IsNullOrEmpty(reportEformModel.Name))
                     {
-                        itemsHtml += $@"<p><b>{reportEformModel.Name}</b></p>";
+                        itemsHtml += $@"<h1><b>{reportEformModel.Name}</b></h1>";
                     }
 
-                    itemsHtml += @"<br/>";
                     itemsHtml += @"<table width=""100%"" border=""1"">";
 
                     // Table header
                     itemsHtml += @"<tr style=""background-color:#f5f5f5;font-weight:bold"">";
-                    // itemsHtml += $@"<td>{_localizationService.GetString("Id")}</td>";
+                    itemsHtml += $@"<td>{_localizationService.GetString("CaseId")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("CreatedAt")}</td>";
                     // itemsHtml += $@"<td>{_localizationService.GetString("DoneBy")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("ItemName")}</td>";
@@ -114,9 +114,9 @@ namespace ItemsPlanning.Pn.Services.WordService
                     foreach (var dataModel in reportEformModel.Items)
                     {
                         itemsHtml += @"<tr>";
-                        // itemsHtml += $@"<td>{dataModel.Id}</td>";
+                        itemsHtml += $@"<td>{dataModel.Id}</td>";
 
-                        itemsHtml += $@"<td>{dataModel.CreatedAt:dd-MM-yyyy}</td>";
+                        itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}</td>";
                         // itemsHtml += $@"<td>{dataModel.DoneBy}</td>";
                         itemsHtml += $@"<td>{dataModel.ItemName}</td>";
 
@@ -135,7 +135,7 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                     foreach (var imagesName in reportEformModel.ImagesNames)
                     {
-                        itemsHtml += $@"<p><b>{imagesName.Key}</b></p>";
+                        itemsHtml += $@"<h2><b>{_localizationService.GetString("Picture")}: {imagesName.Key}</b></h2>";
                         var filePath = Path.Combine(await core.GetSdkSetting(Settings.fileLocationPicture), imagesName.Value);
 
                         Stream stream;
@@ -175,15 +175,14 @@ namespace ItemsPlanning.Pn.Services.WordService
                         stream.Dispose();
                     }
 
-                    itemsHtml += @"<br/>";
-
-                    itemsHtml += $@"<p><b>{reportEformModel.Name} posts</b></p>";
+                    itemsHtml += $@"<h2><b>{reportEformModel.Name} {_localizationService.GetString("posts")}</b></h2>";
                     itemsHtml += @"<table width=""100%"" border=""1"">";
 
                     // Table header
                     itemsHtml += @"<tr style=""background-color:#f5f5f5;font-weight:bold"">";
-                    itemsHtml += $@"<td>{_localizationService.GetString("Id")}</td>";
+                    // itemsHtml += $@"<td>{_localizationService.GetString("Id")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("CaseId")}</td>";
+                    itemsHtml += $@"<td>{_localizationService.GetString("PostDate")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("SentTo")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("Comment")}</td>";
                     itemsHtml += @"</tr>";
@@ -191,8 +190,9 @@ namespace ItemsPlanning.Pn.Services.WordService
                     foreach (var dataModel in reportEformModel.Posts)
                     {
                         itemsHtml += @"<tr>";
-                        itemsHtml += $@"<td>{dataModel.PostId}</td>";
+                        // itemsHtml += $@"<td>{dataModel.PostId}</td>";
                         itemsHtml += $@"<td>{dataModel.CaseId}</td>";
+                        itemsHtml += $@"<td>{dataModel.PostDate:dd.MM.yyyy HH:mm:ss}</td>";
                         itemsHtml += $@"<td>{dataModel.SentTo.Join()} {dataModel.SentToTags.Join()}</td>";
                         itemsHtml += $@"<td>{dataModel.Comment}</td>";
                         itemsHtml += @"</tr>";
