@@ -249,7 +249,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             try
             {
                 var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
-                var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
+                var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.EformSdkFolderId);
                 var itemsList = new Planning
                 {
                     Name = model.Item.Name,
@@ -283,7 +283,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     Type = model.Item.Type,
                     PlanningId = itemsList.Id,
                     CreatedByUserId = UserId,
-                    eFormSdkFolderId = model.Item.eFormSdkFolderId
+                    eFormSdkFolderId = model.EformSdkFolderId
                 };
                 await item.Save(_dbContext);
 

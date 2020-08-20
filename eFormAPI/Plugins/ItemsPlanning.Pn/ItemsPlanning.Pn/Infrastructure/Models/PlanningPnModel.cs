@@ -76,6 +76,8 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
 
         public string SdkFolderName { get; set; }
 
+        public int EformSdkFolderId { get; set; }
+
         public PlanningItemModel Item { get; set; }
             = new PlanningItemModel();
 
