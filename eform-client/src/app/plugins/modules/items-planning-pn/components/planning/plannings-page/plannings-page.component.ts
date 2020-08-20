@@ -6,6 +6,8 @@ import {PlanningPnModel, PlanningsRequestModel, PlanningsPnModel} from '../../..
 import {ItemsPlanningPnPlanningsService} from '../../../services';
 import {PluginClaimsHelper} from 'src/app/common/helpers';
 import {ItemsPlanningPnClaims} from '../../../enums';
+import {debounceTime} from 'rxjs/operators';
+import {Subject} from 'rxjs';
 
 @Component({
   selector: 'app-plannings-page',
@@ -17,12 +19,27 @@ export class PlanningsPageComponent implements OnInit {
   @ViewChild('modalCasesColumns', {static: false}) modalCasesColumnsModal;
   @ViewChild('assignSitesModal', {static: false}) assignSitesModal;
 
+  descriptionSearchSubject = new Subject();
+  nameSearchSubject = new Subject();
   localPageSettings: PageSettingsModel = new PageSettingsModel();
   planningsModel: PlanningsPnModel = new PlanningsPnModel();
   planningsRequestModel: PlanningsRequestModel = new PlanningsRequestModel();
 
   constructor(private sharedPnService: SharedPnService,
-              private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService) { }
+              private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService) {
+    this.nameSearchSubject.pipe(
+      debounceTime(500)
+    ). subscribe(val => {
+      this.planningsRequestModel.nameFilter = val.toString();
+      this.getAllPlannings();
+    });
+    this.descriptionSearchSubject.pipe(
+      debounceTime(500)
+    ). subscribe(val => {
+      this.planningsRequestModel.descriptionFilter = val.toString();
+      this.getAllPlannings();
+    });
+  }
 
   get pluginClaimsHelper() {
     return PluginClaimsHelper;
@@ -96,5 +113,13 @@ export class PlanningsPageComponent implements OnInit {
 
   openAssignmentModal(planning: PlanningPnModel) {
     this.assignSitesModal.show(planning);
+  }
+
+  onDescriptionFilterChanged(description: string) {
+    this.descriptionSearchSubject.next(description);
+  }
+
+  onNameFilterChanged(name: string) {
+    this.nameSearchSubject.next(name);
   }
 }

@@ -24,19 +24,14 @@
                 <label for="createPlanningItemName">{{'Name' | translate}}</label>
               </div>
             </div>
-            <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper" *ngIf="foldersDto.length > 0">
-              <ng-select
-                class="custom"
-                dropdownPosition="'bottom'"
-                [placeholder]="'Folders' | translate"
-                [items]="foldersDto"
-                [(ngModel)]="newPlanningModel.eFormSdkFolderId"
-                (ngModelChange)="updateSaveButtonDisabled($event)"
-                [clearable]="false"
-                [bindLabel]="'name'"
-                [bindValue]="'id'"
-                id="folderSelector"
-                [multiple]="false"></ng-select>
+            <div class="col-md-3 col-sm-6 col-xs-6" *ngIf="foldersDto.length > 0">
+              <div class="md-form" (click)="openFoldersModal()">
+                <input mdbInput
+                       type="text" id="folderSelector" [ngModel]="newPlanningModel.item.eFormSdkFolderName"
+                       [disabled]="true"
+                       name="folderSelector" class="form-control">
+                <label for="folderSelector">{{'Folders' | translate}}</label>
+              </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
               <ng-select [items]="templatesModel.templates"
@@ -135,3 +130,5 @@
     </div>
   </div>
 </div>
+
+<app-planning-folders-modal (folderSelected)="onFolderSelected($event)" [folders]="foldersDto" #foldersModal></app-planning-folders-modal>

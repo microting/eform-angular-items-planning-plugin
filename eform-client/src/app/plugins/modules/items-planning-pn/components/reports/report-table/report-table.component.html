@@ -17,7 +17,7 @@
         {{item.id}}
       </td>
       <td>
-        {{item.createdAt | date: 'yyyy/MM/dd'}}
+        <date-formatter [date]="item.microtingSdkCaseDoneAt" [Format]="'datetime'"></date-formatter>
       </td>
 <!--      <td>-->
 <!--        {{item.doneBy}}-->

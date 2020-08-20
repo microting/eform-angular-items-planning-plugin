@@ -133,6 +133,13 @@
     }
   },
   {
+    "Key": "ItemName",
+    "LocalizedValue": {
+      "da": "Område",
+      "en-US": "Item name"
+    }
+  },
+  {
     "Key": "Location code",
     "LocalizedValue": {
       "da": "Placering",
@@ -203,9 +210,16 @@
     }
   },
   {
+    "Key": "CaseId",
+    "LocalizedValue": {
+      "da": "Sagsnummer",
+      "en-US": "Case id"
+    }
+  },
+  {
     "Key": "CreatedAt",
     "LocalizedValue": {
-      "da": "Oprettet kl",
+      "da": "Dato",
       "en-US": "Created At"
     }
   },
@@ -214,6 +228,13 @@
     "LocalizedValue": {
       "da": "Udført af",
       "en-US": "Done By"
+    }
+  },
+  {
+    "Key": "Picture",
+    "LocalizedValue": {
+      "da": "Billede",
+      "en-US": "Picture"
     }
   },
   {
@@ -231,10 +252,24 @@
     }
   },
   {
+    "Key": "posts",
+    "LocalizedValue": {
+      "da": "indlæg",
+      "en-US": "posts"
+    }
+  },
+  {
     "Key": "SentTo",
     "LocalizedValue": {
       "da": "Sendt til",
       "en-US": "Sent To"
+    }
+  },
+  {
+    "Key": "PostDate",
+    "LocalizedValue": {
+      "da": "Sendt d.",
+      "en-US": "Sent at"
     }
   },
   {

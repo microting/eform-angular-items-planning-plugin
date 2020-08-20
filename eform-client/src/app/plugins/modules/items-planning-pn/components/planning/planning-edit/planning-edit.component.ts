@@ -9,15 +9,17 @@ import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
 import {FolderDto} from 'src/app/common/models/dto/folder.dto';
 import {FoldersService} from 'src/app/common/services/advanced/folders.service';
+import {PlanningFoldersModalComponent} from '../planning-folders-modal/planning-folders-modal.component';
 
 @Component({
   selector: 'app-planning-edit',
   templateUrl: './planning-edit.component.html',
-  styleUrls: ['./planning-edit.component.scss']
+  styleUrls: ['./planning-edit.component.scss'],
 })
 export class PlanningEditComponent implements OnInit {
-  @ViewChild('frame', {static: false}) frame;
-  @ViewChild('unitImportModal', {static: false}) importUnitModal;
+  @ViewChild('frame', { static: false }) frame;
+  @ViewChild('unitImportModal', { static: false }) importUnitModal;
+  @ViewChild('foldersModal', {static: false}) foldersModal: PlanningFoldersModalComponent;
   @Output() planningUpdated: EventEmitter<void> = new EventEmitter<void>();
   selectedPlanningModel: PlanningPnModel = new PlanningPnModel();
   templateRequestModel: TemplateRequestModel = new TemplateRequestModel();
@@ -27,25 +29,27 @@ export class PlanningEditComponent implements OnInit {
   foldersDto: Array<FolderDto> = [];
   saveButtonDisabled = true;
 
-  constructor(private foldersService: FoldersService,
-              private activateRoute: ActivatedRoute,
-              private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
-              private cd: ChangeDetectorRef,
-              private eFormService: EFormService,
-              private location: Location) {
+  constructor(
+    private foldersService: FoldersService,
+    private activateRoute: ActivatedRoute,
+    private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
+    private cd: ChangeDetectorRef,
+    private eFormService: EFormService,
+    private location: Location
+  ) {
     this.typeahead
       .pipe(
         debounceTime(200),
-        switchMap(term => {
+        switchMap((term) => {
           this.templateRequestModel.nameFilter = term;
           return this.eFormService.getAll(this.templateRequestModel);
         })
       )
-      .subscribe(items => {
+      .subscribe((items) => {
         this.templatesModel = items.model;
         this.cd.markForCheck();
       });
-    const activatedRouteSub = this.activateRoute.params.subscribe(params => {
+    const activatedRouteSub = this.activateRoute.params.subscribe((params) => {
       this.selectedPlanningId = +params['id'];
     });
   }
@@ -54,43 +58,54 @@ export class PlanningEditComponent implements OnInit {
     this.getSelectedPlanning(this.selectedPlanningId);
   }
 
-  updateSaveButtonDisabled(event) {
+  updateSaveButtonDisabled() {
     if (this.selectedPlanningModel.item.eFormSdkFolderId != null) {
       this.saveButtonDisabled = false;
     }
   }
 
   getSelectedPlanning(id: number) {
-    this.itemsPlanningPnPlanningsService.getSinglePlanning(id).subscribe((data) => {
-      if (data && data.success) {
-        this.selectedPlanningModel = data.model;
-        this.selectedPlanningModel.internalRepeatUntil = this.selectedPlanningModel.repeatUntil;
-        this.loadAllFolders();
-        this.templatesModel.templates = [
-          {id: this.selectedPlanningModel.relatedEFormId, label: this.selectedPlanningModel.relatedEFormName} as any
-        ];
-      }
-    });
+    this.itemsPlanningPnPlanningsService
+      .getSinglePlanning(id)
+      .subscribe((data) => {
+        if (data && data.success) {
+          this.selectedPlanningModel = data.model;
+          this.selectedPlanningModel.internalRepeatUntil = this.selectedPlanningModel.repeatUntil;
+          this.loadAllFolders();
+          this.templatesModel.templates = [
+            {
+              id: this.selectedPlanningModel.relatedEFormId,
+              label: this.selectedPlanningModel.relatedEFormName,
+            } as any,
+          ];
+        }
+      });
   }
 
   goBack() {
     this.location.back();
   }
 
-  updatePlanning() {if (this.selectedPlanningModel.internalRepeatUntil) {
-      const tempDate = moment(this.selectedPlanningModel.internalRepeatUntil).format('DD/MM/YYYY');
+  updatePlanning() {
+    if (this.selectedPlanningModel.internalRepeatUntil) {
+      const tempDate = moment(
+        this.selectedPlanningModel.internalRepeatUntil
+      ).format('DD/MM/YYYY');
       const datTime = moment.utc(tempDate, 'DD/MM/YYYY');
-      this.selectedPlanningModel.repeatUntil = datTime.format('YYYY-MM-DDT00:00:00').toString();
+      this.selectedPlanningModel.repeatUntil = datTime
+        .format('YYYY-MM-DDT00:00:00')
+        .toString();
     }
-    const model = {...this.selectedPlanningModel} as PlanningUpdateModel;
-    this.itemsPlanningPnPlanningsService.updatePlanning(model)
+    const model = { ...this.selectedPlanningModel } as PlanningUpdateModel;
+    this.itemsPlanningPnPlanningsService
+      .updatePlanning(model)
       .subscribe((data) => {
-      if (data && data.success) {
-        this.planningUpdated.emit();
-        this.selectedPlanningModel = new PlanningPnModel();
-        this.goBack();
-      }
-    });
+        if (data && data.success) {
+          this.planningUpdated.emit();
+          this.selectedPlanningModel = new PlanningPnModel();
+          this.goBack();
+        }
+      });
   }
 
   loadAllFolders() {
@@ -102,5 +117,15 @@ export class PlanningEditComponent implements OnInit {
         }
       }
     });
+  }
+
+  openFoldersModal() {
+    this.foldersModal.show(this.selectedPlanningModel);
+  }
+
+  onFolderSelected(folderDto: FolderDto) {
+    this.selectedPlanningModel.item.eFormSdkFolderId = folderDto.id;
+    this.selectedPlanningModel.item.eFormSdkFolderName = folderDto.name;
+    this.updateSaveButtonDisabled();
   }
 }

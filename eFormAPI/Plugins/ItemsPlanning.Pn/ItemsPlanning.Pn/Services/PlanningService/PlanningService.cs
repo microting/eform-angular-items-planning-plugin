@@ -360,8 +360,15 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 // get site names
                 var core = await _coreService.GetCore();
-                using (var dbContext = core.dbContextHelper.GetDbContext())
+                await using (var dbContext = core.dbContextHelper.GetDbContext())
                 {
+                    planning.Item.eFormSdkFolderName = await dbContext.folders
+                        .AsNoTracking()
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Where(x => x.Id == planning.Item.eFormSdkFolderId)
+                        .Select(x => x.Name)
+                        .FirstOrDefaultAsync();
+
                     var sites = await dbContext.sites
                         .AsNoTracking()
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)

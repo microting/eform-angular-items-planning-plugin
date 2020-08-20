@@ -14,7 +14,7 @@ import {
   PlanningEditComponent,
   PlanningsPageComponent,
   UploadedDataPdfComponent,
-  UploadedDataDeleteComponent, PlanningAssignSitesModalComponent,
+  UploadedDataDeleteComponent, PlanningAssignSitesModalComponent, PlanningFoldersModalComponent,
 } from './components/planning';
 import {ItemsPlanningSettingsComponent} from './components/items-plannings-setting';
 import {RouterModule} from '@angular/router';
@@ -57,6 +57,7 @@ import {EformSharedModule} from 'src/app/common/modules/eform-shared/eform-share
     PlanningEditComponent,
     PlanningDeleteComponent,
     PlanningAssignSitesModalComponent,
+    PlanningFoldersModalComponent,
     ItemsPlanningSettingsComponent,
     ReportContainerComponent,
     ReportHeaderComponent,
