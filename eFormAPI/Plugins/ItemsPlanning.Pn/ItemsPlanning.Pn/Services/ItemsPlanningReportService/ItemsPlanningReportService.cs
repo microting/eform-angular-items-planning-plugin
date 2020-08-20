@@ -221,6 +221,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                         break;
                                     case Constants.FieldTypes.EntitySearch:
                                     case Constants.FieldTypes.EntitySelect:
+                                    case Constants.FieldTypes.SingleSelect:
                                         item.CaseFields.Add(caseField.ValueReadable);
                                         break;
                                     default:
