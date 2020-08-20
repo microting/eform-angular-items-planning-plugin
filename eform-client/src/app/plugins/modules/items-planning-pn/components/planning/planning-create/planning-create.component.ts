@@ -12,6 +12,7 @@ import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {Subscription} from 'rxjs';
 import {FoldersService} from 'src/app/common/services/advanced/folders.service';
 import {FolderDto} from 'src/app/common/models/dto/folder.dto';
+import {PlanningFoldersModalComponent} from '../planning-folders-modal/planning-folders-modal.component';
 
 @AutoUnsubscribe()
 @Component({
@@ -21,6 +22,7 @@ import {FolderDto} from 'src/app/common/models/dto/folder.dto';
 })
 export class PlanningCreateComponent implements OnInit, OnDestroy {
   @ViewChild('frame', {static: false}) frame;
+  @ViewChild('foldersModal', {static: false}) foldersModal: PlanningFoldersModalComponent;
   newPlanningModel: PlanningCreateModel = new PlanningCreateModel();
   templateRequestModel: TemplateRequestModel = new TemplateRequestModel();
   templatesModel: TemplateListModel = new TemplateListModel();
@@ -58,8 +60,8 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
     this.loadAllFolders();
   }
 
-  updateSaveButtonDisabled(event) {
-    if (this.newPlanningModel.eFormSdkFolderId != null) {
+  updateSaveButtonDisabled() {
+    if (this.newPlanningModel.item.eFormSdkFolderId != null) {
       this.saveButtonDisabled = false;
     }
   }
@@ -95,5 +97,15 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
         this.foldersDto = operation.model;
       }
     });
+  }
+
+  openFoldersModal() {
+    this.foldersModal.show();
+  }
+
+  onFolderSelected(folderDto: FolderDto) {
+    this.newPlanningModel.item.eFormSdkFolderId = folderDto.id;
+    this.newPlanningModel.item.eFormSdkFolderName = folderDto.name;
+    this.updateSaveButtonDisabled();
   }
 }

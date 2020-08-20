@@ -13,4 +13,5 @@ export class PlanningCreateModel {
   relatedEFormId: number;
   item: PlanningItemModel = new PlanningItemModel();
   eFormSdkFolderId: number;
+  eFormSdkFolderName: string;
 }
