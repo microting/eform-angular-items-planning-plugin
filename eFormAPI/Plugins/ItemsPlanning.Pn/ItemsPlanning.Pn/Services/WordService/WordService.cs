@@ -120,7 +120,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                     foreach (var dataModel in reportEformModel.Items)
                     {
                         itemsHtml += @"<tr>";
-                        itemsHtml += $@"<td>{dataModel.Id}</td>";
+                        itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseId}</td>";
 
                         itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}</td>";
                         // itemsHtml += $@"<td>{dataModel.DoneBy}</td>";
@@ -141,7 +141,7 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                     foreach (var imagesName in reportEformModel.ImageNames)
                     {
-                        itemsHtml += $@"<h2><b>{_localizationService.GetString("Picture")}: {imagesName.Key}</b></h2>";
+                        itemsHtml += $@"<h2><b>{_localizationService.GetString("Picture")}: {imagesName.Key[1]}</b></h2>";
                         var filePath = Path.Combine(basePicturePath, imagesName.Value[0]);
 
                         Stream stream;
@@ -180,7 +180,7 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                         if (!string.IsNullOrEmpty(imagesName.Value[1]))
                         {
-                            itemsHtml += $@"<a href=""{imagesName.Value[1]}>"">{imagesName.Value[1]}</a>";
+                            itemsHtml += $@"<a href=""{imagesName.Value[1]}"">{imagesName.Value[1]}</a>";
                         }
 
                         stream.Dispose();

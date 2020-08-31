@@ -145,6 +145,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Where(x => x.Field.FieldTypeId == 5)
                         .Where(x => templateCaseIds.Contains(x.CaseId))
+                        .OrderBy(x => x.CaseId)
                         .ToListAsync();
 
                     foreach (var imageField in imagesForEform)
@@ -153,17 +154,20 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         {
                             var bla = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
                             DateTime doneAt = (DateTime)bla.MicrotingSdkCaseDoneAt;
-                            var label = $"{doneAt:yyyy-MM-dd HH:mm:ss}; {bla.Item.Name}";
+                            var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {bla.Item.Name}";
                             string geoTag = "";
                             if (imageField.Latitude != null)
                             {
                                 geoTag =
                                     $"https://www.google.com/maps/place/{imageField.Latitude},{imageField.Longitude}";
                             }
+                            var keyList = new List<string>();
+                            keyList.Add(imageField.CaseId.ToString());
+                            keyList.Add(label);
                             var list = new List<string>();
                             list.Add(imageField.UploadedData.FileName);
                             list.Add(geoTag);
-                            reportModel.ImageNames.Add(new KeyValuePair<string, List<string>>(label, list));
+                            reportModel.ImageNames.Add(new KeyValuePair<List<string>, List<string>>(keyList, list));
                         }
                     }
 
@@ -203,6 +207,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         var item = new ReportEformItemModel
                         {
                             Id = caseDto.Id,
+                            MicrotingSdkCaseId = caseDto.MicrotingSdkCaseId,
                             MicrotingSdkCaseDoneAt = caseDto.MicrotingSdkCaseDoneAt,
                             DoneBy = caseDto.DoneByUserName,
                             ItemName = caseDto.Item.Name,

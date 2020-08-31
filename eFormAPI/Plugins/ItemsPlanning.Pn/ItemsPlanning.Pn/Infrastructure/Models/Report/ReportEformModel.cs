@@ -29,8 +29,8 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Report
     public class ReportEformModel
     {
         public string Name { get; set; }
-        public List<KeyValuePair<string, List<string>>> ImageNames { get; set; }
-            = new List<KeyValuePair<string, List<string>>>();
+        public List<KeyValuePair<List<string>, List<string>>> ImageNames { get; set; }
+            = new List<KeyValuePair<List<string>, List<string>>>();
 
         public List<KeyValuePair<int, string>> ItemHeaders { get; set; }
             = new List<KeyValuePair<int, string>>();
