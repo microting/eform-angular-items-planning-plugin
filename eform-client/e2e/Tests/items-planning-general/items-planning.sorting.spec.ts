@@ -12,13 +12,13 @@ describe('Items planning plannings - Sorting', function () {
   it('should create dummy plannings', function () {
     itemsPlanningPlanningPage.createDummyPlannings();
   });
-  it ('should be able to sort by ID', function () {
+  it('should be able to sort by ID', function () {
     const planningBefore = $$('#planningId').map(item => {
       return item.getText();
     });
 
     // check that sorting is correct in both directions
-    for (let i = 0; i < 2; i ++) {
+    for (let i = 0; i < 2; i++) {
       itemsPlanningPlanningPage.clickIdTableHeader();
 
       const planningAfter = $$('#planningId').map(item => {
@@ -39,13 +39,13 @@ describe('Items planning plannings - Sorting', function () {
     }
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   });
-  it ('should be able to sort by Name', function () {
+  it('should be able to sort by Name', function () {
     const planningBefore = $$('#planningName').map(item => {
       return item.getText();
     });
 
     // check that sorting is correct in both directions
-    for (let i = 0; i < 2; i ++) {
+    for (let i = 0; i < 2; i++) {
       itemsPlanningPlanningPage.clickNameTableHeader();
 
       const planningAfter = $$('#planningName').map(item => {
@@ -68,13 +68,13 @@ describe('Items planning plannings - Sorting', function () {
     }
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   });
-  it ('should be able to sort by Description', function () {
+  it('should be able to sort by Description', function () {
     const planningBefore = $$('#planningDescription').map(item => {
       return item.getText();
     });
 
     // check that sorting is correct in both directions
-    for (let i = 0; i < 2; i ++) {
+    for (let i = 0; i < 2; i++) {
       itemsPlanningPlanningPage.clickDescriptionTableHeader();
 
       const planningAfter = $$('#planningDescription').map(item => {
