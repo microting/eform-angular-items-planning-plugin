@@ -63,8 +63,18 @@ namespace ItemsPlanning.Pn.Infrastructure.Data.Seed.Data
             },
             new PluginConfigurationValue()
             {
-            Name = "ItemsPlanningBaseSettings:Token",
-            Value = "..."
+                Name = "ItemsPlanningBaseSettings:Token",
+                Value = "..."
+            },
+            new PluginConfigurationValue()
+            {
+                Name = "ItemsPlanningBaseSettings:StartTime",
+                Value = "1"
+            },
+            new PluginConfigurationValue()
+            {
+                Name = "ItemsPlanningBaseSettings:EndTime",
+                Value = "4"
             }
         };
     }

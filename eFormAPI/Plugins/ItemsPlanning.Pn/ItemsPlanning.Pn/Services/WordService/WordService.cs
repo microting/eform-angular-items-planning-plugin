@@ -21,6 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
+using ImageMagick;
+
 namespace ItemsPlanning.Pn.Services.WordService
 {
     using System;
@@ -86,6 +89,9 @@ namespace ItemsPlanning.Pn.Services.WordService
                 var itemsHtml = "";
 
                 int i = 0;
+                bool s3Enabled = core.GetSdkSetting(Settings.s3Enabled).Result.ToLower() == "true";
+                bool swiftEnabled = core.GetSdkSetting(Settings.swiftEnabled).Result.ToLower() == "true";
+                string basePicturePath = await core.GetSdkSetting(Settings.fileLocationPicture);
                 foreach (var reportEformModel in reportModel)
                 {
                     if (!string.IsNullOrEmpty(reportEformModel.Name))
@@ -136,14 +142,14 @@ namespace ItemsPlanning.Pn.Services.WordService
                     foreach (var imagesName in reportEformModel.ImagesNames)
                     {
                         itemsHtml += $@"<h2><b>{_localizationService.GetString("Picture")}: {imagesName.Key}</b></h2>";
-                        var filePath = Path.Combine(await core.GetSdkSetting(Settings.fileLocationPicture), imagesName.Value);
+                        var filePath = Path.Combine(basePicturePath, imagesName.Value);
 
                         Stream stream;
-                        if (core.GetSdkSetting(Settings.swiftEnabled).Result.ToLower() == "true")
+                        if (swiftEnabled)
                         {
                             var storageResult = await core.GetFileFromSwiftStorage(imagesName.Value);
                             stream = storageResult.ObjectStreamContent;
-                        } else if (core.GetSdkSetting(Settings.s3Enabled).Result.ToLower() == "true")
+                        } else if (s3Enabled)
                         {
                             var storageResult = await core.GetFileFromS3Storage(imagesName.Value);
                             stream = storageResult.ResponseStream;
@@ -158,18 +164,18 @@ namespace ItemsPlanning.Pn.Services.WordService
                             stream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
                         }
 
-                        using (var image = Image.FromStream(stream))
+                        using (var image = new MagickImage(stream))
                         {
-                            using (var memoryStream = new MemoryStream())
-                            {
-                                image.Save(memoryStream, image.RawFormat);
-                                var imageBytes = memoryStream.ToArray();
+                            decimal currentRation = image.Height / (decimal)image.Width;
+                            int newWidth = 700;
+                            int newHeight = (int)Math.Round((currentRation * newWidth));
 
-                                // Convert byte[] to Base64 String
-                                var base64String = Convert.ToBase64String(imageBytes);
-                                itemsHtml +=
-                                    $@"<p><img src=""data:image/png;base64,{base64String}"" width=""650px"" alt=""Image"" /></p>";
-                            }
+                            image.Resize(newWidth, newHeight);
+                            image.Crop(newWidth, newHeight);
+
+                            var base64String = image.ToBase64();
+                            itemsHtml +=
+                            $@"<p><img src=""data:image/png;base64,{base64String}"" width=""650px"" alt=""Image"" /></p>";
                         }
 
                         stream.Dispose();
