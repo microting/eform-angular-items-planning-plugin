@@ -139,19 +139,19 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                     itemsHtml += @"<br/>";
 
-                    foreach (var imagesName in reportEformModel.ImagesNames)
+                    foreach (var imagesName in reportEformModel.ImageNames)
                     {
                         itemsHtml += $@"<h2><b>{_localizationService.GetString("Picture")}: {imagesName.Key}</b></h2>";
-                        var filePath = Path.Combine(basePicturePath, imagesName.Value);
+                        var filePath = Path.Combine(basePicturePath, imagesName.Value[0]);
 
                         Stream stream;
                         if (swiftEnabled)
                         {
-                            var storageResult = await core.GetFileFromSwiftStorage(imagesName.Value);
+                            var storageResult = await core.GetFileFromSwiftStorage(imagesName.Value[0]);
                             stream = storageResult.ObjectStreamContent;
                         } else if (s3Enabled)
                         {
-                            var storageResult = await core.GetFileFromS3Storage(imagesName.Value);
+                            var storageResult = await core.GetFileFromS3Storage(imagesName.Value[0]);
                             stream = storageResult.ResponseStream;
                         } else if (!File.Exists(filePath))
                         {
@@ -176,6 +176,11 @@ namespace ItemsPlanning.Pn.Services.WordService
                             var base64String = image.ToBase64();
                             itemsHtml +=
                             $@"<p><img src=""data:image/png;base64,{base64String}"" width=""650px"" alt=""Image"" /></p>";
+                        }
+
+                        if (!string.IsNullOrEmpty(imagesName.Value[1]))
+                        {
+                            itemsHtml += $@"<a href=""{imagesName.Value[1]}>"">{imagesName.Value[1]}</a>";
                         }
 
                         stream.Dispose();

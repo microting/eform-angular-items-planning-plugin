@@ -154,7 +154,16 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             var bla = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
                             DateTime doneAt = (DateTime)bla.MicrotingSdkCaseDoneAt;
                             var label = $"{doneAt:yyyy-MM-dd HH:mm:ss}; {bla.Item.Name}";
-                            reportModel.ImagesNames.Add(new KeyValuePair<string, string>(label, imageField.UploadedData.FileName));
+                            string geoTag = "";
+                            if (imageField.Latitude != null)
+                            {
+                                geoTag =
+                                    $"https://www.google.com/maps/place/{imageField.Latitude},{imageField.Longitude}";
+                            }
+                            var list = new List<string>();
+                            list.Add(imageField.UploadedData.FileName);
+                            list.Add(geoTag);
+                            reportModel.ImageNames.Add(new KeyValuePair<string, List<string>>(label, list));
                         }
                     }
 
