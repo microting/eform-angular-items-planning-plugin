@@ -1,10 +1,12 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterContentInit, AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
 import {ReportEformItemModel, ReportEformPnModel, ReportEformPostModel, ReportPnGenerateModel} from '../../../models/report';
 import {ItemsPlanningPnReportsService} from '../../../services';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {Subscription} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
+import { parseISO } from 'date-fns';
 
 @AutoUnsubscribe()
 @Component({
@@ -16,8 +18,26 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   reportsModel: ReportEformPnModel[] = [];
   generateReportSub$: Subscription;
   downloadReportSub$: Subscription;
+  dateFrom: any;
+  dateTo: any;
+  range: Date[] = [];
 
-  constructor(private reportService: ItemsPlanningPnReportsService, private toastrService: ToastrService) {
+  constructor(private activateRoute: ActivatedRoute,
+              private reportService: ItemsPlanningPnReportsService,
+              private toastrService: ToastrService) {
+    this.activateRoute.params.subscribe(params => {
+      this.dateFrom = params['dateFrom'];
+      this.dateTo = params['dateTo'];
+      this.range.push(parseISO(params['dateFrom']));
+      this.range.push(parseISO(params['dateTo']));
+      const model = {
+        dateFrom: params['dateFrom'],
+        dateTo: params['dateTo']
+      };
+      if (model.dateFrom !== undefined) {
+        this.onGenerateReport(model);
+      }
+    });
   }
 
   ngOnInit() {
@@ -25,6 +45,8 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   }
 
   onGenerateReport(model: ReportPnGenerateModel) {
+    this.dateFrom = model.dateFrom;
+    this.dateTo = model.dateTo;
     this.generateReportSub$ = this.reportService.generateReport(model).subscribe((data) => {
       if (data && data.success) {
         this.reportsModel = data.model;

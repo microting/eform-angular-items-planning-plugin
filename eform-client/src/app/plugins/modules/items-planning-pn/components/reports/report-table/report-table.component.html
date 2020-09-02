@@ -14,6 +14,11 @@
     <tbody id="tableBody">
     <tr *ngFor="let item of items">
       <td>
+        <button mdbBtn class="btn-success btn-icon mb-2"
+                [routerLink]="['../case/' + item.microtingSdkCaseId + '/' + item.eFormId + '/' + item.id + '/' + dateFrom + '/' + dateTo]"
+                mdbTooltip="{{ 'Edit Case' | translate }}">
+          <fa-icon icon="pen" size="lg" [fixedWidth]="true"></fa-icon>
+        </button>
         {{item.microtingSdkCaseId}}
       </td>
       <td>

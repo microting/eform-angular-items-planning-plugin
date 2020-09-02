@@ -209,6 +209,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             Id = caseDto.Id,
                             MicrotingSdkCaseId = caseDto.MicrotingSdkCaseId,
                             MicrotingSdkCaseDoneAt = caseDto.MicrotingSdkCaseDoneAt,
+                            eFormId = caseDto.MicrotingSdkeFormId,
                             DoneBy = caseDto.DoneByUserName,
                             ItemName = caseDto.Item.Name,
                             ItemDescription = caseDto.Item.Description,
