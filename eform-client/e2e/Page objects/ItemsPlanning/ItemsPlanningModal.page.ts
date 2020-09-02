@@ -18,7 +18,7 @@ export class ItemsPlanningModalPage extends Page {
   }
 
   public get createPlanningSelectorOption() {
-    browser.pause(1000);
+    browser.pause(500);
     const ele = $(`//*[contains(@class, 'ng-option')]`);
     ele.waitForDisplayed({timeout: 20000});
     ele.waitForClickable({timeout: 20000});
@@ -33,7 +33,6 @@ export class ItemsPlanningModalPage extends Page {
 
   public get createRepeatEvery() {
     $('#createRepeatEvery').waitForDisplayed({timeout: 20000});
-    //$('#createRepeatEvery').waitForClickable({timeout: 20000});
     return $('#createRepeatEvery');
   }
 
@@ -45,9 +44,13 @@ export class ItemsPlanningModalPage extends Page {
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
+  public get createFolderName() {
+    $('#folderSelector input').waitForDisplayed({timeout: 20000});
+    $('#folderSelector input').waitForClickable({timeout: 20000});
+    return $('#folderSelector input');
+  }
   public get createRepeatUntil() {
     $('#createRepeatUntil').waitForDisplayed({timeout: 20000});
-    //$('#createRepeatUntil').waitForClickable({timeout: 20000});
     return $('#createRepeatUntil');
   }
 
@@ -138,36 +141,40 @@ export class ItemsPlanningModalPage extends Page {
 
   public createPlanning(data: any) {
     this.createPlanningItemName.setValue(data.name);
-    browser.pause(500);
+    // browser.pause(500);
     this.createPlanningSelector.addValue(data.template);
-    browser.pause(500);
+    // browser.pause(500);
     this.createPlanningSelectorOption.click();
-    browser.pause(500);
+    // browser.pause(500);
     this.createPlanningDescription.setValue(data.description);
-    browser.pause(500);
+    // browser.pause(500);
     this.createRepeatEvery.setValue(data.repeatEvery);
-    browser.pause(500);
+    // browser.pause(500);
     this.selectCreateRepeatType(data.repeatType);
-    browser.pause(500);
+    // browser.pause(500);
     this.createRepeatUntil.setValue(data.repeatUntil);
-    browser.pause(500);
+    // browser.pause(500);
+    this.createFolderName.addValue(data.folderName);
+    // browser.pause(500);
+    this.createPlanningSelectorOption.click();
+    // browser.pause(500);
     this.planningCreateSaveBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
   public editPlanning(data: any) {
     this.editPlanningItemName.setValue(data.name);
-    browser.pause(500);
+    // browser.pause(500);
     this.editPlanningSelector.setValue(data.template);
-    browser.pause(500);
+    // browser.pause(500);
     this.editPlanningDescription.setValue(data.description);
-    browser.pause(500);
+    // browser.pause(500);
     this.editRepeatEvery.setValue(data.repeatEvery);
-    browser.pause(500);
+    // browser.pause(500);
     this.selectEditRepeatType(data.repeatType);
-    browser.pause(500);
+    // browser.pause(500);
     this.editRepeatUntil.setValue(data.repeatUntil);
-    browser.pause(500);
+    // browser.pause(500);
     this.planningEditSaveBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }

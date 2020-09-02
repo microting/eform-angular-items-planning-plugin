@@ -3,6 +3,7 @@ import itemsPlanningModalPage from './ItemsPlanningModal.page';
 import {PageWithNavbarPage} from '../PageWithNavbar.page';
 import {Guid} from 'guid-typescript';
 import XMLForEformFractions from '../../Constants/XMLForEformFractions';
+import myEformsPage from '../MyEforms.page';
 
 export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   constructor() {
@@ -45,17 +46,17 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public clickIdTableHeader() {
-    $(`/ /*[contains(@id, 'idTableHeader')]`).click();
+    $('#idTableHeader').click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
   public clickNameTableHeader() {
-    $(`/ /*[contains(@id, 'nameTableHeader')]`).click();
+    $('#nameTableHeader').click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
   public clickDescriptionTableHeader() {
-    $(`/ /*[contains(@id, 'descriptionTableHeader')]`).click();
+    $('#descriptionTableHeader').click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
@@ -102,13 +103,15 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
         description: Guid.create().toString(),
         repeatEvery: '1',
         repeatType: '1',
-        repeatUntil: '5/15/2020'
+        repeatUntil: '5/15/2020',
+        folderName: 'My test folder'
       };
-      $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-      $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-      itemsPlanningModalPage.createPlanningSelectorOption.click();
-      itemsPlanningModalPage.planningCreateSaveBtn.click();
-      $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+      itemsPlanningModalPage.createPlanning(planningData);
+      // $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+      // $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+      // itemsPlanningModalPage.createPlanningSelectorOption.click();
+      // itemsPlanningModalPage.planningCreateSaveBtn.click();
+      // $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
     }
   }
 
@@ -120,6 +123,19 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
       itemsPlanningModalPage.planningDeleteDeleteBtn.click();
       $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
     }
+  }
+
+  createNewFolder(folderName) {
+    myEformsPage.Navbar.advancedDropdown();
+    myEformsPage.Navbar.clickonSubMenuItem('Folders');
+    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    $('#folderCreateBtn').waitForDisplayed({timeout: 90000});
+    $('#folderCreateBtn').click();
+    $('#folderName').waitForDisplayed({timeout: 90000});
+    $('#folderName').setValue(folderName);
+    $('#folderDescription').setValue(' ');
+    $('#folderSaveBtn').waitForClickable({timeout: 90000});
+    $('#folderSaveBtn').click();
   }
 
   createNewEform(eFormLabel, newTagsPlanning = [], tagAddedNum = 0) {
