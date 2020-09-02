@@ -4,7 +4,7 @@
     <tr>
       <th>{{'Case Id' | translate}}</th>
       <th>{{'Created at' | translate}}</th>
-<!--      <th>{{'Done by' | translate}}</th>-->
+      <th>{{'Done by' | translate}}</th>
       <th>{{'Item name' | translate}}</th>
       <th *ngFor="let itemHeader of itemHeaders">{{itemHeader.value}}</th>
 <!--      <th>{{'Images' | translate}}</th>-->
@@ -19,9 +19,9 @@
       <td>
         <date-formatter [date]="item.microtingSdkCaseDoneAt" [Format]="'datetime'"></date-formatter>
       </td>
-<!--      <td>-->
-<!--        {{item.doneBy}}-->
-<!--      </td>-->
+      <td>
+        {{item.doneBy}}
+      </td>
       <td>
         {{item.itemName}}
       </td>

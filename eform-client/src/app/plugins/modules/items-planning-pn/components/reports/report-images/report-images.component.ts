@@ -28,7 +28,7 @@ export class ReportImagesComponent implements OnChanges, OnDestroy {
               src: imageUrl,
               thumbnail: imageUrl,
               name: imageValue.key[1],
-              geoTag: imageValue[1]
+              geoTag: imageValue.value[1]
           };
           this.images.push({key: Number(imageValue.key[0]), value: val});
           this.images.sort((a, b) => a.key < b.key ? -1 : a.key > b.key ? 1 : 0);
@@ -59,5 +59,9 @@ export class ReportImagesComponent implements OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
+  }
+
+  openGpsWindow(url: string) {
+    window.open(url, '_blank');
   }
 }

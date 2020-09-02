@@ -105,7 +105,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                     itemsHtml += @"<tr style=""background-color:#f5f5f5;font-weight:bold"">";
                     itemsHtml += $@"<td>{_localizationService.GetString("CaseId")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("CreatedAt")}</td>";
-                    // itemsHtml += $@"<td>{_localizationService.GetString("DoneBy")}</td>";
+                    itemsHtml += $@"<td>{_localizationService.GetString("DoneBy")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("ItemName")}</td>";
 
                     foreach (var itemHeader in reportEformModel.ItemHeaders)
@@ -123,7 +123,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                         itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseId}</td>";
 
                         itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}</td>";
-                        // itemsHtml += $@"<td>{dataModel.DoneBy}</td>";
+                        itemsHtml += $@"<td>{dataModel.DoneBy}</td>";
                         itemsHtml += $@"<td>{dataModel.ItemName}</td>";
 
                         foreach (var dataModelCaseField in dataModel.CaseFields)

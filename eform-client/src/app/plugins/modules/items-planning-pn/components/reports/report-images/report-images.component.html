@@ -7,6 +7,11 @@
           <img class="card-img-top card-img-adaptive z-depth-1" (click)="openPicture(i)"
                [src]="image.value.src | authImage | async" alt="Card image cap">
         </div>
+        <button mdbTooltip="{{'Open location' | translate}}"
+                (click)="openGpsWindow(image.value.geoTag)" class="btn btn-icon btn-success">
+          <fa-icon icon="map-marker-alt" size="lg" [fixedWidth]="true"></fa-icon>
+
+        </button>
       </div>
     </div>
   </mdb-card-body>
