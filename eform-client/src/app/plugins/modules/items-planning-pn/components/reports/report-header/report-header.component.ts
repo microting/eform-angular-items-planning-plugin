@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LocaleService} from 'src/app/common/services/auth';
 import {format} from 'date-fns';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -17,6 +17,7 @@ import {DateTimeAdapter} from 'ng-pick-datetime-ex';
 export class ReportHeaderComponent implements OnInit {
   @Output() generateReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
   @Output() downloadReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
+  @Input() range: Date[];
   generateForm: FormGroup;
 
   constructor(dateTimeAdapter: DateTimeAdapter<any>,

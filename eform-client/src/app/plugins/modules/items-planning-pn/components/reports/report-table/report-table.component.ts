@@ -9,6 +9,8 @@ import {ReportEformItemModel} from '../../../models/report';
 })
 export class ReportTableComponent implements OnInit {
   @Input() items: ReportEformItemModel[] = [];
+  @Input() dateFrom: any;
+  @Input() dateTo: any;
   @Input() itemHeaders: {key: string, value: string}[] = [];
   constructor() { }
 

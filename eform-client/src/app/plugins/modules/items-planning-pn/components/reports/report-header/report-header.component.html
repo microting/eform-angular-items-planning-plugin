@@ -8,6 +8,7 @@
         </i>
         <input mdbInput  formControlName="dateRange"
                name="dateRange" required
+               [(ngModel)]="range"
                type="text" [owlDateTime]="dateRangePicker" [selectMode]="'range'"
                class="form-control input-sm" id="dateFormInput">
         <label for="dateFormInput">{{'Selected date range' | translate}}</label>

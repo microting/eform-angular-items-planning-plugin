@@ -31,6 +31,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Report
         public int Id { get; set; }
         public DateTime? MicrotingSdkCaseDoneAt { get; set; }
         public int MicrotingSdkCaseId { get; set; }
+        public int eFormId { get; set; }
         public string ItemName { get; set; }
         public string ItemDescription { get; set; }
         public string DoneBy { get; set; } // worker name

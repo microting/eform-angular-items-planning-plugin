@@ -3,14 +3,14 @@
 </subheader-pn>
 
 <div class="container-fluid">
-  <app-items-planning-pn-report-header
+  <app-items-planning-pn-report-header [range]="range"
     (downloadReport)="onDownloadReport($event)"
     (generateReport)="onGenerateReport($event)">
   </app-items-planning-pn-report-header>
   <ng-container *ngFor="let report of reportsModel">
     <div class="mb-4">
       <h4>{{report.name}}</h4>
-      <app-report-table [items]="report.items" [itemHeaders]="report.itemHeaders"></app-report-table>
+      <app-report-table [items]="report.items" [itemHeaders]="report.itemHeaders" [dateFrom]="dateFrom" [dateTo]="dateTo"></app-report-table>
       <app-report-images [imageNames]="report.imageNames"></app-report-images>
       <app-report-posts [posts]="report.posts"></app-report-posts>
     </div>

@@ -86,14 +86,14 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 if (model.DateFrom != null)
                 {
                     casesQuery = casesQuery.Where(x =>
-                        x.CreatedAt >= new DateTime(model.DateFrom.Value.Year, model.DateFrom.Value.Month,
+                        x.MicrotingSdkCaseDoneAt >= new DateTime(model.DateFrom.Value.Year, model.DateFrom.Value.Month,
                             model.DateFrom.Value.Day, 0, 0, 0));
                 }
 
                 if (model.DateTo != null)
                 {
                     casesQuery = casesQuery.Where(x =>
-                        x.CreatedAt <= new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month,
+                        x.MicrotingSdkCaseDoneAt <= new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month,
                             model.DateTo.Value.Day, 23, 59, 59));
                 }
 
@@ -209,6 +209,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             Id = caseDto.Id,
                             MicrotingSdkCaseId = caseDto.MicrotingSdkCaseId,
                             MicrotingSdkCaseDoneAt = caseDto.MicrotingSdkCaseDoneAt,
+                            eFormId = caseDto.MicrotingSdkeFormId,
                             DoneBy = caseDto.DoneByUserName,
                             ItemName = caseDto.Item.Name,
                             ItemDescription = caseDto.Item.Description,

@@ -47,7 +47,17 @@ export const routes: Routes = [
         path: 'reports',
         canActivate: [AdminGuard],
         component: ReportContainerComponent
-      }
+      },
+      {
+        path: 'reports/:dateFrom/:dateTo',
+        canActivate: [AdminGuard],
+        component: ReportContainerComponent
+      },
+      {
+        path: 'case',
+        loadChildren: () => import('./components/planning-case/planning-case.module')
+          .then(m => m.PlanningCaseModule)
+      },
     ]
   }
 ];
