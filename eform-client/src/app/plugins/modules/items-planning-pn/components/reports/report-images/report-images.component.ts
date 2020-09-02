@@ -16,6 +16,7 @@ export class ReportImagesComponent implements OnChanges, OnDestroy {
   images: {key: number, value: any}[] = [];
   galleryImages: GalleryItem[] = [];
   imageSub$: Subscription;
+  buttonsLocked = false;
 
   constructor(public gallery: Gallery, public lightbox: Lightbox, private imageService: TemplateFilesService) { }
 
@@ -25,10 +26,11 @@ export class ReportImagesComponent implements OnChanges, OnDestroy {
         this.imageSub$ = this.imageService.getImage(imageValue.value[0]).subscribe(blob => {
           const imageUrl = URL.createObjectURL(blob);
           const val = {
-              src: imageUrl,
-              thumbnail: imageUrl,
-              name: imageValue.key[1],
-              geoTag: imageValue.value[1]
+            src: imageUrl,
+            thumbnail: imageUrl,
+            fileName: imageValue.value[0],
+            name: imageValue.key[1],
+            geoTag: imageValue.value[1]
           };
           this.images.push({key: Number(imageValue.key[0]), value: val});
           this.images.sort((a, b) => a.key < b.key ? -1 : a.key > b.key ? 1 : 0);
@@ -63,5 +65,24 @@ export class ReportImagesComponent implements OnChanges, OnDestroy {
 
   openGpsWindow(url: string) {
     window.open(url, '_blank');
+  }
+
+  rotatePicture(image: any) {
+    this.buttonsLocked = true;
+    this.imageService.rotateImage(image.fileName).subscribe((operation) => {
+      if (operation && operation.success) {
+        const fileName = image.fileName + '?noCache=' + Math.floor(Math.random() * 1000).toString();
+        this.imageService.getImage(fileName).subscribe(blob => {
+          const imageUrl = URL.createObjectURL(blob);
+          const currentImage = this.images.find(x => x.value.fileName === image.fileName);
+          this.images = this.images.filter(x => x.value.fileName !== image.fileName);
+          currentImage.value.src = imageUrl;
+          currentImage.value.thumbnail = image.src;
+          this.images.push(currentImage);
+          this.updateGallery();
+        });
+      }
+      this.buttonsLocked = false;
+    }, () => this.buttonsLocked = false);
   }
 }

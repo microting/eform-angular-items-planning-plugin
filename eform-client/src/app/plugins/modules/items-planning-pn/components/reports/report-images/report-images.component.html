@@ -7,11 +7,22 @@
           <img class="card-img-top card-img-adaptive z-depth-1" (click)="openPicture(i)"
                [src]="image.value.src | authImage | async" alt="Card image cap">
         </div>
-        <button mdbTooltip="{{'Open location' | translate}}"
-                (click)="openGpsWindow(image.value.geoTag)" class="btn btn-icon btn-success">
-          <fa-icon icon="map-marker-alt" size="lg" [fixedWidth]="true"></fa-icon>
+        <div class="card-body">
+          <div class="d-flex justify-content-center">
+            <button mdbBtn class="btn-icon btn-accent text-black-50"
+                    mdbTooltip="{{'Rotate on 90' | translate}}"
+                    (click)="rotatePicture(image.value)">
 
-        </button>
+              <fa-icon icon="undo" flip="vertical" size="lg" [fixedWidth]="true" style="transform: rotate(180deg);"></fa-icon>
+
+            </button>
+            <button mdbTooltip="{{'Open location' | translate}}"
+                    (click)="openGpsWindow(image.value.geoTag)" class="btn btn-icon btn-success">
+              <fa-icon icon="map-marker-alt" size="lg" [fixedWidth]="true"></fa-icon>
+
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </mdb-card-body>
