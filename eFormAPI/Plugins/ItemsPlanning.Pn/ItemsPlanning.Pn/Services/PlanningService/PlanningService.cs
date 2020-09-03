@@ -285,7 +285,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     CreatedByUserId = UserId,
                     eFormSdkFolderId = model.EformSdkFolderId
                 };
-                await item.Save(_dbContext);
+                await item.Create(_dbContext);
 
 
                 await transaction.CommitAsync();
@@ -457,7 +457,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         PlanningId = planning.Id,
                         eFormSdkFolderId = updateModel.Item.eFormSdkFolderId
                     };
-                    await newItem.Save(_dbContext);
+                    await newItem.Create(_dbContext);
                 }
                 else
                 {
@@ -571,7 +571,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                                  
 
                                 };
-                               await newItem.Save(_dbContext);
+                               await newItem.Create(_dbContext);
   
                             }
                             else
