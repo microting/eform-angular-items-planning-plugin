@@ -118,11 +118,11 @@
                *ngIf="localPageSettings.sort == 'RepeatUntil' && planningsRequestModel.isSortDsc">expand_more</i>
           </div>
         </th>
-        <th scope="col" id="sitesTableHeader">
-          <div class="d-flex align-items-center justify-content-center">
-            {{'Sites' | translate}}
-          </div>
-        </th>
+<!--        <th scope="col" id="sitesTableHeader">-->
+<!--          <div class="d-flex align-items-center justify-content-center">-->
+<!--            {{'Sites' | translate}}-->
+<!--          </div>-->
+<!--        </th>-->
 
         <th scope="col">
           {{ 'Actions' | translate }}
@@ -163,19 +163,20 @@
         <td id="planningRepeatUntil">
           <date-formatter [date]="planning.repeatUntil" [Format]="'datetime'"></date-formatter>
         </td>
-        <td>
-          <div class="d-flex justify-content-center">
-            <div>
-              <button id="planningAssignmentBtn" [ngClass]="planning?.assignedSites?.length > 0 ? 'btn-success' : ''"
-                      mdbBtn type="button" class="btn-small-height" (click)="openAssignmentModal(planning)"
-                      mdbTooltip="{{ 'Click to edit pairing with user(s)' | translate }}">
-                {{ 'Edit pairing' | translate }}
-              </button>
-            </div>
-          </div>
-        </td>
+<!--        <td>-->
+<!--          <div class="d-flex justify-content-center">-->
+<!--            <div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </td>-->
         <td>
           <div class="d-flex flex-row justify-content-center">
+            <button id="planningAssignmentBtn" [ngClass]="planning?.assignedSites?.length > 0 ? 'btn-success' : ''"
+                    mdbBtn type="button" class="btn-icon" (click)="openAssignmentModal(planning)"
+                    mdbTooltip="{{ 'Click to edit pairing with user(s)' | translate }}">
+              <fa-icon icon="link" size="lg" [fixedWidth]="true"></fa-icon>
+              <!--                {{ planning?.assignedSites?.length > 0 ? 'Edit pairing' : 'Pair' | translate }}-->
+            </button>
             <button id="updatePlanningBtn"
               class="btn btn-accent text-black-50 btn-icon mb-2"
                     mdbTooltip="{{ 'Edit Planning' | translate }}"
