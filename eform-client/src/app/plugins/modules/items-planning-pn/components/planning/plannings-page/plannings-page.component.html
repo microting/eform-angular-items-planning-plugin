@@ -75,14 +75,14 @@
           </div>
         </th>
         <th scope="col" class="table-header-sortable" id="relatedEFormNameTableHeader"
-            (click)="sortTable('relatedEFormName')">
+            (click)="sortTable('RelatedEFormName')">
           <div class="d-flex align-items-center justify-content-center">
             {{'eForm name' | translate}}
-            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'relatedEFormName'">unfold_more</i>
+            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'RelatedEFormName'">unfold_more</i>
             <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'relatedEFormName' && !planningsRequestModel.isSortDsc">expand_less</i>
+               *ngIf="localPageSettings.sort == 'RelatedEFormName' && !planningsRequestModel.isSortDsc">expand_less</i>
             <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'relatedEFormName' && planningsRequestModel.isSortDsc">expand_more</i>
+               *ngIf="localPageSettings.sort == 'RelatedEFormName' && planningsRequestModel.isSortDsc">expand_more</i>
           </div>
         </th>
         <th scope="col" class="table-header-sortable" id="repeatEveryTableHeader"
