@@ -33,38 +33,13 @@ namespace ItemsPlanning.Pn.Infrastructure.Data.Seed.Data
         {
             new PluginConfigurationValue()
             {
-                Name = "ItemsPlanningBaseSettings:LogLevel",
-                Value = "4"
-            },
-            new PluginConfigurationValue()
-            {
-                Name = "ItemsPlanningBaseSettings:LogLimit",
-                Value = "25000"
-            },
-            new PluginConfigurationValue()
-            {
-                Name = "ItemsPlanningBaseSettings:SdkConnectionString",
-                Value = "..."
-            },
-            new PluginConfigurationValue()
-            {
-                Name = "ItemsPlanningBaseSettings:MaxParallelism",
-                Value = "1"
-            },
-            new PluginConfigurationValue()
-            {
-                Name = "ItemsPlanningBaseSettings:NumberOfWorkers",
-                Value = "1"
-            },
-            new PluginConfigurationValue()
-            {
-                Name = "ItemsPlanningBaseSettings:SiteIds",
+                Name = "ItemsPlanningBaseSettings:ReportSubHeaderName",
                 Value = ""
             },
             new PluginConfigurationValue()
             {
-                Name = "ItemsPlanningBaseSettings:Token",
-                Value = "..."
+                Name = "ItemsPlanningBaseSettings:ReportHeaderName",
+                Value = ""
             },
             new PluginConfigurationValue()
             {
@@ -75,6 +50,11 @@ namespace ItemsPlanning.Pn.Infrastructure.Data.Seed.Data
             {
                 Name = "ItemsPlanningBaseSettings:EndTime",
                 Value = "4"
+            },
+            new PluginConfigurationValue()
+            {
+                Name = "ItemsPlanningBaseSettings:ReportImageName",
+                Value = ""
             }
         };
     }
