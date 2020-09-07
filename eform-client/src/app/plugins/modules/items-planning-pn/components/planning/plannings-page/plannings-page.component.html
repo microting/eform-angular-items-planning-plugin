@@ -74,6 +74,17 @@
                *ngIf="localPageSettings.sort == 'SdkFolderName' && planningsRequestModel.isSortDsc">expand_more</i>
           </div>
         </th>
+        <th scope="col" class="table-header-sortable" id="relatedEFormNameTableHeader"
+            (click)="sortTable('relatedEFormName')">
+          <div class="d-flex align-items-center justify-content-center">
+            {{'eForm name' | translate}}
+            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'relatedEFormName'">unfold_more</i>
+            <i class="material-icons"
+               *ngIf="localPageSettings.sort == 'relatedEFormName' && !planningsRequestModel.isSortDsc">expand_less</i>
+            <i class="material-icons"
+               *ngIf="localPageSettings.sort == 'relatedEFormName' && planningsRequestModel.isSortDsc">expand_more</i>
+          </div>
+        </th>
         <th scope="col" class="table-header-sortable" id="repeatEveryTableHeader"
             (click)="sortTable('RepeatEvery')">
           <div class="d-flex align-items-center justify-content-center">
@@ -131,6 +142,9 @@
         </td>
         <td id="planningFolderName">
           {{planning.sdkFolderName}}
+        </td>
+        <td id="planningFolderName">
+          {{planning.relatedEFormName}}
         </td>
         <td id="planningRepeatEvery">
           {{planning.repeatEvery}}

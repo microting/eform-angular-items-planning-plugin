@@ -28,7 +28,7 @@
               <ng-select
                 class="custom"
                 dropdownPosition="'bottom'"
-                [placeholder]="'Folders' | translate"
+                [placeholder]="'Selected folder' | translate"
                 [items]="foldersDto"
                 [(ngModel)]="selectedPlanningModel.item.eFormSdkFolderId"
                 (ngModelChange)="updateSaveButtonDisabled($event)"
@@ -64,7 +64,7 @@
                 {id: 3, name: 'Month' | translate}
                 ]"
                          bindLabel="name"
-                         [placeholder]="('Repeat Type' | translate)"
+                         [placeholder]="('Repeat type' | translate)"
                          bindValue="id"
                          [typeahead]="typeahead"
                          [(ngModel)]="selectedPlanningModel.repeatType"
