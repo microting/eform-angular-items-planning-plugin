@@ -39,8 +39,14 @@
                 mdbTooltip="{{ 'Edit Case' | translate }}">
           <fa-icon icon="pen" size="lg" [fixedWidth]="true"></fa-icon>
         </button>
+        <button mdbBtn class="btn-success btn-icon mb-2"
+                (click)="openCreateModal(item.microtingSdkCaseId,item.eFormId, false)"
+                mdbTooltip="{{ 'Posts' | translate }}">
+          <fa-icon icon="sticky-note" size="lg" [fixedWidth]="true"></fa-icon>
+        </button>
       </td>
     </tr>
     </tbody>
   </table>
 </div>
+

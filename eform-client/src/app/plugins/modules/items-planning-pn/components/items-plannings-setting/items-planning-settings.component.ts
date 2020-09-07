@@ -72,7 +72,6 @@ export class ItemsPlanningSettingsComponent implements OnInit {
   }
   updateSettings() {
     if (this.loginPageImageUploader.queue.length > 0) {
-      debugger;
       this.loginPageImageUploader.queue[0].upload();
     }
     this.itemsPlanningPnSettingsService.updateSettings(this.settingsModel)

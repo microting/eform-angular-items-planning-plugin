@@ -1,12 +1,15 @@
-import {AfterContentInit, AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterContentInit, AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
 import {ReportEformItemModel, ReportEformPnModel, ReportEformPostModel, ReportPnGenerateModel} from '../../../models/report';
 import {ItemsPlanningPnReportsService} from '../../../services';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {Subscription} from 'rxjs';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { parseISO } from 'date-fns';
+import {CasePostNewComponent} from 'src/app/modules/cases/components';
+import {CasePostsListModel, CommonDictionaryModel, EmailRecipientTagCommonModel} from 'src/app/common/models';
+import {EmailRecipientsService} from 'src/app/common/services';
 
 @AutoUnsubscribe()
 @Component({
@@ -21,10 +24,22 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   dateFrom: any;
   dateTo: any;
   range: Date[] = [];
+  @ViewChild('newPostModal') newPostModal: CasePostNewComponent;
+  casePostsListModel: CasePostsListModel = new CasePostsListModel();
+  availableRecipientsAndTags: EmailRecipientTagCommonModel[] = [];
+  availableRecipients: CommonDictionaryModel[] = [];
+  getTagsSub$: Subscription;
+  getRecipientsSub$: Subscription;
+  currentUserFullName: string;
+  selectedEformId: number;
+  selectedCaseId: number;
 
-  constructor(private activateRoute: ActivatedRoute,
-              private reportService: ItemsPlanningPnReportsService,
-              private toastrService: ToastrService) {
+  constructor(
+    private emailRecipientsService: EmailRecipientsService,
+    private activateRoute: ActivatedRoute,
+    private reportService: ItemsPlanningPnReportsService,
+    private toastrService: ToastrService,
+    private router: Router) {
     this.activateRoute.params.subscribe(params => {
       this.dateFrom = params['dateFrom'];
       this.dateTo = params['dateTo'];
@@ -42,6 +57,24 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // this.reportsModel = [...testData];
+    this.getRecipientsAndTags();
+    this.getRecipients();
+  }
+
+  getRecipientsAndTags() {
+    this.getTagsSub$ = this.emailRecipientsService.getEmailRecipientsAndTags().subscribe((data) => {
+      if (data && data.success) {
+        this.availableRecipientsAndTags = data.model;
+      }
+    });
+  }
+
+  getRecipients() {
+    this.getRecipientsSub$ = this.emailRecipientsService.getSimpleEmailRecipients().subscribe((data) => {
+      if (data && data.success) {
+        this.availableRecipients = data.model;
+      }
+    });
   }
 
   onGenerateReport(model: ReportPnGenerateModel) {
@@ -65,67 +98,9 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
 
   }
-}
 
-const testData = [
-  {
-    name: 'Test Eform 1',
-    itemHeaders: ['Header 1', 'Header 2', 'Header 3', 'Header 4'],
-    items: [
-      {
-        id: 1,
-        createdAt: '2019/02/02',
-        doneBy: 'Not Ukrainian',
-        itemName: 'Hey Item',
-        caseFields: ['Field 1', 'Field 2', 'Field 3', 'Field 4'],
-        imagesCount: 0,
-        postsCount: 0
-      },
-      {
-        id: 1,
-        createdAt: '2019/02/02',
-        doneBy: 'Not Ukrainian',
-        itemName: 'Hey Item',
-        caseFields: ['Field 1', 'Field 2', 'Field 3', 'Field 4'],
-        imagesCount: 0,
-        postsCount: 0
-      },
-      {
-        id: 1,
-        createdAt: '2019/02/02',
-        doneBy: 'Not Ukrainian',
-        itemName: 'Hey Item',
-        caseFields: ['Field 1', 'Field 2', 'Field 3', 'Field 4'],
-        imagesCount: 0,
-        postsCount: 0
-      }
-    ],
-    imagesNames: [],
-    posts: [
-      {
-        postId: 1,
-        caseId: 2,
-        sentTo: ['John Smith', 'Terry Kim'],
-        comment: 'Im funny comment as heck'
-      },
-      {
-        postId: 1,
-        caseId: 2,
-        sentTo: ['John Smith', 'Terry Kim'],
-        comment: 'Im funny comment as heck'
-      },
-      {
-        postId: 1,
-        caseId: 2,
-        sentTo: ['John Smith', 'Terry Kim'],
-        comment: 'Im funny comment as heck'
-      },
-      {
-        postId: 1,
-        caseId: 2,
-        sentTo: ['John Smith', 'Terry Kim'],
-        comment: 'Im funny comment as heck'
-      }
-    ],
+  postDoneRedirect() {
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+      this.router.navigate(['/plugins/items-planning-pn/reports/' + this.dateFrom + '/' + this.dateTo]));
   }
-];
+}

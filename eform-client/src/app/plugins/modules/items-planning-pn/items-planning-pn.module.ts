@@ -32,23 +32,25 @@ import {
 import {FileUploadModule} from 'ng2-file-upload';
 import {OwlDateTimeModule} from 'ng-pick-datetime-ex';
 import {EformSharedModule} from 'src/app/common/modules/eform-shared/eform-shared.module';
+import {CasesModule} from 'src/app/modules';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    SharedPnModule,
-    MDBBootstrapModule,
-    TranslateModule,
-    FormsModule,
-    NgSelectModule,
-    EformSharedModule,
-    FontAwesomeModule,
-    RouterModule,
-    ItemsPlanningPnRouting,
-    ReactiveFormsModule,
-    FileUploadModule,
-    OwlDateTimeModule
-  ],
+    imports: [
+        CommonModule,
+        SharedPnModule,
+        MDBBootstrapModule,
+        TranslateModule,
+        FormsModule,
+        NgSelectModule,
+        EformSharedModule,
+        FontAwesomeModule,
+        RouterModule,
+        ItemsPlanningPnRouting,
+        ReactiveFormsModule,
+        FileUploadModule,
+        OwlDateTimeModule,
+        CasesModule
+    ],
   declarations: [
     ItemsPlanningPnLayoutComponent,
     PlanningsPageComponent,
