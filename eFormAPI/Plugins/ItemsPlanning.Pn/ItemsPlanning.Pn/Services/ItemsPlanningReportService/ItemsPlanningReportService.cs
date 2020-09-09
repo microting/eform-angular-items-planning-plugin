@@ -21,6 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
+using Microting.eForm.Infrastructure.Models;
+
 namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 {
     using System;
@@ -80,6 +83,10 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 //    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 //    .Include(x => x.Site)
                 //    .AsQueryable();
+                DateTime FromDate = new DateTime(model.DateFrom.Value.Year, model.DateFrom.Value.Month,
+                    model.DateFrom.Value.Day, 0, 0, 0);
+                DateTime ToDate = new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month,
+                    model.DateTo.Value.Day, 23, 59, 59);
 
                 var casesQuery = _dbContext.PlanningCases
                     .Include(x => x.Item)
@@ -90,15 +97,13 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 if (model.DateFrom != null)
                 {
                     casesQuery = casesQuery.Where(x =>
-                        x.MicrotingSdkCaseDoneAt >= new DateTime(model.DateFrom.Value.Year, model.DateFrom.Value.Month,
-                            model.DateFrom.Value.Day, 0, 0, 0));
+                        x.MicrotingSdkCaseDoneAt >= FromDate);
                 }
 
                 if (model.DateTo != null)
                 {
                     casesQuery = casesQuery.Where(x =>
-                        x.MicrotingSdkCaseDoneAt <= new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month,
-                            model.DateTo.Value.Day, 23, 59, 59));
+                        x.MicrotingSdkCaseDoneAt <= ToDate);
                 }
 
                 var itemCases = await casesQuery
@@ -128,6 +133,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     var reportModel = new ReportEformModel
                     {
                         Name = template.Label,
+                        FromDate = $"{FromDate:yyyy-MM-dd HH:mm:ss}",
+                        ToDate = $"{ToDate:yyyy-MM-dd HH:mm:ss}"
                     };
 
                     var fields = await core.Advanced_TemplateFieldReadAll(

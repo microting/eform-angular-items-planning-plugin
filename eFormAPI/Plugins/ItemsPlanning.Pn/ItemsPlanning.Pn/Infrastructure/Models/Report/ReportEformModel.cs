@@ -29,6 +29,8 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Report
     public class ReportEformModel
     {
         public string Name { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
         public List<KeyValuePair<List<string>, List<string>>> ImageNames { get; set; }
             = new List<KeyValuePair<List<string>, List<string>>>();
 

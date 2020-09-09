@@ -103,7 +103,8 @@ namespace ItemsPlanning.Pn.Services.WordService
                 itemsHtml += "<body>";
                 itemsHtml += @"<table width=""100%"" border=""0"">";
                 itemsHtml += @"<tr style=""background-color:white;"">";
-                itemsHtml += $@"<td><div style='font-size: 24px;'>{header}</div><div style='font-size: 20px;'>{subHeader}</div></td>";
+                itemsHtml += $@"<td><div style='font-size: 24px;'>{header}</div><div style='font-size: 20px;'>{subHeader}</div>";
+                itemsHtml += $@"<div style='font-size: 15px;'>{_localizationService.GetString("ReportPeriod")}: {reportModel.First().FromDate} - {reportModel.First().ToDate}</div></td>";
                 itemsHtml += $@"<td rowscan='2'><div style='text-align: right;'>";
                 if (!string.IsNullOrEmpty(headerImageName)) {
                     itemsHtml = await InsertImage(headerImageName, itemsHtml, 150, 150, core, basePicturePath);
