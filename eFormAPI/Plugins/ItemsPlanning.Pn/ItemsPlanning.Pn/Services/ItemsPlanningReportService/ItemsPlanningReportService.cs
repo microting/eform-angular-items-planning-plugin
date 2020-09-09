@@ -48,6 +48,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
         private readonly IEFormCoreService _coreHelper;
         private readonly ICasePostBaseService _casePostBaseService;
         private readonly ItemsPlanningPnDbContext _dbContext;
+        private readonly IUserService _userService;
 
         // ReSharper disable once SuggestBaseTypeForParameter
         public ItemsPlanningReportService(
@@ -56,7 +57,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             IEFormCoreService coreHelper,
             IWordService wordService,
             ICasePostBaseService casePostBaseService,
-            ItemsPlanningPnDbContext dbContext)
+            ItemsPlanningPnDbContext dbContext,
+            IUserService userService)
         {
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
             _logger = logger;
@@ -64,12 +66,14 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             _wordService = wordService;
             _casePostBaseService = casePostBaseService;
             _dbContext = dbContext;
+            _userService = userService;
         }
 
         public async Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model)
         {
             try
             {
+                TimeZoneInfo timeZoneInfo = await _userService.GetCurrentUserTimeZoneInfo();
                 var core = await _coreHelper.GetCore();
                 await using var microtingDbContext = core.dbContextHelper.GetDbContext();
                 //var casesQuery = microtingDbContext.cases
@@ -154,6 +158,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         {
                             var bla = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
                             DateTime doneAt = (DateTime)bla.MicrotingSdkCaseDoneAt;
+                            doneAt = TimeZoneInfo.ConvertTimeFromUtc((DateTime) doneAt, timeZoneInfo);
                             var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {bla.Item.Name}";
                             string geoTag = "";
                             if (imageField.Latitude != null)
@@ -208,7 +213,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         {
                             Id = caseDto.Id,
                             MicrotingSdkCaseId = caseDto.MicrotingSdkCaseId,
-                            MicrotingSdkCaseDoneAt = caseDto.MicrotingSdkCaseDoneAt,
+                            MicrotingSdkCaseDoneAt = TimeZoneInfo.ConvertTimeFromUtc((DateTime) caseDto.MicrotingSdkCaseDoneAt, timeZoneInfo),
                             eFormId = caseDto.MicrotingSdkeFormId,
                             DoneBy = caseDto.DoneByUserName,
                             ItemName = caseDto.Item.Name,
