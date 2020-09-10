@@ -106,7 +106,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                 itemsHtml += $@"<td><div style='font-size: 24px;'>{header}</div><div style='font-size: 20px;'>{subHeader}</div>";
                 itemsHtml += $@"<div style='font-size: 15px;'>{_localizationService.GetString("ReportPeriod")}: {reportModel.First().FromDate} - {reportModel.First().ToDate}</div></td>";
                 itemsHtml += $@"<td rowscan='2'><div style='text-align: right;'>";
-                if (!string.IsNullOrEmpty(headerImageName)) {
+                if (!string.IsNullOrEmpty(headerImageName) && headerImageName != "../../../assets/images/logo.png") {
                     itemsHtml = await InsertImage(headerImageName, itemsHtml, 150, 150, core, basePicturePath);
                 }
                 itemsHtml += $@"</div></td>";

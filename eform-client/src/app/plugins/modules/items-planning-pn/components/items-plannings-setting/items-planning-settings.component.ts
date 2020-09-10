@@ -70,6 +70,12 @@ export class ItemsPlanningSettingsComponent implements OnInit {
       }
     });
   }
+
+  resetImage() {
+    this.headerImageLink = '../../../assets/images/logo.png';
+    this.settingsModel.reportImageName = '';
+  }
+
   updateSettings() {
     if (this.loginPageImageUploader.queue.length > 0) {
       this.loginPageImageUploader.queue[0].upload();

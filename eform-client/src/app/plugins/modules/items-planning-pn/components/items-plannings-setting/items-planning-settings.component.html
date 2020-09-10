@@ -48,8 +48,7 @@
           <div class="md-form input-group">
             <p class="mb-0 align-self-center">{{ 'Report image' | translate }}</p>
             <img *ngIf="headerImageLink"
-              class="p-3"
-              height="112" width="90"
+              class="p-3" width="150"
               [src]="headerImageLink | authImage | async">
           </div>
           <div class="align-self-center align-self-end mb-3">
@@ -71,6 +70,12 @@
 
 <!--              <fa-icon icon="eye-slash" [fixedWidth]="true" size="lg" *ngIf="!adminSettingsModel.loginPageSettingsModel.imageLinkVisible"></fa-icon>-->
 <!--            </button>-->
+
+            <button mdbBtn class="btn-danger btn-icon mb-2 "
+                    mdbTooltip="{{ 'Delete image' | translate }}"
+            (click)="resetImage()">
+              <fa-icon icon="trash-alt" size="lg" [fixedWidth]="true"></fa-icon>
+            </button>
           </div>
         </div>
       </div>

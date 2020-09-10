@@ -133,8 +133,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     var reportModel = new ReportEformModel
                     {
                         Name = template.Label,
-                        FromDate = $"{FromDate:yyyy-MM-dd HH:mm:ss}",
-                        ToDate = $"{ToDate:yyyy-MM-dd HH:mm:ss}"
+                        FromDate = $"{FromDate:yyyy-MM-dd}",
+                        ToDate = $"{ToDate:yyyy-MM-dd}"
                     };
 
                     var fields = await core.Advanced_TemplateFieldReadAll(
@@ -165,7 +165,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         {
                             var bla = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
                             DateTime doneAt = (DateTime)bla.MicrotingSdkCaseDoneAt;
-                            doneAt = TimeZoneInfo.ConvertTimeFromUtc((DateTime) doneAt, timeZoneInfo);
+                            doneAt = TimeZoneInfo.ConvertTimeFromUtc(doneAt, timeZoneInfo);
                             var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {bla.Item.Name}";
                             string geoTag = "";
                             if (imageField.Latitude != null)
