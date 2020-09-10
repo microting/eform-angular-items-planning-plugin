@@ -98,8 +98,8 @@ namespace ItemsPlanning.Pn.Services.WordService
                 var word = new WordProcessor(docxFileStream);
 
                 var itemsHtml = "";
-                var header = "Tummelsbjerg 1";
-                var subHeader = "Gråsten ";
+                var header = _dbContext.PluginConfigurationValues.Single(x => x.Name == "ItemsPlanningBaseSettings:ReportHeaderName").Value;
+                var subHeader = _dbContext.PluginConfigurationValues.Single(x => x.Name == "ItemsPlanningBaseSettings:ReportSubHeaderName").Value;
                 itemsHtml += "<body>";
                 itemsHtml += @"<table width=""100%"" border=""0"">";
                 itemsHtml += @"<tr style=""background-color:white;"">";
