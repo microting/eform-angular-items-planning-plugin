@@ -21,6 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
+using Microting.eForm.Infrastructure.Models;
+
 namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 {
     using System;
@@ -48,6 +51,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
         private readonly IEFormCoreService _coreHelper;
         private readonly ICasePostBaseService _casePostBaseService;
         private readonly ItemsPlanningPnDbContext _dbContext;
+        private readonly IUserService _userService;
 
         // ReSharper disable once SuggestBaseTypeForParameter
         public ItemsPlanningReportService(
@@ -56,7 +60,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             IEFormCoreService coreHelper,
             IWordService wordService,
             ICasePostBaseService casePostBaseService,
-            ItemsPlanningPnDbContext dbContext)
+            ItemsPlanningPnDbContext dbContext,
+            IUserService userService)
         {
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
             _logger = logger;
@@ -64,18 +69,24 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             _wordService = wordService;
             _casePostBaseService = casePostBaseService;
             _dbContext = dbContext;
+            _userService = userService;
         }
 
         public async Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model)
         {
             try
             {
+                TimeZoneInfo timeZoneInfo = await _userService.GetCurrentUserTimeZoneInfo();
                 var core = await _coreHelper.GetCore();
                 await using var microtingDbContext = core.dbContextHelper.GetDbContext();
                 //var casesQuery = microtingDbContext.cases
                 //    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 //    .Include(x => x.Site)
                 //    .AsQueryable();
+                DateTime FromDate = new DateTime(model.DateFrom.Value.Year, model.DateFrom.Value.Month,
+                    model.DateFrom.Value.Day, 0, 0, 0);
+                DateTime ToDate = new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month,
+                    model.DateTo.Value.Day, 23, 59, 59);
 
                 var casesQuery = _dbContext.PlanningCases
                     .Include(x => x.Item)
@@ -86,15 +97,13 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 if (model.DateFrom != null)
                 {
                     casesQuery = casesQuery.Where(x =>
-                        x.CreatedAt >= new DateTime(model.DateFrom.Value.Year, model.DateFrom.Value.Month,
-                            model.DateFrom.Value.Day, 0, 0, 0));
+                        x.MicrotingSdkCaseDoneAt >= FromDate);
                 }
 
                 if (model.DateTo != null)
                 {
                     casesQuery = casesQuery.Where(x =>
-                        x.CreatedAt <= new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month,
-                            model.DateTo.Value.Day, 23, 59, 59));
+                        x.MicrotingSdkCaseDoneAt <= ToDate);
                 }
 
                 var itemCases = await casesQuery
@@ -124,6 +133,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     var reportModel = new ReportEformModel
                     {
                         Name = template.Label,
+                        FromDate = $"{FromDate:yyyy-MM-dd}",
+                        ToDate = $"{ToDate:yyyy-MM-dd}"
                     };
 
                     var fields = await core.Advanced_TemplateFieldReadAll(
@@ -145,6 +156,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Where(x => x.Field.FieldTypeId == 5)
                         .Where(x => templateCaseIds.Contains(x.CaseId))
+                        .OrderBy(x => x.CaseId)
                         .ToListAsync();
 
                     foreach (var imageField in imagesForEform)
@@ -153,8 +165,21 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         {
                             var bla = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
                             DateTime doneAt = (DateTime)bla.MicrotingSdkCaseDoneAt;
-                            var label = $"{doneAt:yyyy-MM-dd HH:mm:ss}; {bla.Item.Name}";
-                            reportModel.ImagesNames.Add(new KeyValuePair<string, string>(label, imageField.UploadedData.FileName));
+                            doneAt = TimeZoneInfo.ConvertTimeFromUtc(doneAt, timeZoneInfo);
+                            var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {bla.Item.Name}";
+                            string geoTag = "";
+                            if (imageField.Latitude != null)
+                            {
+                                geoTag =
+                                    $"https://www.google.com/maps/place/{imageField.Latitude},{imageField.Longitude}";
+                            }
+                            var keyList = new List<string>();
+                            keyList.Add(imageField.CaseId.ToString());
+                            keyList.Add(label);
+                            var list = new List<string>();
+                            list.Add(imageField.UploadedData.FileName);
+                            list.Add(geoTag);
+                            reportModel.ImageNames.Add(new KeyValuePair<List<string>, List<string>>(keyList, list));
                         }
                     }
 
@@ -194,7 +219,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         var item = new ReportEformItemModel
                         {
                             Id = caseDto.Id,
-                            MicrotingSdkCaseDoneAt = caseDto.MicrotingSdkCaseDoneAt,
+                            MicrotingSdkCaseId = caseDto.MicrotingSdkCaseId,
+                            MicrotingSdkCaseDoneAt = TimeZoneInfo.ConvertTimeFromUtc((DateTime) caseDto.MicrotingSdkCaseDoneAt, timeZoneInfo),
+                            eFormId = caseDto.MicrotingSdkeFormId,
                             DoneBy = caseDto.DoneByUserName,
                             ItemName = caseDto.Item.Name,
                             ItemDescription = caseDto.Item.Description,
@@ -221,6 +248,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                         break;
                                     case Constants.FieldTypes.EntitySearch:
                                     case Constants.FieldTypes.EntitySelect:
+                                    case Constants.FieldTypes.SingleSelect:
                                         item.CaseFields.Add(caseField.ValueReadable);
                                         break;
                                     default:

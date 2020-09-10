@@ -67,25 +67,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningPnSettingsService
             try
             {
                 var option = _options.Value;
-                if (option.Token == "...")
-                {
-                    const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-                    Random random = new Random();
-                    string result = new string(chars.Select(c => chars[random.Next(chars.Length)]).Take(32).ToArray());
-                    await _options.UpdateDb(settings => { settings.Token = result;}, _dbContext, UserId);
-                }
-
-                if (option.SdkConnectionString == "...")
-                {
-                    string connectionString = _dbContext.Database.GetDbConnection().ConnectionString;
-
-                    string dbNameSection = Regex.Match(connectionString, @"(Database=(...)_eform-angular-\w*-plugin;)").Groups[0].Value;
-                    string dbPrefix = Regex.Match(connectionString, @"Database=(\d*)_").Groups[1].Value;
-                    string sdk = $"Database={dbPrefix}_SDK;";
-                    connectionString = connectionString.Replace(dbNameSection, sdk);
-                    await _options.UpdateDb(settings => { settings.SdkConnectionString = connectionString;}, _dbContext, UserId);
-
-                }
 
                 return new OperationDataResult<ItemsPlanningBaseSettings>(true, option);
             }
@@ -104,12 +85,11 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningPnSettingsService
             {
                 await _options.UpdateDb(settings =>
                 {
-                    settings.LogLevel = itemsPlanningBaseSettings.LogLevel;
-                    settings.LogLimit = itemsPlanningBaseSettings.LogLimit;
-                    settings.MaxParallelism = itemsPlanningBaseSettings.MaxParallelism;
-                    settings.NumberOfWorkers = itemsPlanningBaseSettings.NumberOfWorkers;
-                    settings.SdkConnectionString = itemsPlanningBaseSettings.SdkConnectionString;
-                    settings.SiteIds = itemsPlanningBaseSettings.SiteIds;
+                    settings.StartTime = itemsPlanningBaseSettings.StartTime;
+                    settings.EndTime = itemsPlanningBaseSettings.EndTime;
+                    settings.ReportHeaderName = itemsPlanningBaseSettings.ReportHeaderName;
+                    settings.ReportSubHeaderName = itemsPlanningBaseSettings.ReportSubHeaderName;
+                    settings.ReportImageName = itemsPlanningBaseSettings.ReportImageName;
                 }, _dbContext, UserId);
                 
                 return new OperationResult(true,
@@ -124,26 +104,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningPnSettingsService
             }
         }
 
-        public async Task<OperationDataResult<ItemsPlanningBaseBaseToken>> GetToken()
-        {
-            try
-            {
-                ItemsPlanningBaseBaseToken itemsPlanningBaseBaseToken = new ItemsPlanningBaseBaseToken()
-                {
-                    Token =_options.Value.Token
-                };
-
-                return new OperationDataResult<ItemsPlanningBaseBaseToken>(true, itemsPlanningBaseBaseToken);
-            }
-            catch(Exception e)
-            {
-                Trace.TraceError(e.Message);
-                _logger.LogError(e.Message);
-                return new OperationDataResult<ItemsPlanningBaseBaseToken>(false,
-                    _itemsPlanningLocalizationService.GetString("ErrorWhileObtainingTrashInspectionToken"));
-            }
-        }
-        
         public int UserId
         {
             get

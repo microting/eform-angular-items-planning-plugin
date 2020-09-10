@@ -9,7 +9,7 @@ describe('Items planning plugin settings page', function () {
     loginPage.login();
     itemsPlanningSettingsPage.goToSettingsPage();
   });
-  it ('save items planning settings', function () {
+  it('save items planning settings', function () {
     const settingsData = {
       sdkConnectionString: 'Server=SQLEXPRESS;Database=123_SDK;User ID=sa;Password=Qq1234567$;',
       logLevel: '4',

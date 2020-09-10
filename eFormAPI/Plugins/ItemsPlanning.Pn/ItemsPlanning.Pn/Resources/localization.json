@@ -278,5 +278,12 @@
       "da": "Kommentar",
       "en-US": "Comment"
     }
+  },
+  {
+    "Key": "ReportPeriod",
+    "LocalizedValue": {
+      "da": "Rapport periode",
+      "en-US": "Report period"
+    }
   }
 ]

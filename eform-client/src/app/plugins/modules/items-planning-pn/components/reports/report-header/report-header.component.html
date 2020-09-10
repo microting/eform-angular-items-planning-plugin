@@ -8,6 +8,7 @@
         </i>
         <input mdbInput  formControlName="dateRange"
                name="dateRange" required
+               [(ngModel)]="range"
                type="text" [owlDateTime]="dateRangePicker" [selectMode]="'range'"
                class="form-control input-sm" id="dateFormInput">
         <label for="dateFormInput">{{'Selected date range' | translate}}</label>
@@ -17,8 +18,8 @@
       <button mdbBtn class="btn-success btn-small-height" [disabled]="generateForm.invalid" (click)="onSubmit()">
         {{'Generate' | translate}}
       </button>
-      <button mdbBtn class="btn-success btn-small-height" [disabled]="generateForm.invalid" (click)="onSave()">
-        {{ 'Download' | translate }} DOCX
+      <button mdbBtn class="btn-info btn-icon mb-2" [disabled]="generateForm.invalid" (click)="onSave()">
+        <fa-icon icon="file-word" size="lg" [fixedWidth]="true"></fa-icon>
       </button>
     </div>
 
