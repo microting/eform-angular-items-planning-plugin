@@ -15,7 +15,7 @@ describe('Items planning - Add', function () {
     itemsPlanningPlanningPage.createNewEform(newEformLabel);
     // Create folder
     myEformsPage.Navbar.goToFolderPage();
-    foldersPage.createNewFolder('My test folder', '');
+    foldersPage.createNewFolder('My test folder', 'Description');
     itemsPlanningPlanningPage.goToPlanningsPage();
   });
   it('should create planning with all fields', function () {
