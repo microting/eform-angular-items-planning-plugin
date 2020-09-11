@@ -125,19 +125,6 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     }
   }
 
-  createNewFolder(folderName) {
-    myEformsPage.Navbar.advancedDropdown();
-    myEformsPage.Navbar.clickonSubMenuItem('Folders');
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-    $('#folderCreateBtn').waitForDisplayed({timeout: 90000});
-    $('#folderCreateBtn').click();
-    $('#folderName').waitForDisplayed({timeout: 90000});
-    $('#folderName').setValue(folderName);
-    $('#folderDescription').setValue(' ');
-    $('#folderSaveBtn').waitForClickable({timeout: 90000});
-    $('#folderSaveBtn').click();
-  }
-
   createNewEform(eFormLabel, newTagsPlanning = [], tagAddedNum = 0) {
     this.newEformBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
