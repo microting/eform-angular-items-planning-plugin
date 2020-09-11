@@ -4,6 +4,7 @@ import {PageWithNavbarPage} from '../PageWithNavbar.page';
 import {Guid} from 'guid-typescript';
 import XMLForEformFractions from '../../Constants/XMLForEformFractions';
 import myEformsPage from '../MyEforms.page';
+import XMLForPlanning from './XMLForPlanning';
 
 export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   constructor() {
@@ -129,7 +130,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     this.newEformBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
     // Create replaced xml and insert it in textarea
-    const xml = XMLForEformFractions.XML.replace('TEST_LABEL', eFormLabel);
+    const xml = XMLForPlanning.XML.replace('TEST_LABEL', eFormLabel);
     browser.execute(function (xmlText) {
       (<HTMLInputElement>document.getElementById('eFormXml')).value = xmlText;
     }, xml);
