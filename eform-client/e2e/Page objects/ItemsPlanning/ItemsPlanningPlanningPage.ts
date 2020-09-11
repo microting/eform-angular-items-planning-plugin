@@ -194,12 +194,13 @@ export class PlanningRowObject {
   public clickDeletePlanning() {
     this.deleteBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    browser.pause(3000);
   }
 
   public clickUpdatePlanning() {
     this.updateBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-    browser.pause(500);
+    browser.pause(3000);
   }
 }
 
