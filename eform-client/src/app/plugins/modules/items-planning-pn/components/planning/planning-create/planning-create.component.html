@@ -25,12 +25,12 @@
               </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-6" *ngIf="foldersDto.length > 0">
-              <div class="md-form" (click)="openFoldersModal()">
+              <div class="md-form" id="folderSelector" (click)="openFoldersModal()">
                 <input mdbInput
-                       type="text" id="folderSelector" [ngModel]="newPlanningModel.item.eFormSdkFolderName"
+                       type="text" id="folderSelectorInput"  [ngModel]="newPlanningModel.item.eFormSdkFolderName"
                        [disabled]="true"
-                       name="folderSelector" class="form-control">
-                <label for="folderSelector">{{'Folders' | translate}}</label>
+                       name="folderSelectorInput" class="form-control">
+                <label for="folderSelectorInput" id="folderSelectorLabel" (click)="openFoldersModal()">{{'Folders' | translate}}</label>
               </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">

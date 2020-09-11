@@ -44,10 +44,17 @@ export class ItemsPlanningModalPage extends Page {
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
+  public selectFolder() {
+    $('#folderSelector').waitForDisplayed({timeout: 20000});
+    $('#folderSelector').waitForClickable({timeout: 20000});
+    $('#folderSelector').click();
+    $('tree-viewport').waitForDisplayed({timeout: 20000});
+    $$('#folderTreeName')[0].click();
+  }
+
   public get createFolderName() {
-    $('#folderSelector input').waitForDisplayed({timeout: 20000});
-    $('#folderSelector input').waitForClickable({timeout: 20000});
-    return $('#folderSelector input');
+    $('#folderSelector').waitForDisplayed({timeout: 20000});
+    return $('#folderSelector');
   }
   public get createRepeatUntil() {
     $('#createRepeatUntil').waitForDisplayed({timeout: 20000});
@@ -153,11 +160,7 @@ export class ItemsPlanningModalPage extends Page {
     this.selectCreateRepeatType(data.repeatType);
     // browser.pause(500);
     this.createRepeatUntil.setValue(data.repeatUntil);
-    // browser.pause(500);
-    this.createFolderName.addValue(data.folderName);
-    // browser.pause(500);
-    this.createPlanningSelectorOption.click();
-    // browser.pause(500);
+    this.selectFolder();
     this.planningCreateSaveBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
