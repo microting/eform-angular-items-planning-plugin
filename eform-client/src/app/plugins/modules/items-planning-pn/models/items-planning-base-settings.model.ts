@@ -1,8 +1,7 @@
 export class ItemsPlanningBaseSettingsModel {
-  logLevel: string;
-  logLimit: string;
-  sdkConnectionString: string;
-  maxParallelism: string;
-  numberOfWorkers: number;
-  token: string;
+  startTime: number;
+  endTime: number;
+  reportHeaderName: string;
+  reportSubHeaderName: string;
+  reportImageName: string;
 }

@@ -22,6 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microting.eForm.Dto;
+using Microting.eFormApi.BasePn.Abstractions;
+using Microting.eFormApi.BasePn.Infrastructure.Helpers;
+using OpenStack.NetCoreSwiftClient.Extensions;
+
 namespace ItemsPlanning.Pn.Controllers
 {
     using System.Threading.Tasks;
@@ -35,10 +42,13 @@ namespace ItemsPlanning.Pn.Controllers
     public class ItemsPlanningSettingsController : Controller
     {
         private readonly IItemsPlanningPnSettingsService _itemsPlanningPnSettingsService;
+        private readonly IEFormCoreService _coreHelper;
 
-        public ItemsPlanningSettingsController(IItemsPlanningPnSettingsService itemsPlanningPnSettingsService)
+        public ItemsPlanningSettingsController(IEFormCoreService coreHelper,
+            IItemsPlanningPnSettingsService itemsPlanningPnSettingsService)
         {
             _itemsPlanningPnSettingsService = itemsPlanningPnSettingsService;
+            _coreHelper = coreHelper;
         }
 
         [HttpGet]
@@ -55,6 +65,49 @@ namespace ItemsPlanning.Pn.Controllers
         public async Task<OperationResult> UpdateSettings([FromBody] ItemsPlanningBaseSettings itemsPlanningBaseSettings)
         {
             return await _itemsPlanningPnSettingsService.UpdateSettings(itemsPlanningBaseSettings);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = EformRole.Admin)]
+        [Route("api/items-planning-pn/report-page-image")]
+        public async Task<IActionResult> PostLoginPageImages(IFormFile file)
+        {
+            var iUploadedCnt = 0;
+            var saveFolder = PathHelper.GetEformLoginPageSettingsImagesPath();
+            // if (string.IsNullOrEmpty(saveFolder))
+            // {
+            //     return BadRequest(_localizationService.GetString("FolderError"));
+            // }
+
+            if (!Directory.Exists(saveFolder))
+            {
+                Directory.CreateDirectory(saveFolder);
+            }
+
+            if (file.Length > 0)
+            {
+                var filePath = Path.Combine(saveFolder, Path.GetFileName(file.FileName));
+                if (!System.IO.File.Exists(filePath))
+                {
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+
+                        var core = await _coreHelper.GetCore();
+                        if (core.GetSdkSetting(Settings.swiftEnabled).Result.ToLower() == "true" || core.GetSdkSetting(Settings.s3Enabled).Result.ToLower() == "true")
+                        {
+                            await core.PutFileToStorageSystem(filePath, file.FileName);
+                        }
+                    }
+                    iUploadedCnt++;
+                }
+            }
+
+            if (iUploadedCnt > 0)
+            {
+                return Ok();
+            }
+            return BadRequest("InvalidRequest");
         }
 
     }

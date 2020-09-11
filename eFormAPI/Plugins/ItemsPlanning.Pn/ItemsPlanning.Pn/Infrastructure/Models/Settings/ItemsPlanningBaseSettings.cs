@@ -26,19 +26,15 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Settings
 {
     public class ItemsPlanningBaseSettings
     {
-        public string LogLevel { get; set; }
+        public int  StartTime { get; set; }
         
-        public string LogLimit { get; set; }
+        public int EndTime { get; set; }
         
-        public string SdkConnectionString { get; set; }
+        public string ReportHeaderName { get; set; }
         
-        public string MaxParallelism { get; set; }
-        
-        public int NumberOfWorkers { get; set; }
-        
-        public string SiteIds { get; set; }
-        
-        public string Token { get; set; }
+        public string ReportSubHeaderName { get; set; }
+
+        public string ReportImageName { get; set; }
         
     }
 
