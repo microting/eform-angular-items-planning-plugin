@@ -283,7 +283,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     Type = model.Item.Type,
                     PlanningId = itemsList.Id,
                     CreatedByUserId = UserId,
-                    eFormSdkFolderId = model.EformSdkFolderId
+                    eFormSdkFolderId = model.Item.eFormSdkFolderId
                 };
                 await item.Create(_dbContext);
 
@@ -340,7 +340,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             LocationCode = x.Item.LocationCode,
                             Name = x.Item.Name,
                             Type = x.Item.Type,
-                            eFormSdkFolderId = x.Item.eFormSdkFolderId
+                            eFormSdkFolderId = x.Item.eFormSdkFolderId,
+                            eFormSdkFolderName = x.SdkFolderName
                         },
                         AssignedSites = x.PlanningSites
                             .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
