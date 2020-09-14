@@ -249,7 +249,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             try
             {
                 var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
-                var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.EformSdkFolderId);
+                var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
                 var itemsList = new Planning
                 {
                     Name = model.Item.Name,
@@ -283,7 +283,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     Type = model.Item.Type,
                     PlanningId = itemsList.Id,
                     CreatedByUserId = UserId,
-                    eFormSdkFolderId = model.EformSdkFolderId
+                    eFormSdkFolderId = model.Item.eFormSdkFolderId
                 };
                 await item.Create(_dbContext);
 
@@ -340,7 +340,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             LocationCode = x.Item.LocationCode,
                             Name = x.Item.Name,
                             Type = x.Item.Type,
-                            eFormSdkFolderId = x.Item.eFormSdkFolderId
+                            eFormSdkFolderId = x.Item.eFormSdkFolderId,
+                            eFormSdkFolderName = x.SdkFolderName
                         },
                         AssignedSites = x.PlanningSites
                             .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
@@ -413,35 +414,33 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 var template = await _sdkCore.TemplateItemRead(updateModel.RelatedEFormId);
                 var sdkFolder = await sdkDbContext.folders.SingleAsync(x => x.Id == updateModel.Item.eFormSdkFolderId);
                 var folderName = sdkFolder.Name;
-                var planning = new Planning
-                {
-                    Id = updateModel.Id,
-                    RepeatUntil = updateModel.RepeatUntil,
-                    RepeatEvery = updateModel.RepeatEvery,
-                    RepeatType = updateModel.RepeatType,
-                    DayOfWeek = updateModel.DayOfWeek,
-                    DayOfMonth = updateModel.DayOfMonth,
-                    Description = updateModel.Item.Description,
-                    Name = updateModel.Item.Name,
-                    UpdatedAt = DateTime.UtcNow,
-                    UpdatedByUserId = UserId,
-                    RelatedEFormId = updateModel.RelatedEFormId,
-                    RelatedEFormName = template?.Label,
-                    LabelEnabled = updateModel.LabelEnabled,
-                    DescriptionEnabled = updateModel.DescriptionEnabled,
-                    DeployedAtEnabled = updateModel.DeployedAtEnabled,
-                    DoneAtEnabled = updateModel.DoneAtEnabled,
-                    DoneByUserNameEnabled = updateModel.DoneByUserNameEnabled,
-                    UploadedDataEnabled = updateModel.UploadedDataEnabled,
-                    ItemNumberEnabled = updateModel.ItemNumberEnabled,
-                    LocationCodeEnabled = updateModel.LocationCodeEnabled,
-                    BuildYearEnabled = updateModel.BuildYearEnabled,
-                    TypeEnabled = updateModel.TypeEnabled,
-                    NumberOfImagesEnabled = updateModel.NumberOfImagesEnabled,
-                    LastExecutedTime = updateModel.LastExecutedTime,
-                    SdkFolderName = folderName
+                var planning = await _dbContext.Plannings.SingleAsync(x => x.Id == updateModel.Id);
 
-                };
+                planning.RepeatUntil = updateModel.RepeatUntil;
+                planning.RepeatEvery = updateModel.RepeatEvery;
+                planning.RepeatType = updateModel.RepeatType;
+                planning.DayOfWeek = updateModel.DayOfWeek;
+                planning.DayOfMonth = updateModel.DayOfMonth;
+                planning.Description = updateModel.Item.Description;
+                planning.Name = updateModel.Item.Name;
+                planning.UpdatedAt = DateTime.UtcNow;
+                planning.UpdatedByUserId = UserId;
+                planning.RelatedEFormId = updateModel.RelatedEFormId;
+                planning.RelatedEFormName = template?.Label;
+                planning.LabelEnabled = updateModel.LabelEnabled;
+                planning.DescriptionEnabled = updateModel.DescriptionEnabled;
+                planning.DeployedAtEnabled = updateModel.DeployedAtEnabled;
+                planning.DoneAtEnabled = updateModel.DoneAtEnabled;
+                planning.DoneByUserNameEnabled = updateModel.DoneByUserNameEnabled;
+                planning.UploadedDataEnabled = updateModel.UploadedDataEnabled;
+                planning.ItemNumberEnabled = updateModel.ItemNumberEnabled;
+                planning.LocationCodeEnabled = updateModel.LocationCodeEnabled;
+                planning.BuildYearEnabled = updateModel.BuildYearEnabled;
+                planning.TypeEnabled = updateModel.TypeEnabled;
+                planning.NumberOfImagesEnabled = updateModel.NumberOfImagesEnabled;
+                planning.LastExecutedTime = updateModel.LastExecutedTime;
+                planning.SdkFolderName = folderName;
+
                 await planning.Update(_dbContext);
 
                 var item = _dbContext.Items.FirstOrDefault(x => x.Id == updateModel.Item.Id);
@@ -502,10 +501,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
         {
             try
             {
-                var planning = new Planning
-                {
-                    Id = id
-                };
+                var planning = await _dbContext.Plannings.SingleAsync(x => x.Id == id);
 
                 await planning.Delete(_dbContext);
 
