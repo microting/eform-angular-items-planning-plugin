@@ -20,7 +20,7 @@
                   <fa-icon icon="undo" flip="vertical" size="lg" [fixedWidth]="true" style="transform: rotate(180deg);"></fa-icon>
 
                 </button>
-                <button mdbTooltip="{{'Open location' | translate}}"
+                <button mdbTooltip="{{'Open location' | translate}}" *ngIf="image.value.geoTag"
                         (click)="openGpsWindow(image.value.geoTag)" class="btn btn-icon btn-success">
                   <fa-icon icon="map-marker-alt" size="lg" [fixedWidth]="true"></fa-icon>
 
