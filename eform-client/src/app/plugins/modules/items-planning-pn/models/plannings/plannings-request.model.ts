@@ -6,6 +6,7 @@ export class PlanningsRequestModel {
   offset: number;
   nameFilter: string;
   descriptionFilter: string;
+  tagIds: number[];
 
   constructor() {
     this.sort = 'Id';
@@ -15,5 +16,6 @@ export class PlanningsRequestModel {
     this.offset = 0;
     this.nameFilter = '';
     this.descriptionFilter = '';
+    this.tagIds = [];
   }
 }
