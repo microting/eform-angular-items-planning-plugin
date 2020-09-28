@@ -285,5 +285,61 @@
       "da": "Rapport periode",
       "en-US": "Report period"
     }
+  },
+  {
+    "Key": "ErrorWhileObtainingItemsPlanningTags",
+    "LocalizedValue": {
+      "da": "Fejl under modtagelse af emner, der planlægger tags",
+      "en-US": "Error While Obtaining Items Planning Tags"
+    }
+  },
+  {
+    "Key": "ItemsPlanningTagCreatedSuccessfully",
+    "LocalizedValue": {
+      "da": "Varer, der planlægger mærke oprettet med succes",
+      "en-US": "Items Planning Tag Created Successfully"
+    }
+  },
+  {
+    "Key": "ErrorWhileCreatingItemsPlanningTag",
+    "LocalizedValue": {
+      "da": "Fejl under oprettelse af planlægningsmærke",
+      "en-US": "Error While Creating Items Planning Tag"
+    }
+  },
+  {
+    "Key": "ItemsPlanningTagNotFound",
+    "LocalizedValue": {
+      "da": "Varer, der planlægger mærke ikke fundet",
+      "en-US": "Items Planning Tag Not Found"
+    }
+  },
+  {
+    "Key": "ItemsPlanningTagRemovedSuccessfully",
+    "LocalizedValue": {
+      "da": "Elementer, der planlægger tag, blev fjernet med succes",
+      "en-US": "Items Planning Tag Removed Successfully"
+    }
+  },
+  {
+    "Key": "ErrorWhileRemovingItemsPlanningTag",
+    "LocalizedValue": {
+      "da": "Fejl under fjernelse af planlægningsmærke",
+      "en-US": "Error While Removing Items Planning Tag"
+    }
+  },
+  {
+    "Key": "ItemsPlanningTagUpdatedSuccessfully",
+    "LocalizedValue": {
+      "da": "Varer, der planlægger tag, opdateres",
+      "en-US": "Items Planning Tag Updated Successfully"
+    }
+  },
+  {
+    "Key": "ErrorWhileUpdatingItemsPlanningTag",
+    "LocalizedValue": {
+      "da": "Fejl under opdatering af elementplanlægningskode",
+      "en-US": "Error While Updating Items Planning Tag"
+    }
   }
 ]

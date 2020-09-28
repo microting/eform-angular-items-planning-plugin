@@ -83,5 +83,10 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
 
         public List<PlanningAssignedSitesModel> AssignedSites { get; set; }
             = new List<PlanningAssignedSitesModel>();
+
+        public List<int> TagsIds { get; set; }
+            = new List<int>();
+
+        public string NewTags { get; set; }
     }
 }

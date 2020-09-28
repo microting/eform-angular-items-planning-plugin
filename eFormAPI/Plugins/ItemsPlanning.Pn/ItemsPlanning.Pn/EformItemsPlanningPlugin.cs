@@ -30,12 +30,14 @@ namespace ItemsPlanning.Pn
     using Infrastructure.Data.Seed;
     using Infrastructure.Data.Seed.Data;
     using Infrastructure.Models.Settings;
+    using ItemsPlanning.Pn.Services.ItemsPlanningTagsService;
     using Messages;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microting.eFormApi.BasePn;
+    using Microting.eFormApi.BasePn.Abstractions;
     using Microting.eFormApi.BasePn.Infrastructure.Database.Extensions;
     using Microting.eFormApi.BasePn.Infrastructure.Helpers;
     using Microting.eFormApi.BasePn.Infrastructure.Models.Application;
@@ -72,10 +74,12 @@ namespace ItemsPlanning.Pn
             services.AddSingleton<IItemsPlanningLocalizationService, ItemsPlanningLocalizationService>();
             services.AddTransient<IItemsPlanningPnSettingsService, ItemsPlanningPnSettingsService>();
             services.AddTransient<IItemsPlanningReportService, ItemsPlanningReportService>();
+            services.AddTransient<IItemsPlanningTagsService, ItemsPlanningTagsService>();
             services.AddTransient<IPlanningService, PlanningService>();
             services.AddTransient<IUploadedDataService, UploadedDataService>();
             services.AddSingleton<IRebusService, RebusService>();
             services.AddTransient<IWordService, WordService>();
+            services.AddControllers();
         }
 
         public void AddPluginConfig(IConfigurationBuilder builder, string connectionString)
