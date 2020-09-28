@@ -168,7 +168,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             doneAt = TimeZoneInfo.ConvertTimeFromUtc(doneAt, timeZoneInfo);
                             var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {bla.Item.Name}";
                             string geoTag = "";
-                            if (imageField.Latitude != null)
+                            if (!string.IsNullOrEmpty((imageField.Latitude)))
                             {
                                 geoTag =
                                     $"https://www.google.com/maps/place/{imageField.Latitude},{imageField.Longitude}";
