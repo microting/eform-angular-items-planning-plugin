@@ -128,6 +128,13 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             Id = y.Id,
                             SiteId = y.SiteId,
                         }).ToList(),
+                    Tags = x.PlanningsTags
+                        .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Select(y => new CommonDictionaryModel
+                        {
+                            Id = y.PlanningTagId,
+                            Name = y.PlanningTag.Name
+                        }).ToList()
                 }).ToListAsync();
 
                 // get site names
@@ -389,6 +396,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                                 Id = y.Id,
                                 SiteId = y.SiteId,
                             }).ToList(),
+                        TagsIds = x.PlanningsTags
+                            .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Select(y => y.PlanningTagId).ToList(),
                     }).FirstOrDefaultAsync();
 
                 if (planning == null)

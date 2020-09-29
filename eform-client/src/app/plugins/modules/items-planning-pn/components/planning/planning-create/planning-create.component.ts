@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {debounceTime, switchMap} from 'rxjs/operators';
-import {ItemsPlanningPnPlanningsService} from '../../../services';
+import {ItemsPlanningPnPlanningsService, ItemsPlanningPnTagsService} from '../../../services';
 import {EFormService} from 'src/app/common/services/eform';
 import {SitesService} from 'src/app/common/services/advanced';
 import {AuthService} from 'src/app/common/services';
@@ -13,6 +13,7 @@ import {Subscription} from 'rxjs';
 import {FoldersService} from 'src/app/common/services/advanced/folders.service';
 import {FolderDto} from 'src/app/common/models/dto/folder.dto';
 import {PlanningFoldersModalComponent} from '../planning-folders-modal/planning-folders-modal.component';
+import {CommonDictionaryModel} from 'src/app/common/models';
 
 @AutoUnsubscribe()
 @Component({
@@ -28,8 +29,10 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   templatesModel: TemplateListModel = new TemplateListModel();
   typeahead = new EventEmitter<string>();
   createSub$: Subscription;
+  getTagsSub$: Subscription;
   foldersDto: Array<FolderDto> = [];
   saveButtonDisabled = true;
+  availableTags: CommonDictionaryModel[] = [];
 
   get userClaims() {
     return this.authService.userClaims;
@@ -40,6 +43,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
               private sitesService: SitesService,
               private authService: AuthService,
               private eFormService: EFormService,
+              private tagsService: ItemsPlanningPnTagsService,
               private cd: ChangeDetectorRef,
               private location: Location) {
     this.typeahead
@@ -58,6 +62,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadAllFolders();
+    this.getTags();
   }
 
   updateSaveButtonDisabled() {
@@ -68,6 +73,14 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
 
   goBack() {
     this.location.back();
+  }
+
+  getTags() {
+    this.getTagsSub$ = this.tagsService.getPlanningsTags().subscribe((data) => {
+      if (data && data.success) {
+        this.availableTags = data.model;
+      }
+    });
   }
 
   createPlanning() {

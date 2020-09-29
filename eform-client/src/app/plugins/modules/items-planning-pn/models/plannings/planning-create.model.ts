@@ -14,4 +14,5 @@ export class PlanningCreateModel {
   item: PlanningItemModel = new PlanningItemModel();
   eFormSdkFolderId: number;
   eFormSdkFolderName: string;
+  tagsIds: number[];
 }

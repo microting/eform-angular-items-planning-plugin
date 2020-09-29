@@ -43,6 +43,20 @@
                          id="createPlanningSelector">
               </ng-select>
             </div>
+            <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
+              <ng-select
+                class="custom"
+                dropdownPosition="'bottom'"
+                [placeholder]="'Tags' | translate"
+                [(ngModel)]="newPlanningModel.tagsIds"
+                [bindValue]="'id'"
+                [bindLabel]="'name'"
+                [items]="availableTags"
+                id="createPlanningTagsSelector"
+                [multiple]="true"></ng-select>
+            </div>
+          </div>
+          <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-6">
               <div class="md-form">
                 <input mdbInput

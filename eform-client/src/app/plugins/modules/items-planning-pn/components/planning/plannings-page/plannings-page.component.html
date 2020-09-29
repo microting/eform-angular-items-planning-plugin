@@ -5,10 +5,10 @@
       <fa-icon icon="tags" [fixedWidth]="true" size="lg"></fa-icon>
     </button>
     <button mdbBtn *ngIf="pluginClaimsHelper.check(itemsPlanningPnClaims.createPlannings)"
-      id="planningCreateBtn"
-      class="btn-success btn-small-height"
-      mdbTooltip="{{ 'Create Planning' | translate }}"
-      [routerLink]="['./create']">{{ 'New planning' | translate }}
+            id="planningCreateBtn"
+            class="btn-success btn-small-height"
+            mdbTooltip="{{ 'Create Planning' | translate }}"
+            [routerLink]="['./create']">{{ 'New planning' | translate }}
     </button>
   </div>
 </subheader-pn>
@@ -104,6 +104,11 @@
                *ngIf="localPageSettings.sort == 'RelatedEFormName' && planningsRequestModel.isSortDsc">expand_more</i>
           </div>
         </th>
+        <th scope="col" id="tagsTableHeader">
+          <div class="d-flex align-items-center justify-content-center">
+            {{'Tags' | translate}}
+          </div>
+        </th>
         <th scope="col" class="table-header-sortable" id="repeatEveryTableHeader"
             (click)="sortTable('RepeatEvery')">
           <div class="d-flex align-items-center justify-content-center">
@@ -137,11 +142,11 @@
                *ngIf="localPageSettings.sort == 'RepeatUntil' && planningsRequestModel.isSortDsc">expand_more</i>
           </div>
         </th>
-<!--        <th scope="col" id="sitesTableHeader">-->
-<!--          <div class="d-flex align-items-center justify-content-center">-->
-<!--            {{'Sites' | translate}}-->
-<!--          </div>-->
-<!--        </th>-->
+        <!--        <th scope="col" id="sitesTableHeader">-->
+        <!--          <div class="d-flex align-items-center justify-content-center">-->
+        <!--            {{'Sites' | translate}}-->
+        <!--          </div>-->
+        <!--        </th>-->
 
         <th scope="col">
           {{ 'Actions' | translate }}
@@ -162,8 +167,17 @@
         <td id="planningFolderName">
           {{planning.sdkFolderName}}
         </td>
-        <td id="planningFolderName">
+        <td id="planningRelatedEformName">
           {{planning.relatedEFormName}}
+        </td>
+        <td id="planningTags">
+          <ng-container *ngFor="let tag of planning.tags; let i = index;">
+              <span class="badge badge-primary mb-1" style="cursor: pointer" (click)="tagSelected(tag.id)">
+                <fa-icon icon="tag"></fa-icon>
+                {{tag.name}}
+            </span>
+            <br/>
+          </ng-container>
         </td>
         <td id="planningRepeatEvery">
           {{planning.repeatEvery}}
@@ -182,12 +196,12 @@
         <td id="planningRepeatUntil">
           <date-formatter [date]="planning.repeatUntil" [Format]="'datetime'"></date-formatter>
         </td>
-<!--        <td>-->
-<!--          <div class="d-flex justify-content-center">-->
-<!--            <div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </td>-->
+        <!--        <td>-->
+        <!--          <div class="d-flex justify-content-center">-->
+        <!--            <div>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </td>-->
         <td>
           <div class="d-flex flex-row justify-content-center">
             <button id="planningAssignmentBtn" [ngClass]="planning?.assignedSites?.length > 0 ? 'btn-success' : ''"
@@ -197,18 +211,18 @@
               <!--                {{ planning?.assignedSites?.length > 0 ? 'Edit pairing' : 'Pair' | translate }}-->
             </button>
             <button id="updatePlanningBtn"
-              class="btn btn-accent text-black-50 btn-icon mb-2"
+                    class="btn btn-accent text-black-50 btn-icon mb-2"
                     mdbTooltip="{{ 'Edit Planning' | translate }}"
                     [routerLink]="['./edit/' + planning.id]">
               <fa-icon icon="pen" size="lg" [fixedWidth]="true"></fa-icon>
             </button>
-<!--            <button mdbBtn class="btn-success btn-icon mb-2" id="edit-columnts-btn"-->
-<!--                    (click)="openEditColumnsModal(planning)"-->
-<!--                    mdbTooltip="{{ 'Edit columns' | translate }}">-->
-<!--              <fa-icon icon="table" [fixedWidth]="true" size="lg"></fa-icon>-->
-<!--            </button>-->
+            <!--            <button mdbBtn class="btn-success btn-icon mb-2" id="edit-columnts-btn"-->
+            <!--                    (click)="openEditColumnsModal(planning)"-->
+            <!--                    mdbTooltip="{{ 'Edit columns' | translate }}">-->
+            <!--              <fa-icon icon="table" [fixedWidth]="true" size="lg"></fa-icon>-->
+            <!--            </button>-->
             <button id="deletePlanningBtn"
-              class="btn btn-danger btn-icon mb-2 "
+                    class="btn btn-danger btn-icon mb-2 "
                     mdbTooltip="{{ 'Delete Planning' | translate }}"
                     (click)="showDeletePlanningModal(planning)">
               <fa-icon icon="trash-alt" size="lg" [fixedWidth]="true"></fa-icon>
@@ -239,3 +253,5 @@
 <app-planning-delete #deletePlanningModal
                      (planningDeleted)="getPlannings()"></app-planning-delete>
 <app-planning-assign-sites-modal (sitesAssigned)="getPlannings()" #assignSitesModal></app-planning-assign-sites-modal>
+<app-planning-tags #planningTagsModal [availableTags]="availableTags"
+                   (tagsChanged)="getTags()"></app-planning-tags>
