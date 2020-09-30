@@ -1,67 +1,90 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {debounceTime, switchMap} from 'rxjs/operators';
-import {ItemsPlanningPnPlanningsService, ItemsPlanningPnTagsService} from '../../../services';
-import {EFormService} from 'src/app/common/services/eform';
-import {SitesService} from 'src/app/common/services/advanced';
-import {AuthService} from 'src/app/common/services';
-import {PlanningCreateModel} from '../../../models/plannings';
-import {TemplateListModel, TemplateRequestModel} from 'src/app/common/models/eforms';
-import {Location} from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { debounceTime, switchMap } from 'rxjs/operators';
+import {
+  ItemsPlanningPnPlanningsService,
+  ItemsPlanningPnTagsService,
+} from '../../../services';
+import { EFormService } from 'src/app/common/services/eform';
+import { SitesService } from 'src/app/common/services/advanced';
+import { AuthService } from 'src/app/common/services';
+import { PlanningCreateModel } from '../../../models/plannings';
+import {
+  TemplateListModel,
+  TemplateRequestModel,
+} from 'src/app/common/models/eforms';
+import { Location } from '@angular/common';
 import moment = require('moment');
-import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
-import {Subscription} from 'rxjs';
-import {FoldersService} from 'src/app/common/services/advanced/folders.service';
-import {FolderDto} from 'src/app/common/models/dto/folder.dto';
-import {PlanningFoldersModalComponent} from '../planning-folders-modal/planning-folders-modal.component';
-import {CommonDictionaryModel} from 'src/app/common/models';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Subscription } from 'rxjs';
+import { FoldersService } from 'src/app/common/services/advanced/folders.service';
+import { FolderDto } from 'src/app/common/models/dto/folder.dto';
+import { PlanningFoldersModalComponent } from '../planning-folders-modal/planning-folders-modal.component';
+import { CommonDictionaryModel } from 'src/app/common/models';
+import {composeFolderName} from 'src/app/common/helpers/folder-name.helper';
 
 @AutoUnsubscribe()
 @Component({
   selector: 'app-planning-create',
   templateUrl: './planning-create.component.html',
-  styleUrls: ['./planning-create.component.scss']
+  styleUrls: ['./planning-create.component.scss'],
 })
 export class PlanningCreateComponent implements OnInit, OnDestroy {
-  @ViewChild('frame', {static: false}) frame;
-  @ViewChild('foldersModal', {static: false}) foldersModal: PlanningFoldersModalComponent;
+  @ViewChild('frame', { static: false }) frame;
+  @ViewChild('foldersModal', { static: false })
+  foldersModal: PlanningFoldersModalComponent;
   newPlanningModel: PlanningCreateModel = new PlanningCreateModel();
   templateRequestModel: TemplateRequestModel = new TemplateRequestModel();
   templatesModel: TemplateListModel = new TemplateListModel();
   typeahead = new EventEmitter<string>();
   createSub$: Subscription;
   getTagsSub$: Subscription;
-  foldersDto: Array<FolderDto> = [];
+  getFoldersListSub$: Subscription;
+  foldersTreeDto: FolderDto[] = [];
+  foldersListDto: FolderDto[] = [];
   saveButtonDisabled = true;
   availableTags: CommonDictionaryModel[] = [];
+
+  selectedFolderName: string;
 
   get userClaims() {
     return this.authService.userClaims;
   }
 
-  constructor(private foldersService: FoldersService,
-              private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
-              private sitesService: SitesService,
-              private authService: AuthService,
-              private eFormService: EFormService,
-              private tagsService: ItemsPlanningPnTagsService,
-              private cd: ChangeDetectorRef,
-              private location: Location) {
+  constructor(
+    private foldersService: FoldersService,
+    private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
+    private sitesService: SitesService,
+    private authService: AuthService,
+    private eFormService: EFormService,
+    private tagsService: ItemsPlanningPnTagsService,
+    private cd: ChangeDetectorRef,
+    private location: Location
+  ) {
     this.typeahead
       .pipe(
         debounceTime(200),
-        switchMap(term => {
+        switchMap((term) => {
           this.templateRequestModel.nameFilter = term;
           return this.eFormService.getAll(this.templateRequestModel);
         })
       )
-      .subscribe(items => {
+      .subscribe((items) => {
         this.templatesModel = items.model;
         this.cd.markForCheck();
       });
   }
 
   ngOnInit() {
-    this.loadAllFolders();
+    this.loadFoldersTree();
+    this.loadFoldersList();
     this.getTags();
   }
 
@@ -85,31 +108,44 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
 
   createPlanning() {
     if (this.newPlanningModel.internalRepeatUntil) {
-      const tempDate = moment(this.newPlanningModel.internalRepeatUntil).format('DD/MM/YYYY');
+      const tempDate = moment(this.newPlanningModel.internalRepeatUntil).format(
+        'DD/MM/YYYY'
+      );
       const datTime = moment.utc(tempDate, 'DD/MM/YYYY');
       this.newPlanningModel.repeatUntil = datTime.format('YYYY-MM-DD');
     }
 
-    this.createSub$ = this.itemsPlanningPnPlanningsService.createPlanning(this.newPlanningModel).subscribe((data) => {
-      if (data && data.success) {
-        this.location.back();
-      }
-    });
+    this.createSub$ = this.itemsPlanningPnPlanningsService
+      .createPlanning(this.newPlanningModel)
+      .subscribe((data) => {
+        if (data && data.success) {
+          this.location.back();
+        }
+      });
   }
 
   show() {
     this.frame.show();
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
-  loadAllFolders() {
+  loadFoldersTree() {
     this.foldersService.getAllFolders().subscribe((operation) => {
       if (operation && operation.success) {
-        this.foldersDto = operation.model;
+        this.foldersTreeDto = operation.model;
       }
     });
+  }
+
+  loadFoldersList() {
+    this.getFoldersListSub$ = this.foldersService
+      .getAllFoldersList()
+      .subscribe((operation) => {
+        if (operation && operation.success) {
+          this.foldersListDto = operation.model;
+        }
+      });
   }
 
   openFoldersModal() {
@@ -117,8 +153,15 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   }
 
   onFolderSelected(folderDto: FolderDto) {
+    debugger;
     this.newPlanningModel.item.eFormSdkFolderId = folderDto.id;
-    this.newPlanningModel.item.eFormSdkFolderName = folderDto.name;
+    this.selectedFolderName = composeFolderName(
+      folderDto.id,
+      this.foldersListDto
+    );
+    this.newPlanningModel.item.eFormSdkFullFolderName = folderDto.parent
+        ? `${folderDto.name} - ${folderDto.parent.name}`
+        : folderDto.name;
     this.updateSaveButtonDisabled();
   }
 }

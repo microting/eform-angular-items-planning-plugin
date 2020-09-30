@@ -29,7 +29,8 @@ import { FoldersService } from 'src/app/common/services/advanced/folders.service
 import { PlanningFoldersModalComponent } from '../planning-folders-modal/planning-folders-modal.component';
 import { CommonDictionaryModel } from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import {Subscription} from 'rxjs';
+import { Subscription } from 'rxjs';
+import { composeFolderName } from 'src/app/common/helpers/folder-name.helper';
 
 @AutoUnsubscribe()
 @Component({
@@ -48,12 +49,17 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
   templatesModel: TemplateListModel = new TemplateListModel();
   typeahead = new EventEmitter<string>();
   selectedPlanningId: number;
-  foldersDto: Array<FolderDto> = [];
+  foldersTreeDto: FolderDto[] = [];
+  foldersListDto: FolderDto[] = [];
   availableTags: CommonDictionaryModel[] = [];
   saveButtonDisabled = true;
 
   getTagsSub$: Subscription;
   getItemsPlanningSub$: Subscription;
+  getFoldersTreeSub$: Subscription;
+  getFoldersListSub$: Subscription;
+
+  selectedFolderName: string;
 
   constructor(
     private foldersService: FoldersService,
@@ -99,13 +105,18 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
         if (data && data.success) {
           this.selectedPlanningModel = data.model;
           this.selectedPlanningModel.internalRepeatUntil = this.selectedPlanningModel.repeatUntil;
-          this.loadAllFolders();
+          this.loadFoldersTree();
+          this.loadFoldersList();
           this.templatesModel.templates = [
             {
               id: this.selectedPlanningModel.relatedEFormId,
               label: this.selectedPlanningModel.relatedEFormName,
             } as any,
           ];
+          // this.selectedPlanningModel.item.eFormSdkFullFolderName = this
+          //   .selectedPlanningModel.item.eFormSdkParentFolderName
+          //   ? `${this.selectedPlanningModel.item.eFormSdkFolderName} - ${this.selectedPlanningModel.item.eFormSdkParentFolderName}`
+          //   : this.selectedPlanningModel.item.eFormSdkFolderName;
         }
       });
   }
@@ -144,15 +155,31 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
       });
   }
 
-  loadAllFolders() {
-    this.foldersService.getAllFolders().subscribe((operation) => {
-      if (operation && operation.success) {
-        this.foldersDto = operation.model;
-        if (this.selectedPlanningModel.item.eFormSdkFolderId != null) {
-          this.saveButtonDisabled = false;
+  loadFoldersTree() {
+    this.getFoldersTreeSub$ = this.foldersService
+      .getAllFolders()
+      .subscribe((operation) => {
+        if (operation && operation.success) {
+          this.foldersTreeDto = operation.model;
+          if (this.selectedPlanningModel.item.eFormSdkFolderId != null) {
+            this.saveButtonDisabled = false;
+          }
         }
-      }
-    });
+      });
+  }
+
+  loadFoldersList() {
+    this.getFoldersListSub$ = this.foldersService
+      .getAllFoldersList()
+      .subscribe((operation) => {
+        if (operation && operation.success) {
+          this.foldersListDto = operation.model;
+          this.selectedFolderName = composeFolderName(
+            this.selectedPlanningModel.item.eFormSdkFolderId,
+            this.foldersListDto
+          );
+        }
+      });
   }
 
   openFoldersModal() {
@@ -161,10 +188,12 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
 
   onFolderSelected(folderDto: FolderDto) {
     this.selectedPlanningModel.item.eFormSdkFolderId = folderDto.id;
-    this.selectedPlanningModel.item.eFormSdkFolderName = folderDto.name;
+    this.selectedFolderName = composeFolderName(
+      folderDto.id,
+      this.foldersListDto
+    );
     this.updateSaveButtonDisabled();
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 }

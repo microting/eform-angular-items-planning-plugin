@@ -30,9 +30,9 @@ export class PlanningPnModel {
   buildYearEnabled: boolean;
   typeEnabled: boolean;
   numberOfImagesEnabled: boolean;
-  sdkFolderName: string;
   assignedSites: PlanningAssignedSitesModel[] = [];
   tags: SharedTagModel[];
+  tagsIds: number[];
 }
 
 export class PlanningAssignedSitesModel {

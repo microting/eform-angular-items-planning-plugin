@@ -101,6 +101,13 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             StringComparison.CurrentCultureIgnoreCase));
                 }
 
+                if (pnRequestModel.TagIds.Any())
+                {
+                    planningsQuery = planningsQuery
+                        .Where(x => x.PlanningsTags.Any(
+                            y => pnRequestModel.TagIds.Contains(y.PlanningTagId)));
+                }
+
 
                 planningsQuery
                     = planningsQuery
@@ -134,7 +141,20 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         {
                             Id = y.PlanningTagId,
                             Name = y.PlanningTag.Name
-                        }).ToList()
+                        }).ToList(),
+                    Item = new PlanningItemModel
+                    {
+                        Id = x.Item.Id,
+                        BuildYear = x.Item.BuildYear,
+                        Description = x.Item.Description,
+                        ItemNumber = x.Item.ItemNumber,
+                        LocationCode = x.Item.LocationCode,
+                        Name = x.Item.Name,
+                        Type = x.Item.Type,
+                        eFormSdkFolderId = x.Item.eFormSdkFolderId,
+                        eFormSdkFolderName = x.SdkFolderName,
+                        eFormSdkParentFolderName = x.SdkParentFolderName
+                    },
                 }).ToListAsync();
 
                 // get site names
@@ -280,7 +300,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 tagIds.AddRange(model.TagsIds);
 
                 var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
-                var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
+                var sdkFolder = await sdkDbContext.folders
+                    .Include(x => x.Parent)
+                    .SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
                 var itemsList = new Planning
                 {
                     Name = model.Item.Name,
@@ -295,7 +317,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     Enabled = true,
                     RelatedEFormId = model.RelatedEFormId,
                     RelatedEFormName = template?.Label,
-                    SdkFolderName = sdkFolderName.Name,
+                    SdkFolderName = sdkFolder.Name,
+                    SdkParentFolderName = sdkFolder.Parent.Name,
                     PlanningsTags = new List<PlanningsTags>()
                 };
 
@@ -387,7 +410,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             Name = x.Item.Name,
                             Type = x.Item.Type,
                             eFormSdkFolderId = x.Item.eFormSdkFolderId,
-                            eFormSdkFolderName = x.SdkFolderName
+                            eFormSdkFolderName = x.SdkFolderName,
+                            eFormSdkParentFolderName = x.SdkParentFolderName
                         },
                         AssignedSites = x.PlanningSites
                             .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
@@ -461,8 +485,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             try
             {
                 var template = await _sdkCore.TemplateItemRead(updateModel.RelatedEFormId);
-                var sdkFolder = await sdkDbContext.folders.SingleAsync(x => x.Id == updateModel.Item.eFormSdkFolderId);
-                var folderName = sdkFolder.Name;
+                var sdkFolder = await sdkDbContext.folders
+                    .Include(x => x.Parent)
+                    .SingleAsync(x => x.Id == updateModel.Item.eFormSdkFolderId);
                 var planning = await _dbContext.Plannings
                                             .Include(x => x.PlanningsTags)
                                             .SingleAsync(x => x.Id == updateModel.Id);
@@ -490,7 +515,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.TypeEnabled = updateModel.TypeEnabled;
                 planning.NumberOfImagesEnabled = updateModel.NumberOfImagesEnabled;
                 planning.LastExecutedTime = updateModel.LastExecutedTime;
-                planning.SdkFolderName = folderName;
+                planning.SdkFolderName = sdkFolder.Name;
+                planning.SdkParentFolderName = sdkFolder.Parent?.Name;
 
                 var tagIds = planning.PlanningsTags
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
