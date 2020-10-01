@@ -300,9 +300,13 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 tagIds.AddRange(model.TagsIds);
 
                 var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
+                
                 var sdkFolder = await sdkDbContext.folders
                     .Include(x => x.Parent)
                     .SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
+                    
+                var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
+                
                 var itemsList = new Planning
                 {
                     Name = model.Item.Name,
@@ -485,12 +489,14 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             try
             {
                 var template = await _sdkCore.TemplateItemRead(updateModel.RelatedEFormId);
+
                 var sdkFolder = await sdkDbContext.folders
                     .Include(x => x.Parent)
                     .SingleAsync(x => x.Id == updateModel.Item.eFormSdkFolderId);
                 var planning = await _dbContext.Plannings
                                             .Include(x => x.PlanningsTags)
                                             .SingleAsync(x => x.Id == updateModel.Id);
+                var folderName = sdkFolder.Name;
 
                 planning.RepeatUntil = updateModel.RepeatUntil;
                 planning.RepeatEvery = updateModel.RepeatEvery;
@@ -552,6 +558,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                     await _dbContext.PlanningsTags.AddAsync(planningsTags);
                 }
+
+                planning.SdkFolderName = folderName;
+
 
                 await planning.Update(_dbContext);
 
