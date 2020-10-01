@@ -19,7 +19,7 @@ export class ItemsPlanningPnReportsService extends BaseService {
   }
 
   generateReport(model: ReportPnGenerateModel): Observable<OperationDataResult<ReportEformPnModel[]>> {
-    return this.get(ItemsPlanningPnReportsMethods.Reports, model);
+    return this.post(ItemsPlanningPnReportsMethods.Reports, model);
   }
 
   downloadReport(model: ReportPnGenerateModel): Observable<any> {
