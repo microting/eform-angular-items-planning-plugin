@@ -152,8 +152,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         Name = x.Item.Name,
                         Type = x.Item.Type,
                         eFormSdkFolderId = x.Item.eFormSdkFolderId,
-                        eFormSdkFolderName = x.SdkFolderName,
-                        eFormSdkParentFolderName = x.SdkParentFolderName
+                        eFormSdkFolderName = x.SdkFolderName
                     },
                 }).ToListAsync();
 
@@ -276,7 +275,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             try
             {
                 var tagIds = new List<int>();
-
                 if (!string.IsNullOrEmpty(model.NewTags))
                 {
                     var tagNames = model.NewTags.Replace(" ", "").Split(',');
@@ -322,7 +320,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     RelatedEFormId = model.RelatedEFormId,
                     RelatedEFormName = template?.Label,
                     SdkFolderName = sdkFolder.Name,
-                    SdkParentFolderName = sdkFolder.Parent.Name,
                     PlanningsTags = new List<PlanningsTags>()
                 };
 
@@ -414,8 +411,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             Name = x.Item.Name,
                             Type = x.Item.Type,
                             eFormSdkFolderId = x.Item.eFormSdkFolderId,
-                            eFormSdkFolderName = x.SdkFolderName,
-                            eFormSdkParentFolderName = x.SdkParentFolderName
+                            eFormSdkFolderName = x.SdkFolderName
                         },
                         AssignedSites = x.PlanningSites
                             .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
@@ -522,7 +518,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.NumberOfImagesEnabled = updateModel.NumberOfImagesEnabled;
                 planning.LastExecutedTime = updateModel.LastExecutedTime;
                 planning.SdkFolderName = sdkFolder.Name;
-                planning.SdkParentFolderName = sdkFolder.Parent?.Name;
 
                 var tagIds = planning.PlanningsTags
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
