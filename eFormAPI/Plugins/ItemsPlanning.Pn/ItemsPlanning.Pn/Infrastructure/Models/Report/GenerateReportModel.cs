@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Collections.Generic;
+
 namespace ItemsPlanning.Pn.Infrastructure.Models.Report
 {
     using System;
@@ -30,5 +32,6 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Report
     {
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
+        public List<int> TagIds { get; set; } = new List<int>();
     }
 }

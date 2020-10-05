@@ -8,4 +8,7 @@ export class PlanningItemModel {
   type: string;
   eFormSdkFolderId: number;
   eFormSdkFolderName: string;
+  eFormSdkParentFolderName: string;
+
+  eFormSdkFullFolderName: string;
 }

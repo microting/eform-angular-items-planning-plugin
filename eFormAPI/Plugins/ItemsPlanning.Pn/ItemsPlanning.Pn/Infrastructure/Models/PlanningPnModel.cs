@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
+
 namespace ItemsPlanning.Pn.Infrastructure.Models
 {
     using System;
@@ -83,5 +85,13 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
 
         public List<PlanningAssignedSitesModel> AssignedSites { get; set; }
             = new List<PlanningAssignedSitesModel>();
+
+        public List<CommonDictionaryModel> Tags { get; set; }
+            = new List<CommonDictionaryModel>();
+
+        public List<int> TagsIds { get; set; }
+            = new List<int>();
+
+        public string NewTags { get; set; }
     }
 }

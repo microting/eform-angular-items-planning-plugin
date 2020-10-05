@@ -34,5 +34,6 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
         public string Type { get; set; }
         public string eFormSdkFolderName { get; set; }
         public int eFormSdkFolderId { get; set; }
+        public string eFormSdkParentFolderName { get; set; }
     }
 }
