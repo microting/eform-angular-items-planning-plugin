@@ -101,6 +101,13 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             StringComparison.CurrentCultureIgnoreCase));
                 }
 
+                if (pnRequestModel.TagIds.Any())
+                {
+                    planningsQuery = planningsQuery
+                        .Where(x => x.PlanningsTags.Any(
+                            y => pnRequestModel.TagIds.Contains(y.PlanningTagId)));
+                }
+
 
                 planningsQuery
                     = planningsQuery
@@ -128,6 +135,25 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             Id = y.Id,
                             SiteId = y.SiteId,
                         }).ToList(),
+                    Tags = x.PlanningsTags
+                        .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Select(y => new CommonDictionaryModel
+                        {
+                            Id = y.PlanningTagId,
+                            Name = y.PlanningTag.Name
+                        }).ToList(),
+                    Item = new PlanningItemModel
+                    {
+                        Id = x.Item.Id,
+                        BuildYear = x.Item.BuildYear,
+                        Description = x.Item.Description,
+                        ItemNumber = x.Item.ItemNumber,
+                        LocationCode = x.Item.LocationCode,
+                        Name = x.Item.Name,
+                        Type = x.Item.Type,
+                        eFormSdkFolderId = x.Item.eFormSdkFolderId,
+                        eFormSdkFolderName = x.SdkFolderName
+                    },
                 }).ToListAsync();
 
                 // get site names
@@ -248,8 +274,37 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 _coreService.GetCore().GetAwaiter().GetResult().dbContextHelper.GetDbContext();
             try
             {
+                var tagIds = new List<int>();
+                if (!string.IsNullOrEmpty(model.NewTags))
+                {
+                    var tagNames = model.NewTags.Replace(" ", "").Split(',');
+                    foreach(var tagName in tagNames)
+                    {
+                        var planningTag = new PlanningTag
+                        {
+                            Name = tagName,
+                            CreatedAt = DateTime.UtcNow,
+                            CreatedByUserId = UserId,
+                            UpdatedAt = DateTime.UtcNow,
+                            UpdatedByUserId = UserId,
+                            Version = 1,
+                        };
+                        await _dbContext.PlanningTags.AddAsync(planningTag);
+                        await _dbContext.SaveChangesAsync();
+                        tagIds.Add(planningTag.Id);
+                    }
+                }
+
+                tagIds.AddRange(model.TagsIds);
+
                 var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
+                
+                var sdkFolder = await sdkDbContext.folders
+                    .Include(x => x.Parent)
+                    .SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
+                    
                 var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
+                
                 var itemsList = new Planning
                 {
                     Name = model.Item.Name,
@@ -264,8 +319,23 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     Enabled = true,
                     RelatedEFormId = model.RelatedEFormId,
                     RelatedEFormName = template?.Label,
-                    SdkFolderName = sdkFolderName.Name
+                    SdkFolderName = sdkFolder.Name,
+                    PlanningsTags = new List<PlanningsTags>()
                 };
+
+                foreach(var tagId in tagIds)
+                {
+                    itemsList.PlanningsTags.Add(
+                        new PlanningsTags
+                        {
+                            CreatedAt = DateTime.UtcNow,
+                            CreatedByUserId = UserId,
+                            UpdatedAt = DateTime.UtcNow,
+                            UpdatedByUserId = UserId,
+                            Version = 1,
+                            PlanningTagId = tagId
+                        });
+                }
 
                 await itemsList.Create(_dbContext);
                 var item = new Item()
@@ -350,6 +420,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                                 Id = y.Id,
                                 SiteId = y.SiteId,
                             }).ToList(),
+                        TagsIds = x.PlanningsTags
+                            .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Select(y => y.PlanningTagId).ToList(),
                     }).FirstOrDefaultAsync();
 
                 if (planning == null)
@@ -412,9 +485,14 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             try
             {
                 var template = await _sdkCore.TemplateItemRead(updateModel.RelatedEFormId);
-                var sdkFolder = await sdkDbContext.folders.SingleAsync(x => x.Id == updateModel.Item.eFormSdkFolderId);
+
+                var sdkFolder = await sdkDbContext.folders
+                    .Include(x => x.Parent)
+                    .SingleAsync(x => x.Id == updateModel.Item.eFormSdkFolderId);
+                var planning = await _dbContext.Plannings
+                                            .Include(x => x.PlanningsTags)
+                                            .SingleAsync(x => x.Id == updateModel.Id);
                 var folderName = sdkFolder.Name;
-                var planning = await _dbContext.Plannings.SingleAsync(x => x.Id == updateModel.Id);
 
                 planning.RepeatUntil = updateModel.RepeatUntil;
                 planning.RepeatEvery = updateModel.RepeatEvery;
@@ -439,7 +517,45 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.TypeEnabled = updateModel.TypeEnabled;
                 planning.NumberOfImagesEnabled = updateModel.NumberOfImagesEnabled;
                 planning.LastExecutedTime = updateModel.LastExecutedTime;
+                planning.SdkFolderName = sdkFolder.Name;
+
+                var tagIds = planning.PlanningsTags
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Select(x => x.PlanningTagId)
+                    .ToList();
+
+                var tagsForDelete = planning.PlanningsTags
+                        .Where(x => !updateModel.TagsIds.Contains(x.PlanningTagId))
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                        .ToList();
+
+                var tagsForCreate = updateModel.TagsIds
+                    .Where(x => !tagIds.Contains(x))
+                    .ToList();
+
+                foreach (var tag in tagsForDelete)
+                {
+                    _dbContext.PlanningsTags.Remove(tag);
+                }
+
+                foreach(var tagId in tagsForCreate)
+                {
+                    var planningsTags = new PlanningsTags
+                    {
+                        CreatedByUserId = UserId,
+                        UpdatedByUserId = UserId,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        PlanningId = planning.Id,
+                        PlanningTagId = tagId,
+                        Version = 1,
+                    };
+
+                    await _dbContext.PlanningsTags.AddAsync(planningsTags);
+                }
+
                 planning.SdkFolderName = folderName;
+
 
                 await planning.Update(_dbContext);
 

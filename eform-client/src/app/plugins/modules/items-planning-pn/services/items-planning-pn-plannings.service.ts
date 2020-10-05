@@ -24,7 +24,7 @@ export class ItemsPlanningPnPlanningsService extends BaseService {
   }
 
   getAllPlannings(model: PlanningsRequestModel): Observable<OperationDataResult<PlanningsPnModel>> {
-    return this.get(ItemsPlanningPnPlanningsMethods.Plannings, model);
+    return this.post(ItemsPlanningPnPlanningsMethods.Plannings + '/index', model);
   }
 
   getSinglePlanning(planningId: number): Observable<OperationDataResult<PlanningPnModel>> {

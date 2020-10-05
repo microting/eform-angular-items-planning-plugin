@@ -91,6 +91,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 var casesQuery = _dbContext.PlanningCases
                     .Include(x => x.Item)
                     .ThenInclude(x => x.Planning)
+                    .ThenInclude(x => x.PlanningsTags)
                     .Where(x => x.Status == 100)
                     .AsQueryable();
 
@@ -104,6 +105,15 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 {
                     casesQuery = casesQuery.Where(x =>
                         x.MicrotingSdkCaseDoneAt <= ToDate);
+                }
+
+                if (model.TagIds.Count > 0)
+                {
+                    foreach (var tagId in model.TagIds)
+                    {
+                        casesQuery = casesQuery.Where(x =>
+                            x.Item.Planning.PlanningsTags.Any(y => y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
+                    }
                 }
 
                 var itemCases = await casesQuery

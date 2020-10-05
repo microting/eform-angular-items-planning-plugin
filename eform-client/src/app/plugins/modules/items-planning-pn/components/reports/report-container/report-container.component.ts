@@ -2,13 +2,13 @@ import {AfterContentInit, AfterViewInit, Component, OnDestroy, OnInit, ViewChild
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
 import {ReportEformItemModel, ReportEformPnModel, ReportEformPostModel, ReportPnGenerateModel} from '../../../models/report';
-import {ItemsPlanningPnReportsService} from '../../../services';
+import {ItemsPlanningPnReportsService, ItemsPlanningPnTagsService} from '../../../services';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import { parseISO } from 'date-fns';
 import {CasePostNewComponent} from 'src/app/modules/cases/components';
-import {CasePostsListModel, CommonDictionaryModel, EmailRecipientTagCommonModel} from 'src/app/common/models';
+import {CasePostsListModel, CommonDictionaryModel, EmailRecipientTagCommonModel, SharedTagModel} from 'src/app/common/models';
 import {EmailRecipientsService} from 'src/app/common/services';
 
 @AutoUnsubscribe()
@@ -26,9 +26,11 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   range: Date[] = [];
   @ViewChild('newPostModal') newPostModal: CasePostNewComponent;
   casePostsListModel: CasePostsListModel = new CasePostsListModel();
-  availableRecipientsAndTags: EmailRecipientTagCommonModel[] = [];
-  availableRecipients: CommonDictionaryModel[] = [];
+  availableEmailRecipientsAndTags: EmailRecipientTagCommonModel[] = [];
+  availableEmailRecipients: CommonDictionaryModel[] = [];
+  availableTags: SharedTagModel[] = [];
   getTagsSub$: Subscription;
+  getEmailsTagsSub$
   getRecipientsSub$: Subscription;
   currentUserFullName: string;
   selectedEformId: number;
@@ -39,7 +41,8 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
     private activateRoute: ActivatedRoute,
     private reportService: ItemsPlanningPnReportsService,
     private toastrService: ToastrService,
-    private router: Router) {
+    private router: Router,
+    private tagsService: ItemsPlanningPnTagsService) {
     this.activateRoute.params.subscribe(params => {
       this.dateFrom = params['dateFrom'];
       this.dateTo = params['dateTo'];
@@ -47,7 +50,8 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
       this.range.push(parseISO(params['dateTo']));
       const model = {
         dateFrom: params['dateFrom'],
-        dateTo: params['dateTo']
+        dateTo: params['dateTo'],
+        tagIds: []
       };
       if (model.dateFrom !== undefined) {
         this.onGenerateReport(model);
@@ -56,23 +60,31 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.reportsModel = [...testData];
-    this.getRecipientsAndTags();
-    this.getRecipients();
+    this.getEmailRecipientsAndTags();
+    this.getEmailRecipients();
+    this.getTags();
   }
 
-  getRecipientsAndTags() {
-    this.getTagsSub$ = this.emailRecipientsService.getEmailRecipientsAndTags().subscribe((data) => {
+  getEmailRecipientsAndTags() {
+    this.getEmailsTagsSub$ = this.emailRecipientsService.getEmailRecipientsAndTags().subscribe((data) => {
       if (data && data.success) {
-        this.availableRecipientsAndTags = data.model;
+        this.availableEmailRecipientsAndTags = data.model;
       }
     });
   }
 
-  getRecipients() {
+  getEmailRecipients() {
     this.getRecipientsSub$ = this.emailRecipientsService.getSimpleEmailRecipients().subscribe((data) => {
       if (data && data.success) {
-        this.availableRecipients = data.model;
+        this.availableEmailRecipients = data.model;
+      }
+    });
+  }
+
+  getTags() {
+    this.getTagsSub$ = this.tagsService.getPlanningsTags().subscribe((data) => {
+      if (data && data.success) {
+        this.availableTags = data.model;
       }
     });
   }

@@ -81,6 +81,12 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     return $('#planningCreateBtn');
   }
 
+  public get planningManageTagsBtn() {
+    $('#planningManageTagsBtn').waitForDisplayed({timeout: 20000});
+    $('#planningManageTagsBtn').waitForClickable({timeout: 20000});
+    return $('#planningManageTagsBtn');
+  }
+
   public get planningsButton() {
     $('#items-planning-pn-plannings').waitForDisplayed({timeout: 20000});
     $('#items-planning-pn-plannings').waitForClickable({timeout: 20000});

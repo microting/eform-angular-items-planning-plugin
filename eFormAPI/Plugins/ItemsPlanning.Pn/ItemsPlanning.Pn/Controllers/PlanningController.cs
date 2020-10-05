@@ -42,9 +42,9 @@ namespace ItemsPlanning.Pn.Controllers
             _planningService = planningService;
         }
 
-        [HttpGet]
-        [Route("api/items-planning-pn/plannings")]
-        public async Task<OperationDataResult<PlanningsPnModel>> Index(PlanningsRequestModel requestModel)
+        [HttpPost]
+        [Route("api/items-planning-pn/plannings/index")]
+        public async Task<OperationDataResult<PlanningsPnModel>> Index([FromBody] PlanningsRequestModel requestModel)
         {
             return await _planningService.Index(requestModel);
         }

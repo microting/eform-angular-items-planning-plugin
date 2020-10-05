@@ -1,6 +1,18 @@
 <form [formGroup]="generateForm">
   <div class="row pl-1">
-
+    <div class="col-md-4 col-sm-8 ng-select-wrapper">
+      <ng-select
+        class="custom"
+        dropdownPosition="'bottom'"
+        [placeholder]="'Tags' | translate"
+        [items]="availableTags"
+        formControlName="tagIds"
+        [clearable]="false"
+        [bindLabel]="'name'"
+        [bindValue]="'id'"
+        id="tagSelector"
+        [multiple]="true"></ng-select>
+    </div>
     <div class="col-md-3">
       <div class="md-form" [owlDateTimeTrigger]="dateRangePicker">
         <i class="material-icons prefix">
