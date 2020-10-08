@@ -23,12 +23,18 @@ export const routes: Routes = [
     children: [
       {
         path: 'plannings',
-        canActivate: [AuthGuard],
+        canActivate: [PermissionGuard],
+        data: {
+          requiredPermission: ItemsPlanningPnClaims.getPlannings,
+        },
         component: PlanningsPageComponent,
       },
       {
         path: 'plannings/edit/:id',
-        canActivate: [AuthGuard],
+        canActivate: [PermissionGuard],
+        data: {
+          requiredPermission: ItemsPlanningPnClaims.editPlanning,
+        },
         component: PlanningEditComponent,
       },
       {

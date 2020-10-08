@@ -41,6 +41,16 @@ namespace ItemsPlanning.Pn.Infrastructure.Data.Seed.Data
                 PermissionName = "Create Notification Rules",
                 ClaimName = ItemsPlanningClaims.CreatePlannings
             },
+            new PluginPermission()
+            {
+                PermissionName = "Edit Planning",
+                ClaimName = ItemsPlanningClaims.EditPlanning
+            },
+            new PluginPermission()
+            {
+                PermissionName = "Obtain plannings",
+                ClaimName = ItemsPlanningClaims.GetPlannings
+            },
         };
     }
 }
