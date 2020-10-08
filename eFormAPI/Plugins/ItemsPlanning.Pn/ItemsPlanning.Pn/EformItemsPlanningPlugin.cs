@@ -153,6 +153,7 @@ namespace ItemsPlanning.Pn
                         Name = localizationService.GetString("Plannings"),
                         E2EId = "items-planning-pn-plannings",
                         Link = "/plugins/items-planning-pn/plannings",
+                        Guards = new List<string>() { ItemsPlanningClaims.GetPlannings },
                         Position = 0,
                     },
                     new MenuItemModel()
