@@ -54,8 +54,11 @@ export const routes: Routes = [
       },
       {
         path: 'reports',
-        canActivate: [AdminGuard],
+        canActivate: [PermissionGuard],
         component: ReportContainerComponent,
+        data: {
+          requiredPermission: ItemsPlanningPnClaims.accessItemsPlanningPlugin,
+        },
       },
       {
         path: 'reports/:dateFrom/:dateTo',
