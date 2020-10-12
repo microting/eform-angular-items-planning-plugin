@@ -38,7 +38,6 @@ export class ReportHeaderComponent implements OnInit {
   }
 
   onSubmit() {
-    debugger;
     const model = this.extractData(this.generateForm.value);
     this.generateReport.emit(model);
   }
