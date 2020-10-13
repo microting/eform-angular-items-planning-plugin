@@ -136,7 +136,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                     }
 
                     // itemsHtml += $@"<td>{_localizationService.GetString("Pictures")}</td>";
-                    itemsHtml += $@"<td>{_localizationService.GetString("Posts")}</td>";
+                    // itemsHtml += $@"<td>{_localizationService.GetString("Posts")}</td>";
                     itemsHtml += @"</tr>";
 
                     foreach (var dataModel in reportEformModel.Items)
@@ -154,7 +154,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                         }
 
                         // itemsHtml += $@"<td>{dataModel.ImagesCount}</td>";
-                        itemsHtml += $@"<td>{dataModel.PostsCount}</td>";
+                        // itemsHtml += $@"<td>{dataModel.PostsCount}</td>";
                         itemsHtml += @"</tr>";
                     }
                     itemsHtml += @"</table>";
@@ -173,29 +173,29 @@ namespace ItemsPlanning.Pn.Services.WordService
                         }
                     }
 
-                    itemsHtml += $@"<h2><b>{reportEformModel.Name} {_localizationService.GetString("posts")}</b></h2>";
-                    itemsHtml += @"<table width=""100%"" border=""1"">";
-
-                    // Table header
-                    itemsHtml += @"<tr style=""background-color:#f5f5f5;font-weight:bold"">";
-                    // itemsHtml += $@"<td>{_localizationService.GetString("Id")}</td>";
-                    itemsHtml += $@"<td>{_localizationService.GetString("CaseId")}</td>";
-                    itemsHtml += $@"<td>{_localizationService.GetString("PostDate")}</td>";
-                    itemsHtml += $@"<td>{_localizationService.GetString("SentTo")}</td>";
-                    itemsHtml += $@"<td>{_localizationService.GetString("Comment")}</td>";
-                    itemsHtml += @"</tr>";
-
-                    foreach (var dataModel in reportEformModel.Posts)
-                    {
-                        itemsHtml += @"<tr>";
-                        // itemsHtml += $@"<td>{dataModel.PostId}</td>";
-                        itemsHtml += $@"<td>{dataModel.CaseId}</td>";
-                        itemsHtml += $@"<td>{dataModel.PostDate:dd.MM.yyyy HH:mm:ss}</td>";
-                        itemsHtml += $@"<td>{dataModel.SentTo.Join()} {dataModel.SentToTags.Join()}</td>";
-                        itemsHtml += $@"<td>{dataModel.Comment}</td>";
-                        itemsHtml += @"</tr>";
-                    }
-                    itemsHtml += @"</table>";
+                    // itemsHtml += $@"<h2><b>{reportEformModel.Name} {_localizationService.GetString("posts")}</b></h2>";
+                    // itemsHtml += @"<table width=""100%"" border=""1"">";
+                    //
+                    // // Table header
+                    // itemsHtml += @"<tr style=""background-color:#f5f5f5;font-weight:bold"">";
+                    // // itemsHtml += $@"<td>{_localizationService.GetString("Id")}</td>";
+                    // itemsHtml += $@"<td>{_localizationService.GetString("CaseId")}</td>";
+                    // itemsHtml += $@"<td>{_localizationService.GetString("PostDate")}</td>";
+                    // itemsHtml += $@"<td>{_localizationService.GetString("SentTo")}</td>";
+                    // itemsHtml += $@"<td>{_localizationService.GetString("Comment")}</td>";
+                    // itemsHtml += @"</tr>";
+                    //
+                    // foreach (var dataModel in reportEformModel.Posts)
+                    // {
+                    //     itemsHtml += @"<tr>";
+                    //     // itemsHtml += $@"<td>{dataModel.PostId}</td>";
+                    //     itemsHtml += $@"<td>{dataModel.CaseId}</td>";
+                    //     itemsHtml += $@"<td>{dataModel.PostDate:dd.MM.yyyy HH:mm:ss}</td>";
+                    //     itemsHtml += $@"<td>{dataModel.SentTo.Join()} {dataModel.SentToTags.Join()}</td>";
+                    //     itemsHtml += $@"<td>{dataModel.Comment}</td>";
+                    //     itemsHtml += @"</tr>";
+                    // }
+                    // itemsHtml += @"</table>";
                 }
 
                 itemsHtml += "</body>";
