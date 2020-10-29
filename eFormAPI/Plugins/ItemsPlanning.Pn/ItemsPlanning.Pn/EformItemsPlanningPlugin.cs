@@ -142,7 +142,7 @@ namespace ItemsPlanning.Pn
                 {
                     new PluginMenuItemModel
                     {
-                        Name = "Items Planning",
+                        Name = "Dropdown",
                         Link = "items-planning-pn",
                         Type = MenuItemTypeEnum.Dropdown,
                         Position = 0,
