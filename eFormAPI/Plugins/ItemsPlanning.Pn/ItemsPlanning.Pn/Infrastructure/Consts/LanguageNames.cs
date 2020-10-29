@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ItemsPlanning.Pn.Infrastructure.Consts
+﻿namespace ItemsPlanning.Pn.Infrastructure.Consts
 {
     public static class LanguageNames
     {
