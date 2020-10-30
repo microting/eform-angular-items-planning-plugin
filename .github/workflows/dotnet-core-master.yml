@@ -51,8 +51,11 @@ jobs:
     - name: Extract branch name
       id: extract_branch
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-    - name: Git Clone frontend
-      run: git clone --depth=50 --branch=${{ steps.extract_branch.outputs.branch }} https://github.com/microting/eform-angular-frontend.git ../eform-angular-frontend
+    - name: 'Preparing Frontend checkout'
+      uses: actions/checkout@v2
+      with:
+        repository: microting/eform-angular-frontend
+        path: ../eform-angular-frontend
     - name: NPM Install
       run: cd ../eform-angular-frontend/eform-client && npm install
     - name: Copy dependencies
