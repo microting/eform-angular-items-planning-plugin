@@ -47,7 +47,7 @@ jobs:
         repository: microting/eform-angular-frontend
         path: eform-angular-frontend
     - name: Install dependencies
-      run: dotnet restore eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
+      run: dotnet restore main/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d "v" -f 2)
