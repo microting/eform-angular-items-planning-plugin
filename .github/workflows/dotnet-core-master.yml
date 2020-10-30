@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: main
     - uses: mirromutth/mysql-action@v1.1
       with:
         host port: 3306 # Optional, default value is 3306. The port of host
@@ -39,6 +41,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '12.16.2'
+    - name: 'Preparing Frontend checkout'
+      uses: actions/checkout@v2
+      with:
+        repository: microting/eform-angular-frontend
+        path: eform-angular-frontend
     - name: Install dependencies
       run: dotnet restore eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
     - name: Get the version
@@ -51,11 +58,6 @@ jobs:
     - name: Extract branch name
       id: extract_branch
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-    - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v2
-      with:
-        repository: microting/eform-angular-frontend
-        path: ../eform-angular-frontend
     - name: NPM Install
       run: cd ../eform-angular-frontend/eform-client && npm install
     - name: Copy dependencies
