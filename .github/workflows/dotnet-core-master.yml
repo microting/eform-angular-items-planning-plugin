@@ -48,7 +48,6 @@ jobs:
       run: dotnet test --no-restore -c Release -v n eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.Test/ItemsPlanning.Pn.Test.csproj
     - name: Git Clone frontend
     - name: Extract branch name
-      shell: bash
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       id: extract_branch
       run: git clone --depth=50 --branch=${{ steps.extract_branch.outputs.branch }} https://github.com/microting/eform-angular-frontend.git ../eform-angular-frontend
