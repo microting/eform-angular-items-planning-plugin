@@ -69,10 +69,15 @@ jobs:
     - name: NPM install
       run: cd ../eform-angular-frontend/eform-client && npm install
     - name: NPM start
-      run: cd ../eform-angular-frontend/eform-client && npm start &
+      run: cd ../eform-angular-frontend/eform-client && npm start > npm_log 2>&1 &
     - name: Dotnet run
       run: dotnet run --project ../eform-angular-frontend/eFormAPI/eFormAPI.Web/eFormAPI.Web.csproj > dotnet_log 2>&1 &
     - name: Sleep 75 seconds
       run: sleep 75
     - name: Configuration testing
       run: cd ../eform-angular-frontend/eform-client && npm run testheadless
+    - name: The job has failed
+      if: ${{ failure() }}
+      run: |
+        cat dotnet_log
+        cat npm_log
