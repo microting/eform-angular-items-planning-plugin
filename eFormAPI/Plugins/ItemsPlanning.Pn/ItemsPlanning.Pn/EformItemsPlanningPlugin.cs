@@ -111,7 +111,7 @@ namespace ItemsPlanning.Pn
             if (connectionString.ToLower().Contains("convert zero datetime"))
             {
                 services.AddDbContext<ItemsPlanningPnDbContext>(o => o.UseMySql(connectionString,
-                    b => b.MigrationsAssembly(PluginAssembly().FullName)));
+                    b => b.MigrationsAssembly(PluginAssembly().FullName).EnableRetryOnFailure()));
             }
             else
             {
