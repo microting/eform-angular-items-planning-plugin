@@ -41,10 +41,14 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '12.16.2'
+    - name: Extract branch name
+      id: extract_branch
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
         repository: microting/eform-angular-frontend
+        ref: ${{ steps.extract_branch.outputs.branch }}
         path: eform-angular-frontend
     - name: Install dependencies
       run: dotnet restore main/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
@@ -52,41 +56,38 @@ jobs:
       id: get_version
       run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d "v" -f 2)
     - name: Build
-      run: dotnet build eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
+      run: dotnet build main/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
     - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.Test/ItemsPlanning.Pn.Test.csproj
-    - name: Extract branch name
-      id: extract_branch
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      run: dotnet test --no-restore -c Release -v n main/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.Test/ItemsPlanning.Pn.Test.csproj
     - name: NPM Install
-      run: cd ../eform-angular-frontend/eform-client && npm install
+      run: cd eform-angular-frontend/eform-angular-frontend/eform-client && npm install
     - name: Copy dependencies
       run: |
-        cp -av eform-client/src/app/plugins/modules/items-planning-pn ../eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
-        cp -av eform-client/e2e/Tests/items-planning-settings ../eform-angular-frontend/eform-client/e2e/Tests/items-planning-settings
-        cp -av eform-client/e2e/Tests/items-planning-general ../eform-angular-frontend/eform-client/e2e/Tests/items-planning-general
-        cp -av eform-client/e2e/Page\ objects/ItemsPlanning ../eform-angular-frontend/eform-client/e2e/Page\ objects/ItemsPlanning
-        cp -av eform-client/wdio-headless-plugin-step2.conf.js ../eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.js
-        cp -av eform-client/wdio-plugin-step2.conf.js ../eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
-        mkdir -p ../eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
-        cp -av eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning ../eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
-        cd ../eform-angular-frontend/eform-client && ../../eform-angular-items-planning-plugin/testinginstallpn.sh
+        cp -av main/eform-client/src/app/plugins/modules/items-planning-pn eform-angular-frontend/eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
+        cp -av main/eform-client/e2e/Tests/items-planning-settings eform-angular-frontend/eform-angular-frontend/eform-client/e2e/Tests/items-planning-settings
+        cp -av main/eform-client/e2e/Tests/items-planning-general eform-angular-frontend/eform-angular-frontend/eform-client/e2e/Tests/items-planning-general
+        cp -av main/eform-client/e2e/Page\ objects/ItemsPlanning eform-angular-frontend/eform-angular-frontend/eform-client/e2e/Page\ objects/ItemsPlanning
+        cp -av main/eform-client/wdio-headless-plugin-step2.conf.js eform-angular-frontend/eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.js
+        cp -av main/eform-client/wdio-plugin-step2.conf.js eform-angular-frontend/eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
+        mkdir -p eform-angular-frontend/eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
+        cp -av eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning eform-angular-frontend/eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
+        cd eform-angular-frontend/eform-angular-frontend/eform-client && ../../eform-angular-items-planning-plugin/testinginstallpn.sh
     - name: Build frontend
-      run: dotnet build ../eform-angular-frontend/eFormAPI/eFormAPI.sln > dotnet_log 2>&1 &
+      run: dotnet build eform-angular-frontend/eform-angular-frontend/eFormAPI/eFormAPI.sln > dotnet_log 2>&1 &
     - name: NPM install
-      run: cd ../eform-angular-frontend/eform-client && npm install
+      run: cd eform-angular-frontend/eform-angular-frontend/eform-client && npm install
     - name: NPM start
-      run: cd ../eform-angular-frontend/eform-client && npm start > npm_log 2>&1 &
+      run: cd eform-angular-frontend/eform-angular-frontend/eform-client && npm start > npm_log 2>&1 &
     - name: Sleep 75 seconds
       run: sleep 75
     - name: Dotnet run
-      run: dotnet run --project ../eform-angular-frontend/eFormAPI/eFormAPI.Web/eFormAPI.Web.csproj > dotnet_log 2>&1 &
+      run: dotnet run --project eform-angular-frontend/eform-angular-frontend/eFormAPI/eFormAPI.Web/eFormAPI.Web.csproj > dotnet_log 2>&1 &
     - name: Sleep 75 seconds
       run: sleep 75
     - name: Configuration testing
-      run: cd ../eform-angular-frontend/eform-client && npm run testheadless
+      run: cd eform-angular-frontend/eform-angular-frontend/eform-client && npm run testheadless
     - name: The job has failed
       if: ${{ failure() }}
       run: |
         cat dotnet_log
-        cat ../eform-angular-frontend/eform-client/npm_log
+        cat eform-angular-frontend/eform-angular-frontend/eform-client/npm_log
