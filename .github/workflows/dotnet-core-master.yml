@@ -47,7 +47,11 @@ jobs:
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.Test/ItemsPlanning.Pn.Test.csproj
     - name: Git Clone frontend
-      run: git clone --depth=50 --branch=$TRAVIS_BRANCH https://github.com/microting/eform-angular-frontend.git ../eform-angular-frontend
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+      run: git clone --depth=50 --branch=${{ steps.extract_branch.outputs.branch }} https://github.com/microting/eform-angular-frontend.git ../eform-angular-frontend
     - name: NPM Install
       run: cd ../eform-angular-frontend/eform-client && npm install
     - name: Copy dependencies
