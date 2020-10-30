@@ -55,7 +55,7 @@ namespace ItemsPlanning.Pn
     using Services.RebusService;
     using Services.UploadedDataService;
     using Services.WordService;
-    using PluginPermissionModel = Microting.eFormApi.BasePn.Infrastructure.Models.Application.NavigationMenu.PluginPermissionModel;
+    using PluginPermissionModel = Microting.eFormApi.BasePn.Infrastructure.Models.Application.NavigationMenu.PluginMenuTemplatePermissionModel;
 
     public class EformItemsPlanningPlugin : IEformPlugin
     {
