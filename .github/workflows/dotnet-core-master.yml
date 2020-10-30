@@ -59,8 +59,6 @@ jobs:
       run: dotnet build main/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n main/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.Test/ItemsPlanning.Pn.Test.csproj
-    - name: NPM Install
-      run: cd eform-angular-frontend/eform-angular-frontend/eform-client && npm install
     - name: Copy dependencies
       run: |
         cp -av main/eform-client/src/app/plugins/modules/items-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
