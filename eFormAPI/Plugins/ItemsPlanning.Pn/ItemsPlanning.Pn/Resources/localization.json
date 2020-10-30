@@ -2,7 +2,7 @@
   {
     "Key": "ItemsPlanning",
     "LocalizedValue": {
-      "da": "Enhedsplanlægning",
+      "da": "Egenkontrol",
       "en-US": "Items planning"
     }
   },
@@ -277,6 +277,13 @@
     "LocalizedValue": {
       "da": "Kommentar",
       "en-US": "Comment"
+    }
+  },
+  {
+    "key": "Reports",
+    "LocalizedValue": {
+      "da": "Rapporter",
+      "en": "Reports"
     }
   },
   {

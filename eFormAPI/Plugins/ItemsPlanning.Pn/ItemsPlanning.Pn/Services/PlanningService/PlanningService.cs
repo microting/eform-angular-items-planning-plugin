@@ -639,7 +639,10 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 foreach (var planningCase in planningCases)
                 {
                     // Delete case
-                    await core.CaseDelete(planningCase.MicrotingSdkCaseId);
+                    if (planningCase.MicrotingSdkCaseId != 0)
+                    {
+                        await core.CaseDelete(planningCase.MicrotingSdkCaseId);
+                    }
                     // Delete planning case
                     await planningCase.Delete(_dbContext);
                 }
