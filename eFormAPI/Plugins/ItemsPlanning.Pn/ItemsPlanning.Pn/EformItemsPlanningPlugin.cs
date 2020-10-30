@@ -39,6 +39,7 @@ namespace ItemsPlanning.Pn
     using Microsoft.Extensions.DependencyInjection;
     using Microting.eFormApi.BasePn;
     using Microting.eFormApi.BasePn.Abstractions;
+    using Microting.eFormApi.BasePn.Infrastructure.Consts;
     using Microting.eFormApi.BasePn.Infrastructure.Database.Extensions;
     using Microting.eFormApi.BasePn.Infrastructure.Helpers;
     using Microting.eFormApi.BasePn.Infrastructure.Models.Application;
@@ -55,7 +56,6 @@ namespace ItemsPlanning.Pn
     using Services.RebusService;
     using Services.UploadedDataService;
     using Services.WordService;
-    using PluginPermissionModel = Microting.eFormApi.BasePn.Infrastructure.Models.Application.NavigationMenu.PluginPermissionModel;
 
     public class EformItemsPlanningPlugin : IEformPlugin
     {
@@ -143,7 +143,8 @@ namespace ItemsPlanning.Pn
                     new PluginMenuItemModel
                     {
                         Name = "Dropdown",
-                        Link = "items-planning-pn",
+                        E2EId = "items-planning-pn",
+                        Link = "",
                         Type = MenuItemTypeEnum.Dropdown,
                         Position = 0,
                         Translations = new List<PluginMenuTranslationModel>()
@@ -172,6 +173,7 @@ namespace ItemsPlanning.Pn
                             new PluginMenuItemModel
                             {
                                 Name = "Planning",
+                                E2EId = "items-planning-pn-plannings",
                                 Link = "/plugins/items-planning-pn/plannings",
                                 Type = MenuItemTypeEnum.Link,
                                 Position = 0,
@@ -180,7 +182,15 @@ namespace ItemsPlanning.Pn
                                     Name = "Planning",
                                     E2EId = "items-planning-pn-plannings",
                                     DefaultLink = "/plugins/items-planning-pn/plannings",
-                                    Permissions = new List<PluginPermissionModel>(),
+                                    Permissions = new List<PluginMenuTemplatePermissionModel>()
+                                    {
+                                        new PluginMenuTemplatePermissionModel
+                                        {
+                                            ClaimName = ItemsPlanningClaims.GetPlannings,
+                                            PermissionName = "Obtain plannings",
+                                            PermissionTypeName = "Plannings",
+                                        },
+                                    },
                                     Translations = new List<PluginMenuTranslationModel>
                                     {
                                         new PluginMenuTranslationModel
@@ -228,6 +238,7 @@ namespace ItemsPlanning.Pn
                             new PluginMenuItemModel
                             {
                                 Name = "Reports",
+                                E2EId = "items-planning-pn-reports",
                                 Link = "/plugins/items-planning-pn/reports",
                                 Type = MenuItemTypeEnum.Link,
                                 Position = 1,
@@ -236,6 +247,7 @@ namespace ItemsPlanning.Pn
                                     Name = "Reports",
                                     E2EId = "items-planning-pn-reports",
                                     DefaultLink = "/plugins/items-planning-pn/reports",
+                                    Permissions = new List<PluginMenuTemplatePermissionModel>(),
                                     Translations = new List<PluginMenuTranslationModel>
                                     {
                                         new PluginMenuTranslationModel
