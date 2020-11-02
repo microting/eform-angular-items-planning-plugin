@@ -71,7 +71,7 @@ jobs:
         cp -av main/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
         cd eform-angular-frontend/eform-client && ../../main/testinginstallpn.sh
     - name: Build frontend
-      run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln > dotnet_log 2>&1 &
+      run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln
     - name: NPM install
       run: cd eform-angular-frontend/eform-client && npm install
     - name: NPM start
