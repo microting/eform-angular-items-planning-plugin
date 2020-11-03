@@ -89,3 +89,4 @@ jobs:
       run: |
         cat dotnet_log
         cat eform-angular-frontend/eform-client/npm_log
+        mysql -u root --password=secretpassword -e "show databases"
