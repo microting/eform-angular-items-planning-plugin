@@ -28,7 +28,7 @@ jobs:
       run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.2-management-alpine'
+        rabbitmq version: '3.8.9-management'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
