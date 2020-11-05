@@ -164,7 +164,7 @@ namespace ItemsPlanning.Pn
                             new PluginMenuTranslationModel
                             {
                                  LocaleName = LocaleNames.Danish,
-                                 Name = "Elementer planlægning",
+                                 Name = "Egenkontrol",
                                  Language = LanguageNames.Danish,
                             }
                         },
