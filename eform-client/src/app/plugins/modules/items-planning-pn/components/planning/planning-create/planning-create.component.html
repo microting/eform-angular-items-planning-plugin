@@ -80,6 +80,37 @@
                          id="createRepeatType">
               </ng-select>
             </div>
+            <ng-template [ngIf]="newPlanningModel.repeatType == 2">
+              <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
+                <ng-select [items]="[
+                                      {id: 1, name: 'Monday' | translate},
+                                      {id: 2, name: 'Tuesday' | translate},
+                                      {id: 3, name: 'Wednesday' | translate},
+                                      {id: 4, name: 'Thursday' | translate},
+                                      {id: 5, name: 'Friday' | translate},
+                                      {id: 6, name: 'Saturday' | translate},
+                                      {id: 0, name: 'Sunday' | translate}
+                              ]"
+                           bindLabel="name"
+                           [placeholder]="('Day of week' | translate)"
+                           bindValue="id"
+                           [typeahead]="typeahead"
+                           [(ngModel)]="newPlanningModel.dayOfWeek"
+                           id="createDayOfWeek">
+                </ng-select>
+              </div>
+            </ng-template>
+            <ng-template [ngIf]="newPlanningModel.repeatType == 3">
+              <div class="col-md-3 col-sm-6 col-xs-6">
+                <div class="md-form">
+                  <input mdbInput
+                         [(ngModel)]="newPlanningModel.dayOfMonth"
+                         type="text" id="createDayOfMonth"
+                         name="createDayOfMonth" class="form-control">
+                  <label for="createDayOfMonth">{{'Day of month' | translate}}</label>
+                </div>
+              </div>
+            </ng-template>
             <div class="col-md-3 col-sm-6 col-xs-6">
               <div class="md-form" [owlDateTimeTrigger]="dt1">
                 <input mdbInput
