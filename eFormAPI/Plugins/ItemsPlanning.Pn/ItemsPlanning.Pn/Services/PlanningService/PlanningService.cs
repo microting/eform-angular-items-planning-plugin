@@ -200,8 +200,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
         public async Task<OperationResult> AssignPlanning(PlanningAssignSitesModel requestModel)
         {
-            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
-            {
+            // using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            // {
                 try
                 {
                     var planning = await _dbContext.Plannings
@@ -212,7 +212,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                     if (planning == null)
                     {
-                        transaction.Rollback();
+                        //transaction.Rollback();
                         return new OperationDataResult<PlanningsPnModel>(false,
                             _itemsPlanningLocalizationService.GetString("PlanningNotFound"));
                     }
@@ -254,7 +254,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         await planningSite.Create(_dbContext);
                     }
 
-                    transaction.Commit();
+                    //transaction.Commit();
                     return new OperationResult(true,
                         _itemsPlanningLocalizationService.GetString("SitesAssignedSuccessfully"));
                 }
@@ -264,12 +264,12 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     return new OperationDataResult<PlanningsPnModel>(false,
                         _itemsPlanningLocalizationService.GetString("ErrorObtainingLists"));
                 }
-            }
+            //}
         }
 
         public async Task<OperationResult> Create(PlanningPnModel model)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            //await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             await using var sdkDbContext =
                 _coreService.GetCore().GetAwaiter().GetResult().dbContextHelper.GetDbContext();
             try
@@ -358,14 +358,14 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 await item.Create(_dbContext);
 
 
-                await transaction.CommitAsync();
+                //await transaction.CommitAsync();
                 return new OperationResult(
                     true,
                     _itemsPlanningLocalizationService.GetString("ListCreatedSuccessfully"));
             }
             catch (Exception e)
             {
-                await transaction.RollbackAsync();
+                //await transaction.RollbackAsync();
                 Trace.TraceError(e.Message);
                 return new OperationResult(false,
                     _itemsPlanningLocalizationService.GetString("ErrorWhileCreatingList"));
