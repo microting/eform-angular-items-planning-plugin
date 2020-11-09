@@ -42,8 +42,4 @@ export class ItemsPlanningPnPlanningsService extends BaseService {
   deletePlanning(fractionId: number): Observable<OperationResult> {
     return this.delete(ItemsPlanningPnPlanningsMethods.Plannings + '/' + fractionId);
   }
-
-  assignPlanning(model: PlanningAssignSitesModel): Observable<OperationResult> {
-    return this.post(ItemsPlanningPnPlanningsMethods.PlanningsAssign, model);
-  }
 }

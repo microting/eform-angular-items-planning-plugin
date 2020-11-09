@@ -15,6 +15,7 @@ export class PlanningPnModel {
   dayOfWeek: number;
   dayOfMonth: number;
   repeatUntil: string;
+  startFrom: string;
   internalRepeatUntil: string;
   relatedEFormId: number;
   relatedEFormName: string;

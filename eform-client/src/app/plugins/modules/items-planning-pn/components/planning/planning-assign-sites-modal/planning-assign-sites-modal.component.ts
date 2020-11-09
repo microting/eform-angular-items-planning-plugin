@@ -5,7 +5,7 @@ import {SitesService} from 'src/app/common/services/advanced';
 import {AuthService} from 'src/app/common/services';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {PlanningAssignmentSiteModel, PlanningAssignSitesModel} from '../../../models/plannings/planning-assign-sites.model';
-import {ItemsPlanningPnPlanningsService} from 'src/app/plugins/modules/items-planning-pn/services';
+import {ItemsPlanningPnPairingService, ItemsPlanningPnPlanningsService} from 'src/app/plugins/modules/items-planning-pn/services';
 import {PlanningPnModel} from 'src/app/plugins/modules/items-planning-pn/models/plannings';
 import {Subscription} from 'rxjs';
 
@@ -23,7 +23,7 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
   assignViewModel: PlanningAssignSitesModel = new PlanningAssignSitesModel();
   selectedPlanning: PlanningPnModel = new PlanningPnModel();
   sitesDto: Array<SiteNameDto> = [];
-  assignPlanning$: Subscription;
+  pairSingle$: Subscription;
   getAllSites$: Subscription;
   matchFound = false;
 
@@ -34,6 +34,7 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
   constructor(private eFormService: EFormService,
               private sitesService: SitesService,
               private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
+              private itemsPlanningPnPairingService: ItemsPlanningPnPairingService,
               private authService: AuthService) {
   }
 
@@ -92,7 +93,7 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
 
   submitAssignment() {
     this.assignModel.planningId = this.selectedPlanning.id;
-    this.assignPlanning$ = this.itemsPlanningPnPlanningsService.assignPlanning(this.assignModel).subscribe(operation => {
+    this.pairSingle$ = this.itemsPlanningPnPairingService.pairSingle(this.assignModel).subscribe(operation => {
       if (operation && operation.success) {
         this.assignModel = new PlanningAssignSitesModel();
         this.frame.hide();

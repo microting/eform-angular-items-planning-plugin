@@ -8,7 +8,7 @@ import {
   ReportContainerComponent,
   PlanningCasePageComponent,
   PlanningEditComponent,
-  PlanningCreateComponent,
+  PlanningCreateComponent, PairingGridPageComponent,
 } from './components';
 import { ItemsPlanningPnClaims } from './enums';
 
@@ -61,6 +61,11 @@ export const routes: Routes = [
         path: 'reports/:dateFrom/:dateTo',
         canActivate: [AdminGuard],
         component: ReportContainerComponent,
+      },
+      {
+        path: 'pairing',
+        canActivate: [AuthGuard],
+        component: PairingGridPageComponent,
       },
       {
         path: 'case',
