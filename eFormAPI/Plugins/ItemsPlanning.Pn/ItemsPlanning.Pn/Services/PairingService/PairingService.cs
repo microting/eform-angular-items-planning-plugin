@@ -36,6 +36,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
     using Microting.eForm.Infrastructure.Constants;
     using Microting.eFormApi.BasePn.Abstractions;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
     using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
 
@@ -62,12 +63,18 @@ namespace ItemsPlanning.Pn.Services.PairingService
             try
             {
                 var core = await _coreService.GetCore();
-                var deviceUsersResult = await core.SiteReadAll(false);
-                var deviceUsers = deviceUsersResult.Select(x => new
+                List<CommonDictionaryModel> deviceUsers;
+                await using (var dbContext = core.dbContextHelper.GetDbContext())
                 {
-                    Id = x.SiteId,
-                    Name = $"{x.FirstName} {x.LastName}",
-                }).ToList();
+                    deviceUsers = await dbContext.sites
+                        .AsNoTracking()
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Select(x => new CommonDictionaryModel
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                        }).ToListAsync();
+                }
 
                 var pairing = await _dbContext.Plannings
                     .Select(x => new PairingModel
@@ -92,7 +99,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         {
                             var pairingValue = new PairingValueModel
                             {
-                                DeviceUserId = deviceUser.Id,
+                                DeviceUserId = (int)deviceUser.Id,
                                 Paired = false,
                             };
 
