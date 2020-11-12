@@ -30,15 +30,13 @@ namespace ItemsPlanning.Pn
     using Infrastructure.Data.Seed;
     using Infrastructure.Data.Seed.Data;
     using Infrastructure.Models.Settings;
-    using ItemsPlanning.Pn.Infrastructure.Consts;
-    using ItemsPlanning.Pn.Services.ItemsPlanningTagsService;
+    using Services.ItemsPlanningTagsService;
     using Messages;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microting.eFormApi.BasePn;
-    using Microting.eFormApi.BasePn.Abstractions;
     using Microting.eFormApi.BasePn.Infrastructure.Consts;
     using Microting.eFormApi.BasePn.Infrastructure.Database.Extensions;
     using Microting.eFormApi.BasePn.Infrastructure.Helpers;
@@ -52,6 +50,7 @@ namespace ItemsPlanning.Pn
     using Services.ItemsPlanningLocalizationService;
     using Services.ItemsPlanningPnSettingsService;
     using Services.ItemsPlanningReportService;
+    using Services.PairingService;
     using Services.PlanningService;
     using Services.RebusService;
     using Services.UploadedDataService;
@@ -79,6 +78,7 @@ namespace ItemsPlanning.Pn
             services.AddTransient<IItemsPlanningReportService, ItemsPlanningReportService>();
             services.AddTransient<IItemsPlanningTagsService, ItemsPlanningTagsService>();
             services.AddTransient<IPlanningService, PlanningService>();
+            services.AddTransient<IPairingService, PairingService>();
             services.AddTransient<IUploadedDataService, UploadedDataService>();
             services.AddSingleton<IRebusService, RebusService>();
             services.AddTransient<IWordService, WordService>();
@@ -356,7 +356,5 @@ namespace ItemsPlanning.Pn
         {
             _bus.SendLocal(new eFormCaseUpdated(caseId));
         }
-
-      
     }
 }

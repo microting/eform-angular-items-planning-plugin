@@ -24,29 +24,44 @@ SOFTWARE.
 
 namespace ItemsPlanning.Pn.Controllers
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Infrastructure.Models;
+    using Infrastructure.Models.Pairing;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-    using Microting.ItemsPlanningBase.Infrastructure.Const;
-    using Services.PlanningService;
+    using Services.PairingService;
 
     [Authorize]
-    public class ItemsPlanningPairingController : Controller
+    public class PairingController : Controller
     {
-        private readonly IPlanningService _planningService;
+        private readonly IPairingService _pairingService;
 
-        public ItemsPlanningPairingController(IPlanningService planningService)
+        public PairingController(IPairingService pairingService)
         {
-            _planningService = planningService;
+            _pairingService = pairingService;
+        }
+
+        [HttpGet]
+        [Route("api/items-planning-pn/pairings")]
+        public async Task<OperationDataResult<PairingsModel>> GetAllPairings()
+        {
+            return await _pairingService.GetAllPairings();
+        }
+
+        [HttpPut]
+        [Route("api/items-planning-pn/pairings")]
+        public async Task<OperationResult> UpdatePairings([FromBody] List<PairingUpdateModel> requestModel)
+        {
+            return await _pairingService.UpdatePairings(requestModel);
         }
 
         [HttpPost]
         [Route("api/items-planning-pn/pairings/single")]
         public async Task<OperationResult> AssignPlanning([FromBody] PlanningAssignSitesModel requestModel)
         {
-            return await _planningService.AssignPlanning(requestModel);
+            return await _pairingService.PairSingle(requestModel);
         }
     }
 }
