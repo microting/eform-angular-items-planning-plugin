@@ -348,5 +348,33 @@
       "da": "Fejl under opdatering af elementplanlægningskode",
       "en-US": "Error While Updating Items Planning Tag"
     }
+  },
+  {
+    "Key": "ErrorWhileObtainingPlanningPairings",
+    "LocalizedValue": {
+      "da": "Fejl under opnåelse af parring af planlægning",
+      "en-US": "Error while obtaining planning pairings"
+    }
+  },
+  {
+    "Key": "ErrorWhileUpdatingItemsPlanning",
+    "LocalizedValue": {
+      "da": "Fejl under opdatering af vareplanlægning",
+      "en-US": "Error while updating items planning"
+    }
+  },
+  {
+    "Key": "PairingsUpdatedSuccessfully",
+    "LocalizedValue": {
+      "da": "Parring blev opdateret",
+      "en-US": "Pairings updated successfully"
+    }
+  },
+  {
+    "Key": "PairingUpdatedSuccessfully",
+    "LocalizedValue": {
+      "da": "Parring opdateret",
+      "en-US": "Pairing updated successfully"
+    }
   }
 ]

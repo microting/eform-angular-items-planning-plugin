@@ -21,15 +21,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-namespace ItemsPlanning.Pn.Infrastructure.Models
+
+namespace ItemsPlanning.Pn.Infrastructure.Models.Pairing
 {
     using System.Collections.Generic;
 
-    public class PlanningAssignSitesModel
+    public class PairingsModel
     {
-        public int PlanningId { get; set; }
+        public List<string> DeviceUsers { get; set; }
+            = new List<string>();
 
-        public List<PlanningAssignmentSiteModel> Assignments { get; set; }
-            = new List<PlanningAssignmentSiteModel>();
+        public List<PairingModel> Pairings { get; set; }
+            = new List<PairingModel>();
     }
 }

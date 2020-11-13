@@ -128,6 +128,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     RelatedEFormId = x.RelatedEFormId,
                     RelatedEFormName = x.RelatedEFormName,
                     SdkFolderName = x.SdkFolderName,
+                    StartDate = x.StartDate,
                     AssignedSites = x.PlanningSites
                         .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                         .Select(y => new PlanningAssignedSitesModel
@@ -198,75 +199,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             }
         }
 
-        public async Task<OperationResult> AssignPlanning(PlanningAssignSitesModel requestModel)
-        {
-            // using (var transaction = await _dbContext.Database.BeginTransactionAsync())
-            // {
-                try
-                {
-                    var planning = await _dbContext.Plannings
-                        .Include(x => x.PlanningSites)
-                        .Where(x => x.Id == requestModel.PlanningId)
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                        .FirstOrDefaultAsync();
-
-                    if (planning == null)
-                    {
-                        //transaction.Rollback();
-                        return new OperationDataResult<PlanningsPnModel>(false,
-                            _itemsPlanningLocalizationService.GetString("PlanningNotFound"));
-                    }
-
-                    // for remove
-                    var assignmentsRequestIds = requestModel.Assignments
-                        .Select(x => x.SiteId)
-                        .ToList();
-
-                    var forRemove = planning.PlanningSites
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Where(x => !assignmentsRequestIds.Contains(x.SiteId))
-                        .ToList();
-
-                    foreach (var planningSite in forRemove)
-                    {
-                        await planningSite.Delete(_dbContext);
-                    }
-
-                    // for create
-                    var assignmentsIds = planning.PlanningSites
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Select(x => x.SiteId)
-                        .ToList();
-
-                    var assignmentsForCreate = requestModel.Assignments
-                        .Where(x => !assignmentsIds.Contains(x.SiteId))
-                        .Select(x => x.SiteId)
-                        .ToList();
-
-                    foreach (var assignmentSiteId in assignmentsForCreate)
-                    {
-                        var planningSite = new PlanningSite
-                        {
-                            PlanningId = planning.Id,
-                            SiteId = assignmentSiteId,
-                        };
-
-                        await planningSite.Create(_dbContext);
-                    }
-
-                    //transaction.Commit();
-                    return new OperationResult(true,
-                        _itemsPlanningLocalizationService.GetString("SitesAssignedSuccessfully"));
-                }
-                catch (Exception e)
-                {
-                    Trace.TraceError(e.Message);
-                    return new OperationDataResult<PlanningsPnModel>(false,
-                        _itemsPlanningLocalizationService.GetString("ErrorObtainingLists"));
-                }
-            //}
-        }
-
         public async Task<OperationResult> Create(PlanningPnModel model)
         {
             //await using var transaction = await _dbContext.Database.BeginTransactionAsync();
@@ -303,9 +235,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     .Include(x => x.Parent)
                     .SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
                     
-                var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
+                // var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
                 
-                var itemsList = new Planning
+                var planning = new Planning
                 {
                     Name = model.Item.Name,
                     Description = model.Item.Description,
@@ -323,9 +255,18 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     PlanningsTags = new List<PlanningsTags>()
                 };
 
+                if (model.StartDate.HasValue)
+                {
+                    planning.StartDate = model.StartDate.Value;
+                }
+                else
+                {
+                    planning.StartDate = DateTime.UtcNow;
+                }
+
                 foreach(var tagId in tagIds)
                 {
-                    itemsList.PlanningsTags.Add(
+                    planning.PlanningsTags.Add(
                         new PlanningsTags
                         {
                             CreatedAt = DateTime.UtcNow,
@@ -337,7 +278,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         });
                 }
 
-                await itemsList.Create(_dbContext);
+                await planning.Create(_dbContext);
                 var item = new Item()
                 {
                     LocationCode = model.Item.LocationCode,
@@ -351,7 +292,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     Enabled = true,
                     BuildYear = model.Item.BuildYear,
                     Type = model.Item.Type,
-                    PlanningId = itemsList.Id,
+                    PlanningId = planning.Id,
                     CreatedByUserId = UserId,
                     eFormSdkFolderId = model.Item.eFormSdkFolderId
                 };
@@ -393,6 +334,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         DeployedAtEnabled = x.DeployedAtEnabled,
                         DescriptionEnabled = x.DescriptionEnabled,
                         DoneAtEnabled = x.DoneAtEnabled,
+                        StartDate = x.StartDate,
                         DoneByUserNameEnabled = x.DoneByUserNameEnabled,
                         UploadedDataEnabled = x.UploadedDataEnabled,
                         ItemNumberEnabled = x.ItemNumberEnabled,
@@ -518,6 +460,15 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.NumberOfImagesEnabled = updateModel.NumberOfImagesEnabled;
                 planning.LastExecutedTime = updateModel.LastExecutedTime;
                 planning.SdkFolderName = sdkFolder.Name;
+
+                if (updateModel.StartDate.HasValue)
+                {
+                    planning.StartDate = updateModel.StartDate.Value;
+                }
+                else
+                {
+                    planning.StartDate = DateTime.UtcNow;
+                }
 
                 var tagIds = planning.PlanningsTags
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)

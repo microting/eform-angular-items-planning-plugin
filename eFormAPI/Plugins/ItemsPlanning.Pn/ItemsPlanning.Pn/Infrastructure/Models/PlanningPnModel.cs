@@ -47,9 +47,10 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
         public DayOfWeek? DayOfWeek { get; set; }
         
         public int? DayOfMonth { get; set; }
-        
+
         public DateTime? LastExecutedTime { get; set; }
-        
+        public DateTime? StartDate { get; set; }
+
         public int RelatedEFormId { get; set; }
         
         public string RelatedEFormName { get; set; }

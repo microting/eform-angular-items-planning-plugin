@@ -37,7 +37,6 @@
   "Sent to": "Sent to",
   "Comment": "Comment",
   "Folder name": "Folder name",
-
   "Monday": "Monday",
   "Tuesday": "Tuesday",
   "Wednesday": "Wednesday",
@@ -45,17 +44,18 @@
   "Friday": "Friday",
   "Saturday": "Saturday",
   "Sunday": "Sunday",
-
   "Day": "Day",
   "Week": "Week",
   "Month": "Month",
-
   "Plannings": "Plannings",
   "Planning": "Planning",
   "New planning": "New planning",
   "Edit Planning": "Edit Planning",
   "Delete Planning": "Delete Planning",
   "Assign Sites": "Assign Sites",
-  "Generate Report": "Generate Report"
+  "Generate Report": "Generate Report",
+
+  "Update pairing": "Update pairing",
+  "Pairing": "Pairing"
 
 }

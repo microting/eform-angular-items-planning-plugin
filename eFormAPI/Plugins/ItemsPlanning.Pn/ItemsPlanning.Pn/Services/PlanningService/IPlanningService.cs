@@ -31,8 +31,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
     public interface IPlanningService
     {
         Task<OperationDataResult<PlanningsPnModel>> Index(PlanningsRequestModel requestModel);
-
-        Task<OperationResult> AssignPlanning(PlanningAssignSitesModel requestModel);
         Task<OperationResult> Create(PlanningPnModel model);
         Task<OperationDataResult<PlanningPnModel>> Read(int itemListId);
         Task<OperationResult> Update(PlanningPnModel updateModel);

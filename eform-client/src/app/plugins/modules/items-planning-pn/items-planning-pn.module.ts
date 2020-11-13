@@ -8,35 +8,37 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ItemsPlanningPnLayoutComponent } from './layouts';
 import {
-  PlanningCreateComponent,
+  PairingGridPageComponent,
+  PairingGridTableComponent,
+  PairingGridUpdateComponent,
+  PlanningAssignSitesModalComponent,
   PlanningCasePageComponent,
+  PlanningCreateComponent,
   PlanningDeleteComponent,
   PlanningEditComponent,
-  PlanningsPageComponent,
-  UploadedDataPdfComponent,
-  UploadedDataDeleteComponent,
-  PlanningAssignSitesModalComponent,
   PlanningFoldersModalComponent,
+  PlanningsPageComponent,
   PlanningTagsComponent,
-} from './components/planning';
-import { ItemsPlanningSettingsComponent } from './components/items-plannings-setting';
-import { RouterModule } from '@angular/router';
-import { ItemsPlanningPnRouting } from './items-planning-pn.routing.module';
-import {
-  ItemsPlanningPnPlanningsService,
-  ItemsPlanningPnSettingsService,
-  ItemsPlanningPnReportsService,
-  ItemsPlanningPnCasesService,
-  ItemsPlanningPnUploadedDataService,
-  ItemsPlanningPnTagsService,
-} from './services';
-import {
+  UploadedDataDeleteComponent,
+  UploadedDataPdfComponent,
+  ItemsPlanningSettingsComponent,
   ReportContainerComponent,
   ReportHeaderComponent,
   ReportImagesComponent,
   ReportPostsComponent,
   ReportTableComponent,
-} from './components/reports';
+} from './components';
+import { RouterModule } from '@angular/router';
+import { ItemsPlanningPnRouting } from './items-planning-pn.routing.module';
+import {
+  ItemsPlanningPnCasesService,
+  ItemsPlanningPnPlanningsService,
+  ItemsPlanningPnReportsService,
+  ItemsPlanningPnSettingsService,
+  ItemsPlanningPnTagsService,
+  ItemsPlanningPnUploadedDataService,
+  ItemsPlanningPnPairingService,
+} from './services';
 import { FileUploadModule } from 'ng2-file-upload';
 import { OwlDateTimeModule } from 'ng-pick-datetime-ex';
 import { EformSharedModule } from 'src/app/common/modules/eform-shared/eform-shared.module';
@@ -71,6 +73,9 @@ import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/
     PlanningAssignSitesModalComponent,
     PlanningFoldersModalComponent,
     PlanningTagsComponent,
+    PairingGridPageComponent,
+    PairingGridTableComponent,
+    PairingGridUpdateComponent,
     ItemsPlanningSettingsComponent,
     ReportContainerComponent,
     ReportHeaderComponent,
@@ -87,6 +92,7 @@ import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/
     ItemsPlanningPnCasesService,
     ItemsPlanningPnUploadedDataService,
     ItemsPlanningPnTagsService,
+    ItemsPlanningPnPairingService,
   ],
 })
 export class ItemsPlanningPnModule {}

@@ -1,0 +1,52 @@
+<div class="container-fluid">
+  <div class="row p-1 mt-4 table-responsive no-gutters">
+    <table *ngIf="pairingsModel.deviceUsers.length > 0 && pairingsModel.pairings.length > 0"
+      mdbTable
+      striped="true"
+      hover="true"
+      small="true"
+      class="z-depth-1 text-center"
+    >
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th
+            scope="col"
+            id="deviceUserTableHeader{{ i }}"
+            *ngFor="let deviceUser of pairingsModel.deviceUsers; let i = index"
+          >
+            {{ deviceUser }}
+          </th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr *ngFor="let pairing of pairingsModel.pairings">
+          <td id="planningName{{ pairing.planningId }}">
+            {{ pairing.planningName }}
+          </td>
+          <td *ngFor="let planningValue of pairing.pairingValues">
+            <div class="mat-checkbox">
+              <input
+                id="deviceUserCheckbox{{
+                  planningValue.deviceUserId
+                }}_planning{{ pairing.planningId }}"
+                name="deviceUserCheckbox{{
+                  planningValue.deviceUserId
+                }}_planning{{ pairing.planningId }}"
+                (click)="checked($event, pairing.planningId, planningValue.deviceUserId)"
+                [value]="planningValue.paired"
+                [checked]="planningValue.paired"
+                type="checkbox"
+              />
+              <label
+                for="deviceUserCheckbox{{
+                  planningValue.deviceUserId
+                }}_planning{{ pairing.planningId }}"
+              ></label>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

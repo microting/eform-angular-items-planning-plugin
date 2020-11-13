@@ -162,11 +162,23 @@
                 </div>
               </div>
             </ng-template>
-
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form" [owlDateTimeTrigger]="dt2">
+                <input mdbInput
+                       [owlDateTime]="dt2"
+                       [max]="selectedPlanningModel.internalRepeatUntil"
+                       [(ngModel)]="selectedPlanningModel.startDate"
+                       type="text" id="editStartFrom"
+                       name="editStartFrom" class="form-control">
+                <owl-date-time [pickerType]="'calendar'" #dt2></owl-date-time>
+                <label for="editStartFrom">{{'Start from' | translate}}</label>
+              </div>
+            </div>
             <div class="col-md-3 col-sm-6 col-xs-6">
               <div class="md-form" [owlDateTimeTrigger]="dt1">
                 <input
                   mdbInput
+                  [min]="selectedPlanningModel.startDate"
                   [owlDateTime]="dt1"
                   [(ngModel)]="selectedPlanningModel.internalRepeatUntil"
                   type="text"

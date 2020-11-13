@@ -57,13 +57,6 @@ namespace ItemsPlanning.Pn.Controllers
             return await _planningService.Create(createModel);
         }
 
-        [HttpPost]
-        [Route("api/items-planning-pn/plannings/assign-sites")]
-        public async Task<OperationResult> AssignPlanning([FromBody] PlanningAssignSitesModel requestModel)
-        {
-            return await _planningService.AssignPlanning(requestModel);
-        }
-
         [HttpGet]
         [Route("api/items-planning-pn/plannings/{id}")]
         public async Task<OperationDataResult<PlanningPnModel>> Read(int id)

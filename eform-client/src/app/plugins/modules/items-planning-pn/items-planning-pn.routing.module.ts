@@ -8,7 +8,7 @@ import {
   ReportContainerComponent,
   PlanningCasePageComponent,
   PlanningEditComponent,
-  PlanningCreateComponent,
+  PlanningCreateComponent, PairingGridPageComponent,
 } from './components';
 import { ItemsPlanningPnClaims } from './enums';
 
@@ -67,6 +67,11 @@ export const routes: Routes = [
         data: {
           requiredPermission: ItemsPlanningPnClaims.accessItemsPlanningPlugin,
         },
+      },
+      {
+        path: 'pairing',
+        canActivate: [AuthGuard],
+        component: PairingGridPageComponent,
       },
       {
         path: 'case',

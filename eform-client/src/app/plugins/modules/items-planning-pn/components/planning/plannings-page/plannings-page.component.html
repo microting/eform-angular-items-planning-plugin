@@ -1,14 +1,24 @@
 <subheader-pn [title]="'Plannings' | translate">
   <div class="p-3">
-    <button mdbBtn class="btn-accent text-black-50 btn-icon" id="planningManageTagsBtn" (click)="openTagsModal()"
-            mdbTooltip="{{'Manage tags' | translate}}" mdbWavesEffect>
+    <button
+      mdbBtn
+      class="btn-accent text-black-50 btn-icon"
+      id="planningManageTagsBtn"
+      (click)="openTagsModal()"
+      mdbTooltip="{{ 'Manage tags' | translate }}"
+      mdbWavesEffect
+    >
       <fa-icon icon="tags" [fixedWidth]="true" size="lg"></fa-icon>
     </button>
-    <button mdbBtn *ngIf="pluginClaimsHelper.check(itemsPlanningPnClaims.createPlannings)"
-            id="planningCreateBtn"
-            class="btn-success btn-small-height"
-            mdbTooltip="{{ 'Create Planning' | translate }}"
-            [routerLink]="['./create']">{{ 'New planning' | translate }}
+    <button
+      mdbBtn
+      *ngIf="pluginClaimsHelper.check(itemsPlanningPnClaims.createPlannings)"
+      id="planningCreateBtn"
+      class="btn-success btn-small-height"
+      mdbTooltip="{{ 'Create Planning' | translate }}"
+      [routerLink]="['./create']"
+    >
+      {{ 'New planning' | translate }}
     </button>
   </div>
 </subheader-pn>
@@ -28,202 +38,409 @@
         [bindLabel]="'name'"
         [bindValue]="'id'"
         id="tagSelector"
-        [multiple]="true"></ng-select>
+        [multiple]="true"
+      ></ng-select>
     </div>
     <div class="col-md-2">
       <div class="md-form">
-        <input mdbInput type="text" (input)="onNameFilterChanged($event.target.value)"
-               class="form-control input-sm" id="nameFilterInput">
-        <label for="nameFilterInput">{{'Name' | translate}}</label>
+        <input
+          mdbInput
+          type="text"
+          (input)="onNameFilterChanged($event.target.value)"
+          class="form-control input-sm"
+          id="nameFilterInput"
+        />
+        <label for="nameFilterInput">{{ 'Name' | translate }}</label>
       </div>
     </div>
     <div class="col-md-2">
       <div class="md-form">
-        <input mdbInput type="text" (input)="onDescriptionFilterChanged($event.target.value)"
-               class="form-control input-sm" id="descriptionFilterInput">
-        <label for="descriptionFilterInput">{{'Description' | translate}}</label>
+        <input
+          mdbInput
+          type="text"
+          (input)="onDescriptionFilterChanged($event.target.value)"
+          class="form-control input-sm"
+          id="descriptionFilterInput"
+        />
+        <label for="descriptionFilterInput">{{
+          'Description' | translate
+        }}</label>
       </div>
     </div>
   </div>
   <div class="row p-1 mt-4 table-responsive no-gutters">
-    <table mdbTable striped="true" hover="true" small="true" class="z-depth-1 text-center">
+    <table
+      mdbTable
+      striped="true"
+      hover="true"
+      small="true"
+      class="z-depth-1 text-center"
+    >
       <thead>
-      <tr>
-        <th scope="col" class="table-header-sortable" id="idTableHeader"
-            (click)="sortTable('Id')">
-          <div class="d-flex align-items-center justify-content-center">
-            ID
-            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'Id'">unfold_more</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'Id' && !planningsRequestModel.isSortDsc">expand_less</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'Id' && planningsRequestModel.isSortDsc">expand_more</i>
-          </div>
-        </th>
-        <th scope="col" class="table-header-sortable" id="nameTableHeader"
-            (click)="sortTable('Name')">
-          <div class="d-flex align-items-center justify-content-center">
-            {{'Name' | translate}}
-            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'Name'">unfold_more</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'Name' && !planningsRequestModel.isSortDsc">expand_less</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'Name' && planningsRequestModel.isSortDsc">expand_more</i>
-          </div>
-        </th>
-        <th scope="col" class="table-header-sortable" id="descriptionTableHeader"
-            (click)="sortTable('Description')">
-          <div class="d-flex align-items-center justify-content-center">
-            {{'Description' | translate}}
-            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'Description'">unfold_more</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'Description' && !planningsRequestModel.isSortDsc">expand_less</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'Description' && planningsRequestModel.isSortDsc">expand_more</i>
-          </div>
-        </th>
-        <th scope="col" class="table-header-sortable" id="sdkFolderNameTableHeader"
-            (click)="sortTable('SdkFolderName')">
-          <div class="d-flex align-items-center justify-content-center">
-            {{'Folder name' | translate}}
-            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'SdkFolderName'">unfold_more</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'SdkFolderName' && !planningsRequestModel.isSortDsc">expand_less</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'SdkFolderName' && planningsRequestModel.isSortDsc">expand_more</i>
-          </div>
-        </th>
-        <th scope="col" class="table-header-sortable" id="relatedEFormNameTableHeader"
-            (click)="sortTable('RelatedEFormName')">
-          <div class="d-flex align-items-center justify-content-center">
-            {{'eForm name' | translate}}
-            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'RelatedEFormName'">unfold_more</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'RelatedEFormName' && !planningsRequestModel.isSortDsc">expand_less</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'RelatedEFormName' && planningsRequestModel.isSortDsc">expand_more</i>
-          </div>
-        </th>
-        <th scope="col" id="tagsTableHeader">
-          <div class="d-flex align-items-center justify-content-center">
-            {{'Tags' | translate}}
-          </div>
-        </th>
-        <th scope="col" class="table-header-sortable" id="repeatEveryTableHeader"
-            (click)="sortTable('RepeatEvery')">
-          <div class="d-flex align-items-center justify-content-center">
-            {{'Repeat every' | translate}}
-            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'RepeatEvery'">unfold_more</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'RepeatEvery' && !planningsRequestModel.isSortDsc">expand_less</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'RepeatEvery' && planningsRequestModel.isSortDsc">expand_more</i>
-          </div>
-        </th>
-        <th scope="col" class="table-header-sortable" id="repeatTypeTableHeader"
-            (click)="sortTable('RepeatType')">
-          <div class="d-flex align-items-center justify-content-center">
-            {{'Repeat type' | translate}}
-            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'RepeatType'">unfold_more</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'RepeatType' && !planningsRequestModel.isSortDsc">expand_less</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'RepeatType' && planningsRequestModel.isSortDsc">expand_more</i>
-          </div>
-        </th>
-        <th scope="col" class="table-header-sortable" id="repeatUntilTableHeader"
-            (click)="sortTable('RepeatUntil')">
-          <div class="d-flex align-items-center justify-content-center">
-            {{'Repeat until' | translate}}
-            <i class="material-icons text-black-50" *ngIf="localPageSettings.sort != 'RepeatUntil'">unfold_more</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'RepeatUntil' && !planningsRequestModel.isSortDsc">expand_less</i>
-            <i class="material-icons"
-               *ngIf="localPageSettings.sort == 'RepeatUntil' && planningsRequestModel.isSortDsc">expand_more</i>
-          </div>
-        </th>
-        <!--        <th scope="col" id="sitesTableHeader">-->
-        <!--          <div class="d-flex align-items-center justify-content-center">-->
-        <!--            {{'Sites' | translate}}-->
-        <!--          </div>-->
-        <!--        </th>-->
+        <tr>
+          <th
+            scope="col"
+            class="table-header-sortable"
+            id="idTableHeader"
+            (click)="sortTable('Id')"
+          >
+            <div class="d-flex align-items-center justify-content-center">
+              ID
+              <i
+                class="material-icons text-black-50"
+                *ngIf="localPageSettings.sort != 'Id'"
+                >unfold_more</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'Id' &&
+                  !planningsRequestModel.isSortDsc
+                "
+                >expand_less</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'Id' &&
+                  planningsRequestModel.isSortDsc
+                "
+                >expand_more</i
+              >
+            </div>
+          </th>
+          <th
+            scope="col"
+            class="table-header-sortable"
+            id="nameTableHeader"
+            (click)="sortTable('Name')"
+          >
+            <div class="d-flex align-items-center justify-content-center">
+              {{ 'Name' | translate }}
+              <i
+                class="material-icons text-black-50"
+                *ngIf="localPageSettings.sort != 'Name'"
+                >unfold_more</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'Name' &&
+                  !planningsRequestModel.isSortDsc
+                "
+                >expand_less</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'Name' &&
+                  planningsRequestModel.isSortDsc
+                "
+                >expand_more</i
+              >
+            </div>
+          </th>
+          <th
+            scope="col"
+            class="table-header-sortable"
+            id="descriptionTableHeader"
+            (click)="sortTable('Description')"
+          >
+            <div class="d-flex align-items-center justify-content-center">
+              {{ 'Description' | translate }}
+              <i
+                class="material-icons text-black-50"
+                *ngIf="localPageSettings.sort != 'Description'"
+                >unfold_more</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'Description' &&
+                  !planningsRequestModel.isSortDsc
+                "
+                >expand_less</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'Description' &&
+                  planningsRequestModel.isSortDsc
+                "
+                >expand_more</i
+              >
+            </div>
+          </th>
+          <th
+            scope="col"
+            class="table-header-sortable"
+            id="sdkFolderNameTableHeader"
+            (click)="sortTable('SdkFolderName')"
+          >
+            <div class="d-flex align-items-center justify-content-center">
+              {{ 'Folder name' | translate }}
+              <i
+                class="material-icons text-black-50"
+                *ngIf="localPageSettings.sort != 'SdkFolderName'"
+                >unfold_more</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'SdkFolderName' &&
+                  !planningsRequestModel.isSortDsc
+                "
+                >expand_less</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'SdkFolderName' &&
+                  planningsRequestModel.isSortDsc
+                "
+                >expand_more</i
+              >
+            </div>
+          </th>
+          <th
+            scope="col"
+            class="table-header-sortable"
+            id="relatedEFormNameTableHeader"
+            (click)="sortTable('RelatedEFormName')"
+          >
+            <div class="d-flex align-items-center justify-content-center">
+              {{ 'eForm name' | translate }}
+              <i
+                class="material-icons text-black-50"
+                *ngIf="localPageSettings.sort != 'RelatedEFormName'"
+                >unfold_more</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'RelatedEFormName' &&
+                  !planningsRequestModel.isSortDsc
+                "
+                >expand_less</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'RelatedEFormName' &&
+                  planningsRequestModel.isSortDsc
+                "
+                >expand_more</i
+              >
+            </div>
+          </th>
+          <th scope="col" id="tagsTableHeader">
+            <div class="d-flex align-items-center justify-content-center">
+              {{ 'Tags' | translate }}
+            </div>
+          </th>
+          <th
+            scope="col"
+            class="table-header-sortable"
+            id="repeatEveryTableHeader"
+            (click)="sortTable('RepeatEvery')"
+          >
+            <div class="d-flex align-items-center justify-content-center">
+              {{ 'Repeat every' | translate }}
+              <i
+                class="material-icons text-black-50"
+                *ngIf="localPageSettings.sort != 'RepeatEvery'"
+                >unfold_more</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'RepeatEvery' &&
+                  !planningsRequestModel.isSortDsc
+                "
+                >expand_less</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'RepeatEvery' &&
+                  planningsRequestModel.isSortDsc
+                "
+                >expand_more</i
+              >
+            </div>
+          </th>
+          <th
+            scope="col"
+            class="table-header-sortable"
+            id="repeatTypeTableHeader"
+            (click)="sortTable('RepeatType')"
+          >
+            <div class="d-flex align-items-center justify-content-center">
+              {{ 'Repeat type' | translate }}
+              <i
+                class="material-icons text-black-50"
+                *ngIf="localPageSettings.sort != 'RepeatType'"
+                >unfold_more</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'RepeatType' &&
+                  !planningsRequestModel.isSortDsc
+                "
+                >expand_less</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'RepeatType' &&
+                  planningsRequestModel.isSortDsc
+                "
+                >expand_more</i
+              >
+            </div>
+          </th>
+          <th
+            scope="col"
+            class="table-header-sortable"
+            id="repeatUntilTableHeader"
+            (click)="sortTable('RepeatUntil')"
+          >
+            <div class="d-flex align-items-center justify-content-center">
+              {{ 'Repeat until' | translate }}
+              <i
+                class="material-icons text-black-50"
+                *ngIf="localPageSettings.sort != 'RepeatUntil'"
+                >unfold_more</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'RepeatUntil' &&
+                  !planningsRequestModel.isSortDsc
+                "
+                >expand_less</i
+              >
+              <i
+                class="material-icons"
+                *ngIf="
+                  localPageSettings.sort == 'RepeatUntil' &&
+                  planningsRequestModel.isSortDsc
+                "
+                >expand_more</i
+              >
+            </div>
+          </th>
+          <!--        <th scope="col" id="sitesTableHeader">-->
+          <!--          <div class="d-flex align-items-center justify-content-center">-->
+          <!--            {{'Sites' | translate}}-->
+          <!--          </div>-->
+          <!--        </th>-->
 
-        <th scope="col">
-          {{ 'Actions' | translate }}
-        </th>
-      </tr>
+          <th scope="col">
+            {{ 'Actions' | translate }}
+          </th>
+        </tr>
       </thead>
       <tbody id="tableBody">
-      <tr *ngFor="let planning of planningsModel.plannings">
-        <td id="planningId">
-          {{planning.id}}
-        </td>
-        <td id="planningName">
-          {{planning.name}}
-        </td>
-        <td id="planningDescription">
-          {{planning.description}}
-        </td>
-        <td id="planningFolderName">
-          {{planning.item.eFormSdkFolderName}}
-        </td>
-        <td id="planningRelatedEformName">
-          {{planning.relatedEFormName}}
-        </td>
-        <td id="planningTags">
-          <ng-container *ngFor="let tag of planning.tags; let i = index;">
-              <span class="badge badge-primary mb-1" style="cursor: pointer" (click)="tagSelected(tag.id)">
+        <tr *ngFor="let planning of planningsModel.plannings">
+          <td id="planningId">
+            {{ planning.id }}
+          </td>
+          <td id="planningName">
+            {{ planning.name }}
+          </td>
+          <td id="planningDescription">
+            {{ planning.description }}
+          </td>
+          <td id="planningFolderName">
+            {{ planning.item.eFormSdkFolderName }}
+          </td>
+          <td id="planningRelatedEformName">
+            {{ planning.relatedEFormName }}
+          </td>
+          <td id="planningTags">
+            <ng-container *ngFor="let tag of planning.tags; let i = index">
+              <span
+                class="badge badge-primary mb-1"
+                style="cursor: pointer"
+                (click)="tagSelected(tag.id)"
+              >
                 <fa-icon icon="tag"></fa-icon>
-                {{tag.name}}
-            </span>
-            <br/>
-          </ng-container>
-        </td>
-        <td id="planningRepeatEvery">
-          {{planning.repeatEvery}}
-        </td>
-        <td id="planningRepeatType">
-          <div *ngIf="planning.repeatType == 1">
-            {{'Day' | translate}}
-          </div>
-          <div *ngIf="planning.repeatType == 2">
-            {{'Week' | translate}}
-          </div>
-          <div *ngIf="planning.repeatType == 3">
-            {{'Month' | translate}}
-          </div>
-        </td>
-        <td id="planningRepeatUntil">
-          <date-formatter [date]="planning.repeatUntil" [Format]="'datetime'"></date-formatter>
-        </td>
-        <!--        <td>-->
-        <!--          <div class="d-flex justify-content-center">-->
-        <!--            <div>-->
-        <!--            </div>-->
-        <!--          </div>-->
-        <!--        </td>-->
-        <td>
-          <div class="d-flex flex-row justify-content-center">
-            <button id="planningAssignmentBtn" [ngClass]="planning?.assignedSites?.length > 0 ? 'btn-success' : ''"
-                    mdbBtn type="button" class="btn-icon" (click)="openAssignmentModal(planning)"
-                    mdbTooltip="{{ 'Click to edit pairing with user(s)' | translate }}">
-              <fa-icon icon="link" size="lg" [fixedWidth]="true"></fa-icon>
-            </button>
-            <button id="updatePlanningBtn" *ngIf="pluginClaimsHelper.check(itemsPlanningPnClaims.editPlanning)"
-                    class="btn btn-accent text-black-50 btn-icon mb-2"
-                    mdbTooltip="{{ 'Edit Planning' | translate }}"
-                    [routerLink]="['./edit/' + planning.id]">
-              <fa-icon icon="pen" size="lg" [fixedWidth]="true"></fa-icon>
-            </button>
-            <button id="deletePlanningBtn"
-                    class="btn btn-danger btn-icon mb-2 "
-                    mdbTooltip="{{ 'Delete Planning' | translate }}"
-                    (click)="showDeletePlanningModal(planning)">
-              <fa-icon icon="trash-alt" size="lg" [fixedWidth]="true"></fa-icon>
-            </button>
-          </div>
-        </td>
-      </tr>
+                {{ tag.name }}
+              </span>
+              <br />
+            </ng-container>
+          </td>
+          <td id="planningRepeatEvery">
+            {{ planning.repeatEvery }}
+          </td>
+          <td id="planningRepeatType">
+            <div *ngIf="planning.repeatType == 1">
+              {{ 'Day' | translate }}
+            </div>
+            <div *ngIf="planning.repeatType == 2">
+              {{ 'Week' | translate }}
+            </div>
+            <div *ngIf="planning.repeatType == 3">
+              {{ 'Month' | translate }}
+            </div>
+          </td>
+          <td id="planningRepeatUntil">
+            <date-formatter
+              [date]="planning.repeatUntil"
+              [Format]="'datetime'"
+            ></date-formatter>
+          </td>
+          <!--        <td>-->
+          <!--          <div class="d-flex justify-content-center">-->
+          <!--            <div>-->
+          <!--            </div>-->
+          <!--          </div>-->
+          <!--        </td>-->
+          <td>
+            <div class="d-flex flex-row justify-content-center">
+              <button
+                id="planningAssignmentBtn"
+                [ngClass]="
+                  planning?.assignedSites?.length > 0 ? 'btn-success' : ''
+                "
+                mdbBtn
+                type="button"
+                class="btn-icon"
+                (click)="openAssignmentModal(planning)"
+                mdbTooltip="{{
+                  'Click to edit pairing with user(s)' | translate
+                }}"
+              >
+                <fa-icon icon="link" size="lg" [fixedWidth]="true"></fa-icon>
+              </button>
+              <button
+                id="updatePlanningBtn"
+                *ngIf="
+                  pluginClaimsHelper.check(itemsPlanningPnClaims.editPlanning)
+                "
+                class="btn btn-accent text-black-50 btn-icon mb-2"
+                mdbTooltip="{{ 'Edit Planning' | translate }}"
+                [routerLink]="['./edit/' + planning.id]"
+              >
+                <fa-icon icon="pen" size="lg" [fixedWidth]="true"></fa-icon>
+              </button>
+              <button
+                id="deletePlanningBtn"
+                class="btn btn-danger btn-icon mb-2"
+                mdbTooltip="{{ 'Delete Planning' | translate }}"
+                (click)="showDeletePlanningModal(planning)"
+              >
+                <fa-icon
+                  icon="trash-alt"
+                  size="lg"
+                  [fixedWidth]="true"
+                ></fa-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -231,21 +448,36 @@
     <div class="col-md-1">
       <page-size-pn
         [pageSize]="localPageSettings.pageSize"
-        (onPageSizeChanged)="localPageSettings.pageSize = $event; planningsRequestModel.pageIndex = 1;
-        updateLocalPageSettings()">
+        (onPageSizeChanged)="
+          localPageSettings.pageSize = $event;
+          planningsRequestModel.pageIndex = 1;
+          updateLocalPageSettings()
+        "
+      >
       </page-size-pn>
     </div>
     <div class="col-md-4 ml-auto d-flex justify-content-end p-2">
-      <pagination-pn *ngIf="planningsModel.total > planningsRequestModel.pageSize"
-                     [limit]="planningsRequestModel.pageSize"
-                     [size]="planningsModel.total"
-                     [offset]="planningsRequestModel.offset"
-                     (onPageChanged)="changePage($event)"></pagination-pn>
+      <pagination-pn
+        *ngIf="planningsModel.total > planningsRequestModel.pageSize"
+        [limit]="planningsRequestModel.pageSize"
+        [size]="planningsModel.total"
+        [offset]="planningsRequestModel.offset"
+        (onPageChanged)="changePage($event)"
+      ></pagination-pn>
     </div>
   </div>
 </div>
-<app-planning-delete #deletePlanningModal
-                     (planningDeleted)="getPlannings()"></app-planning-delete>
-<app-planning-assign-sites-modal (sitesAssigned)="getPlannings()" #assignSitesModal></app-planning-assign-sites-modal>
-<app-planning-tags #planningTagsModal [availableTags]="availableTags"
-                   (tagsChanged)="getTags()"></app-planning-tags>
+<app-planning-delete
+  #deletePlanningModal
+  (planningDeleted)="getPlannings()"
+></app-planning-delete>
+<app-planning-assign-sites-modal
+  [sitesDto]="sitesDto"
+  (sitesAssigned)="getPlannings()"
+  #assignSitesModal
+></app-planning-assign-sites-modal>
+<app-planning-tags
+  #planningTagsModal
+  [availableTags]="availableTags"
+  (tagsChanged)="getTags()"
+></app-planning-tags>

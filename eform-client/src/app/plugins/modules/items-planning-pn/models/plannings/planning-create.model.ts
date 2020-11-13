@@ -9,6 +9,7 @@ export class PlanningCreateModel {
   dayOfWeek: number;
   dayOfMonth: number;
   repeatUntil: string;
+  startDate: string;
   internalRepeatUntil: Moment | null;
   relatedEFormId: number;
   item: PlanningItemModel = new PlanningItemModel();
