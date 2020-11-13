@@ -201,7 +201,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
         public async Task<OperationResult> Create(PlanningPnModel model)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            //await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             await using var sdkDbContext =
                 _coreService.GetCore().GetAwaiter().GetResult().dbContextHelper.GetDbContext();
             try
@@ -299,14 +299,14 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 await item.Create(_dbContext);
 
 
-                await transaction.CommitAsync();
+                //await transaction.CommitAsync();
                 return new OperationResult(
                     true,
                     _itemsPlanningLocalizationService.GetString("ListCreatedSuccessfully"));
             }
             catch (Exception e)
             {
-                await transaction.RollbackAsync();
+                //await transaction.RollbackAsync();
                 Trace.TraceError(e.Message);
                 return new OperationResult(false,
                     _itemsPlanningLocalizationService.GetString("ErrorWhileCreatingList"));
@@ -566,31 +566,36 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
         public async Task<OperationResult> Delete(int id)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
                 var core = await _coreService.GetCore();
+                var sdkDbContext = core.dbContextHelper.GetDbContext();
                 var planning = await _dbContext.Plannings
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                     .Include(x => x.Item)
                     .SingleAsync(x => x.Id == id);
 
                 if (planning == null)
                 {
-                    await transaction.RollbackAsync();
                     return new OperationResult(false,
                         _itemsPlanningLocalizationService.GetString("PlanningNotFound"));
                 }
 
                 var planningCases = await _dbContext.PlanningCases
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                     .Where(x => x.ItemId == planning.Item.Id)
                     .ToListAsync();
 
                 foreach (var planningCase in planningCases)
                 {
-                    // Delete case
-                    await core.CaseDelete(planningCase.MicrotingSdkCaseId);
+                    var planningCaseSites = await _dbContext.PlanningCaseSites
+                        .Where(x => x.PlanningCaseId == planningCase.Id).ToListAsync();
+                    foreach (PlanningCaseSite planningCaseSite in planningCaseSites)
+                    {
+                        if (planningCaseSite.MicrotingSdkCaseId != 0)
+                        {
+                            var result = await sdkDbContext.cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
+                             await core.CaseDelete((int)result.MicrotingUid);
+                        }
+                    }
                     // Delete planning case
                     await planningCase.Delete(_dbContext);
                 }
@@ -598,14 +603,12 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 // Delete planning
                 await planning.Delete(_dbContext);
 
-                await transaction.CommitAsync();
                 return new OperationResult(
                     true,
                     _itemsPlanningLocalizationService.GetString("ListDeletedSuccessfully"));
             }
             catch (Exception e)
             {
-                await transaction.RollbackAsync();
                 Trace.TraceError(e.Message);
                 return new OperationResult(
                     false,

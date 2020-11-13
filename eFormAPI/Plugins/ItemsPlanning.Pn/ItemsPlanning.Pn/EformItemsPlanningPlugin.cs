@@ -90,15 +90,15 @@ namespace ItemsPlanning.Pn
             var seedData = new ItemsPlanningConfigurationSeedData();
             var contextFactory = new ItemsPlanningPnContextFactory();
             builder.AddPluginConfiguration(
-                connectionString, 
-                seedData, 
+                connectionString,
+                seedData,
                 contextFactory);
 
             //CaseUpdateDelegates.CaseUpdateDelegate += UpdateRelatedCase;
         }
 
         public void ConfigureOptionsServices(
-            IServiceCollection services, 
+            IServiceCollection services,
             IConfiguration configuration)
         {
             services.ConfigurePluginDbOptions<ItemsPlanningBaseSettings>(
@@ -111,7 +111,7 @@ namespace ItemsPlanning.Pn
             if (connectionString.ToLower().Contains("convert zero datetime"))
             {
                 services.AddDbContext<ItemsPlanningPnDbContext>(o => o.UseMySql(connectionString,
-                    b => b.MigrationsAssembly(PluginAssembly().FullName)));
+                    b => b.MigrationsAssembly(PluginAssembly().FullName).EnableRetryOnFailure()));
             }
             else
             {
@@ -132,7 +132,7 @@ namespace ItemsPlanning.Pn
             var serviceProvider = appBuilder.ApplicationServices;
             IRebusService rebusService = serviceProvider.GetService<IRebusService>();
             rebusService.Start(_connectionString);
-            
+
             _bus = rebusService.GetBus();
         }
 
@@ -164,7 +164,7 @@ namespace ItemsPlanning.Pn
                             new PluginMenuTranslationModel
                             {
                                  LocaleName = LocaleNames.Danish,
-                                 Name = "Elementer planlægning",
+                                 Name = "Egenkontrol",
                                  Language = LanguageNames.Danish,
                             }
                         },

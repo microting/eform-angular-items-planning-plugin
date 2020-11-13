@@ -8,7 +8,7 @@
       <th>{{'Item name' | translate}}</th>
       <th *ngFor="let itemHeader of itemHeaders">{{itemHeader.value}}</th>
 <!--      <th>{{'Images' | translate}}</th>-->
-      <th>{{'Posts' | translate}}</th>
+<!--      <th>{{'Posts' | translate}}</th>-->
       <th>{{'Actions' | translate}}</th>
     </tr>
     </thead>
@@ -32,18 +32,18 @@
         </td>
       </ng-container>
 <!--      <td>{{item.imagesCount}}</td>-->
-      <td>{{item.postsCount}}</td>
+<!--      <td>{{item.postsCount}}</td>-->
       <td>
         <button mdbBtn class="btn-success btn-icon mb-2"
                 [routerLink]="['/plugins/items-planning-pn/case/' + item.microtingSdkCaseId + '/' + item.eFormId + '/' + item.id + '/' + dateFrom + '/' + dateTo]"
                 mdbTooltip="{{ 'Edit Case' | translate }}">
           <fa-icon icon="pen" size="lg" [fixedWidth]="true"></fa-icon>
         </button>
-        <button mdbBtn class="btn-success btn-icon mb-2"
-                (click)="openCreateModal(item.microtingSdkCaseId,item.eFormId, false)"
-                mdbTooltip="{{ 'Posts' | translate }}">
-          <fa-icon icon="sticky-note" size="lg" [fixedWidth]="true"></fa-icon>
-        </button>
+<!--        <button mdbBtn class="btn-success btn-icon mb-2"-->
+<!--                (click)="openCreateModal(item.microtingSdkCaseId,item.eFormId, false)"-->
+<!--                mdbTooltip="{{ 'Posts' | translate }}">-->
+<!--          <fa-icon icon="sticky-note" size="lg" [fixedWidth]="true"></fa-icon>-->
+<!--        </button>-->
       </td>
     </tr>
     </tbody>

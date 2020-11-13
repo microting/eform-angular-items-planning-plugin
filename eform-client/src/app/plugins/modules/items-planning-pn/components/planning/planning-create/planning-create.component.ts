@@ -153,7 +153,6 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   }
 
   onFolderSelected(folderDto: FolderDto) {
-    debugger;
     this.newPlanningModel.item.eFormSdkFolderId = folderDto.id;
     this.selectedFolderName = composeFolderName(
       folderDto.id,
