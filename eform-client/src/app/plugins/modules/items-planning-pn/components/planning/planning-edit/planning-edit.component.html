@@ -167,7 +167,7 @@
                 <input mdbInput
                        [owlDateTime]="dt2"
                        [max]="selectedPlanningModel.internalRepeatUntil"
-                       [(ngModel)]="selectedPlanningModel.startFrom"
+                       [(ngModel)]="selectedPlanningModel.startDate"
                        type="text" id="editStartFrom"
                        name="editStartFrom" class="form-control">
                 <owl-date-time [pickerType]="'calendar'" #dt2></owl-date-time>
@@ -178,7 +178,7 @@
               <div class="md-form" [owlDateTimeTrigger]="dt1">
                 <input
                   mdbInput
-                  [min]="selectedPlanningModel.startFrom"
+                  [min]="selectedPlanningModel.startDate"
                   [owlDateTime]="dt1"
                   [(ngModel)]="selectedPlanningModel.internalRepeatUntil"
                   type="text"

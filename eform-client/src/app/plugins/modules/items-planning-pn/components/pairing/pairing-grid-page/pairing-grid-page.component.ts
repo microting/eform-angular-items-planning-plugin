@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
   ItemsPlanningPnPairingService,
   ItemsPlanningPnPlanningsService,
@@ -12,6 +12,7 @@ import {
   PairingsModel,
 } from 'src/app/plugins/modules/items-planning-pn/models/pairings';
 import * as R from 'ramda';
+import {PairingGridUpdateComponent} from '../pairing-grid-update/pairing-grid-update.component';
 
 @AutoUnsubscribe()
 @Component({
@@ -20,51 +21,12 @@ import * as R from 'ramda';
   styleUrls: ['./pairing-grid-page.component.scss'],
 })
 export class PairingGridPageComponent implements OnInit, OnDestroy {
+  @ViewChild('updatePairingsModal') updatePairingsModal: PairingGridUpdateComponent;
   getAllSites$: Subscription;
   getAllPairings$: Subscription;
   updatePairings$: Subscription;
   sitesDto: SiteNameDto[] = [];
-  pairings: PairingsModel = {
-    deviceUsers: ['John jo', 'Jamie', 'Vlad'],
-    pairings: [
-      {
-        planningId: 1,
-        planningName: 'Planning 1',
-        pairingValues: [
-          { deviceUserId: 1, paired: true },
-          { deviceUserId: 2, paired: false },
-          { deviceUserId: 3, paired: true },
-        ],
-      },
-      {
-        planningId: 2,
-        planningName: 'Planning 2',
-        pairingValues: [
-          { deviceUserId: 1, paired: false },
-          { deviceUserId: 2, paired: true },
-          { deviceUserId: 3, paired: false },
-        ],
-      },
-      {
-        planningId: 3,
-        planningName: 'Planning 3',
-        pairingValues: [
-          { deviceUserId: 1, paired: false },
-          { deviceUserId: 2, paired: false },
-          { deviceUserId: 3, paired: true },
-        ],
-      },
-      {
-        planningId: 4,
-        planningName: 'Planning 4',
-        pairingValues: [
-          { deviceUserId: 1, paired: true },
-          { deviceUserId: 2, paired: true },
-          { deviceUserId: 3, paired: true },
-        ],
-      },
-    ],
-  };
+  pairings: PairingsModel = new PairingsModel();
 
   pairingsForUpdate: PairingUpdateModel[] = [];
 
@@ -76,7 +38,7 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getAllSites();
-    // this.getAllPairings();
+    this.getAllPairings();
   }
 
   getAllSites() {
@@ -104,6 +66,7 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
       .updatePairings(this.pairingsForUpdate)
       .subscribe((operation) => {
         if (operation && operation.success) {
+          this.updatePairingsModal.hide();
         }
       });
   }
@@ -122,5 +85,9 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
     } else {
       this.pairingsForUpdate = [...this.pairingsForUpdate, model];
     }
+  }
+
+  showUpdatePairingsModal() {
+    this.updatePairingsModal.show(this.pairingsForUpdate);
   }
 }

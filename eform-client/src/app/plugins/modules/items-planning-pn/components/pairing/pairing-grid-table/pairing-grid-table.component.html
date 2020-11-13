@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="row p-1 mt-4 table-responsive no-gutters">
-    <table
+    <table *ngIf="pairingsModel.deviceUsers.length > 0 && pairingsModel.pairings.length > 0"
       mdbTable
       striped="true"
       hover="true"

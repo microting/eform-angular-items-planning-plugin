@@ -17,8 +17,8 @@ import { debounceTime } from 'rxjs/operators';
 import { Subject, Subscription } from 'rxjs';
 import { PlanningTagsComponent } from '../planning-tags/planning-tags.component';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { CommonDictionaryModel, FolderDto } from 'src/app/common/models';
-import { FoldersService } from 'src/app/common/services/advanced';
+import {CommonDictionaryModel, FolderDto, SiteDto, SiteNameDto} from 'src/app/common/models';
+import {FoldersService, SitesService} from 'src/app/common/services/advanced';
 import { composeFolderName } from 'src/app/common/helpers/folder-name.helper';
 
 @AutoUnsubscribe()
@@ -40,16 +40,19 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
   planningsRequestModel: PlanningsRequestModel = new PlanningsRequestModel();
   availableTags: CommonDictionaryModel[] = [];
   foldersListDto: FolderDto[] = [];
+  sitesDto: SiteNameDto[] = [];
 
   getPlanningsSub$: Subscription;
   getTagsSub$: Subscription;
   getFoldersListSub$: Subscription;
+  getAllSites$: Subscription;
 
   constructor(
     private sharedPnService: SharedPnService,
     private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
     private tagsService: ItemsPlanningPnTagsService,
-    private foldersService: FoldersService
+    private foldersService: FoldersService,
+    private sitesService: SitesService
   ) {
     this.nameSearchSubject.pipe(debounceTime(500)).subscribe((val) => {
       this.planningsRequestModel.nameFilter = val.toString();
@@ -92,7 +95,18 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
 
   getAllInitialData() {
     this.getTags();
+    this.getAllSites();
     this.loadFoldersAndPlannings();
+  }
+
+  getAllSites() {
+    this.getAllSites$ = this.sitesService
+      .getAllSitesForPairing()
+      .subscribe((operation) => {
+        if (operation && operation.success) {
+          this.sitesDto = operation.model;
+        }
+      });
   }
 
   getPlannings() {

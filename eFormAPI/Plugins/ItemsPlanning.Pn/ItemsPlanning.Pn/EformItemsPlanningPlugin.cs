@@ -291,6 +291,63 @@ namespace ItemsPlanning.Pn
                                         Language = LanguageNames.Danish,
                                     },
                                 }
+                            },
+                            new PluginMenuItemModel
+                            {
+                                Name = "Pairing",
+                                E2EId = "items-planning-pn-pairing",
+                                Link = "/plugins/items-planning-pn/pairing",
+                                Type = MenuItemTypeEnum.Link,
+                                Position = 2,
+                                MenuTemplate = new PluginMenuTemplateModel()
+                                {
+                                    Name = "Pairing",
+                                    E2EId = "items-planning-pn-pairing",
+                                    DefaultLink = "/plugins/items-planning-pn/pairing",
+                                    Permissions = new List<PluginMenuTemplatePermissionModel>(),
+                                    Translations = new List<PluginMenuTranslationModel>
+                                    {
+                                        new PluginMenuTranslationModel
+                                        {
+                                            LocaleName = LocaleNames.English,
+                                            Name = "Pairing",
+                                            Language = LanguageNames.English,
+                                        },
+                                        new PluginMenuTranslationModel
+                                        {
+                                            LocaleName = LocaleNames.German,
+                                            Name = "Koppelen",
+                                            Language = LanguageNames.German,
+                                        },
+                                        new PluginMenuTranslationModel
+                                        {
+                                            LocaleName = LocaleNames.Danish,
+                                            Name = "Parring",
+                                            Language = LanguageNames.Danish,
+                                        },
+                                    }
+                                },
+                                Translations = new List<PluginMenuTranslationModel>
+                                    {
+                                        new PluginMenuTranslationModel
+                                        {
+                                            LocaleName = LocaleNames.English,
+                                            Name = "Pairing",
+                                            Language = LanguageNames.English,
+                                        },
+                                        new PluginMenuTranslationModel
+                                        {
+                                            LocaleName = LocaleNames.German,
+                                            Name = "Koppelen",
+                                            Language = LanguageNames.German,
+                                        },
+                                        new PluginMenuTranslationModel
+                                        {
+                                            LocaleName = LocaleNames.Danish,
+                                            Name = "Parring",
+                                            Language = LanguageNames.Danish,
+                                        },
+                                    }
                             }
                         }
                     }
