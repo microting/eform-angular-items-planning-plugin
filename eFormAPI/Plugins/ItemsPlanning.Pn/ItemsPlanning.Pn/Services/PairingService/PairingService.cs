@@ -136,7 +136,6 @@ namespace ItemsPlanning.Pn.Services.PairingService
 
         public async Task<OperationResult> PairSingle(PlanningAssignSitesModel requestModel)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
                 var planning = await _dbContext.Plannings
@@ -147,7 +146,6 @@ namespace ItemsPlanning.Pn.Services.PairingService
 
                 if (planning == null)
                 {
-                    await transaction.RollbackAsync();
                     return new OperationDataResult<PlanningsPnModel>(false,
                         _itemsPlanningLocalizationService.GetString("PlanningNotFound"));
                 }
@@ -191,14 +189,12 @@ namespace ItemsPlanning.Pn.Services.PairingService
                     await planningSite.Create(_dbContext);
                 }
 
-                await transaction.CommitAsync();
                 return new OperationResult(true,
                     _itemsPlanningLocalizationService.GetString("PairingUpdatedSuccessfully"));
             }
             catch (Exception e)
             {
                 Trace.TraceError(e.Message);
-                await transaction.RollbackAsync();
                 return new OperationDataResult<PlanningsPnModel>(false,
                     _itemsPlanningLocalizationService.GetString("ErrorWhileUpdatingItemsPlanning"));
             }
@@ -206,7 +202,6 @@ namespace ItemsPlanning.Pn.Services.PairingService
 
         public async Task<OperationResult> UpdatePairings(List<PairingUpdateModel> updateModels)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
                 var plannings = await _dbContext.Plannings
@@ -278,8 +273,6 @@ namespace ItemsPlanning.Pn.Services.PairingService
                     }
                 }
 
-                await transaction.CommitAsync();
-
                 return new OperationResult(
                     true,
                     _itemsPlanningLocalizationService.GetString("PairingsUpdatedSuccessfully"));
@@ -287,7 +280,6 @@ namespace ItemsPlanning.Pn.Services.PairingService
             catch (Exception e)
             {
                 Trace.TraceError(e.Message);
-                await transaction.RollbackAsync();
                 return new OperationResult(false,
                     _itemsPlanningLocalizationService.GetString("ErrorWhileUpdatingItemsPlanning"));
             }
