@@ -23,7 +23,7 @@ SOFTWARE.
 */
 namespace ItemsPlanning.Pn.Infrastructure.Consts
 {
-    public class ExcelConsts
+    public class ExcelReportConsts
     {
         public static int ItemsPlanningReportSheetNumber = 1;
         public static string ExcelTemplatesDir = "Templates";
