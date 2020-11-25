@@ -21,34 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 namespace ItemsPlanning.Pn.Infrastructure.Models.Import
 {
-    using System;
-    using System.Collections.Generic;
-    using Microting.ItemsPlanningBase.Infrastructure.Enums;
-
-    public class PlanningImportExcelModel
+    public class ExcelParseErrorModel
     {
-        public int ExcelRow { get; set; }
-        public string ItemName { get; set; }
-
-        public int? RepeatEvery { get; set; }
-
-        public RepeatType? RepeatType { get; set; }
-
-        public DateTime? RepeatUntil { get; set; }
-
-        public DayOfWeek? DayOfWeek { get; set; }
-
-        public int? DayOfMonth { get; set; }
-
-        public string EFormName { get; set; }
-
-        public List<string> EFormTags { get; set; }
-            = new List<string>();
-
-        public List<PlanningImportFolderModel> Folders { get; set; }
-            = new List<PlanningImportFolderModel>();
+        public int Row { get; set; }
+        public int? Col { get; set; }
+        public string Message { get; set; }
     }
 }

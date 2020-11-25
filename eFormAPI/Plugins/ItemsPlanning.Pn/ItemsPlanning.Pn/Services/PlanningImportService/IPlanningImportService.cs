@@ -26,10 +26,11 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 {
     using System.IO;
     using System.Threading.Tasks;
+    using Infrastructure.Models.Import;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
 
     public interface IPlanningImportService
     {
-        Task<OperationResult> ImportPlannings(Stream excelStream);
+        Task<OperationDataResult<ExcelParseResult>> ImportPlannings(Stream excelStream);
     }
 }

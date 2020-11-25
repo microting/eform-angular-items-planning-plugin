@@ -25,10 +25,14 @@ SOFTWARE.
 namespace ItemsPlanning.Pn.Services.PlanningImportService
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
     using ExcelService;
+    using Infrastructure.Consts;
+    using Infrastructure.Models.Import;
     using ItemsPlanningLocalizationService;
     using Microting.eFormApi.BasePn.Abstractions;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
@@ -56,23 +60,114 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
             _planningExcelService = planningExcelService;
         }
 
-        public async Task<OperationResult> ImportPlannings(Stream excelStream)
+        public async Task<OperationDataResult<ExcelParseResult>> ImportPlannings(Stream excelStream)
         {
             try
             {
+                var result = new ExcelParseResult();
+                var core = await _coreService.GetCore();
+
+                var timeZone = await _userService.GetCurrentUserTimeZoneInfo();
+                var templatesDto = await core.TemplateItemReadAll(
+                    false,
+                    "",
+                    "",
+                    false,
+                    "",
+                    new List<int>(),
+                    timeZone);
+
+                // Parse excel file
                 var fileResult = _planningExcelService.ParsePlanningImportFile(excelStream);
 
-                //
+                // Validation
+                var excelErrors = new List<ExcelParseErrorModel>();
 
-                return new OperationResult(
+                foreach (var excelModel in fileResult)
+                {
+                    if (string.IsNullOrEmpty(excelModel.EFormName))
+                    {
+                        var error = new ExcelParseErrorModel
+                        {
+                            Col = PlanningImportExcelConsts.EformNameCol,
+                            Row = excelModel.ExcelRow,
+                            Message = _itemsPlanningLocalizationService.GetString(
+                                "Eform name is empty")
+                        };
+
+                        excelErrors.Add(error);
+                    }
+
+                    if (string.IsNullOrEmpty(excelModel.ItemName))
+                    {
+                        var error = new ExcelParseErrorModel
+                        {
+                            Col = PlanningImportExcelConsts.PlanningItemNameCol,
+                            Row = excelModel.ExcelRow,
+                            Message = _itemsPlanningLocalizationService.GetString(
+                                "Item name is empty")
+                        };
+
+                        excelErrors.Add(error);
+                    }
+
+                    if (!excelModel.Folders.Any())
+                    {
+                        var error = new ExcelParseErrorModel
+                        {
+                            Row = excelModel.ExcelRow,
+                            Message = _itemsPlanningLocalizationService.GetString(
+                                "Folder not found")
+                        };
+
+                        excelErrors.Add(error);
+                    }
+
+                    var templateByName = templatesDto
+                        .FirstOrDefault(x => string.Equals(
+                            x.Label,
+                            excelModel.EFormName,
+                            StringComparison.CurrentCultureIgnoreCase));
+
+                    if (templateByName == null)
+                    {
+                        var error = new ExcelParseErrorModel
+                        {
+                            Col = PlanningImportExcelConsts.EformNameCol,
+                            Row = excelModel.ExcelRow,
+                            Message = _itemsPlanningLocalizationService.GetString(
+                                $"{excelModel.EFormName} eform not found")
+                        };
+
+                        excelErrors.Add(error);
+                    }
+                }
+
+                result.Errors = excelErrors;
+
+                if (excelErrors.Any())
+                {
+                    return new OperationDataResult<ExcelParseResult>(
+                        true,
+                        result);
+                }
+
+                // Process plannings
+
+
+                result.Message = "ok!";
+
+
+
+                return new OperationDataResult<ExcelParseResult>(
                     true,
-                    _itemsPlanningLocalizationService.GetString(""));
+                    result);
             }
             catch (Exception e)
             {
                 Trace.TraceError(e.Message);
-                return new OperationResult(false,
-                    _itemsPlanningLocalizationService.GetString(""));
+                return new OperationDataResult<ExcelParseResult>(false,
+                    _itemsPlanningLocalizationService.GetString("error"));
             }
         }
     }

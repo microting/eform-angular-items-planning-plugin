@@ -26,12 +26,14 @@ namespace ItemsPlanning.Pn.Services.ExcelService
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using ClosedXML.Excel;
     using Infrastructure.Consts;
     using Infrastructure.Models.Import;
     using Microsoft.Extensions.Logging;
+    using Microting.ItemsPlanningBase.Infrastructure.Enums;
 
     public class PlanningExcelService : IPlanningExcelService
     {
@@ -56,6 +58,10 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                 {
                     // Folders
                     var folders = new List<PlanningImportFolderModel>();
+                    var item = new PlanningImportExcelModel
+                    {
+                        ExcelRow = row.RowNumber()
+                    };
 
                     // Folder 1
                     var folder1Label = row.Cell(PlanningImportExcelConsts.Folder1Label).Value.ToString();
@@ -217,13 +223,169 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         folders.Add(folderModel);
                     }
 
+                    item.Folders = folders;
 
+                    // Planning info
+                    item.ItemName = row.Cell(PlanningImportExcelConsts.PlanningItemNameCol).Value.ToString();
 
-
-                    var item = new PlanningImportExcelModel
+                    var repeatEveryString = row.Cell(PlanningImportExcelConsts.PlanningRepeatEveryCol).Value.ToString();
+                    var repeatEveryParseResult = int.TryParse(repeatEveryString, out var repeatEvery);
+                    if (repeatEveryParseResult)
                     {
-                        Folders = folders,
-                    };
+                        item.RepeatEvery = repeatEvery;
+                    }
+                    else
+                    {
+                        item.RepeatEvery = null;
+                    }
+
+                    var repeatTypeString = row.Cell(PlanningImportExcelConsts.PlanningRepeatTypeCol).Value.ToString();
+                    var repeatTypeParseResult = int.TryParse(repeatTypeString, out var repeatType);
+                    if (repeatTypeParseResult)
+                    {
+                        item.RepeatType = (RepeatType) repeatType;
+                    }
+                    else
+                    {
+                        item.RepeatType = null;
+                    }
+
+                    var repeatUntilString = row.Cell(PlanningImportExcelConsts.PlanningRepeatUntilCol).Value.ToString();
+
+                    if (!string.IsNullOrEmpty(repeatUntilString))
+                    {
+                        var dateTime = DateTime.ParseExact(
+                            repeatUntilString,
+                            "dd.MM.yyyy",
+                            CultureInfo.InvariantCulture);
+
+                        if (dateTime != null)
+                        {
+                            item.RepeatUntil = dateTime;
+                        }
+                        else
+                        {
+                            item.RepeatUntil = null;
+                        }
+                    }
+                    else
+                    {
+                        item.RepeatUntil = null;
+                    }
+
+                    var dayOfWeekString = row.Cell(PlanningImportExcelConsts.PlanningDayOfWeekCol).Value.ToString();
+                    var dayOfWeekParseResult = int.TryParse(dayOfWeekString, out var dayOfWeekValue);
+                    if (dayOfWeekParseResult)
+                    {
+                        item.DayOfWeek = (DayOfWeek)dayOfWeekValue;
+                    }
+                    else
+                    {
+                        switch (dayOfWeekString.ToLower())
+                        {
+                            case "mon":
+                                item.DayOfWeek = DayOfWeek.Monday;
+                                break;
+                            case "tue":
+                                item.DayOfWeek = DayOfWeek.Tuesday;
+                                break;
+                            case "wed":
+                                item.DayOfWeek = DayOfWeek.Wednesday;
+                                break;
+                            case "thu":
+                                item.DayOfWeek = DayOfWeek.Thursday;
+                                break;
+                            case "fri":
+                                item.DayOfWeek = DayOfWeek.Friday;
+                                break;
+                            case "sat":
+                                item.DayOfWeek = DayOfWeek.Saturday;
+                                break;
+                            case "sun":
+                                item.DayOfWeek = DayOfWeek.Sunday;
+                                break;
+                            default:
+                                item.DayOfWeek = null;
+                                break;
+                        }
+                    }
+
+                    var dayOfMonthString = row.Cell(PlanningImportExcelConsts.PlanningDayOfMonthCol).Value.ToString();
+                    var dayOfMonthParseResult = int.TryParse(dayOfMonthString, out var dayOfMonth);
+                    if (dayOfMonthParseResult)
+                    {
+                        item.DayOfMonth = dayOfMonth;
+                    }
+                    else
+                    {
+                        item.DayOfMonth = null;
+                    }
+
+
+                    // EForm name
+                    item.EFormName = row.Cell(PlanningImportExcelConsts.EformNameCol).Value.ToString();
+
+                    // EForm tags
+                    var tag1 = row.Cell(PlanningImportExcelConsts.Tag1Col).Value.ToString();
+                    var tag2 = row.Cell(PlanningImportExcelConsts.Tag2Col).Value.ToString();
+                    var tag3 = row.Cell(PlanningImportExcelConsts.Tag3Col).Value.ToString();
+                    var tag4 = row.Cell(PlanningImportExcelConsts.Tag4Col).Value.ToString();
+                    var tag5 = row.Cell(PlanningImportExcelConsts.Tag5Col).Value.ToString();
+                    var tag6 = row.Cell(PlanningImportExcelConsts.Tag6Col).Value.ToString();
+                    var tag7 = row.Cell(PlanningImportExcelConsts.Tag7Col).Value.ToString();
+                    var tag8 = row.Cell(PlanningImportExcelConsts.Tag8Col).Value.ToString();
+                    var tag9 = row.Cell(PlanningImportExcelConsts.Tag9Col).Value.ToString();
+                    var tag10 = row.Cell(PlanningImportExcelConsts.Tag10Col).Value.ToString();
+
+                    if (!string.IsNullOrEmpty(tag1))
+                    {
+                        item.EFormTags.Add(tag1);
+                    }
+
+                    if (!string.IsNullOrEmpty(tag2))
+                    {
+                        item.EFormTags.Add(tag2);
+                    }
+
+                    if (!string.IsNullOrEmpty(tag3))
+                    {
+                        item.EFormTags.Add(tag3);
+                    }
+
+                    if (!string.IsNullOrEmpty(tag4))
+                    {
+                        item.EFormTags.Add(tag4);
+                    }
+
+                    if (!string.IsNullOrEmpty(tag5))
+                    {
+                        item.EFormTags.Add(tag5);
+                    }
+
+                    if (!string.IsNullOrEmpty(tag6))
+                    {
+                        item.EFormTags.Add(tag6);
+                    }
+
+                    if (!string.IsNullOrEmpty(tag7))
+                    {
+                        item.EFormTags.Add(tag7);
+                    }
+
+                    if (!string.IsNullOrEmpty(tag8))
+                    {
+                        item.EFormTags.Add(tag8);
+                    }
+
+                    if (!string.IsNullOrEmpty(tag9))
+                    {
+                        item.EFormTags.Add(tag9);
+                    }
+
+                    if (!string.IsNullOrEmpty(tag10))
+                    {
+                        item.EFormTags.Add(tag10);
+                    }
 
                     result.Add(item);
                 }
