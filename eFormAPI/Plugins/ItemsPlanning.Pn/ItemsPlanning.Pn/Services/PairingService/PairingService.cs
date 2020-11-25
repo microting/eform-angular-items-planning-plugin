@@ -77,6 +77,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 }
 
                 var pairing = await _dbContext.Plannings
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                     .Select(x => new PairingModel
                     {
                         PlanningId = x.Id,
