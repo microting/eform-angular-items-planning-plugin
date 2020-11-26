@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+// ReSharper disable UseAwaitUsing
 namespace ItemsPlanning.Pn.Services.PlanningImportService
 {
     using System;
@@ -34,9 +35,14 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
     using Infrastructure.Consts;
     using Infrastructure.Models.Import;
     using ItemsPlanningLocalizationService;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+    using Microting.eForm.Infrastructure.Constants;
     using Microting.eFormApi.BasePn.Abstractions;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Microting.ItemsPlanningBase.Infrastructure.Data;
+    using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
+    using Microting.ItemsPlanningBase.Infrastructure.Enums;
 
     public class PlanningImportService : IPlanningImportService
     {
@@ -45,19 +51,22 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
         private readonly IEFormCoreService _coreService;
         private readonly IUserService _userService;
         private readonly IPlanningExcelService _planningExcelService;
+        private readonly ILogger<PlanningImportService> _logger;
 
         public PlanningImportService(
             ItemsPlanningPnDbContext dbContext,
             IItemsPlanningLocalizationService itemsPlanningLocalizationService,
             IEFormCoreService coreService,
             IUserService userService,
-            IPlanningExcelService planningExcelService)
+            IPlanningExcelService planningExcelService,
+            ILogger<PlanningImportService> logger)
         {
             _dbContext = dbContext;
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
             _coreService = coreService;
             _userService = userService;
             _planningExcelService = planningExcelService;
+            _logger = logger;
         }
 
         public async Task<OperationDataResult<ExcelParseResult>> ImportPlannings(Stream excelStream)
@@ -92,7 +101,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             Col = PlanningImportExcelConsts.EformNameCol,
                             Row = excelModel.ExcelRow,
                             Message = _itemsPlanningLocalizationService.GetString(
-                                "Eform name is empty")
+                                "EformNameIsEmpty")
                         };
 
                         excelErrors.Add(error);
@@ -105,7 +114,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             Col = PlanningImportExcelConsts.PlanningItemNameCol,
                             Row = excelModel.ExcelRow,
                             Message = _itemsPlanningLocalizationService.GetString(
-                                "Item name is empty")
+                                "ItemNameIsEmpty")
                         };
 
                         excelErrors.Add(error);
@@ -117,7 +126,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         {
                             Row = excelModel.ExcelRow,
                             Message = _itemsPlanningLocalizationService.GetString(
-                                "Folder not found")
+                                "FolderNotFound")
                         };
 
                         excelErrors.Add(error);
@@ -136,10 +145,14 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             Col = PlanningImportExcelConsts.EformNameCol,
                             Row = excelModel.ExcelRow,
                             Message = _itemsPlanningLocalizationService.GetString(
-                                $"{excelModel.EFormName} eform not found")
+                                "EformNotFound")
                         };
 
                         excelErrors.Add(error);
+                    }
+                    else
+                    {
+                        excelModel.EFormId = templateByName.Id;
                     }
                 }
 
@@ -152,12 +165,199 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         result);
                 }
 
+
                 // Process plannings
+                using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        var sdkDbContext = core.dbContextHelper.GetDbContext();
 
+                        // Process planning tags
+                        var tags = await _dbContext.PlanningTags
+                            .AsNoTracking()
+                            .Select(x => new
+                            {
+                                x.Id,
+                                Name = x.Name.ToLower(),
+                            }).ToListAsync();
 
-                result.Message = "ok!";
+                        var fileTags = fileResult.SelectMany(x => x.Tags)
+                            .GroupBy(x => x)
+                            .Select(x => x.Key)
+                            .ToList();
 
+                        foreach (var fileTag in fileTags)
+                        {
+                            var planningTagExist = tags.FirstOrDefault(x => x.Name == fileTag.ToLower());
 
+                            if (planningTagExist == null)
+                            {
+                                var planningTag = new PlanningTag
+                                {
+                                    Name = fileTag,
+                                    CreatedAt = DateTime.UtcNow,
+                                    CreatedByUserId = _userService.UserId,
+                                    UpdatedAt = DateTime.UtcNow,
+                                    UpdatedByUserId = _userService.UserId,
+                                    Version = 1,
+                                };
+                                await _dbContext.PlanningTags.AddAsync(planningTag);
+                                await _dbContext.SaveChangesAsync();
+                            }
+                        }
+
+                        tags = await _dbContext.PlanningTags
+                            .AsNoTracking()
+                            .Select(x => new
+                            {
+                                x.Id,
+                                Name = x.Name.ToLower(),
+                            }).ToListAsync();
+
+                        // Folders
+                        var folders = await sdkDbContext.folders
+                            .AsNoTracking()
+                            .Select(x => new
+                            {
+                                x.Id,
+                                Name = x.Name.ToLower(),
+                            }).ToListAsync();
+
+                        // Process folders
+                        foreach (var excelModel in fileResult)
+                        {
+                            for (var i = 0; i < excelModel.Folders.Count; i++)
+                            {
+                                var folderModel = excelModel.Folders[i];
+                                var sdkFolder = folders.FirstOrDefault(x => x.Name == folderModel.Label.ToLower());
+
+                                if (sdkFolder == null)
+                                {
+                                    // If it's not a first folder then attach previous folder
+                                    if (i > 0)
+                                    {
+                                        var parentId = excelModel.Folders[i - 1].Id;
+                                        await core.FolderCreate(folderModel.Label, folderModel.Description,
+                                            parentId);
+                                        // TODO folderModel.Id
+                                    }
+                                    else
+                                    {
+                                        await core.FolderCreate(folderModel.Label, folderModel.Description, null);
+                                        // TODO folderModel.Id
+                                    }
+
+                                    // TODO add new item to folders list
+                                }
+                                else
+                                {
+                                    folderModel.Id = sdkFolder.Id;
+                                }
+                            }
+                        }
+
+                        // Process plannings
+                        foreach (var excelModel in fileResult)
+                        {
+                            var tagIds = new List<int>();
+                            if (excelModel.Tags.Any())
+                            {
+                                foreach (var tagName in excelModel.Tags)
+                                {
+                                    var planningTagExist = tags.FirstOrDefault(x => x.Name == tagName.ToLower());
+
+                                    if (planningTagExist != null)
+                                    {
+                                        tagIds.Add(planningTagExist.Id);
+                                    }
+                                }
+                            }
+
+                            var sdkFolder = excelModel.Folders.Last();
+
+                            var planning = new Planning
+                            {
+                                Name = excelModel.ItemName,
+                                CreatedByUserId = _userService.UserId,
+                                CreatedAt = DateTime.UtcNow,
+                                RepeatUntil = excelModel.RepeatUntil,
+                                DayOfWeek = excelModel.DayOfWeek,
+                                DayOfMonth = excelModel.DayOfMonth,
+                                Enabled = true,
+                                RelatedEFormId = (int) excelModel.EFormId,
+                                RelatedEFormName = excelModel.EFormName,
+                                PlanningsTags = new List<PlanningsTags>()
+                            };
+
+                            if (excelModel.RepeatEvery != null)
+                            {
+                                planning.RepeatEvery = (int) excelModel.RepeatEvery;
+                            }
+
+                            if (excelModel.RepeatType != null)
+                            {
+                                planning.RepeatType = (RepeatType) excelModel.RepeatType;
+                            }
+
+                            if (sdkFolder != null)
+                            {
+                                planning.SdkFolderName = sdkFolder.Label;
+                            }
+
+                            planning.StartDate = DateTime.UtcNow;
+
+                            foreach (var tagId in tagIds)
+                            {
+                                planning.PlanningsTags.Add(
+                                    new PlanningsTags
+                                    {
+                                        CreatedAt = DateTime.UtcNow,
+                                        CreatedByUserId = _userService.UserId,
+                                        UpdatedAt = DateTime.UtcNow,
+                                        UpdatedByUserId = _userService.UserId,
+                                        Version = 1,
+                                        PlanningTagId = tagId
+                                    });
+                            }
+
+                            await planning.Create(_dbContext);
+                            var item = new Item()
+                            {
+                                LocationCode = string.Empty,
+                                ItemNumber = string.Empty,
+                                Description = string.Empty,
+                                Name = string.Empty,
+                                Version = 1,
+                                WorkflowState = Constants.WorkflowStates.Created,
+                                CreatedAt = DateTime.UtcNow,
+                                UpdatedAt = DateTime.UtcNow,
+                                Enabled = true,
+                                BuildYear = string.Empty,
+                                Type = string.Empty,
+                                PlanningId = planning.Id,
+                                CreatedByUserId = _userService.UserId,
+                                UpdatedByUserId = _userService.UserId,
+                            };
+
+                            if (sdkFolder != null)
+                            {
+                                item.eFormSdkFolderId = (int) sdkFolder.Id;
+                            }
+
+                            await item.Create(_dbContext);
+                        }
+
+                        await transaction.CommitAsync();
+                    }
+                    catch
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                }
+
+                result.Message = _itemsPlanningLocalizationService.GetString("ImportCompletedSuccessfully");
 
                 return new OperationDataResult<ExcelParseResult>(
                     true,
@@ -166,8 +366,9 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
             catch (Exception e)
             {
                 Trace.TraceError(e.Message);
+                _logger.LogError(e, e.Message);
                 return new OperationDataResult<ExcelParseResult>(false,
-                    _itemsPlanningLocalizationService.GetString("error"));
+                    _itemsPlanningLocalizationService.GetString("ErrorWhileImportingExcelFile"));
             }
         }
     }

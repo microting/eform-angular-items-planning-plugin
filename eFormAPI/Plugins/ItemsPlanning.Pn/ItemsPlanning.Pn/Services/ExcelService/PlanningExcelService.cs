@@ -339,52 +339,52 @@ namespace ItemsPlanning.Pn.Services.ExcelService
 
                     if (!string.IsNullOrEmpty(tag1))
                     {
-                        item.EFormTags.Add(tag1);
+                        item.Tags.Add(tag1);
                     }
 
                     if (!string.IsNullOrEmpty(tag2))
                     {
-                        item.EFormTags.Add(tag2);
+                        item.Tags.Add(tag2);
                     }
 
                     if (!string.IsNullOrEmpty(tag3))
                     {
-                        item.EFormTags.Add(tag3);
+                        item.Tags.Add(tag3);
                     }
 
                     if (!string.IsNullOrEmpty(tag4))
                     {
-                        item.EFormTags.Add(tag4);
+                        item.Tags.Add(tag4);
                     }
 
                     if (!string.IsNullOrEmpty(tag5))
                     {
-                        item.EFormTags.Add(tag5);
+                        item.Tags.Add(tag5);
                     }
 
                     if (!string.IsNullOrEmpty(tag6))
                     {
-                        item.EFormTags.Add(tag6);
+                        item.Tags.Add(tag6);
                     }
 
                     if (!string.IsNullOrEmpty(tag7))
                     {
-                        item.EFormTags.Add(tag7);
+                        item.Tags.Add(tag7);
                     }
 
                     if (!string.IsNullOrEmpty(tag8))
                     {
-                        item.EFormTags.Add(tag8);
+                        item.Tags.Add(tag8);
                     }
 
                     if (!string.IsNullOrEmpty(tag9))
                     {
-                        item.EFormTags.Add(tag9);
+                        item.Tags.Add(tag9);
                     }
 
                     if (!string.IsNullOrEmpty(tag10))
                     {
-                        item.EFormTags.Add(tag10);
+                        item.Tags.Add(tag10);
                     }
 
                     result.Add(item);

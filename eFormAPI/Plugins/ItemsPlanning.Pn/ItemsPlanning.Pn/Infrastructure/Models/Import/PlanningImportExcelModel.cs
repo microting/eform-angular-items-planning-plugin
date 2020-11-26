@@ -44,8 +44,9 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Import
         public int? DayOfMonth { get; set; }
 
         public string EFormName { get; set; }
+        public int? EFormId { get; set; }
 
-        public List<string> EFormTags { get; set; }
+        public List<string> Tags { get; set; }
             = new List<string>();
 
         public List<PlanningImportFolderModel> Folders { get; set; }
