@@ -45,7 +45,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
                                     {
                                         Id = x.Id,
                                         Name = x.Name
-                                    }).ToListAsync();
+                                    }).OrderBy(x => x.Name).ToListAsync();
 
                 return new OperationDataResult<List<CommonDictionaryModel>>(
                     true,
