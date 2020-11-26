@@ -30,7 +30,7 @@ export class ItemsPlanningPnPairingService extends BaseService {
     super(_http, router, toastrService);
   }
 
-  getAllPairings(): Observable<OperationDataResult<PairingsModel>> {
+  getAllPairings(model: {tagIds: number[]}): Observable<OperationDataResult<PairingsModel>> {
     return this.get(ItemsPlanningPnPairingMethods.Pairings);
   }
 

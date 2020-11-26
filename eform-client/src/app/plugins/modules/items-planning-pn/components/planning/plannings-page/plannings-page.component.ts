@@ -4,8 +4,8 @@ import { PageSettingsModel } from 'src/app/common/models/settings';
 import { SharedPnService } from 'src/app/plugins/modules/shared/services';
 import {
   PlanningPnModel,
-  PlanningsRequestModel,
   PlanningsPnModel,
+  PlanningsRequestModel,
 } from '../../../models/plannings';
 import {
   ItemsPlanningPnPlanningsService,
@@ -17,9 +17,14 @@ import { debounceTime } from 'rxjs/operators';
 import { Subject, Subscription } from 'rxjs';
 import { PlanningTagsComponent } from '../planning-tags/planning-tags.component';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import {CommonDictionaryModel, FolderDto, SiteDto, SiteNameDto} from 'src/app/common/models';
-import {FoldersService, SitesService} from 'src/app/common/services/advanced';
+import {
+  CommonDictionaryModel,
+  FolderDto,
+  SiteNameDto,
+} from 'src/app/common/models';
+import { FoldersService, SitesService } from 'src/app/common/services/advanced';
 import { composeFolderName } from 'src/app/common/helpers/folder-name.helper';
+import { AuthService } from 'src/app/common/services';
 
 @AutoUnsubscribe()
 @Component({
@@ -31,6 +36,7 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
   @ViewChild('deletePlanningModal', { static: false }) deletePlanningModal;
   @ViewChild('modalCasesColumns', { static: false }) modalCasesColumnsModal;
   @ViewChild('assignSitesModal', { static: false }) assignSitesModal;
+  @ViewChild('modalPlanningsImport', { static: false }) modalPlanningsImport;
   @ViewChild('planningTagsModal') planningTagsModal: PlanningTagsComponent;
 
   descriptionSearchSubject = new Subject();
@@ -52,7 +58,8 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
     private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
     private tagsService: ItemsPlanningPnTagsService,
     private foldersService: FoldersService,
-    private sitesService: SitesService
+    private sitesService: SitesService,
+    private authService: AuthService
   ) {
     this.nameSearchSubject.pipe(debounceTime(500)).subscribe((val) => {
       this.planningsRequestModel.nameFilter = val.toString();
@@ -66,6 +73,10 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
 
   get pluginClaimsHelper() {
     return PluginClaimsHelper;
+  }
+
+  get userRole() {
+    return this.authService.currentRole;
   }
 
   get itemsPlanningPnClaims() {
@@ -116,6 +127,7 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
     this.getPlanningsSub$ = this.itemsPlanningPnPlanningsService
       .getAllPlannings(this.planningsRequestModel)
       .subscribe((data) => {
+        debugger;
         if (data && data.success) {
           // map folder names to items
           if (data.model.total > 0) {
@@ -127,7 +139,10 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
                   item: {
                     // return same item with different folder name
                     ...x.item,
-                    eFormSdkFolderName: composeFolderName(x.item.eFormSdkFolderId, this.foldersListDto)
+                    eFormSdkFolderName: composeFolderName(
+                      x.item.eFormSdkFolderId,
+                      this.foldersListDto
+                    ),
                   },
                 };
               }),
@@ -229,4 +244,8 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {}
+
+  openPlanningsImportModal() {
+    this.modalPlanningsImport.show();
+  }
 }

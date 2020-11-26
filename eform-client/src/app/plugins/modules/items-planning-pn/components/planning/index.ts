@@ -8,4 +8,5 @@ export * from './planning-folders-modal/planning-folders-modal.component';
 export * from './uploaded-data-pdf/uploaded-data-pdf.component';
 export * from './uploaded-data-delete/uploaded-data-delete.component';
 export * from './planning-tags/planning-tags.component';
+export * from './plannings-bulk-import-modal/plannings-bulk-import-modal.component';
 

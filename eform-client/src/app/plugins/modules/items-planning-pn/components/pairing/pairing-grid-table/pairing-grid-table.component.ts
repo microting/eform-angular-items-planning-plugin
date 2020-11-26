@@ -21,4 +21,12 @@ export class PairingGridTableComponent implements OnInit {
       deviceUserId,
     });
   }
+
+  selectDeviceUserColumn($event: MouseEvent, i: number) {
+
+  }
+
+  selectPlanningRow($event: MouseEvent, y: number) {
+
+  }
 }
