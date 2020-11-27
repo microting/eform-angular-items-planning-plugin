@@ -218,10 +218,11 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         // Folders
                         var folders = await sdkDbContext.folders
                             .AsNoTracking()
-                            .Select(x => new
+                            .Select(x => new PlanningImportFolderModel
                             {
-                                x.Id,
-                                Name = x.Name.ToLower(),
+                                Id = x.Id,
+                                Label = x.Name.ToLower(),
+                                Description = x.Description,
                             }).ToListAsync();
 
                         // Process folders
@@ -230,7 +231,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             for (var i = 0; i < excelModel.Folders.Count; i++)
                             {
                                 var folderModel = excelModel.Folders[i];
-                                var sdkFolder = folders.FirstOrDefault(x => x.Name == folderModel.Label.ToLower());
+                                var sdkFolder = folders.FirstOrDefault(x => x.Label == folderModel.Label.ToLower());
 
                                 if (sdkFolder == null)
                                 {
@@ -238,17 +239,20 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                     if (i > 0)
                                     {
                                         var parentId = excelModel.Folders[i - 1].Id;
-                                        await core.FolderCreate(folderModel.Label, folderModel.Description,
+                                        folderModel.Id = await core.FolderCreate(
+                                            folderModel.Label,
+                                            folderModel.Description,
                                             parentId);
-                                        // TODO folderModel.Id
                                     }
                                     else
                                     {
-                                        await core.FolderCreate(folderModel.Label, folderModel.Description, null);
-                                        // TODO folderModel.Id
+                                        folderModel.Id = await core.FolderCreate(
+                                            folderModel.Label,
+                                            folderModel.Description,
+                                            null);
                                     }
 
-                                    // TODO add new item to folders list
+                                    folders.Add(folderModel);
                                 }
                                 else
                                 {
