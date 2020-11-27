@@ -15,6 +15,7 @@ export class PlanningsBulkImportModalComponent implements OnInit {
   xlsxPlanningsFileUploader: FileUploader = new FileUploader({
     url: '/api/items-planning-pn/plannings/import', authToken: this.authService.bearerToken
   });
+  errors: {row: number, col: number, message: string}[];
 
   constructor(private toastrService: ToastrService,
               private translateService: TranslateService,
@@ -23,19 +24,25 @@ export class PlanningsBulkImportModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.xlsxPlanningsFileUploader.onSuccessItem = () => {
-      this.xlsxPlanningsFileUploader.clearQueue();
-      this.toastrService.success(this.translateService.instant('Import has been finished successfully'));
+    this.xlsxPlanningsFileUploader.onSuccessItem = (item, response) => {
+      this.errors = JSON.parse(response).model.errors;
+      if (!this.errors) {
+        this.xlsxPlanningsFileUploader.clearQueue();
+        this.toastrService.success(this.translateService.instant('Import has been finished successfully'));
+        this.frame.hide();
+      } else {
+        this.toastrService.warning(this.translateService.instant('Import has been finished partially'));
+      }
       this.loaderService.isLoading.next(false);
-      // this.frame.hide();
     };
     this.xlsxPlanningsFileUploader.onErrorItem = () => {
-      this.xlsxPlanningsFileUploader.clearQueue();
+      // this.xlsxPlanningsFileUploader.clearQueue();
       this.toastrService.error(this.translateService.instant('Error while making import'));
     };
     this.xlsxPlanningsFileUploader.onAfterAddingFile = f => {
       if (this.xlsxPlanningsFileUploader.queue.length > 1) {
         this.xlsxPlanningsFileUploader.removeFromQueue(this.xlsxPlanningsFileUploader.queue[0]);
+        this.errors = [];
       }
     };
   }

@@ -1,5 +1,5 @@
 <div mdbModal class="modal fade" #frame="mdbModal">
-  <div class="modal-dialog modal-md">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h3>{{ 'Upload excel file' | translate }}</h3>
@@ -52,6 +52,42 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="row p-1 mt-4 table-responsive no-gutters">
+            <table
+              mdbTable
+              striped="true"
+              hover="true"
+              small="true"
+              class="z-depth-1 text-center"
+            >
+              <thead>
+              <tr>
+                <th scope="col">
+                  {{ 'Column' | translate }}
+                </th>
+                <th scope="col">
+                  {{ 'Row' | translate }}
+                </th>
+                <th scope="col">
+                  {{ 'Error' | translate }}
+                </th>
+              </tr>
+              </thead>
+              <tbody id="tableBody">
+              <tr *ngFor="let error of errors">
+                <td id="errorColumn">
+                  {{ error.col }}
+                </td>
+                <td id="errorRow">
+                  {{ error.row }}
+                </td>
+                <td id="errorMessage">
+                  {{ error.message }}
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
