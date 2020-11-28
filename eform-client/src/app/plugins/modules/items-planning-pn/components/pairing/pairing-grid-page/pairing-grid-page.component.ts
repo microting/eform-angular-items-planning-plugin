@@ -43,6 +43,7 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getAllSites();
     this.getAllPairings();
+    this.getTags();
   }
 
   getAllSites() {

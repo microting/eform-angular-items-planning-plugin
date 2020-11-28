@@ -32,7 +32,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
 
     public interface IPairingService
     {
-        Task<OperationDataResult<PairingsModel>> GetAllPairings();
+        Task<OperationDataResult<PairingsModel>> GetAllPairings(PairingRequestModel pairingRequestModel);
         Task<OperationResult> PairSingle(PlanningAssignSitesModel requestModel);
         Task<OperationResult> UpdatePairings(List<PairingUpdateModel> updateModels);
     }

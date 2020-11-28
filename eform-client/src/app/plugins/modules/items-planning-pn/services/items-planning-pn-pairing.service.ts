@@ -31,7 +31,7 @@ export class ItemsPlanningPnPairingService extends BaseService {
   }
 
   getAllPairings(model: {tagIds: number[]}): Observable<OperationDataResult<PairingsModel>> {
-    return this.get(ItemsPlanningPnPairingMethods.Pairings);
+    return this.post(ItemsPlanningPnPairingMethods.Pairings, model);
   }
 
   pairSingle(model: PlanningAssignSitesModel): Observable<OperationResult> {

@@ -43,11 +43,11 @@ namespace ItemsPlanning.Pn.Controllers
             _pairingService = pairingService;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("api/items-planning-pn/pairings")]
-        public async Task<OperationDataResult<PairingsModel>> GetAllPairings()
+        public async Task<OperationDataResult<PairingsModel>> GetAllPairings([FromBody] PairingRequestModel requestModel)
         {
-            return await _pairingService.GetAllPairings();
+            return await _pairingService.GetAllPairings(requestModel);
         }
 
         [HttpPut]
