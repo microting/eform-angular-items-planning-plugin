@@ -1,6 +1,6 @@
 <div class="row p-1 mt-4 table-responsive no-gutters">
   <table
-    *ngIf="
+    *ngIf=" pairingsModel.deviceUsers && pairingsModel.pairings &&
       pairingsModel.deviceUsers.length > 0 && pairingsModel.pairings.length > 0
     "
     mdbTable
@@ -20,11 +20,13 @@
           <div class="d-flex flex-column">
             <div>{{ deviceUser }}</div>
             <div>
-              <div class="mat-checkbox">
+              <div class="mat-checkbox" *ngIf="selectedColCheckboxes[i]">
                 <input
                   id="deviceUserColumnCheckbox{{ i }}"
                   name="deviceUserColumnCheckbox{{ i }}"
                   (click)="selectDeviceUserColumn($event, i)"
+                  [value]="selectedColCheckboxes[i].checked"
+                  [checked]="selectedColCheckboxes[i].checked"
                   type="checkbox"
                 />
                 <label for="deviceUserColumnCheckbox{{ i }}"></label>
@@ -40,12 +42,14 @@
           <div class="d-flex justify-content-between">
             <div class="text-center">{{ pairing.planningName }}</div>
             <div>
-              <div class="mat-checkbox">
+              <div class="mat-checkbox" *ngIf="selectedRowCheckboxes[y]">
                 <input
                   id="planningRowCheckbox{{ y }}"
                   name="planningRowCheckbox{{ y }}"
                   (click)="selectPlanningRow($event, y)"
                   type="checkbox"
+                  [value]="selectedRowCheckboxes[y].checked"
+                  [checked]="selectedRowCheckboxes[y].checked"
                 />
                 <label for="planningRowCheckbox{{ y }}"></label>
               </div>

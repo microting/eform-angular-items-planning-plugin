@@ -61,7 +61,6 @@ export class PlanningTagsComponent implements OnInit, OnDestroy {
     this.createTag$ = this.tagsService
       .createPlanningTag(model)
       .subscribe((data) => {
-        debugger;
         if (data && data.success) {
           this.tagsModal.tagCreateModal.hide();
           this.tagsModal.show();

@@ -30,6 +30,8 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
   pairings: PairingsModel = new PairingsModel();
   availableTags: CommonDictionaryModel[] = [];
   pairingsRequestModal: {tagIds: number[]} = {tagIds: []};
+  selectedColCheckboxes = new Array<{ colNumber: number, checked: boolean }>();
+  selectedRowCheckboxes = new Array<{ rowNumber: number, checked: boolean }>();
 
   pairingsForUpdate: PairingUpdateModel[] = [];
 
@@ -70,6 +72,9 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
       .subscribe((operation) => {
         if (operation && operation.success) {
           this.pairings = operation.model;
+          this.setSelectedColCheckboxes();
+          this.setSelectedRowCheckboxes();
+          this.pairingsForUpdate.splice(0, this.pairingsForUpdate.length);
         }
       });
   }
@@ -80,6 +85,7 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
       .subscribe((operation) => {
         if (operation && operation.success) {
           this.updatePairingsModal.hide();
+          this.getAllPairings();
         }
       });
   }
@@ -104,15 +110,48 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
         x.deviceUserId === model.deviceUserId &&
         x.planningId === model.planningId
     );
+    // If pairing found in updates and clicked again - remove from updates
     if (foundObject > -1) {
-      // If pairing found in updates and clicked again - remove from updates
-      this.pairingsForUpdate = R.remove(foundObject, 1, this.pairingsForUpdate);
+      // Value does not need to be deleted if the pairing property is equal.
+      if (this.pairingsForUpdate[foundObject].paired !== model.paired) {
+        this.pairingsForUpdate = R.remove(foundObject, 1, this.pairingsForUpdate);
+      }
     } else {
-      this.pairingsForUpdate = [...this.pairingsForUpdate, model];
+      // Check whether we need to add an update to the array, because the object may not need to be updated if the same object was passed
+      const i = this.pairings.pairings.findIndex((x) =>
+        x.planningId === model.planningId && x.pairingValues.findIndex((y) =>
+        y.deviceUserId === model.deviceUserId && y.paired !== model.paired) !== -1);
+      if (i > -1) {
+        this.pairingsForUpdate = [...this.pairingsForUpdate, model];
+      }
     }
+    // Set the checkboxes to true or false, so when you select a row or column, these values will not change automatically
+    this.pairings.pairings.forEach(pairing => {
+      if (pairing.planningId === model.planningId) {
+        pairing.pairingValues.forEach(pairingValue => {
+          if (pairingValue.deviceUserId === model.deviceUserId) {
+            pairingValue.paired = model.paired;
+          }
+        });
+      }
+    });
   }
 
   showUpdatePairingsModal() {
     this.updatePairingsModal.show(this.pairingsForUpdate);
+  }
+
+  setSelectedColCheckboxes() {
+    this.selectedColCheckboxes.splice(0, this.selectedColCheckboxes.length || 0);
+    for (let i = 0; i < this.pairings.pairings[0].pairingValues.length; i++) {
+      this.selectedColCheckboxes.push({checked: false, colNumber: i});
+    }
+  }
+
+  setSelectedRowCheckboxes() {
+    this.selectedRowCheckboxes.splice(0, this.selectedRowCheckboxes.length || 0);
+    for (let i = 0; i < this.pairings.pairings.length; i++) {
+      this.selectedRowCheckboxes.push({checked: false, rowNumber: i});
+    }
   }
 }

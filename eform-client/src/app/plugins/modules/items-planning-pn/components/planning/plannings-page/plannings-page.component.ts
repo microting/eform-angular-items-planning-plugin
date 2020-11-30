@@ -127,7 +127,6 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
     this.getPlanningsSub$ = this.itemsPlanningPnPlanningsService
       .getAllPlannings(this.planningsRequestModel)
       .subscribe((data) => {
-        debugger;
         if (data && data.success) {
           // map folder names to items
           if (data.model.total > 0) {
