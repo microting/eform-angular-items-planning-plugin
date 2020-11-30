@@ -167,199 +167,199 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
 
                 // Process plannings
-                using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+                //using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+                //{
+                try
                 {
-                    try
-                    {
-                        var sdkDbContext = core.dbContextHelper.GetDbContext();
+                    var sdkDbContext = core.dbContextHelper.GetDbContext();
 
-                        // Process planning tags
-                        var tags = await _dbContext.PlanningTags
-                            .AsNoTracking()
-                            .Select(x => new
-                            {
-                                x.Id,
-                                Name = x.Name.ToLower(),
-                            }).ToListAsync();
-
-                        var fileTags = fileResult.SelectMany(x => x.Tags)
-                            .GroupBy(x => x)
-                            .Select(x => x.Key)
-                            .ToList();
-
-                        foreach (var fileTag in fileTags)
+                    // Process planning tags
+                    var tags = await _dbContext.PlanningTags
+                        .AsNoTracking()
+                        .Select(x => new
                         {
-                            var planningTagExist = tags.FirstOrDefault(x => x.Name == fileTag.ToLower());
+                            x.Id,
+                            Name = x.Name.ToLower(),
+                        }).ToListAsync();
 
-                            if (planningTagExist == null)
+                    var fileTags = fileResult.SelectMany(x => x.Tags)
+                        .GroupBy(x => x)
+                        .Select(x => x.Key)
+                        .ToList();
+
+                    foreach (var fileTag in fileTags)
+                    {
+                        var planningTagExist = tags.FirstOrDefault(x => x.Name == fileTag.ToLower());
+
+                        if (planningTagExist == null)
+                        {
+                            var planningTag = new PlanningTag
                             {
-                                var planningTag = new PlanningTag
+                                Name = fileTag,
+                                CreatedAt = DateTime.UtcNow,
+                                CreatedByUserId = _userService.UserId,
+                                UpdatedAt = DateTime.UtcNow,
+                                UpdatedByUserId = _userService.UserId,
+                                Version = 1,
+                            };
+                            await _dbContext.PlanningTags.AddAsync(planningTag);
+                            await _dbContext.SaveChangesAsync();
+                        }
+                    }
+
+                    tags = await _dbContext.PlanningTags
+                        .AsNoTracking()
+                        .Select(x => new
+                        {
+                            x.Id,
+                            Name = x.Name.ToLower(),
+                        }).ToListAsync();
+
+                    // Folders
+                    var folders = await sdkDbContext.folders
+                        .AsNoTracking()
+                        .Select(x => new PlanningImportFolderModel
+                        {
+                            Id = x.Id,
+                            Label = x.Name.ToLower(),
+                            Description = x.Description,
+                        }).ToListAsync();
+
+                    // Process folders
+                    foreach (var excelModel in fileResult)
+                    {
+                        for (var i = 0; i < excelModel.Folders.Count; i++)
+                        {
+                            var folderModel = excelModel.Folders[i];
+                            var sdkFolder = folders.FirstOrDefault(x => x.Label == folderModel.Label.ToLower());
+
+                            if (sdkFolder == null)
+                            {
+                                // If it's not a first folder then attach previous folder
+                                if (i > 0)
                                 {
-                                    Name = fileTag,
+                                    var parentId = excelModel.Folders[i - 1].Id;
+                                    folderModel.Id = await core.FolderCreate(
+                                        folderModel.Label,
+                                        folderModel.Description,
+                                        parentId);
+                                }
+                                else
+                                {
+                                    folderModel.Id = await core.FolderCreate(
+                                        folderModel.Label,
+                                        folderModel.Description,
+                                        null);
+                                }
+
+                                folders.Add(folderModel);
+                            }
+                            else
+                            {
+                                folderModel.Id = sdkFolder.Id;
+                            }
+                        }
+                    }
+
+                    // Process plannings
+                    foreach (var excelModel in fileResult)
+                    {
+                        var tagIds = new List<int>();
+                        if (excelModel.Tags.Any())
+                        {
+                            foreach (var tagName in excelModel.Tags)
+                            {
+                                var planningTagExist = tags.FirstOrDefault(x => x.Name == tagName.ToLower());
+
+                                if (planningTagExist != null)
+                                {
+                                    tagIds.Add(planningTagExist.Id);
+                                }
+                            }
+                        }
+
+                        var sdkFolder = excelModel.Folders.Last();
+
+                        var planning = new Planning
+                        {
+                            Name = excelModel.ItemName,
+                            CreatedByUserId = _userService.UserId,
+                            CreatedAt = DateTime.UtcNow,
+                            RepeatUntil = excelModel.RepeatUntil,
+                            DayOfWeek = excelModel.DayOfWeek,
+                            DayOfMonth = excelModel.DayOfMonth,
+                            Enabled = true,
+                            RelatedEFormId = (int) excelModel.EFormId,
+                            RelatedEFormName = excelModel.EFormName,
+                            PlanningsTags = new List<PlanningsTags>()
+                        };
+
+                        if (excelModel.RepeatEvery != null)
+                        {
+                            planning.RepeatEvery = (int) excelModel.RepeatEvery;
+                        }
+
+                        if (excelModel.RepeatType != null)
+                        {
+                            planning.RepeatType = (RepeatType) excelModel.RepeatType;
+                        }
+
+                        if (sdkFolder != null)
+                        {
+                            planning.SdkFolderName = sdkFolder.Label;
+                        }
+
+                        planning.StartDate = DateTime.UtcNow;
+
+                        foreach (var tagId in tagIds)
+                        {
+                            planning.PlanningsTags.Add(
+                                new PlanningsTags
+                                {
                                     CreatedAt = DateTime.UtcNow,
                                     CreatedByUserId = _userService.UserId,
                                     UpdatedAt = DateTime.UtcNow,
                                     UpdatedByUserId = _userService.UserId,
                                     Version = 1,
-                                };
-                                await _dbContext.PlanningTags.AddAsync(planningTag);
-                                await _dbContext.SaveChangesAsync();
-                            }
+                                    PlanningTagId = tagId
+                                });
                         }
 
-                        tags = await _dbContext.PlanningTags
-                            .AsNoTracking()
-                            .Select(x => new
-                            {
-                                x.Id,
-                                Name = x.Name.ToLower(),
-                            }).ToListAsync();
-
-                        // Folders
-                        var folders = await sdkDbContext.folders
-                            .AsNoTracking()
-                            .Select(x => new PlanningImportFolderModel
-                            {
-                                Id = x.Id,
-                                Label = x.Name.ToLower(),
-                                Description = x.Description,
-                            }).ToListAsync();
-
-                        // Process folders
-                        foreach (var excelModel in fileResult)
+                        await planning.Create(_dbContext);
+                        var item = new Item()
                         {
-                            for (var i = 0; i < excelModel.Folders.Count; i++)
-                            {
-                                var folderModel = excelModel.Folders[i];
-                                var sdkFolder = folders.FirstOrDefault(x => x.Label == folderModel.Label.ToLower());
+                            LocationCode = string.Empty,
+                            ItemNumber = string.Empty,
+                            Description = string.Empty,
+                            Name = string.Empty,
+                            Version = 1,
+                            WorkflowState = Constants.WorkflowStates.Created,
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow,
+                            Enabled = true,
+                            BuildYear = string.Empty,
+                            Type = string.Empty,
+                            PlanningId = planning.Id,
+                            CreatedByUserId = _userService.UserId,
+                            UpdatedByUserId = _userService.UserId,
+                        };
 
-                                if (sdkFolder == null)
-                                {
-                                    // If it's not a first folder then attach previous folder
-                                    if (i > 0)
-                                    {
-                                        var parentId = excelModel.Folders[i - 1].Id;
-                                        folderModel.Id = await core.FolderCreate(
-                                            folderModel.Label,
-                                            folderModel.Description,
-                                            parentId);
-                                    }
-                                    else
-                                    {
-                                        folderModel.Id = await core.FolderCreate(
-                                            folderModel.Label,
-                                            folderModel.Description,
-                                            null);
-                                    }
-
-                                    folders.Add(folderModel);
-                                }
-                                else
-                                {
-                                    folderModel.Id = sdkFolder.Id;
-                                }
-                            }
-                        }
-
-                        // Process plannings
-                        foreach (var excelModel in fileResult)
+                        if (sdkFolder != null)
                         {
-                            var tagIds = new List<int>();
-                            if (excelModel.Tags.Any())
-                            {
-                                foreach (var tagName in excelModel.Tags)
-                                {
-                                    var planningTagExist = tags.FirstOrDefault(x => x.Name == tagName.ToLower());
-
-                                    if (planningTagExist != null)
-                                    {
-                                        tagIds.Add(planningTagExist.Id);
-                                    }
-                                }
-                            }
-
-                            var sdkFolder = excelModel.Folders.Last();
-
-                            var planning = new Planning
-                            {
-                                Name = excelModel.ItemName,
-                                CreatedByUserId = _userService.UserId,
-                                CreatedAt = DateTime.UtcNow,
-                                RepeatUntil = excelModel.RepeatUntil,
-                                DayOfWeek = excelModel.DayOfWeek,
-                                DayOfMonth = excelModel.DayOfMonth,
-                                Enabled = true,
-                                RelatedEFormId = (int) excelModel.EFormId,
-                                RelatedEFormName = excelModel.EFormName,
-                                PlanningsTags = new List<PlanningsTags>()
-                            };
-
-                            if (excelModel.RepeatEvery != null)
-                            {
-                                planning.RepeatEvery = (int) excelModel.RepeatEvery;
-                            }
-
-                            if (excelModel.RepeatType != null)
-                            {
-                                planning.RepeatType = (RepeatType) excelModel.RepeatType;
-                            }
-
-                            if (sdkFolder != null)
-                            {
-                                planning.SdkFolderName = sdkFolder.Label;
-                            }
-
-                            planning.StartDate = DateTime.UtcNow;
-
-                            foreach (var tagId in tagIds)
-                            {
-                                planning.PlanningsTags.Add(
-                                    new PlanningsTags
-                                    {
-                                        CreatedAt = DateTime.UtcNow,
-                                        CreatedByUserId = _userService.UserId,
-                                        UpdatedAt = DateTime.UtcNow,
-                                        UpdatedByUserId = _userService.UserId,
-                                        Version = 1,
-                                        PlanningTagId = tagId
-                                    });
-                            }
-
-                            await planning.Create(_dbContext);
-                            var item = new Item()
-                            {
-                                LocationCode = string.Empty,
-                                ItemNumber = string.Empty,
-                                Description = string.Empty,
-                                Name = string.Empty,
-                                Version = 1,
-                                WorkflowState = Constants.WorkflowStates.Created,
-                                CreatedAt = DateTime.UtcNow,
-                                UpdatedAt = DateTime.UtcNow,
-                                Enabled = true,
-                                BuildYear = string.Empty,
-                                Type = string.Empty,
-                                PlanningId = planning.Id,
-                                CreatedByUserId = _userService.UserId,
-                                UpdatedByUserId = _userService.UserId,
-                            };
-
-                            if (sdkFolder != null)
-                            {
-                                item.eFormSdkFolderId = (int) sdkFolder.Id;
-                            }
-
-                            await item.Create(_dbContext);
+                            item.eFormSdkFolderId = (int) sdkFolder.Id;
                         }
 
-                        await transaction.CommitAsync();
+                        await item.Create(_dbContext);
                     }
-                    catch
-                    {
-                        await transaction.RollbackAsync();
-                        throw;
-                    }
+
+                    //await transaction.CommitAsync();
                 }
+                catch
+                {
+                    //await transaction.RollbackAsync();
+                    throw;
+                }
+                //}
 
                 result.Message = _itemsPlanningLocalizationService.GetString("ImportCompletedSuccessfully");
 
