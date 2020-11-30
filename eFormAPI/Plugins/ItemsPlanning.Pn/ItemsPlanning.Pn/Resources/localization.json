@@ -418,5 +418,12 @@
       "da": "Eform ikke fundet",
       "en-US": "Eform not found"
     }
+  },
+  {
+    "Key": "PlanningWithNameAlreadyExists",
+    "LocalizedValue": {
+      "da": "Planlægning med navnet {0} findes allerede",
+      "en-US": "Planning with name {0} already exists"
+    }
   }
 ]

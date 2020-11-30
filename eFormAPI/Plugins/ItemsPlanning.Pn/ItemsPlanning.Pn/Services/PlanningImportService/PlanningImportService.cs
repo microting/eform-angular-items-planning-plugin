@@ -89,6 +89,13 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                 // Parse excel file
                 var fileResult = _planningExcelService.ParsePlanningImportFile(excelStream);
 
+                // Get planning names list
+                var planningNames = await _dbContext.Plannings
+                    .AsNoTracking()
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Select(x => x.Item.Name)
+                    .ToListAsync();
+
                 // Validation
                 var excelErrors = new List<ExcelParseErrorModel>();
 
@@ -127,6 +134,27 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             Row = excelModel.ExcelRow,
                             Message = _itemsPlanningLocalizationService.GetString(
                                 "FolderNotFound")
+                        };
+
+                        excelErrors.Add(error);
+                    }
+
+                    // Find planning name
+                    var planningName = planningNames.FirstOrDefault(x =>
+                        string.Equals(
+                            x,
+                            excelModel.ItemName,
+                            StringComparison.CurrentCultureIgnoreCase));
+
+                    if (!string.IsNullOrEmpty(planningName))
+                    {
+                        var error = new ExcelParseErrorModel
+                        {
+                            Col = PlanningImportExcelConsts.PlanningItemNameCol,
+                            Row = excelModel.ExcelRow,
+                            Message = _itemsPlanningLocalizationService.GetString(
+                                "PlanningWithNameAlreadyExists",
+                                excelModel.ItemName)
                         };
 
                         excelErrors.Add(error);
@@ -176,6 +204,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                     // Process planning tags
                     var tags = await _dbContext.PlanningTags
                         .AsNoTracking()
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Select(x => new
                         {
                             x.Id,
@@ -222,6 +251,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                     tags = await _dbContext.PlanningTags
                         .AsNoTracking()
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Select(x => new
                         {
                             x.Id,
@@ -231,6 +261,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                     // Folders
                     var folders = await sdkDbContext.folders
                         .AsNoTracking()
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Select(x => new PlanningImportFolderModel
                         {
                             Id = x.Id,
