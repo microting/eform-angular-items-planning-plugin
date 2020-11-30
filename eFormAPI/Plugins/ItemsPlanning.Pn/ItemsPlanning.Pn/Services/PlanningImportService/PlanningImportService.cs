@@ -182,6 +182,15 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             Name = x.Name.ToLower(),
                         }).ToListAsync();
 
+                    // Trim tag names
+                    foreach (var excelModel in fileResult)
+                    {
+                        for (var y = 0; y < excelModel.Tags.Count; y++)
+                        {
+                            excelModel.Tags[y] = excelModel.Tags[y].Trim();
+                        }
+                    }
+
                     var fileTags = fileResult.SelectMany(x => x.Tags)
                         .GroupBy(x => x)
                         .Select(x => x.Key)
@@ -189,7 +198,11 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                     foreach (var fileTag in fileTags)
                     {
-                        var planningTagExist = tags.FirstOrDefault(x => x.Name == fileTag.ToLower());
+                        var planningTagExist = tags.FirstOrDefault(x => 
+                            string.Equals(
+                                x.Name,
+                                fileTag,
+                                StringComparison.CurrentCultureIgnoreCase));
 
                         if (planningTagExist == null)
                         {
@@ -335,7 +348,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             LocationCode = string.Empty,
                             ItemNumber = string.Empty,
                             Description = string.Empty,
-                            Name = string.Empty,
+                            Name = excelModel.ItemName,
                             Version = 1,
                             WorkflowState = Constants.WorkflowStates.Created,
                             CreatedAt = DateTime.UtcNow,
