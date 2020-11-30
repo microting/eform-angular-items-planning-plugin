@@ -231,7 +231,11 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         for (var i = 0; i < excelModel.Folders.Count; i++)
                         {
                             var folderModel = excelModel.Folders[i];
-                            var sdkFolder = folders.FirstOrDefault(x => x.Label == folderModel.Label.ToLower());
+                            var sdkFolder = folders.FirstOrDefault(x =>
+                                string.Equals(
+                                    x.Label,
+                                    folderModel.Label,
+                                    StringComparison.CurrentCultureIgnoreCase));
 
                             if (sdkFolder == null)
                             {
