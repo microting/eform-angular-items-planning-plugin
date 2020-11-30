@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {FileUploader} from 'ng2-file-upload';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
@@ -12,6 +12,9 @@ import {LoaderService} from 'src/app/common/services/loeader.service';
 })
 export class PlanningsBulkImportModalComponent implements OnInit {
   @ViewChild('frame', {static: true}) frame;
+  @ViewChild('xlsxPlannings', { static: false })
+  @Output() importFinished = new EventEmitter<void>();
+  xlsxPlannings: ElementRef;
   xlsxPlanningsFileUploader: FileUploader = new FileUploader({
     url: '/api/items-planning-pn/plannings/import', authToken: this.authService.bearerToken
   });
@@ -25,25 +28,39 @@ export class PlanningsBulkImportModalComponent implements OnInit {
 
   ngOnInit() {
     this.xlsxPlanningsFileUploader.onSuccessItem = (item, response) => {
-      this.errors = JSON.parse(response).model.errors;
-      if (!this.errors) {
+      const model = JSON.parse(response).model;
+      if (model) {
+        this.errors = JSON.parse(response).model.errors;
         this.xlsxPlanningsFileUploader.clearQueue();
-        this.toastrService.success(this.translateService.instant('Import has been finished successfully'));
-        this.frame.hide();
+      }
+      if (this.errors && this.errors.length > 0) {
+        this.toastrService.warning(
+          this.translateService.instant('Import has been finished partially')
+        );
       } else {
-        this.toastrService.warning(this.translateService.instant('Import has been finished partially'));
+        this.xlsxPlanningsFileUploader.clearQueue();
+        this.toastrService.success(
+          this.translateService.instant('Import has been finished successfully')
+        );
+        this.frame.hide();
       }
       this.loaderService.isLoading.next(false);
+      this.xlsxPlannings.nativeElement.value = '';
     };
     this.xlsxPlanningsFileUploader.onErrorItem = () => {
-      // this.xlsxPlanningsFileUploader.clearQueue();
-      this.toastrService.error(this.translateService.instant('Error while making import'));
+      this.xlsxPlanningsFileUploader.clearQueue();
+      this.toastrService.error(
+        this.translateService.instant('Error while making import')
+      );
+      this.xlsxPlannings.nativeElement.value = '';
     };
-    this.xlsxPlanningsFileUploader.onAfterAddingFile = f => {
+    this.xlsxPlanningsFileUploader.onAfterAddingFile = (f) => {
       if (this.xlsxPlanningsFileUploader.queue.length > 1) {
-        this.xlsxPlanningsFileUploader.removeFromQueue(this.xlsxPlanningsFileUploader.queue[0]);
-        this.errors = [];
+        this.xlsxPlanningsFileUploader.removeFromQueue(
+          this.xlsxPlanningsFileUploader.queue[0]
+        );
       }
+      this.errors = [];
     };
   }
 

@@ -1,5 +1,5 @@
 <div mdbModal class="modal fade" #frame="mdbModal">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h3>{{ 'Upload excel file' | translate }}</h3>
@@ -12,7 +12,7 @@
                 mdbBtn
                 class="btn-primary btn-small-height"
                 *ngIf="xlsxPlanningsFileUploader?.queue?.length == 0"
-                (click)="xlsxEforms.click()"
+                (click)="xlsxPlannings.click()"
               >
                 {{ 'Upload' | translate }}
               </button>
@@ -20,7 +20,7 @@
                 mdbBtn
                 class="btn-warning btn-small-height"
                 *ngIf="xlsxPlanningsFileUploader?.queue?.length > 0"
-                (click)="xlsxEforms.click()"
+                (click)="xlsxPlannings.click()"
               >
                 {{ 'Pending' | translate }}
               </button>
@@ -29,7 +29,7 @@
                 type="file"
                 ng2FileSelect
                 [uploader]="xlsxPlanningsFileUploader"
-                #xlsxEforms
+                #xlsxPlannings
                 id="zipInput"
               />
             </div>

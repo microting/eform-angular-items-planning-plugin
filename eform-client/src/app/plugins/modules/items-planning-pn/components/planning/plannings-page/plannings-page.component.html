@@ -1,9 +1,13 @@
 <subheader-pn [title]="'Plannings' | translate">
   <div class="p-3">
-    <button mdbBtn class="btn-accent text-black-50 btn-icon"
-            id="importPlanningsBtn"
-            mdbTooltip="{{ 'Import plannings' | translate }}" *ngIf="userRole === 'admin'"
-            (click)="openPlanningsImportModal()">
+    <button
+      mdbBtn
+      class="btn-accent text-black-50 btn-icon"
+      id="importPlanningsBtn"
+      mdbTooltip="{{ 'Import plannings' | translate }}"
+      *ngIf="userRole === 'admin'"
+      (click)="openPlanningsImportModal()"
+    >
       <fa-icon icon="file-import" [fixedWidth]="true" size="lg"></fa-icon>
     </button>
     <button
@@ -487,4 +491,7 @@
   [availableTags]="availableTags"
   (tagsChanged)="getTags()"
 ></app-planning-tags>
-<app-plannings-bulk-import-modal #modalPlanningsImport></app-plannings-bulk-import-modal>
+<app-plannings-bulk-import-modal
+  (importFinished)="getPlannings()"
+  #modalPlanningsImport
+></app-plannings-bulk-import-modal>
