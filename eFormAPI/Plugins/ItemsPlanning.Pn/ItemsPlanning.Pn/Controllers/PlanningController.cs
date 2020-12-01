@@ -26,20 +26,27 @@ namespace ItemsPlanning.Pn.Controllers
 {
     using System.Threading.Tasks;
     using Infrastructure.Models;
+    using Infrastructure.Models.Import;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Microting.ItemsPlanningBase.Infrastructure.Const;
+    using Services.PlanningImportService;
     using Services.PlanningService;
 
     [Authorize]
     public class PlanningController : Controller
     {        
         private readonly IPlanningService _planningService;
+        private readonly IPlanningImportService _planningImportService;
 
-        public PlanningController(IPlanningService planningService)
+        public PlanningController(
+            IPlanningService planningService,
+            IPlanningImportService planningImportService)
         {
             _planningService = planningService;
+            _planningImportService = planningImportService;
         }
 
         [HttpPost]
@@ -79,10 +86,17 @@ namespace ItemsPlanning.Pn.Controllers
         }
         
         [HttpPost]
-        [Route("api/items-planning-pn/plannings/import")]
+        [Route("api/items-planning-pn/plannings/import-unit")]
         public async Task<OperationResult> ImportUnit([FromBody] UnitImportModel unitImportModel)
         {
             return await _planningService.ImportUnit(unitImportModel);
+        }
+
+        [HttpPost]
+        [Route("api/items-planning-pn/plannings/import")]
+        public async Task<OperationResult> Import(PlanningExcelUploadModel uploadModel)
+        {
+            return await _planningImportService.ImportPlannings(uploadModel.File.OpenReadStream());
         }
     }
 }

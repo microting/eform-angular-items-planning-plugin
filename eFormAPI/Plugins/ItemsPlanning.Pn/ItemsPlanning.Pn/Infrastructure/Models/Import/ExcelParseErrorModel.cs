@@ -1,4 +1,4 @@
-/*
+﻿/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2020 Microting A/S
@@ -21,19 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-namespace ItemsPlanning.Pn.Services.PairingService
+namespace ItemsPlanning.Pn.Infrastructure.Models.Import
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Infrastructure.Models;
-    using Infrastructure.Models.Pairing;
-    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-
-    public interface IPairingService
+    public class ExcelParseErrorModel
     {
-        Task<OperationDataResult<PairingsModel>> GetAllPairings(PairingRequestModel pairingRequestModel);
-        Task<OperationResult> PairSingle(PlanningAssignSitesModel requestModel);
-        Task<OperationResult> UpdatePairings(List<PairingUpdateModel> updateModels);
+        public int Row { get; set; }
+        public int? Col { get; set; }
+        public string Message { get; set; }
     }
 }

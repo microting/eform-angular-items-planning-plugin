@@ -1,4 +1,4 @@
-/*
+﻿/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2020 Microting A/S
@@ -22,18 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Services.PairingService
-{
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Infrastructure.Models;
-    using Infrastructure.Models.Pairing;
-    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+using System.Collections.Generic;
 
-    public interface IPairingService
-    {
-        Task<OperationDataResult<PairingsModel>> GetAllPairings(PairingRequestModel pairingRequestModel);
-        Task<OperationResult> PairSingle(PlanningAssignSitesModel requestModel);
-        Task<OperationResult> UpdatePairings(List<PairingUpdateModel> updateModels);
-    }
+namespace ItemsPlanning.Pn.Infrastructure.Models
+{
+  public class PairingRequestModel
+  {
+    public List<int> TagIds { get; set; }
+      = new List<int>();
+  }
 }

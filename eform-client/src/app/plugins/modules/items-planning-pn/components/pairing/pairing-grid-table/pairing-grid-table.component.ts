@@ -9,6 +9,8 @@ import { PairingUpdateModel, PairingsModel } from '../../../models/pairings';
 export class PairingGridTableComponent implements OnInit {
   @Input() pairingsModel: PairingsModel;
   @Output() pairingChanged = new EventEmitter<PairingUpdateModel>();
+  @Input() selectedColCheckboxes: Array<{colNumber: number, checked: boolean}>;
+  @Input() selectedRowCheckboxes: Array<{rowNumber: number, checked: boolean}>;
 
   constructor() {}
 
@@ -20,5 +22,16 @@ export class PairingGridTableComponent implements OnInit {
       planningId,
       deviceUserId,
     });
+  }
+
+  selectDeviceUserColumn($event: any, i: number) {
+    this.selectedColCheckboxes[i].checked = $event.target.checked;
+    this.pairingsModel.pairings.forEach(pairing =>
+      this.checked($event, pairing.planningId, pairing.pairingValues[i].deviceUserId));
+  }
+
+  selectPlanningRow($event: MouseEvent, y: number) {
+    this.pairingsModel.pairings[y].pairingValues.forEach(pairingValue =>
+        this.checked($event, this.pairingsModel.pairings[y].planningId, pairingValue.deviceUserId));
   }
 }

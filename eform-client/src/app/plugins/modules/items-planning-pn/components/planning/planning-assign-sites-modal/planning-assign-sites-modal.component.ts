@@ -42,7 +42,6 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
   }
 
   show(planningModel: PlanningPnModel) {
-    debugger;
     this.selectedPlanning = planningModel;
     this.assignModel = new PlanningAssignSitesModel();
     this.fillCheckboxes();

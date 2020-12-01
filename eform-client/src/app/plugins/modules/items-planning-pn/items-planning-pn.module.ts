@@ -26,7 +26,7 @@ import {
   ReportHeaderComponent,
   ReportImagesComponent,
   ReportPostsComponent,
-  ReportTableComponent,
+  ReportTableComponent, PlanningsBulkImportModalComponent,
 } from './components';
 import { RouterModule } from '@angular/router';
 import { ItemsPlanningPnRouting } from './items-planning-pn.routing.module';
@@ -73,6 +73,7 @@ import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/
     PlanningAssignSitesModalComponent,
     PlanningFoldersModalComponent,
     PlanningTagsComponent,
+    PlanningsBulkImportModalComponent,
     PairingGridPageComponent,
     PairingGridTableComponent,
     PairingGridUpdateComponent,

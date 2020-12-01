@@ -1,4 +1,4 @@
-/*
+﻿/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2020 Microting A/S
@@ -22,18 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Services.PairingService
+namespace ItemsPlanning.Pn.Services.PlanningImportService
 {
-    using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
-    using Infrastructure.Models;
-    using Infrastructure.Models.Pairing;
+    using Infrastructure.Models.Import;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
 
-    public interface IPairingService
+    public interface IPlanningImportService
     {
-        Task<OperationDataResult<PairingsModel>> GetAllPairings(PairingRequestModel pairingRequestModel);
-        Task<OperationResult> PairSingle(PlanningAssignSitesModel requestModel);
-        Task<OperationResult> UpdatePairings(List<PairingUpdateModel> updateModels);
+        Task<OperationDataResult<ExcelParseResult>> ImportPlannings(Stream excelStream);
     }
 }

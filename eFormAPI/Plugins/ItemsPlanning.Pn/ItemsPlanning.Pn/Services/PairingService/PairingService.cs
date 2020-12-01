@@ -58,7 +58,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
             _coreService = coreService;
             _userService = userService;
         }
-        public async Task<OperationDataResult<PairingsModel>> GetAllPairings()
+        public async Task<OperationDataResult<PairingsModel>> GetAllPairings(PairingRequestModel pairingRequestModel)
         {
             try
             {
@@ -76,22 +76,31 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         }).ToListAsync();
                 }
 
-                var pairing = await _dbContext.Plannings
-                    .Select(x => new PairingModel
-                    {
-                        PlanningId = x.Id,
-                        PlanningName = x.Name,
-                        PairingValues = x.PlanningSites
-                            .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
-                            .Select(y=> new PairingValueModel
-                            {
-                                DeviceUserId = y.SiteId,
-                                Paired = true
-                            }).ToList(),
-                    }).ToListAsync();
+                var pairingQuery =  _dbContext.Plannings.AsQueryable();
 
-                // Add users who is not paired
-                foreach (var pairingModel in pairing)
+                if(pairingRequestModel.TagIds.Any())
+                {
+                  pairingQuery = pairingQuery
+                    .Where(x => x.PlanningsTags.Any(
+                      y => pairingRequestModel.TagIds.Contains(y.PlanningTagId)));
+                }
+
+                var pairing = await pairingQuery.Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                  .Select(x => new PairingModel
+                  {
+                    PlanningId = x.Id,
+                    PlanningName = x.Name,
+                    PairingValues = x.PlanningSites
+                      .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                      .Select(y => new PairingValueModel
+                      {
+                        DeviceUserId = y.SiteId,
+                        Paired = true
+                      }).ToList(),
+                  }).ToListAsync();
+
+        // Add users who is not paired
+        foreach(var pairingModel in pairing)
                 {
                     foreach (var deviceUser in deviceUsers)
                     {

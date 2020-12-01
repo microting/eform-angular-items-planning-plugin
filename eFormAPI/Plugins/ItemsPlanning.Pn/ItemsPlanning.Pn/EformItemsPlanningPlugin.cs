@@ -47,10 +47,12 @@ namespace ItemsPlanning.Pn
     using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.ItemsPlanningBase.Infrastructure.Data.Factories;
     using Rebus.Bus;
+    using Services.ExcelService;
     using Services.ItemsPlanningLocalizationService;
     using Services.ItemsPlanningPnSettingsService;
     using Services.ItemsPlanningReportService;
     using Services.PairingService;
+    using Services.PlanningImportService;
     using Services.PlanningService;
     using Services.RebusService;
     using Services.UploadedDataService;
@@ -82,6 +84,8 @@ namespace ItemsPlanning.Pn
             services.AddTransient<IUploadedDataService, UploadedDataService>();
             services.AddSingleton<IRebusService, RebusService>();
             services.AddTransient<IWordService, WordService>();
+            services.AddTransient<IPlanningExcelService, PlanningExcelService>();
+            services.AddTransient<IPlanningImportService, PlanningImportService>();
             services.AddControllers();
         }
 

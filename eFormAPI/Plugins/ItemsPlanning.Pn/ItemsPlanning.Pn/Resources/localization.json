@@ -376,5 +376,54 @@
       "da": "Parring opdateret",
       "en-US": "Pairing updated successfully"
     }
+  },
+  {
+    "Key": "ImportCompletedSuccessfully",
+    "LocalizedValue": {
+      "da": "Importen blev gennemført",
+      "en-US": "Import completed successfully"
+    }
+  },
+  {
+    "Key": "ErrorWhileImportingExcelFile",
+    "LocalizedValue": {
+      "da": "Fejl under import af Excel-fil",
+      "en-US": "Error while importing Excel file"
+    }
+  },
+  {
+    "Key": "EformNameIsEmpty",
+    "LocalizedValue": {
+      "da": "Eform-navnet er tomt",
+      "en-US": "Eform name is empty"
+    }
+  },
+  {
+    "Key": "ItemNameIsEmpty",
+    "LocalizedValue": {
+      "da": "Varenavn er tomt",
+      "en-US": "Item name is empty"
+    }
+  },
+  {
+    "Key": "FolderNotFound",
+    "LocalizedValue": {
+      "da": "Mappen blev ikke fundet",
+      "en-US": "Folder not found"
+    }
+  },
+  {
+    "Key": "EformNotFound",
+    "LocalizedValue": {
+      "da": "Eform ikke fundet",
+      "en-US": "Eform not found"
+    }
+  },
+  {
+    "Key": "PlanningWithNameAlreadyExists",
+    "LocalizedValue": {
+      "da": "Planlægning med navnet {0} findes allerede",
+      "en-US": "Planning with name {0} already exists"
+    }
   }
 ]

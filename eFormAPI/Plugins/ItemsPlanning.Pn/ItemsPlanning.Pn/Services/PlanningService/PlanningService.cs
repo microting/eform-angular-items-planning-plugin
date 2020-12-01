@@ -600,6 +600,12 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     await planningCase.Delete(_dbContext);
                 }
 
+                var planningSites = await _dbContext.PlanningSites.Where(x => x.PlanningId == planning.Id).ToListAsync();
+                foreach (var planningSite in planningSites)
+                {
+                    await planningSite.Delete(_dbContext);
+                }
+
                 // Delete planning
                 await planning.Delete(_dbContext);
 
