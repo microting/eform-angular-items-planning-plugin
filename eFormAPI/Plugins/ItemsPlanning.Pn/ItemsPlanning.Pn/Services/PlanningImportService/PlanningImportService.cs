@@ -297,7 +297,6 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                 else
                                 {
                                     folderModel.Id = mainFolder.Id;
-                                    folderModel.ParentId = null;
 
                                 }
 
