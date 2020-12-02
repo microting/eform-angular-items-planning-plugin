@@ -247,7 +247,9 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                     }
                     else
                     {
-                        item.RepeatType = null;
+                        item.RepeatType = repeatTypeString.ToLower() == "month"
+                            ? RepeatType.Month
+                            : (repeatTypeString.ToLower() == "week" ? RepeatType.Week : RepeatType.Day);
                     }
 
                     var repeatUntilString = row.Cell(PlanningImportExcelConsts.PlanningRepeatUntilCol).Value.ToString();
