@@ -267,6 +267,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             Id = x.Id,
                             Label = x.Name.ToLower(),
                             Description = x.Description,
+                            ParentId = x.ParentId,
                         }).ToListAsync();
 
                     // Process folders
@@ -274,19 +275,49 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                     {
                         for (var i = 0; i < excelModel.Folders.Count; i++)
                         {
+                            var level = i + 1;
                             var folderModel = excelModel.Folders[i];
-                            var sdkFolder = folders.FirstOrDefault(x =>
-                                string.Equals(
-                                    x.Label,
-                                    folderModel.Label,
-                                    StringComparison.CurrentCultureIgnoreCase));
 
-                            if (sdkFolder == null)
+                            if (level == 1)
                             {
-                                // If it's not a first folder then attach previous folder
-                                if (i > 0)
+                                var mainFolder = folders.FirstOrDefault(x =>
+                                    string.Equals(
+                                        x.Label,
+                                        folderModel.Label,
+                                        StringComparison.CurrentCultureIgnoreCase)
+                                    && x.ParentId == null);
+
+                                if (mainFolder == null)
                                 {
-                                    var parentId = excelModel.Folders[i - 1].Id;
+                                    folderModel.Id = await core.FolderCreate(
+                                        folderModel.Label,
+                                        folderModel.Description,
+                                        null);
+                                }
+                                else
+                                {
+                                    folderModel.Id = mainFolder.Id;
+                                    folderModel.ParentId = null;
+
+                                }
+
+                                folders.Add(folderModel);
+                            }
+
+                            if (level > 1)
+                            {
+                                var parentId = excelModel.Folders[i - 1].Id;
+
+                                var sdkFolder = folders.FirstOrDefault(x =>
+                                    string.Equals(
+                                        x.Label,
+                                        folderModel.Label,
+                                        StringComparison.CurrentCultureIgnoreCase)
+                                    && x.ParentId == parentId);
+
+
+                                if (sdkFolder == null)
+                                {
                                     folderModel.Id = await core.FolderCreate(
                                         folderModel.Label,
                                         folderModel.Description,
@@ -294,17 +325,11 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                 }
                                 else
                                 {
-                                    folderModel.Id = await core.FolderCreate(
-                                        folderModel.Label,
-                                        folderModel.Description,
-                                        null);
+                                    folderModel.Id = sdkFolder.Id;
+                                    folderModel.ParentId = parentId;
                                 }
 
                                 folders.Add(folderModel);
-                            }
-                            else
-                            {
-                                folderModel.Id = sdkFolder.Id;
                             }
                         }
                     }
