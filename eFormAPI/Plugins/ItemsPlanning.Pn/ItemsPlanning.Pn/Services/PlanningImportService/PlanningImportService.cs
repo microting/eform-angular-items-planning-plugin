@@ -326,8 +326,9 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                 else
                                 {
                                     folderModel.Id = sdkFolder.Id;
-                                    folderModel.ParentId = parentId;
                                 }
+
+                                folderModel.ParentId = parentId;
 
                                 folders.Add(folderModel);
                             }
