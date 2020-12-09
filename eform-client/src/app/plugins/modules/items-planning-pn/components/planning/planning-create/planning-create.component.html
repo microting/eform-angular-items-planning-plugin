@@ -1,4 +1,4 @@
-<eform-page-subheader [title]="'New planning' | translate">
+<subheader-pn [title]="'New planning' | translate">
   <div class="p-3">
     <button mdbBtn id="planningCreateSaveBtn" class="btn-success btn-small-height" [disabled]="saveButtonDisabled || (newPlanningModel.item.name == null || newPlanningModel.item.name == '')"
             (click)="createPlanning()">
@@ -7,7 +7,7 @@
     <button mdbBtn id="planningCreateCancelBtn" class="btn-accent text-black-50 btn-small-height"
             (click)="goBack()">{{'Cancel' | translate}}</button>
   </div>
-</eform-page-subheader>
+</subheader-pn>
 
 <div class="container-fluid">
   <div class="row mt-4">
