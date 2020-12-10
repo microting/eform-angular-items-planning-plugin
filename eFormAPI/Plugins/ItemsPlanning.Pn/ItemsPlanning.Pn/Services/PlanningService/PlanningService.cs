@@ -103,9 +103,11 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 if (pnRequestModel.TagIds.Any())
                 {
-                    planningsQuery = planningsQuery
-                        .Where(x => x.PlanningsTags.Any(
-                            y => pnRequestModel.TagIds.Contains(y.PlanningTagId)));
+                    foreach(var tagId in pnRequestModel.TagIds)
+                    {
+                        planningsQuery = planningsQuery.Where(x => x.Item.Planning.PlanningsTags.Any(y =>
+                            y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
+                    }
                 }
 
 
