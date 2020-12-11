@@ -80,9 +80,11 @@ namespace ItemsPlanning.Pn.Services.PairingService
 
                 if(pairingRequestModel.TagIds.Any())
                 {
-                  pairingQuery = pairingQuery
-                    .Where(x => x.PlanningsTags.Any(
-                      y => pairingRequestModel.TagIds.Contains(y.PlanningTagId)));
+                    foreach(var tagId in pairingRequestModel.TagIds)
+                    {
+                        pairingQuery = pairingQuery.Where(x => x.Item.Planning.PlanningsTags.Any(y =>
+                            y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
+                    }
                 }
 
                 var pairing = await pairingQuery.Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
