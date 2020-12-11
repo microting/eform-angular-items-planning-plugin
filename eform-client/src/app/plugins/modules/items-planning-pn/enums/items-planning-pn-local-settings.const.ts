@@ -37,6 +37,13 @@ export const ItemsPlanningPnLocalSettings = [
         dateTo: ''
       }
     },
+  ),
+  new PlanningResultsPageModel({
+      name: 'Pairing',
+      settings: {
+        additional: []
+      }
+    },
   )
 ];
 

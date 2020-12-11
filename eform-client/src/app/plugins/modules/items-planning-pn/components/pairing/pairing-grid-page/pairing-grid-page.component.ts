@@ -5,7 +5,7 @@ import {
 } from '../../../services';
 import { SitesService } from 'src/app/common/services/advanced';
 import { Subscription } from 'rxjs';
-import {CommonDictionaryModel, SiteNameDto} from 'src/app/common/models';
+import {CommonDictionaryModel, PageSettingsModel, SiteNameDto} from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import {
   PairingUpdateModel,
@@ -13,6 +13,7 @@ import {
 } from 'src/app/plugins/modules/items-planning-pn/models/pairings';
 import * as R from 'ramda';
 import {PairingGridUpdateComponent} from '../pairing-grid-update/pairing-grid-update.component';
+import {SharedPnService} from 'src/app/plugins/modules/shared/services';
 
 @AutoUnsubscribe()
 @Component({
@@ -26,6 +27,7 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
   getAllPairings$: Subscription;
   getTagsSub$: Subscription;
   updatePairings$: Subscription;
+  localPageSettings: PageSettingsModel = new PageSettingsModel();
   sitesDto: SiteNameDto[] = [];
   pairings: PairingsModel = new PairingsModel();
   availableTags: CommonDictionaryModel[] = [];
@@ -39,13 +41,46 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
     private pairingService: ItemsPlanningPnPairingService,
     private planningService: ItemsPlanningPnPlanningsService,
     private sitesService: SitesService,
-    private tagsService: ItemsPlanningPnTagsService
+    private tagsService: ItemsPlanningPnTagsService,
+    private sharedPnService: SharedPnService
   ) {}
 
   ngOnInit(): void {
+    this.getLocalPageSettings();
+    this.getAllInitialData();
+  }
+
+  getAllInitialData() {
     this.getAllSites();
     this.getAllPairings();
     this.getTags();
+  }
+
+  getLocalPageSettings() {
+    this.localPageSettings = this.sharedPnService.getLocalPageSettings(
+      'itemsPlanningPnSettings',
+      'Pairing'
+    ).settings;
+    this.localPageSettings.additional.forEach(value => {
+      if (value.key === 'tagIds') {
+        this.pairingsRequestModal.tagIds = JSON.parse(value.value);
+      }
+    });
+  }
+
+  updateLocalPageSettings() {
+    const index = this.localPageSettings.additional.findIndex(item => item.key === 'tagIds');
+    if (index !== -1) {
+      this.localPageSettings.additional[index].value = JSON.stringify(this.pairingsRequestModal.tagIds);
+    } else {
+      this.localPageSettings.additional = [...this.localPageSettings.additional,
+        {key: 'tagIds', value: JSON.stringify(this.pairingsRequestModal.tagIds)}];
+    }
+    this.sharedPnService.updateLocalPageSettings(
+      'itemsPlanningPnSettings',
+      this.localPageSettings,
+      'Pairing'
+    );
   }
 
   getAllSites() {
@@ -91,7 +126,10 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
   }
 
   saveTag(e: any) {
-    this.pairingsRequestModal.tagIds.push(e.id);
+    if (!this.pairingsRequestModal.tagIds.find((x) => x === e.id)) {
+      this.pairingsRequestModal.tagIds.push(e.id);
+    }
+    this.updateLocalPageSettings();
     this.getAllPairings();
   }
 
@@ -99,6 +137,7 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
     this.pairingsRequestModal.tagIds = this.pairingsRequestModal.tagIds.filter(
       (x) => x !== e.id
     );
+    this.updateLocalPageSettings();
     this.getAllPairings();
   }
 

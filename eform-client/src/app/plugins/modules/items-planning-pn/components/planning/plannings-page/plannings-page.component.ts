@@ -85,6 +85,7 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getLocalPageSettings();
+    this.getAllInitialData();
   }
 
   getLocalPageSettings() {
@@ -92,10 +93,21 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
       'itemsPlanningPnSettings',
       'Plannings'
     ).settings;
-    this.getAllInitialData();
+    this.localPageSettings.additional.forEach(value => {
+      if (value.key === 'tagIds') {
+        this.planningsRequestModel.tagIds = JSON.parse(value.value);
+      }
+    });
   }
 
   updateLocalPageSettings() {
+    const index = this.localPageSettings.additional.findIndex(item => item.key === 'tagIds');
+    if (index !== -1) {
+      this.localPageSettings.additional[index].value = JSON.stringify(this.planningsRequestModel.tagIds);
+    } else {
+      this.localPageSettings.additional = [...this.localPageSettings.additional,
+        {key: 'tagIds', value: JSON.stringify(this.planningsRequestModel.tagIds)}];
+    }
     this.sharedPnService.updateLocalPageSettings(
       'itemsPlanningPnSettings',
       this.localPageSettings,
@@ -221,7 +233,10 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
   }
 
   saveTag(e: any) {
-    this.planningsRequestModel.tagIds.push(e.id);
+    if (!this.planningsRequestModel.tagIds.find((x) => x === e.id)) {
+      this.planningsRequestModel.tagIds.push(e.id);
+    }
+    this.updateLocalPageSettings();
     this.getPlannings();
   }
 
@@ -229,6 +244,7 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
     this.planningsRequestModel.tagIds = this.planningsRequestModel.tagIds.filter(
       (x) => x !== e.id
     );
+    this.updateLocalPageSettings();
     this.getPlannings();
   }
 
@@ -238,6 +254,7 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
         ...this.planningsRequestModel.tagIds,
         id,
       ];
+      this.updateLocalPageSettings();
       this.getPlannings();
     }
   }
