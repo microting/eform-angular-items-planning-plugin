@@ -359,6 +359,12 @@
           </td>
           <td id="planningName">
             {{ planning.name }}
+            <fa-icon
+              *ngIf="planning.isEformRemoved"
+              icon="exclamation-triangle"
+              mdbTooltip="{{'Eform was deleted' | translate}}"
+              placement="left"
+            ></fa-icon>
           </td>
           <td id="planningDescription">
             {{ planning.description }}

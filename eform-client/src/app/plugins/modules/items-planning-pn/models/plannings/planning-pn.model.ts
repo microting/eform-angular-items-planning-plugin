@@ -18,6 +18,7 @@ export class PlanningPnModel {
   startDate: string;
   internalRepeatUntil: string;
   relatedEFormId: number;
+  isEformRemoved: boolean;
   relatedEFormName: string;
   item: PlanningItemModel;
   deployedAtEnabled: boolean;

@@ -113,7 +113,6 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
       this.localPageSettings,
       'Plannings'
     );
-    this.getPlannings();
   }
 
   getAllInitialData() {

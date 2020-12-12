@@ -52,7 +52,9 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
         public DateTime? StartDate { get; set; }
 
         public int RelatedEFormId { get; set; }
-        
+
+        public bool isEformRemoved { get; set; }
+
         public string RelatedEFormName { get; set; }
         
         public bool LabelEnabled { get; set; }
