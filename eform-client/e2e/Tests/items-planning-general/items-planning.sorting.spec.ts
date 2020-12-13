@@ -13,6 +13,7 @@ describe('Items planning plannings - Sorting', function () {
     itemsPlanningPlanningPage.createDummyPlannings();
   });
   it('should be able to sort by ID', function () {
+    browser.pause(1000);
     const planningBefore = $$('#planningId').map(item => {
       return item.getText();
     });

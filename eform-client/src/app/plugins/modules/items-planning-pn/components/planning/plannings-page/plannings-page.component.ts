@@ -113,6 +113,7 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
       this.localPageSettings,
       'Plannings'
     );
+    this.getPlannings();
   }
 
   getAllInitialData() {
@@ -236,7 +237,6 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
       this.planningsRequestModel.tagIds.push(e.id);
     }
     this.updateLocalPageSettings();
-    this.getPlannings();
   }
 
   removeSavedTag(e: any) {
@@ -244,7 +244,6 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
       (x) => x !== e.id
     );
     this.updateLocalPageSettings();
-    this.getPlannings();
   }
 
   tagSelected(id: number) {
@@ -254,7 +253,6 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
         id,
       ];
       this.updateLocalPageSettings();
-      this.getPlannings();
     }
   }
 
