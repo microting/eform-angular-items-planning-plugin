@@ -43,9 +43,6 @@ jobs:
     - name: Extract branch name
       id: extract_branch
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-    - name: Get branch name
-      uses: nelonoel/branch-name@v1.0.1
-      run: echo ${BRANCH_NAME}
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
