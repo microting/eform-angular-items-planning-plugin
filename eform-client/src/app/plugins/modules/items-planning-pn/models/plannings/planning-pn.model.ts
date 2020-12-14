@@ -21,6 +21,7 @@ export class PlanningPnModel {
   isEformRemoved: boolean;
   relatedEFormName: string;
   item: PlanningItemModel;
+  currentRelatedEformId: number;
   deployedAtEnabled: boolean;
   doneAtEnabled: boolean;
   doneByUserNameEnabled: boolean;
