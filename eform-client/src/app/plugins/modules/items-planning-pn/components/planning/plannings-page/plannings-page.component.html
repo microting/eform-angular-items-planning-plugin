@@ -368,6 +368,12 @@
           </td>
           <td id="planningRelatedEformName">
             {{ planning.relatedEFormName }}
+            <fa-icon
+              *ngIf="planning.isEformRemoved"
+              icon="exclamation-triangle"
+              style="color: red"
+              mdbTooltip="{{'Eform was deleted' | translate}}"
+            ></fa-icon>
           </td>
           <td id="planningTags">
             <ng-container *ngFor="let tag of planning.tags; let i = index">

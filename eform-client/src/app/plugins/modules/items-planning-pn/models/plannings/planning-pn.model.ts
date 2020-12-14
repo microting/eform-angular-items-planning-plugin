@@ -18,8 +18,10 @@ export class PlanningPnModel {
   startDate: string;
   internalRepeatUntil: string;
   relatedEFormId: number;
+  isEformRemoved: boolean;
   relatedEFormName: string;
   item: PlanningItemModel;
+  currentRelatedEformId: number;
   deployedAtEnabled: boolean;
   doneAtEnabled: boolean;
   doneByUserNameEnabled: boolean;

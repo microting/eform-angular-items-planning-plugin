@@ -103,7 +103,10 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
       .getSinglePlanning(id)
       .subscribe((data) => {
         if (data && data.success) {
-          this.selectedPlanningModel = data.model;
+          this.selectedPlanningModel = { ...data.model,
+              internalRepeatUntil: data.model.repeatUntil,
+              currentRelatedEformId: data.model.relatedEFormId
+            };
           this.selectedPlanningModel.internalRepeatUntil = this.selectedPlanningModel.repeatUntil;
           this.loadFoldersTree();
           this.loadFoldersList();
