@@ -164,7 +164,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 var core = await _coreService.GetCore();
                 using (var dbContext = core.dbContextHelper.GetDbContext())
                 {
-                    var sites = await dbContext.sites
+                    var sites = await dbContext.Sites
                         .AsNoTracking()
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Select(x => new CommonDictionaryModel
@@ -234,7 +234,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
                 
-                var sdkFolder = await sdkDbContext.folders
+                var sdkFolder = await sdkDbContext.Folders
                     .Include(x => x.Parent)
                     .SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
                     
@@ -382,14 +382,14 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 var core = await _coreService.GetCore();
                 await using (var dbContext = core.dbContextHelper.GetDbContext())
                 {
-                    planning.Item.eFormSdkFolderName = await dbContext.folders
+                    planning.Item.eFormSdkFolderName = await dbContext.Folders
                         .AsNoTracking()
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Where(x => x.Id == planning.Item.eFormSdkFolderId)
                         .Select(x => x.Name)
                         .FirstOrDefaultAsync();
 
-                    var sites = await dbContext.sites
+                    var sites = await dbContext.Sites
                         .AsNoTracking()
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Select(x => new CommonDictionaryModel
@@ -432,7 +432,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             {
                 var template = await _sdkCore.TemplateItemRead(updateModel.RelatedEFormId);
 
-                var sdkFolder = await sdkDbContext.folders
+                var sdkFolder = await sdkDbContext.Folders
                     .Include(x => x.Parent)
                     .SingleAsync(x => x.Id == updateModel.Item.eFormSdkFolderId);
                 var planning = await _dbContext.Plannings
@@ -596,7 +596,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     {
                         if (planningCaseSite.MicrotingSdkCaseId != 0)
                         {
-                            var result = await sdkDbContext.cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
+                            var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
                              await core.CaseDelete((int)result.MicrotingUid);
                         }
                     }
