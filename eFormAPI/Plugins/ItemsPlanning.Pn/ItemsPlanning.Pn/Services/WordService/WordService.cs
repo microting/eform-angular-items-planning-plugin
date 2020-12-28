@@ -113,7 +113,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                 itemsHtml += @"</tr>";
                 itemsHtml += @"</table>";
 
-                int i = 0;
+                //int i = 0;
                 foreach (var reportEformModel in reportModel)
                 {
                     if (!string.IsNullOrEmpty(reportEformModel.Name))

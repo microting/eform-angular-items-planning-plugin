@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microting.eForm.Infrastructure.Data.Entities;
+
 namespace ItemsPlanning.Pn.Services.PlanningService
 {
     using System;
@@ -49,17 +51,21 @@ namespace ItemsPlanning.Pn.Services.PlanningService
         private readonly ItemsPlanningPnDbContext _dbContext;
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserService _userService;
         private readonly IEFormCoreService _coreService;
 
         public PlanningService(
             ItemsPlanningPnDbContext dbContext,
             IItemsPlanningLocalizationService itemsPlanningLocalizationService,
-            IHttpContextAccessor httpContextAccessor, IEFormCoreService coreService)
+            IUserService userService,
+            IHttpContextAccessor httpContextAccessor,
+            IEFormCoreService coreService)
         {
             _dbContext = dbContext;
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
             _httpContextAccessor = httpContextAccessor;
             _coreService = coreService;
+            _userService = userService;
         }
 
         public async Task<OperationDataResult<PlanningsPnModel>> Index(PlanningsRequestModel pnRequestModel)
@@ -67,6 +73,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             try
             {
                 PlanningsPnModel planningsModel = new PlanningsPnModel();
+                var sdkCore =
+                    await _coreService.GetCore();
+                var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
 
                 IQueryable<Planning> planningsQuery = _dbContext.Plannings.AsQueryable();
                 if (!string.IsNullOrEmpty(pnRequestModel.Sort))
@@ -117,6 +126,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         .Skip(pnRequestModel.Offset)
                         .Take(pnRequestModel.PageSize);
 
+                var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+                var localeString = await _userService.GetUserLocale(int.Parse(value));
+                Language language = sdkDbContext.Languages.Single(x => x.Description.ToLower() == localeString.ToLower());
                 List<PlanningPnModel> plannings = await planningsQuery.Select(x => new PlanningPnModel()
                 {
                     Id = x.Id,
@@ -128,7 +140,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     DayOfWeek = x.DayOfWeek,
                     DayOfMonth = x.DayOfMonth,
                     RelatedEFormId = x.RelatedEFormId,
-                    isEformRemoved = _coreService.GetCore().Result.TemplateItemRead(x.RelatedEFormId).Result.WorkflowState == "removed",
+                    isEformRemoved = sdkCore.TemplateItemRead(x.RelatedEFormId, language).Result.WorkflowState == "removed",
                     RelatedEFormName = x.RelatedEFormName,
                     SdkFolderName = x.SdkFolderName,
                     StartDate = x.StartDate,
@@ -205,8 +217,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
         public async Task<OperationResult> Create(PlanningPnModel model)
         {
             //await using var transaction = await _dbContext.Database.BeginTransactionAsync();
-            await using var sdkDbContext =
-                _coreService.GetCore().GetAwaiter().GetResult().dbContextHelper.GetDbContext();
+            var sdkCore =
+                await _coreService.GetCore();
+            var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
             try
             {
                 var tagIds = new List<int>();
@@ -232,14 +245,17 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 tagIds.AddRange(model.TagsIds);
 
-                var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId);
-                
+                var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+                var localeString = await _userService.GetUserLocale(int.Parse(value));
+                Language language = sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => x.Description.ToLower() == localeString.ToLower());
+                var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId, language);
+
                 var sdkFolder = await sdkDbContext.Folders
                     .Include(x => x.Parent)
                     .SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
-                    
+
                 // var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
-                
+
                 var planning = new Planning
                 {
                     Name = model.Item.Name,
@@ -319,6 +335,12 @@ namespace ItemsPlanning.Pn.Services.PlanningService
         {
             try
             {
+                var sdkCore =
+                    await _coreService.GetCore();
+                var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
+                var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+                var localeString = await _userService.GetUserLocale(int.Parse(value));
+                Language language = sdkDbContext.Languages.Single(x => x.Description.ToLower() == localeString.ToLower());
                 var planning = await _dbContext.Plannings
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == listId)
                     .Select(x => new PlanningPnModel()
@@ -332,7 +354,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         Description = x.Description,
                         Name = x.Name,
                         RelatedEFormId = x.RelatedEFormId,
-                        isEformRemoved = _coreService.GetCore().Result.TemplateItemRead(x.RelatedEFormId).Result.WorkflowState == "removed",
+                        isEformRemoved = sdkCore.TemplateItemRead(x.RelatedEFormId, language).Result.WorkflowState == "removed",
                         RelatedEFormName = x.RelatedEFormName,
                         LabelEnabled = x.LabelEnabled,
                         DeployedAtEnabled = x.DeployedAtEnabled,
@@ -430,7 +452,11 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             var sdkDbContext = _sdkCore.dbContextHelper.GetDbContext();
             try
             {
-                var template = await _sdkCore.TemplateItemRead(updateModel.RelatedEFormId);
+
+                var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+                var localeString = await _userService.GetUserLocale(int.Parse(value));
+                Language language = _sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => x.Description.ToLower() == localeString.ToLower());
+                var template = await _sdkCore.TemplateItemRead(updateModel.RelatedEFormId, language);
 
                 var sdkFolder = await sdkDbContext.Folders
                     .Include(x => x.Parent)
@@ -626,8 +652,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             }
         }
 
-        
-        
+
+
         private Item FindItem(bool numberExists, int numberColumn, bool itemNameExists,
             int itemNameColumn, JToken itemObj)
         {
@@ -647,7 +673,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
             return item;
         }
-        
+
         public async Task<OperationResult> ImportUnit(UnitImportModel unitAsJson)
         {
             try
@@ -658,7 +684,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                     JToken headers = rawHeadersJson;
                     IEnumerable<JToken> itemObjects = rawJson.Skip(1);
-                    
+
                     foreach (JToken itemObj in itemObjects)
                     {
                         bool numberExists = int.TryParse(headers[0]["headerValue"].ToString(), out int numberColumn);
@@ -679,16 +705,16 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                                     Name = itemModel.Name,
                                     Description = itemModel.Description,
                                     LocationCode = itemModel.LocationCode,
-                                 
+
 
                                 };
                                await newItem.Create(_dbContext);
-  
+
                             }
                             else
                             {
                                 if (existingItem.WorkflowState == Constants.WorkflowStates.Removed)
-                                {                                    
+                                {
                                     Item item = await _dbContext.Items.SingleOrDefaultAsync(x => x.Id == existingItem.Id);
                                     if (item != null)
                                     {
@@ -703,7 +729,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                                 }
                             }
                         }
-                        
+
                     }
                 }
                 return new OperationResult(true,
