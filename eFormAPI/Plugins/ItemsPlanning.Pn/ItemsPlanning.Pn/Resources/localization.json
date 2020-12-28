@@ -3,427 +3,488 @@
     "Key": "ItemsPlanning",
     "LocalizedValue": {
       "da": "Egenkontrol",
-      "en-US": "Items planning"
+      "en-US": "Items planning",
+      "uk-UA": "Планування елементів"
     }
   },
   {
     "Key": "Lists",
     "LocalizedValue": {
       "da": "Lister",
-      "en-US": "Lists"
+      "en-US": "Lists",
+      "uk-UA": "Списки"
     }
   },
   {
     "Key": "Settings",
     "LocalizedValue": {
       "da": "Indstillinger",
-      "en-US": "Settings"
+      "en-US": "Settings",
+      "uk-UA": "Налаштування"
     }
   },
   {
     "Key": "ListCreatedSuccessfully",
     "LocalizedValue": {
       "da": "Liste oprettet succesfuldt",
-      "en-US": "List created successfully"
+      "en-US": "List created successfully",
+      "uk-UA": "Список успішно створений"
     }
   },
   {
     "Key": "ErrorWhileCreatingList",
     "LocalizedValue": {
       "da": "Fejl under oprettelse af liste",
-      "en-US": "Error while creating list"
+      "en-US": "Error while creating list",
+      "uk-UA": "Помилка при створенні списку"
     }
   },
   {
     "Key": "ErrorWhileUpdatingList",
     "LocalizedValue": {
       "da": "Fejl under opdatering af liste",
-      "en-US": "Error while updating list"
+      "en-US": "Error while updating list",
+      "uk-UA": "Помилка при оновленні списку"
     }
   },
   {
     "Key": "ListUpdatedSuccessfully",
     "LocalizedValue": {
       "da": "Liste opdateret med succes",
-      "en-US": "List updated successfully"
+      "en-US": "List updated successfully",
+      "uk-UA": "Список успішно оновлено"
     }
   },
   {
     "Key": "ListDeletedSuccessfully",
     "LocalizedValue": {
       "da": "Liste slettet korrekt",
-      "en-US": "List deleted successfully"
+      "en-US": "List deleted successfully",
+      "uk-UA": "Список успішно видалено"
     }
   },
   {
     "Key": "ErrorWhileRemovingList",
     "LocalizedValue": {
       "da": "Fejl under fjernelse af liste",
-      "en-US": "Error while removing list"
+      "en-US": "Error while removing list",
+      "uk-UA": "Помилка при видаленні списку"
     }
   },
   {
     "Key": "ListNotFound",
     "LocalizedValue": {
       "da": "Liste ikke fundet",
-      "en-US": "List not found"
+      "en-US": "List not found",
+      "uk-UA": "Список не знайдено"
     }
   },
   {
     "Key": "ErrorWhileObtainingList",
     "LocalizedValue": {
       "da": "Kunne ikke hente listen",
-      "en-US": "Error while obtaining list"
+      "en-US": "Error while obtaining list",
+      "uk-UA": "Помилка при отриманні списку"
     }
   },
   {
     "Key": "Yes",
     "LocalizedValue": {
       "da": "Ja",
-      "en-US": "Yes"
+      "en-US": "Yes",
+      "uk-UA": "Так"
     }
   },
   {
     "Key": "No",
     "LocalizedValue": {
       "da": "Nej",
-      "en-US": "No"
+      "en-US": "No",
+      "uk-UA": "Ні"
     }
   },
   {
     "Key": "Deployed at",
     "LocalizedValue": {
       "da": "Udsendt d.",
-      "en-US": "Deployed at"
+      "en-US": "Deployed at",
+      "uk-UA": "Розгорнуто в"
     }
   },
   {
     "Key": "Date of doing",
     "LocalizedValue": {
       "da": "Udførelsesdato",
-      "en-US": "Date of doing"
+      "en-US": "Date of doing",
+      "uk-UA": "Дата виконання"
     }
   },
   {
     "Key": "Done by",
     "LocalizedValue": {
       "da": "Udført af",
-      "en-US": "Done by"
+      "en-US": "Done by",
+      "uk-UA": "Зроблено"
     }
   },
   {
     "Key": "Name",
     "LocalizedValue": {
       "da": "Navn",
-      "en-US": "Name"
+      "en-US": "Name",
+      "uk-UA": "Ім'я"
     }
   },
   {
     "Key": "Description",
     "LocalizedValue": {
       "da": "Beskrivelse",
-      "en-US": "Description"
+      "en-US": "Description",
+      "uk-UA": "Опис"
     }
   },
   {
     "Key": "Item number",
     "LocalizedValue": {
       "da": "Enhedsid",
-      "en-US": "Item number"
+      "en-US": "Item number",
+      "uk-UA": "Номер елементу"
     }
   },
   {
     "Key": "ItemName",
     "LocalizedValue": {
       "da": "Område",
-      "en-US": "Item name"
+      "en-US": "Item name",
+      "uk-UA": "Назва елементу"
     }
   },
   {
     "Key": "Location code",
     "LocalizedValue": {
       "da": "Placering",
-      "en-US": "Location code"
+      "en-US": "Location code",
+      "uk-UA": "Код локації"
     }
   },
   {
     "Key": "Build year",
     "LocalizedValue": {
       "da": "Årgang",
-      "en-US": "Build year"
+      "en-US": "Build year",
+      "uk-UA": "Рік побудови"
     }
   },
   {
     "Key": "Type",
     "LocalizedValue": {
       "da": "Type",
-      "en-US": "Type"
+      "en-US": "Type",
+      "uk-UA": "Тип"
     }
   },
   {
     "Key": "Number of images",
     "LocalizedValue": {
       "da": "Antal billeder",
-      "en-US": "Number of images"
+      "en-US": "Number of images",
+      "uk-UA": "Кількість зображень"
     }
   },
   {
     "Key": "DateFrom",
     "LocalizedValue": {
       "da": "Dato fra",
-      "en-US": "Date from"
+      "en-US": "Date from",
+      "uk-UA": "Дата від"
     }
   },
   {
     "Key": "DateTo",
     "LocalizedValue": {
       "da": "Dato til",
-      "en-US": "Date to"
+      "en-US": "Date to",
+      "uk-UA": "Дата до"
     }
   },
   {
     "Key": "Plannings",
     "LocalizedValue": {
       "da": "Planlægninger",
-      "en-US": "Plannings"
+      "en-US": "Plannings",
+      "uk-UA": "Планування"
     }
   },
   {
     "Key": "PlanningNotFound",
     "LocalizedValue": {
       "da": "Planlægning ikke fundet",
-      "en-US": "Planning not found"
+      "en-US": "Planning not found",
+      "uk-UA": "Планування не знайдено"
     }
   },
   {
     "Key": "SitesAssignedSuccessfully",
     "LocalizedValue": {
       "da": "Lokationer tildelt med succes",
-      "en-US": "Sites assigned successfully"
+      "en-US": "Sites assigned successfully",
+      "uk-UA": "Місця призначено успішно"
     }
   },
   {
     "Key": "Id",
     "LocalizedValue": {
       "da": "Id",
-      "en-US": "Id"
+      "en-US": "Id",
+      "uk-UA": "Id"
     }
   },
   {
     "Key": "CaseId",
     "LocalizedValue": {
       "da": "Sagsnummer",
-      "en-US": "Case id"
+      "en-US": "Case id",
+      "uk-UA": "Кейс id"
     }
   },
   {
     "Key": "CreatedAt",
     "LocalizedValue": {
       "da": "Dato",
-      "en-US": "Created At"
+      "en-US": "Created At",
+      "uk-UA": "Створено в"
     }
   },
   {
     "Key": "DoneBy",
     "LocalizedValue": {
       "da": "Udført af",
-      "en-US": "Done By"
+      "en-US": "Done By",
+      "uk-UA": "Зроблено"
     }
   },
   {
     "Key": "Picture",
     "LocalizedValue": {
       "da": "Billede",
-      "en-US": "Picture"
+      "en-US": "Picture",
+      "uk-UA": "Зображення"
     }
   },
   {
     "Key": "Pictures",
     "LocalizedValue": {
       "da": "Billeder",
-      "en-US": "Pictures"
+      "en-US": "Pictures",
+      "uk-UA": "Картинки"
     }
   },
   {
     "Key": "Posts",
     "LocalizedValue": {
       "da": "Indlæg",
-      "en-US": "Posts"
+      "en-US": "Posts",
+      "uk-UA": "Повідомлення"
     }
   },
   {
     "Key": "posts",
     "LocalizedValue": {
       "da": "indlæg",
-      "en-US": "posts"
+      "en-US": "posts",
+      "uk-UA": "повідомлення"
     }
   },
   {
     "Key": "SentTo",
     "LocalizedValue": {
       "da": "Sendt til",
-      "en-US": "Sent To"
+      "en-US": "Sent To",
+      "uk-UA": "Відправлено в"
     }
   },
   {
     "Key": "PostDate",
     "LocalizedValue": {
       "da": "Sendt d.",
-      "en-US": "Sent at"
+      "en-US": "Sent at",
+      "uk-UA": "Відправлено за адресою"
     }
   },
   {
     "Key": "Comment",
     "LocalizedValue": {
       "da": "Kommentar",
-      "en-US": "Comment"
+      "en-US": "Comment",
+      "uk-UA": "Коментар"
     }
   },
   {
     "key": "Reports",
     "LocalizedValue": {
       "da": "Rapporter",
-      "en": "Reports"
+      "en-US": "Reports",
+      "uk-UA": "Звіти"
     }
   },
   {
     "Key": "ReportPeriod",
     "LocalizedValue": {
       "da": "Rapport periode",
-      "en-US": "Report period"
+      "en-US": "Report period",
+      "uk-UA": "Звітний період"
     }
   },
   {
     "Key": "ErrorWhileObtainingItemsPlanningTags",
     "LocalizedValue": {
       "da": "Fejl under modtagelse af emner, der planlægger tags",
-      "en-US": "Error While Obtaining Items Planning Tags"
+      "en-US": "Error while obtaining items planning tags",
+      "uk-UA": "Помилка При отриманні тегів планування елементів"
     }
   },
   {
     "Key": "ItemsPlanningTagCreatedSuccessfully",
     "LocalizedValue": {
       "da": "Varer, der planlægger mærke oprettet med succes",
-      "en-US": "Items Planning Tag Created Successfully"
+      "en-US": "Items planning tag created successfully",
+      "uk-UA": "Успішно створено тег планування елементів"
     }
   },
   {
     "Key": "ErrorWhileCreatingItemsPlanningTag",
     "LocalizedValue": {
       "da": "Fejl under oprettelse af planlægningsmærke",
-      "en-US": "Error While Creating Items Planning Tag"
+      "en-US": "Error while creating items planning tag",
+      "uk-UA": "Помилка при створенні тега планування елементів"
     }
   },
   {
     "Key": "ItemsPlanningTagNotFound",
     "LocalizedValue": {
       "da": "Varer, der planlægger mærke ikke fundet",
-      "en-US": "Items Planning Tag Not Found"
+      "en-US": "Items planning tag not found",
+      "uk-UA": "Тег планування елементів не знайдено"
     }
   },
   {
     "Key": "ItemsPlanningTagRemovedSuccessfully",
     "LocalizedValue": {
       "da": "Elementer, der planlægger tag, blev fjernet med succes",
-      "en-US": "Items Planning Tag Removed Successfully"
+      "en-US": "Items planning tag removed successfully",
+      "uk-UA": "Тег планування елементів успішно видалено"
     }
   },
   {
     "Key": "ErrorWhileRemovingItemsPlanningTag",
     "LocalizedValue": {
       "da": "Fejl under fjernelse af planlægningsmærke",
-      "en-US": "Error While Removing Items Planning Tag"
+      "en-US": "Error while removing items planning tag",
+      "uk-UA": "Помилка при видаленні тега планування елементів"
     }
   },
   {
     "Key": "ItemsPlanningTagUpdatedSuccessfully",
     "LocalizedValue": {
       "da": "Varer, der planlægger tag, opdateres",
-      "en-US": "Items Planning Tag Updated Successfully"
+      "en-US": "Items planning tag updated successfully",
+      "uk-UA": "Тег планування елементів успішно оновлено"
     }
   },
   {
     "Key": "ErrorWhileUpdatingItemsPlanningTag",
     "LocalizedValue": {
       "da": "Fejl under opdatering af elementplanlægningskode",
-      "en-US": "Error While Updating Items Planning Tag"
+      "en-US": "Error while updating items planning tag",
+      "uk-UA": "Помилка при оновленні тега планування елементів"
     }
   },
   {
     "Key": "ErrorWhileObtainingPlanningPairings",
     "LocalizedValue": {
       "da": "Fejl under opnåelse af parring af planlægning",
-      "en-US": "Error while obtaining planning pairings"
+      "en-US": "Error while obtaining planning pairings",
+      "uk-UA": "Помилка при отриманні планувальних зв'язків"
     }
   },
   {
     "Key": "ErrorWhileUpdatingItemsPlanning",
     "LocalizedValue": {
       "da": "Fejl under opdatering af vareplanlægning",
-      "en-US": "Error while updating items planning"
+      "en-US": "Error while updating items planning",
+      "uk-UA": "Помилка при оновленні елементу планування"
     }
   },
   {
     "Key": "PairingsUpdatedSuccessfully",
     "LocalizedValue": {
       "da": "Parring blev opdateret",
-      "en-US": "Pairings updated successfully"
+      "en-US": "Pairings updated successfully",
+      "uk-UA": "Зв'язки успішно оновлені"
     }
   },
   {
     "Key": "PairingUpdatedSuccessfully",
     "LocalizedValue": {
       "da": "Parring opdateret",
-      "en-US": "Pairing updated successfully"
+      "en-US": "Pairing updated successfully",
+      "uk-UA": "Зв'язок успішно оновлений"
     }
   },
   {
     "Key": "ImportCompletedSuccessfully",
     "LocalizedValue": {
       "da": "Importen blev gennemført",
-      "en-US": "Import completed successfully"
+      "en-US": "Import completed successfully",
+      "uk-UA": "Імпорт успішно завершено"
     }
   },
   {
     "Key": "ErrorWhileImportingExcelFile",
     "LocalizedValue": {
       "da": "Fejl under import af Excel-fil",
-      "en-US": "Error while importing Excel file"
+      "en-US": "Error while importing Excel file",
+      "uk-UA": "Помилка при імпорті файлу Excel"
     }
   },
   {
     "Key": "EformNameIsEmpty",
     "LocalizedValue": {
       "da": "Eform-navnet er tomt",
-      "en-US": "Eform name is empty"
+      "en-US": "Eform name is empty",
+      "uk-UA": "Ім'я ЕФорми порожнє"
     }
   },
   {
     "Key": "ItemNameIsEmpty",
     "LocalizedValue": {
       "da": "Varenavn er tomt",
-      "en-US": "Item name is empty"
+      "en-US": "Item name is empty",
+      "uk-UA": "Ім'я елемента порожнє"
     }
   },
   {
     "Key": "FolderNotFound",
     "LocalizedValue": {
       "da": "Mappen blev ikke fundet",
-      "en-US": "Folder not found"
+      "en-US": "Folder not found",
+      "uk-UA": "Папка не знайдена"
     }
   },
   {
     "Key": "EformNotFound",
     "LocalizedValue": {
       "da": "Eform ikke fundet",
-      "en-US": "Eform not found"
+      "en-US": "Eform not found",
+      "uk-UA": "ЕФорма не знайдена"
     }
   },
   {
     "Key": "PlanningWithNameAlreadyExists",
     "LocalizedValue": {
       "da": "Planlægning med navnet {0} findes allerede",
-      "en-US": "Planning with name {0} already exists"
+      "en-US": "Planning with name {0} already exists",
+      "uk-UA": "Планування з ім'ям {0} вже існує"
     }
   }
 ]

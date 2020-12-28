@@ -66,7 +66,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 List<CommonDictionaryModel> deviceUsers;
                 await using (var dbContext = core.dbContextHelper.GetDbContext())
                 {
-                    deviceUsers = await dbContext.sites
+                    deviceUsers = await dbContext.Sites
                         .AsNoTracking()
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Select(x => new CommonDictionaryModel

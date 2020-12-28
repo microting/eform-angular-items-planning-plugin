@@ -259,7 +259,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         }).ToListAsync();
 
                     // Folders
-                    var folders = await sdkDbContext.folders
+                    var folders = await sdkDbContext.Folders
                         .AsNoTracking()
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Select(x => new PlanningImportFolderModel
