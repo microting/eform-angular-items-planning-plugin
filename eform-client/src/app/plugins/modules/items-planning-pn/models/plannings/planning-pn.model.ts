@@ -1,5 +1,5 @@
 import {PlanningItemModel} from './planning-item.model';
-import {SharedTagModel} from 'src/app/common/models';
+import {CommonTranslationModel, SharedTagModel} from 'src/app/common/models';
 
 export class PlanningsPnModel {
   total: number;
@@ -8,7 +8,7 @@ export class PlanningsPnModel {
 
 export class PlanningPnModel {
   id: number;
-  name: string;
+  name: CommonTranslationModel[];
   description: string;
   repeatEvery: number;
   repeatType: number;
