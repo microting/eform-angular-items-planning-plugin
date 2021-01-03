@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2020 Microting A/S
+Copyright (c) 2007 - 2021 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -128,7 +128,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
                 var localeString = await _userService.GetUserLocale(int.Parse(value));
-                Language language = sdkDbContext.Languages.Single(x => x.Description.ToLower() == localeString.ToLower());
+                Language language = sdkDbContext.Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
                 List<PlanningPnModel> plannings = await planningsQuery.Select(x => new PlanningPnModel()
                 {
                     Id = x.Id,
@@ -247,7 +247,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
                 var localeString = await _userService.GetUserLocale(int.Parse(value));
-                Language language = sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => x.Description.ToLower() == localeString.ToLower());
+                Language language = sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
                 var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId, language);
 
                 var sdkFolder = await sdkDbContext.Folders
@@ -340,7 +340,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
                 var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
                 var localeString = await _userService.GetUserLocale(int.Parse(value));
-                Language language = sdkDbContext.Languages.Single(x => x.Description.ToLower() == localeString.ToLower());
+                Language language = sdkDbContext.Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
                 var planning = await _dbContext.Plannings
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == listId)
                     .Select(x => new PlanningPnModel()
@@ -455,7 +455,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
                 var localeString = await _userService.GetUserLocale(int.Parse(value));
-                Language language = _sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => x.Description.ToLower() == localeString.ToLower());
+                Language language = _sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
                 var template = await _sdkCore.TemplateItemRead(updateModel.RelatedEFormId, language);
 
                 var sdkFolder = await sdkDbContext.Folders

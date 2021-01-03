@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Microting.eForm.Infrastructure.Data.Entities;
 using Microting.eForm.Infrastructure.Models;
 
 namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
@@ -48,6 +51,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
         private readonly ILogger<ItemsPlanningReportService> _logger;
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
         private readonly IWordService _wordService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEFormCoreService _coreHelper;
         private readonly ICasePostBaseService _casePostBaseService;
         private readonly ItemsPlanningPnDbContext _dbContext;
@@ -59,6 +63,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             ILogger<ItemsPlanningReportService> logger,
             IEFormCoreService coreHelper,
             IWordService wordService,
+            IHttpContextAccessor httpContextAccessor,
             ICasePostBaseService casePostBaseService,
             ItemsPlanningPnDbContext dbContext,
             IUserService userService)
@@ -67,6 +72,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             _logger = logger;
             _coreHelper = coreHelper;
             _wordService = wordService;
+            _httpContextAccessor = httpContextAccessor;
             _casePostBaseService = casePostBaseService;
             _dbContext = dbContext;
             _userService = userService;
@@ -78,7 +84,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             {
                 TimeZoneInfo timeZoneInfo = await _userService.GetCurrentUserTimeZoneInfo();
                 var core = await _coreHelper.GetCore();
-                await using var microtingDbContext = core.dbContextHelper.GetDbContext();
+                await using var sdkDbContext = core.dbContextHelper.GetDbContext();
                 //var casesQuery = microtingDbContext.cases
                 //    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 //    .Include(x => x.Site)
@@ -137,8 +143,12 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 };
                 foreach (var groupedCase in groupedCases)
                 {
-                    var template = await core.TemplateRead(groupedCase.templateId);
-                    
+
+                    var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+                    var localeString = await _userService.GetUserLocale(int.Parse(value));
+                    Language language = sdkDbContext.Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
+                    var template = await core.ReadeForm(groupedCase.templateId, language);
+
                     // Posts - check mailing in main app
                     var reportModel = new ReportEformModel
                     {
@@ -159,10 +169,10 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             reportModel.ItemHeaders.Add(kvp);
                         }
                     }
-                    
+
                     // images
                     var templateCaseIds = groupedCase.cases.Select(x => (int?)x.MicrotingSdkCaseId).ToArray();
-                    var imagesForEform = await microtingDbContext.FieldValues
+                    var imagesForEform = await sdkDbContext.FieldValues
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Where(x => x.Field.FieldTypeId == 5)
                         .Where(x => templateCaseIds.Contains(x.CaseId))
@@ -268,7 +278,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             }
                         }
 
-                        item.ImagesCount = await microtingDbContext.FieldValues
+                        item.ImagesCount = await sdkDbContext.FieldValues
                             .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                             .Where(x => x.Field.FieldTypeId == 5)
                             .Where(x => x.CaseId == caseDto.MicrotingSdkCaseId)

@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2020 Microting A/S
+Copyright (c) 2007 - 2021 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,25 +29,25 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
     public class PlanningCaseResultModel
     {
         public int Id { get; set; }
-        
+
         public DateTime? DeployedAt { get; set; }
-        
+
         public DateTime? DoneAt { get; set; }
-        
+
         public string DoneByUserName { get; set; }
-        
+
         public string Label { get; set; }
-        
+
         public string Description { get; set; }
-        
+
         public string BuildYear { get; set; }
-        
+
         public string LocationCode { get; set; }
-        
+
         public string ItemNumber { get; set; }
-        
+
         public string Type { get; set; }
-        
+
         public string Field1 { get; set; }
 
         public string Field2 { get; set; }
@@ -67,15 +67,15 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
         public string Field9 { get; set; }
 
         public string Field10 { get; set; }
-        
+
         public int Status { get; set; }
-        
+
         public int SdkCaseId { get; set; }
-        
+
         public int SdkeFormId { get; set; }
-        
+
         public int NumberOfImages { get; set; }
-        
+
         public string Token { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2020 Microting A/S
+Copyright (c) 2007 - 2021 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,19 +33,19 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
     public class PlanningPnModel
     {
         public int Id { get; set; }
-        
+
         public string Name { get; set; }
-        
+
         public string Description { get; set; }
-        
+
         public int RepeatEvery { get; set; }
-        
+
         public RepeatType RepeatType { get; set; }
-        
+
         public DateTime? RepeatUntil { get; set; }
-        
+
         public DayOfWeek? DayOfWeek { get; set; }
-        
+
         public int? DayOfMonth { get; set; }
 
         public DateTime? LastExecutedTime { get; set; }
@@ -56,11 +56,11 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
         public bool isEformRemoved { get; set; }
 
         public string RelatedEFormName { get; set; }
-        
+
         public bool LabelEnabled { get; set; }
-        
+
         public bool DescriptionEnabled { get; set; }
-        
+
         public bool DeployedAtEnabled { get; set; }
 
         public bool DoneAtEnabled { get; set; }
@@ -68,15 +68,15 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
         public bool DoneByUserNameEnabled { get; set; }
 
         public bool UploadedDataEnabled { get; set; }
-        
+
         public bool ItemNumberEnabled { get; set; }
-        
+
         public bool LocationCodeEnabled { get; set; }
-        
+
         public bool BuildYearEnabled { get; set; }
-        
+
         public bool TypeEnabled { get; set; }
-        
+
         public bool NumberOfImagesEnabled { get; set; }
 
         public string SdkFolderName { get; set; }
