@@ -64,6 +64,9 @@ namespace ItemsPlanning.Pn.Services.PairingService
             {
                 var core = await _coreService.GetCore();
                 List<CommonDictionaryModel> deviceUsers;
+                var sdkCore =
+                    await _coreService.GetCore();
+                var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
                 await using (var dbContext = core.dbContextHelper.GetDbContext())
                 {
                     deviceUsers = await dbContext.Sites
@@ -86,12 +89,23 @@ namespace ItemsPlanning.Pn.Services.PairingService
                             y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
                     }
                 }
-
+                var languageQuery = sdkDbContext.Languages;
+                var localeString = await _userService.GetCurrentUserLocale();
+                if (string.IsNullOrEmpty(localeString))
+                {
+                    return new OperationDataResult<PairingsModel>(false,
+                        _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
+                }
+                var language = languageQuery.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
                 var pairing = await pairingQuery.Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                   .Select(x => new PairingModel
                   {
                     PlanningId = x.Id,
-                    PlanningName = x.Name,
+                    PlanningName = x.NameTranslations
+                        .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Where(y => y.Language.Id == language.Id)
+                        .Select(y => y.Name)
+                        .FirstOrDefault(),
                     PairingValues = x.PlanningSites
                       .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                       .Select(y => new PairingValueModel

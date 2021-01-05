@@ -8,7 +8,8 @@ export class PlanningsPnModel {
 
 export class PlanningPnModel {
   id: number;
-  name: CommonTranslationModel[];
+  translatedName: string;
+  translationsName: CommonTranslationModel[];
   description: string;
   repeatEvery: number;
   repeatType: number;

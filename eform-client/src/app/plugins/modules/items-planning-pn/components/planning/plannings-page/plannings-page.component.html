@@ -123,7 +123,7 @@
             scope="col"
             class="table-header-sortable"
             id="nameTableHeader"
-            (click)="sortTable('Name')"
+            (click)="sortTable('TranslatedName')"
           >
             <div class="d-flex align-items-center justify-content-center">
               {{ 'Name' | translate }}
@@ -358,7 +358,7 @@
             {{ planning.id }}
           </td>
           <td id="planningName">
-            {{ planning.name }}
+            {{ planning.translatedName }}
           </td>
           <td id="planningDescription">
             {{ planning.description }}

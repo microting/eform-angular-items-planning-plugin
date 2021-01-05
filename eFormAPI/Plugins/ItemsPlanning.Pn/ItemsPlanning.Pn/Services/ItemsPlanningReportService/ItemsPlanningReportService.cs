@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Security.Claims;
+using Microting.eForm.Infrastructure.Data.Entities;
 using Microting.eForm.Infrastructure.Models;
 
 namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
@@ -34,6 +36,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
     using System.Threading.Tasks;
     using Infrastructure.Models.Report;
     using ItemsPlanningLocalizationService;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
     using Microting.eForm.Infrastructure.Constants;
@@ -52,6 +55,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
         private readonly ICasePostBaseService _casePostBaseService;
         private readonly ItemsPlanningPnDbContext _dbContext;
         private readonly IUserService _userService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         // ReSharper disable once SuggestBaseTypeForParameter
         public ItemsPlanningReportService(
@@ -61,6 +65,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             IWordService wordService,
             ICasePostBaseService casePostBaseService,
             ItemsPlanningPnDbContext dbContext,
+            IHttpContextAccessor httpContextAccessor,
             IUserService userService)
         {
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
@@ -70,6 +75,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             _casePostBaseService = casePostBaseService;
             _dbContext = dbContext;
             _userService = userService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model)
@@ -135,9 +141,12 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 {
                     3,5,6,7,12,16,17,18
                 };
+                var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+                var localeString = await _userService.GetUserLocale(int.Parse(value));
+                Language language = core.dbContextHelper.GetDbContext().Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
                 foreach (var groupedCase in groupedCases)
                 {
-                    var template = await core.TemplateRead(groupedCase.templateId);
+                    var template = await core.TemplateItemRead(groupedCase.templateId, language);
                     
                     // Posts - check mailing in main app
                     var reportModel = new ReportEformModel
