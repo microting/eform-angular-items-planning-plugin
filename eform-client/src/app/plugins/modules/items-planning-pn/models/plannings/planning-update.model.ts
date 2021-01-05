@@ -4,7 +4,7 @@ import {CommonTranslationModel} from 'src/app/common/models';
 
 export class PlanningUpdateModel {
   id: number;
-  name: CommonTranslationModel[];
+  translationsName: CommonTranslationModel[];
   description: string;
   repeatEvery: number;
   repeatType: number;

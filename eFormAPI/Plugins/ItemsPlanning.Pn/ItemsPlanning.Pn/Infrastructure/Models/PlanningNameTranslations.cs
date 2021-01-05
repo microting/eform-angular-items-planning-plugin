@@ -30,6 +30,5 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
         public string Name { get; set; }
         public string LocaleName { get; set; }
         public string Language { get; set; }
-        public int PlaningId { get; set; }
     }
 }

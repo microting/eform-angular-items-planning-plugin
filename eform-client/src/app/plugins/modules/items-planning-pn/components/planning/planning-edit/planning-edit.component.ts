@@ -165,7 +165,7 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
     }
     const model = {
       ...this.selectedPlanningModel,
-      name: this.translationsArray.getRawValue(),
+      translationsName: this.translationsArray.getRawValue(),
     } as PlanningUpdateModel;
     this.itemsPlanningPnPlanningsService
       .updatePlanning(model)
