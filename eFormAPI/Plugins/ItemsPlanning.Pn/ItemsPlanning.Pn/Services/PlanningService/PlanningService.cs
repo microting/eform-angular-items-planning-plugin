@@ -381,9 +381,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             .Select(y => new Infrastructure.Models.PlanningNameTranslations()
                             {
                                 Id = y.Id,
-                                Language = y.Language.LanguageCode,
+                                Language = y.Language.Name,
                                 Name = y.Name,
-                                LocaleName = y.Language.Name
+                                LocaleName = y.Language.LanguageCode
                             }).ToList(),
                         TranslatedName = x.NameTranslations
                             .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
@@ -512,12 +512,12 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                                             .Include(x => x.PlanningsTags)
                                             .SingleAsync(x => x.Id == updateModel.Id);
                 var folderName = sdkFolder.Name;
-                var nameTranslationsPlaning = _dbContext.PlanningNameTranslations.Where(x => x.Planning == planning);
 
-                foreach (var translation in planning.NameTranslations)
+                foreach (var translation in updateModel.TranslationsName)
                 {
-                    var updateTranslation = nameTranslationsPlaning.FirstOrDefault(x => x.Id == translation.Id);
-                    if (updateTranslation != null && updateTranslation.Name != translation.Name)
+                    var updateTranslation = _dbContext.PlanningNameTranslations
+                        .FirstOrDefault(x => x.Planning.Id == planning.Id && x.Id == translation.Id);
+                    if (updateTranslation != null)
                     {
                         updateTranslation.Name = translation.Name;
                         await updateTranslation.Update(_dbContext);
