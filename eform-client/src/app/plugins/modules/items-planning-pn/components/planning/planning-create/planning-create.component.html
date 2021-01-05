@@ -5,8 +5,7 @@
       id="planningCreateSaveBtn"
       class="btn-success btn-small-height"
       [disabled]="
-        saveButtonDisabled ||
-        newPlanningModel.name"
+        saveButtonDisabled"
       (click)="createPlanning()"
     >
       {{ 'Create' | translate }}

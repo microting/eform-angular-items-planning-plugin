@@ -133,7 +133,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
     }
 
     this.createSub$ = this.itemsPlanningPnPlanningsService
-      .createPlanning({...this.newPlanningModel, name: this.translationsArray.getRawValue()})
+      .createPlanning({...this.newPlanningModel, translationsName: this.translationsArray.getRawValue()})
       .subscribe((data) => {
         if (data && data.success) {
           this.location.back();

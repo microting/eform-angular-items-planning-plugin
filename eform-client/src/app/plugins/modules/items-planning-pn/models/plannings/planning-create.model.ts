@@ -3,7 +3,7 @@ import {Moment} from 'moment';
 import {CommonTranslationModel} from 'src/app/common/models';
 
 export class PlanningCreateModel {
-  name: CommonTranslationModel[];
+  translationsName: CommonTranslationModel[];
   description: string;
   repeatEvery: number;
   repeatType: number;

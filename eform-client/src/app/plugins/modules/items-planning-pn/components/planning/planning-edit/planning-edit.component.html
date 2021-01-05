@@ -5,8 +5,7 @@
       id="planningEditSaveBtn"
       class="btn-success btn-small-height"
       [disabled]="
-        saveButtonDisabled ||
-        selectedPlanningModel.translationsName.length > 0
+        saveButtonDisabled
       "
       (click)="updatePlanning()"
     >
