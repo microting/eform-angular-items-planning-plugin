@@ -3,57 +3,57 @@ import itemsPlanningPlanningPage, {PlanningRowObject} from '../../Page objects/I
 import itemsPlanningModalPage from '../../Page objects/ItemsPlanning/ItemsPlanningModal.page';
 import myEformsPage from '../../Page objects/MyEforms.page';
 import foldersPage from '../../Page objects/Folders.page';
+import {generateRandmString} from '../../Helpers/helper-functions';
 
 const expect = require('chai').expect;
+let eformLabel = generateRandmString();
+let folderName = generateRandmString();
 
 describe('Items planning - Add', function () {
   before(function () {
     loginPage.open('/auth');
     loginPage.login();
-    // Create eform
-    const newEformLabel = 'Number 1';
-    itemsPlanningPlanningPage.createNewEform(newEformLabel);
-    // Create folder
+    if (myEformsPage.rowNum <= 0) {
+      myEformsPage.createNewEform(eformLabel); // Create eform
+    } else {
+      eformLabel = myEformsPage.getFirstMyEformsRowObj().eFormName;
+    }
     myEformsPage.Navbar.goToFolderPage();
-    foldersPage.createNewFolder('My test folder', 'Description');
+    if (foldersPage.rowNum <= 0) {
+      foldersPage.createNewFolder(folderName, 'Description'); // Create folder
+    } else {
+      folderName = foldersPage.getFolder(1).name;
+    }
     itemsPlanningPlanningPage.goToPlanningsPage();
   });
   it('should create planning with all fields', function () {
     itemsPlanningPlanningPage.planningCreateBtn.click();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    const spinnerAnimation = $('#spinner-animation');
+    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
     const planningData = {
-      name: 'Test item',
-      template: 'Number 1',
+      name: [generateRandmString(), generateRandmString(), generateRandmString()],
+      template: eformLabel,
       description: 'Description',
       repeatEvery: '1',
-      repeatType: '1',
+      repeatType: 'Day',
       repeatUntil: '5/15/2020',
-      folderName: 'My test folder'
+      folderName: folderName
     };
     itemsPlanningModalPage.createPlanning(planningData);
     // Check that planning is created in table
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-    const planningRowObject = new PlanningRowObject(itemsPlanningPlanningPage.rowNum());
+    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
+    browser.pause(2000);
+    const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(planningData.name[1]);
     // expect(planningRowObject.name, 'Name in table is incorrect').equal(planningData.name);
     // expect(planningRowObject.description, 'Description in table is incorrect').equal(planningData.description);
     // Check that all planning fields are saved
-    planningRowObject.clickUpdatePlanning();
-    expect(itemsPlanningModalPage.editPlanningItemName.getValue(), 'Saved Name is incorrect').equal(planningData.name);
-    expect(itemsPlanningModalPage.editPlanningSelectorValue.getText(), 'Saved Template is incorrect').equal(planningData.template);
-    expect(itemsPlanningModalPage.editPlanningDescription.getValue(), 'Saved Description is incorrect').equal(planningData.description);
-    expect(itemsPlanningModalPage.editRepeatEvery.getValue(), 'Saved Repeat Every is incorrect').equal(planningData.repeatEvery);
+    expect(planningRowObject.name, 'Saved Name is incorrect').equal(planningData.name[1]);
+    expect(planningRowObject.eFormName, 'Saved Template is incorrect').equal(planningData.template);
+    expect(planningRowObject.description, 'Saved Description is incorrect').equal(planningData.description);
+    expect(planningRowObject.repeatEvery, 'Saved Repeat Every is incorrect').equal(planningData.repeatEvery);
     const repeatUntil = new Date(planningData.repeatUntil);
-    const repeatUntilSaved = new Date(itemsPlanningModalPage.editRepeatUntil.getValue());
-    expect(repeatUntilSaved.getDate(), 'Saved Repeat Until is incorrect').equal(repeatUntil.getDate());
-    //
-    $('#editRepeatType').click();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-    const editRepeatTypeSelected = $$('#editRepeatType .ng-option')[planningData.repeatType];
-    expect(editRepeatTypeSelected.getAttribute('class'), 'Saved Repeat Type is incorrect').contains('ng-option-selected');
-    itemsPlanningModalPage.planningEditCancelBtn.click();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-    planningRowObject.clickDeletePlanning();
-    itemsPlanningModalPage.planningDeleteDeleteBtn.click();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    expect(planningRowObject.repeatUntil.getDate(), 'Saved Repeat Until is incorrect').equal(repeatUntil.getDate());
+    expect(planningRowObject.repeatType, 'Saved Repeat Type is incorrect').equal(planningData.repeatType);
+    planningRowObject.delete();
   });
 });

@@ -129,13 +129,13 @@
               {{ 'Name' | translate }}
               <i
                 class="material-icons text-black-50"
-                *ngIf="localPageSettings.sort != 'Name'"
+                *ngIf="localPageSettings.sort != 'TranslatedName'"
                 >unfold_more</i
               >
               <i
                 class="material-icons"
                 *ngIf="
-                  localPageSettings.sort == 'Name' &&
+                  localPageSettings.sort == 'TranslatedName' &&
                   !planningsRequestModel.isSortDsc
                 "
                 >expand_less</i
@@ -143,7 +143,7 @@
               <i
                 class="material-icons"
                 *ngIf="
-                  localPageSettings.sort == 'Name' &&
+                  localPageSettings.sort == 'TranslatedName' &&
                   planningsRequestModel.isSortDsc
                 "
                 >expand_more</i

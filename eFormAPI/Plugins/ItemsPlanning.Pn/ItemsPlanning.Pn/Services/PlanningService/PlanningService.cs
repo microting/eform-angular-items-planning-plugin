@@ -76,7 +76,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
 
                 var planningsQuery = _dbContext.Plannings.AsQueryable();
-                if (!string.IsNullOrEmpty(pnRequestModel.Sort))
+                if (!string.IsNullOrEmpty(pnRequestModel.Sort) && pnRequestModel.Sort != "TranslatedName")
                 {
                     if (pnRequestModel.IsSortDsc)
                     {
@@ -216,6 +216,18 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planningsModel.Total = await _dbContext.Plannings.CountAsync(x =>
                     x.WorkflowState != Constants.WorkflowStates.Removed);
                 planningsModel.Plannings = plannings;
+
+                if (pnRequestModel.Sort == "TranslatedName")
+                {
+                    if (pnRequestModel.IsSortDsc)
+                    {
+                        planningsModel.Plannings = planningsModel.Plannings.OrderByDescending(x => x.TranslatedName).ToList();
+                    }
+                    else
+                    {
+                        planningsModel.Plannings = planningsModel.Plannings.OrderBy(x => x.TranslatedName).ToList();
+                    }
+                }
 
                 return new OperationDataResult<PlanningsPnModel>(true, planningsModel);
             }
@@ -551,7 +563,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.RepeatType = updateModel.RepeatType;
                 planning.DayOfWeek = updateModel.DayOfWeek;
                 planning.DayOfMonth = updateModel.DayOfMonth;
-                planning.Description = updateModel.Item.Description;
+                planning.Description = updateModel.Description;
                 planning.UpdatedAt = DateTime.UtcNow;
                 planning.UpdatedByUserId = _userService.UserId;
                 planning.RelatedEFormId = updateModel.RelatedEFormId;

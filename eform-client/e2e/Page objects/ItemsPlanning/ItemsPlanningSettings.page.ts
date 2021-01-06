@@ -40,8 +40,7 @@ export class ItemsPlanningSettingsPage extends Page {
   }
 
   public goToSettingsPage() {
-    myEformsPage.Navbar.advancedDropdownClick();
-    myEformsPage.Navbar.clickOnSubMenuItem('Plugins');
+    myEformsPage.Navbar.goToPluginsPage();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
     pluginPage.pluginSettingsLink.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});

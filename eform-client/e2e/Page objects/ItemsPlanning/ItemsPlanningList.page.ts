@@ -1,9 +1,7 @@
-import Page from '../Page';
 import itemsPlanningModalPage from './ItemsPlanningModal.page';
-import { PageWithNavbarPage } from '../PageWithNavbar.page';
-import { Guid } from 'guid-typescript';
-import XMLForEformFractions from '../../Constants/XMLForEformFractions';
+import {PageWithNavbarPage} from '../PageWithNavbar.page';
 import XMLForPlanning from './XMLForPlanning';
+import {generateRandmString} from '../../Helpers/helper-functions';
 
 export class ItemsPlanningListPage extends PageWithNavbarPage {
   constructor() {
@@ -16,48 +14,56 @@ export class ItemsPlanningListPage extends PageWithNavbarPage {
   }
 
   public get newEformBtn() {
-    $('#newEFormBtn').waitForDisplayed({ timeout: 20000 });
-    $('#newEFormBtn').waitForClickable({ timeout: 20000 });
-    return $('#newEFormBtn');
+    const el = $('#newEFormBtn');
+    el.waitForDisplayed({timeout: 20000});
+    el.waitForClickable({timeout: 20000});
+    return el;
   }
 
   public get xmlTextArea() {
-    $('#eFormXml').waitForDisplayed({ timeout: 20000 });
-    $('#eFormXml').waitForClickable({ timeout: 20000 });
-    return $('#eFormXml');
+    const el = $('#eFormXml');
+    el.waitForDisplayed({timeout: 20000});
+    el.waitForClickable({timeout: 20000});
+    return el;
   }
 
   public get createEformBtn() {
-    $('#createEformBtn').waitForDisplayed({ timeout: 20000 });
-    $('#createEformBtn').waitForClickable({ timeout: 20000 });
-    return $('#createEformBtn');
+    const el = $('#createEformBtn');
+    el.waitForDisplayed({timeout: 20000});
+    el.waitForClickable({timeout: 20000});
+    return el;
   }
 
   public get createEformTagSelector() {
-    $('#createEFormMultiSelector').waitForDisplayed({ timeout: 20000 });
-    $('#createEFormMultiSelector').waitForClickable({ timeout: 20000 });
-    return $('#createEFormMultiSelector');
+    const el = $('#createEFormMultiSelector');
+    el.waitForDisplayed({timeout: 20000});
+    el.waitForClickable({timeout: 20000});
+    return el;
   }
 
   public get createEformNewTagInput() {
-    $('#addTagInput').waitForDisplayed({ timeout: 20000 });
-    $('#addTagInput').waitForClickable({ timeout: 20000 });
-    return $('#addTagInput');
+    const el = $('#addTagInput');
+    el.waitForDisplayed({timeout: 20000});
+    el.waitForClickable({timeout: 20000});
+    return el;
   }
 
   public clickIdTableHeader() {
-    $(`/ /*[contains(@id, 'idTableHeader')]`).click();
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+    $(`#idTableHeader`).click();
+    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
   public clickNameTableHeader() {
-    $(`/ /*[contains(@id, 'nameTableHeader')]`).click();
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+    const ele = $('#nameTableHeader');
+    ele.waitForDisplayed({timeout: 20000});
+    ele.waitForClickable({timeout: 20000});
+    ele.click();
+    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
   public clickDescriptionTableHeader() {
-    $(`/ /*[contains(@id, 'descriptionTableHeader')]`).click();
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+    $(`#descriptionTableHeader`).click();
+    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
   public getListValue(selector: any, row: number) {
@@ -78,46 +84,51 @@ export class ItemsPlanningListPage extends PageWithNavbarPage {
   }
 
   public get itemPlanningButton() {
-    $('#items-planning-pn').waitForDisplayed({ timeout: 20000 });
-    $('#items-planning-pn').waitForClickable({ timeout: 20000 });
-    return $('#items-planning-pn');
+    const el = $('#items-planning-pn');
+    el.waitForDisplayed({timeout: 20000});
+    el.waitForClickable({timeout: 20000});
+    return el;
   }
 
   public get listCreateBtn() {
-    $('#listCreateBtn').waitForDisplayed({ timeout: 20000 });
-    $('#listCreateBtn').waitForClickable({ timeout: 20000 });
-    return $('#listCreateBtn');
+    const el = $('#listCreateBtn');
+    el.waitForDisplayed({timeout: 20000});
+    el.waitForClickable({timeout: 20000});
+    return el;
   }
 
   public get listsButton() {
-    $('#items-planning-pn-lists').waitForDisplayed({ timeout: 20000 });
-    $('#items-planning-pn-lists').waitForClickable({ timeout: 20000 });
-    return $('#items-planning-pn-lists');
+    const el = $('#items-planning-pn-lists');
+    el.waitForDisplayed({timeout: 20000});
+    el.waitForClickable({timeout: 20000});
+    return el;
   }
 
   public goToListsPage() {
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+    const spinnerAnimation = $('#spinner-animation');
+    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
     this.itemPlanningButton.click();
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
     this.listsButton.click();
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
   }
 
   public createDummyLists() {
     for (let i = 0; i < 3; i++) {
       this.listCreateBtn.click();
-      itemsPlanningModalPage.createPlanningItemName.setValue(
-        Guid.create().toString()
+      for (let j = 1; j < 3; j++) {
+        itemsPlanningModalPage.createPlanningItemName(j).setValue(generateRandmString());
+      }
+      itemsPlanningModalPage.createPlanningItemDescription.setValue(
+        generateRandmString()
       );
-      itemsPlanningModalPage.createPlanningDescription.setValue(
-        Guid.create().toString()
-      );
-      $('#spinner-animation').waitForDisplayed({
+      const spinnerAnimation = $('#spinner-animation');
+      spinnerAnimation.waitForDisplayed({
         timeout: 90000,
         reverse: true,
       });
       itemsPlanningModalPage.createPlanningSelector.addValue('Number 1');
-      $('#spinner-animation').waitForDisplayed({
+      spinnerAnimation.waitForDisplayed({
         timeout: 90000,
         reverse: true,
       });
@@ -126,7 +137,7 @@ export class ItemsPlanningListPage extends PageWithNavbarPage {
       itemsPlanningModalPage.selectCreateRepeatType(1);
       itemsPlanningModalPage.createRepeatUntil.setValue('5/15/2020');
       itemsPlanningModalPage.planningCreateSaveBtn.click();
-      $('#spinner-animation').waitForDisplayed({
+      spinnerAnimation.waitForDisplayed({
         timeout: 90000,
         reverse: true,
       });
@@ -148,7 +159,8 @@ export class ItemsPlanningListPage extends PageWithNavbarPage {
 
   createNewEform(eFormLabel, newTagsList = [], tagAddedNum = 0) {
     this.newEformBtn.click();
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+    const spinnerAnimation = $('#spinner-animation');
+    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
     // Create replaced xml and insert it in textarea
     const xml = XMLForPlanning.XML.replace('TEST_LABEL', eFormLabel);
     browser.execute(function (xmlText) {
@@ -159,7 +171,7 @@ export class ItemsPlanningListPage extends PageWithNavbarPage {
     const addedTags: string[] = newTagsList;
     if (newTagsList.length > 0) {
       this.createEformNewTagInput.setValue(newTagsList.join(','));
-      $('#spinner-animation').waitForDisplayed({
+      spinnerAnimation.waitForDisplayed({
         timeout: 90000,
         reverse: true,
       });
@@ -167,7 +179,7 @@ export class ItemsPlanningListPage extends PageWithNavbarPage {
     // Add existing tags
     const selectedTags: string[] = [];
     if (tagAddedNum > 0) {
-      $('#spinner-animation').waitForDisplayed({
+      spinnerAnimation.waitForDisplayed({
         timeout: 90000,
         reverse: true,
       });
@@ -184,8 +196,8 @@ export class ItemsPlanningListPage extends PageWithNavbarPage {
       }
     }
     this.createEformBtn.click();
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
-    return { added: addedTags, selected: selectedTags };
+    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
+    return {added: addedTags, selected: selectedTags};
   }
 }
 
@@ -197,16 +209,20 @@ export class ListRowObject {
     if ($$('#listId')[rowNumber - 1]) {
       try {
         this.name = $$('#listName')[rowNumber - 1].getText();
-      } catch (e) {}
+      } catch (e) {
+      }
       try {
         this.description = $$('#listDescription')[rowNumber - 1].getText();
-      } catch (e) {}
+      } catch (e) {
+      }
       try {
         this.updateBtn = $$('#updateListBtn')[rowNumber - 1];
-      } catch (e) {}
+      } catch (e) {
+      }
       try {
         this.deleteBtn = $$('#deleteListBtn')[rowNumber - 1];
-      } catch (e) {}
+      } catch (e) {
+      }
     }
   }
 
@@ -218,12 +234,12 @@ export class ListRowObject {
 
   public clickDeleteList() {
     this.deleteBtn.click();
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 
   public clickUpdateList() {
     this.updateBtn.click();
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
 }
 
