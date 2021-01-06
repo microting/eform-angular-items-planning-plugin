@@ -365,14 +365,15 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             PlanningsTags = new List<PlanningsTags>()
                         };
 
-                        var planingTranslationsName = new List<PlanningNameTranslations>();
+                        var planingTranslationsName = new List<PlanningNameTranslation>();
 
                         foreach (var language in sdkDbContext.Languages.ToList())
                         {
-                            planingTranslationsName.Add(new PlanningNameTranslations()
+                            planingTranslationsName.Add(new PlanningNameTranslation()
                             {
                                 Name = excelModel.ItemName,
-                                Language = language,
+                                LanguageId = language.Id,
+                                PlanningId = planning.Id
                             });
                         }
 
