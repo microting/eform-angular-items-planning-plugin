@@ -29,6 +29,8 @@ import { FolderDto } from 'src/app/common/models/dto/folder.dto';
 import { PlanningFoldersModalComponent } from '../planning-folders-modal/planning-folders-modal.component';
 import { CommonDictionaryModel } from 'src/app/common/models';
 import {composeFolderName} from 'src/app/common/helpers/folder-name.helper';
+import {FormArray, FormControl, FormGroup} from '@angular/forms';
+import {applicationLanguages} from 'src/app/common/const/application-languages.const';
 
 @AutoUnsubscribe()
 @Component({
@@ -51,6 +53,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   foldersListDto: FolderDto[] = [];
   saveButtonDisabled = true;
   availableTags: CommonDictionaryModel[] = [];
+  translationsArray: FormArray = new FormArray([]);
 
   selectedFolderName: string;
 
@@ -86,6 +89,20 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
     this.loadFoldersTree();
     this.loadFoldersList();
     this.getTags();
+    this.initTranslations();
+  }
+
+  initTranslations() {
+    for (const language of applicationLanguages) {
+      this.translationsArray.push(
+        new FormGroup({
+          id: new FormControl(language.id),
+          name: new FormControl(),
+          localeName: new FormControl(language.locale),
+          language: new FormControl(language.text),
+        })
+      );
+    }
   }
 
   updateSaveButtonDisabled() {
@@ -116,7 +133,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
     }
 
     this.createSub$ = this.itemsPlanningPnPlanningsService
-      .createPlanning(this.newPlanningModel)
+      .createPlanning({...this.newPlanningModel, translationsName: this.translationsArray.getRawValue()})
       .subscribe((data) => {
         if (data && data.success) {
           this.location.back();

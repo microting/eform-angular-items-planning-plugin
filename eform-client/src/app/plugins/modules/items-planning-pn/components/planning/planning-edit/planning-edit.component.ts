@@ -27,10 +27,15 @@ import { Location } from '@angular/common';
 import { FolderDto } from 'src/app/common/models/dto/folder.dto';
 import { FoldersService } from 'src/app/common/services/advanced/folders.service';
 import { PlanningFoldersModalComponent } from '../planning-folders-modal/planning-folders-modal.component';
-import { CommonDictionaryModel } from 'src/app/common/models';
+import {
+  CommonDictionaryModel,
+  CommonTranslationModel,
+} from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
 import { composeFolderName } from 'src/app/common/helpers/folder-name.helper';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { applicationLanguages } from 'src/app/common/const/application-languages.const';
 
 @AutoUnsubscribe()
 @Component({
@@ -53,6 +58,7 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
   foldersListDto: FolderDto[] = [];
   availableTags: CommonDictionaryModel[] = [];
   saveButtonDisabled = true;
+  translationsArray: FormArray = new FormArray([]);
 
   getTagsSub$: Subscription;
   getItemsPlanningSub$: Subscription;
@@ -98,28 +104,39 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  initTranslations(translations: CommonTranslationModel[]) {
+    for (const translation of translations) {
+      this.translationsArray.push(
+        new FormGroup({
+          id: new FormControl(translation.id),
+          name: new FormControl(translation.name),
+          localeName: new FormControl(translation.localeName),
+          language: new FormControl(translation.language),
+        })
+      );
+    }
+  }
+
   getSelectedPlanning(id: number) {
     this.getItemsPlanningSub$ = this.itemsPlanningPnPlanningsService
       .getSinglePlanning(id)
       .subscribe((data) => {
         if (data && data.success) {
-          this.selectedPlanningModel = { ...data.model,
-              internalRepeatUntil: data.model.repeatUntil,
-              currentRelatedEformId: data.model.relatedEFormId
-            };
+          this.selectedPlanningModel = {
+            ...data.model,
+            internalRepeatUntil: data.model.repeatUntil,
+            currentRelatedEformId: data.model.relatedEFormId,
+          };
           this.selectedPlanningModel.internalRepeatUntil = this.selectedPlanningModel.repeatUntil;
           this.loadFoldersTree();
           this.loadFoldersList();
+          this.initTranslations(data.model.translationsName);
           this.templatesModel.templates = [
             {
               id: this.selectedPlanningModel.relatedEFormId,
               label: this.selectedPlanningModel.relatedEFormName,
             } as any,
           ];
-          // this.selectedPlanningModel.item.eFormSdkFullFolderName = this
-          //   .selectedPlanningModel.item.eFormSdkParentFolderName
-          //   ? `${this.selectedPlanningModel.item.eFormSdkFolderName} - ${this.selectedPlanningModel.item.eFormSdkParentFolderName}`
-          //   : this.selectedPlanningModel.item.eFormSdkFolderName;
         }
       });
   }
@@ -146,7 +163,10 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
         .format('YYYY-MM-DDT00:00:00')
         .toString();
     }
-    const model = { ...this.selectedPlanningModel } as PlanningUpdateModel;
+    const model = {
+      ...this.selectedPlanningModel,
+      translationsName: this.translationsArray.getRawValue(),
+    } as PlanningUpdateModel;
     this.itemsPlanningPnPlanningsService
       .updatePlanning(model)
       .subscribe((data) => {

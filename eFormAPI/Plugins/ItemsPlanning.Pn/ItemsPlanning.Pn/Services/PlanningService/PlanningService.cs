@@ -22,8 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using Microting.eForm.Infrastructure.Data.Entities;
-
 namespace ItemsPlanning.Pn.Services.PlanningService
 {
     using System;
@@ -72,12 +70,12 @@ namespace ItemsPlanning.Pn.Services.PlanningService
         {
             try
             {
-                PlanningsPnModel planningsModel = new PlanningsPnModel();
+                var planningsModel = new PlanningsPnModel();
                 var sdkCore =
                     await _coreService.GetCore();
                 var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
 
-                IQueryable<Planning> planningsQuery = _dbContext.Plannings.AsQueryable();
+                var planningsQuery = _dbContext.Plannings.AsQueryable();
                 if (!string.IsNullOrEmpty(pnRequestModel.Sort))
                 {
                     if (pnRequestModel.IsSortDsc)
@@ -125,22 +123,40 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Skip(pnRequestModel.Offset)
                         .Take(pnRequestModel.PageSize);
+                        
+                var localeString = await _userService.GetCurrentUserLocale();
+                if (string.IsNullOrEmpty(localeString))
+                {
+                    return new OperationDataResult<PlanningsPnModel>(false,
+                        _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
+                }
+                var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+                var languageIemPlanning = _dbContext.Languages.Single(x => x.Id == language.Id);
+                var plannings = await planningsQuery.Select(x => new PlanningPnModel()
 
-                var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-                var localeString = await _userService.GetUserLocale(int.Parse(value));
-                Language language = sdkDbContext.Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
-                List<PlanningPnModel> plannings = await planningsQuery.Select(x => new PlanningPnModel()
                 {
                     Id = x.Id,
-                    Name = x.Item.Name,
-                    Description = x.Item.Description,
+                    TranslationsName = x.NameTranslations.Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Select(y => new PlanningNameTranslations()
+                        {
+                            Id = y.Id,
+                            Language = y.Language.LanguageCode,
+                            Name = y.Name,
+                            LocaleName = y.Language.Name
+                        }).ToList(),
+                    TranslatedName = x.NameTranslations
+                        .Where(y=> y.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Where(y => y.Language.Id == languageIemPlanning.Id)
+                        .Select(y => y.Name)
+                        .FirstOrDefault(),
+                    Description = x.Description,
                     RepeatEvery = x.RepeatEvery,
                     RepeatType = x.RepeatType,
                     RepeatUntil = x.RepeatUntil,
                     DayOfWeek = x.DayOfWeek,
                     DayOfMonth = x.DayOfMonth,
                     RelatedEFormId = x.RelatedEFormId,
-                    isEformRemoved = sdkCore.TemplateItemRead(x.RelatedEFormId, language).Result.WorkflowState == "removed",
+                    isEformRemoved = sdkCore.TemplateItemRead(x.RelatedEFormId, language).Result.WorkflowState == Constants.WorkflowStates.Removed,
                     RelatedEFormName = x.RelatedEFormName,
                     SdkFolderName = x.SdkFolderName,
                     StartDate = x.StartDate,
@@ -174,7 +190,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 // get site names
                 var core = await _coreService.GetCore();
-                using (var dbContext = core.dbContextHelper.GetDbContext())
+                await using (var dbContext = core.dbContextHelper.GetDbContext())
                 {
                     var sites = await dbContext.Sites
                         .AsNoTracking()
@@ -189,12 +205,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     {
                         foreach (var assignedSite in planning.AssignedSites)
                         {
-                            foreach (var site in sites)
+                            foreach (var site in sites.Where(site => site.Id == assignedSite.SiteId))
                             {
-                                if (site.Id == assignedSite.SiteId)
-                                {
-                                    assignedSite.Name = site.Name;
-                                }
+                                assignedSite.Name = site.Name;
                             }
                         }
                     }
@@ -232,9 +245,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         {
                             Name = tagName,
                             CreatedAt = DateTime.UtcNow,
-                            CreatedByUserId = UserId,
+                            CreatedByUserId = _userService.UserId,
                             UpdatedAt = DateTime.UtcNow,
-                            UpdatedByUserId = UserId,
+                            UpdatedByUserId = _userService.UserId,
                             Version = 1,
                         };
                         await _dbContext.PlanningTags.AddAsync(planningTag);
@@ -245,9 +258,16 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 tagIds.AddRange(model.TagsIds);
 
-                var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-                var localeString = await _userService.GetUserLocale(int.Parse(value));
-                Language language = sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
+
+                var localeString = await _userService.GetCurrentUserLocale();
+                if (string.IsNullOrEmpty(localeString))
+                {
+                    return new OperationResult(
+                        true,
+                        _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
+                }
+                var language = sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+
                 var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId, language);
 
                 var sdkFolder = await sdkDbContext.Folders
@@ -256,11 +276,11 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 // var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
 
+
                 var planning = new Planning
                 {
-                    Name = model.Item.Name,
                     Description = model.Item.Description,
-                    CreatedByUserId = UserId,
+                    CreatedByUserId = _userService.UserId,
                     CreatedAt = DateTime.UtcNow,
                     RepeatEvery = model.RepeatEvery,
                     RepeatUntil = model.RepeatUntil,
@@ -289,15 +309,38 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         new PlanningsTags
                         {
                             CreatedAt = DateTime.UtcNow,
-                            CreatedByUserId = UserId,
+                            CreatedByUserId = _userService.UserId,
                             UpdatedAt = DateTime.UtcNow,
-                            UpdatedByUserId = UserId,
+                            UpdatedByUserId = _userService.UserId,
                             Version = 1,
                             PlanningTagId = tagId
                         });
                 }
 
                 await planning.Create(_dbContext);
+                var languages = await _dbContext.Languages.ToListAsync();
+                foreach (var translation in model.TranslationsName)
+                {
+                    var languageId = languages.Where(x => x.Name == translation.Language || x.LanguageCode == translation.LocaleName)
+                        .Select(x => x.Id)
+                        .FirstOrDefault();
+                    if (languageId < 1)
+                    {
+                        return new OperationResult(
+                            true,
+                            _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
+                    }
+
+                    var planningNameTranslations = new PlanningNameTranslation()
+                    {
+                        LanguageId = languageId,
+                        PlanningId = planning.Id,
+                        Name = translation.Name,
+                        CreatedByUserId = _userService.UserId,
+                        UpdatedByUserId = _userService.UserId
+                    };
+                    await planningNameTranslations.Create(_dbContext);
+                }
                 var item = new Item()
                 {
                     LocationCode = model.Item.LocationCode,
@@ -312,7 +355,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     BuildYear = model.Item.BuildYear,
                     Type = model.Item.Type,
                     PlanningId = planning.Id,
-                    CreatedByUserId = UserId,
+                    CreatedByUserId = _userService.UserId,
                     eFormSdkFolderId = model.Item.eFormSdkFolderId
                 };
                 await item.Create(_dbContext);
@@ -331,6 +374,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     _itemsPlanningLocalizationService.GetString("ErrorWhileCreatingList"));
             }
         }
+
         public async Task<OperationDataResult<PlanningPnModel>> Read(int listId)
         {
             try
@@ -338,13 +382,31 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 var sdkCore =
                     await _coreService.GetCore();
                 var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
-                var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-                var localeString = await _userService.GetUserLocale(int.Parse(value));
-                Language language = sdkDbContext.Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
+                var localeString = await _userService.GetCurrentUserLocale();
+                if (string.IsNullOrEmpty(localeString))
+                {
+                    return new OperationDataResult<PlanningPnModel>(
+                        false,
+                        _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
+                }
+                var language = _dbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
                 var planning = await _dbContext.Plannings
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == listId)
                     .Select(x => new PlanningPnModel()
                     {
+                        TranslationsName = x.NameTranslations.Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Select(y => new Infrastructure.Models.PlanningNameTranslations()
+                            {
+                                Id = y.Id,
+                                Language = y.Language.Name,
+                                Name = y.Name,
+                                LocaleName = y.Language.LanguageCode
+                            }).ToList(),
+                        TranslatedName = x.NameTranslations
+                            .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Where(y => y.Language.Id == language.Id)
+                            .Select(y => y.Name)
+                            .FirstOrDefault(),
                         Id = x.Id,
                         RepeatUntil = x.RepeatUntil,
                         RepeatEvery = x.RepeatEvery,
@@ -352,9 +414,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         DayOfWeek = x.DayOfWeek,
                         DayOfMonth = x.DayOfMonth,
                         Description = x.Description,
-                        Name = x.Name,
+
                         RelatedEFormId = x.RelatedEFormId,
-                        isEformRemoved = sdkCore.TemplateItemRead(x.RelatedEFormId, language).Result.WorkflowState == "removed",
+                        isEformRemoved = sdkCore.TemplateItemRead(x.RelatedEFormId, language).Result.WorkflowState == Constants.WorkflowStates.Removed,
                         RelatedEFormName = x.RelatedEFormName,
                         LabelEnabled = x.LabelEnabled,
                         DeployedAtEnabled = x.DeployedAtEnabled,
@@ -422,12 +484,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                     foreach (var assignedSite in planning.AssignedSites)
                     {
-                        foreach (var site in sites)
+                        foreach (var site in sites.Where(site => site.Id == assignedSite.SiteId))
                         {
-                            if (site.Id == assignedSite.SiteId)
-                            {
-                                assignedSite.Name = site.Name;
-                            }
+                            assignedSite.Name = site.Name;
                         }
                     }
                 }
@@ -444,19 +503,26 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     _itemsPlanningLocalizationService.GetString("ErrorWhileObtainingList"));
             }
         }
+
         public async Task<OperationResult> Update(PlanningPnModel updateModel)
         {
             // await using var transaction = await _dbContext.Database.BeginTransactionAsync();
-            var _sdkCore =
+            var sdkCore =
                 await _coreService.GetCore();
-            var sdkDbContext = _sdkCore.dbContextHelper.GetDbContext();
+            var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
             try
             {
 
-                var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-                var localeString = await _userService.GetUserLocale(int.Parse(value));
-                Language language = _sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
-                var template = await _sdkCore.TemplateItemRead(updateModel.RelatedEFormId, language);
+                var localeString = await _userService.GetCurrentUserLocale();
+                if (string.IsNullOrEmpty(localeString))
+                {
+                    return new OperationResult(
+                        false,
+                        _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
+                }
+                var language = sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+                var template = await sdkCore.TemplateItemRead(updateModel.RelatedEFormId, language);
+
 
                 var sdkFolder = await sdkDbContext.Folders
                     .Include(x => x.Parent)
@@ -466,15 +532,28 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                                             .SingleAsync(x => x.Id == updateModel.Id);
                 var folderName = sdkFolder.Name;
 
+                var translationsPlanning = _dbContext.PlanningNameTranslation
+                    .Where(x => x.Planning.Id == planning.Id)
+                    .ToList();
+                foreach (var translation in updateModel.TranslationsName)
+                {
+                    var updateTranslation = translationsPlanning
+                        .FirstOrDefault(x => x.Id == translation.Id);
+                    if (updateTranslation != null)
+                    {
+                        updateTranslation.Name = translation.Name;
+                        await updateTranslation.Update(_dbContext);
+                    }
+                }
+
                 planning.RepeatUntil = updateModel.RepeatUntil;
                 planning.RepeatEvery = updateModel.RepeatEvery;
                 planning.RepeatType = updateModel.RepeatType;
                 planning.DayOfWeek = updateModel.DayOfWeek;
                 planning.DayOfMonth = updateModel.DayOfMonth;
                 planning.Description = updateModel.Item.Description;
-                planning.Name = updateModel.Item.Name;
                 planning.UpdatedAt = DateTime.UtcNow;
-                planning.UpdatedByUserId = UserId;
+                planning.UpdatedByUserId = _userService.UserId;
                 planning.RelatedEFormId = updateModel.RelatedEFormId;
                 planning.RelatedEFormName = template?.Label;
                 planning.LabelEnabled = updateModel.LabelEnabled;
@@ -523,8 +602,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 {
                     var planningsTags = new PlanningsTags
                     {
-                        CreatedByUserId = UserId,
-                        UpdatedByUserId = UserId,
+                        CreatedByUserId = _userService.UserId,
+                        UpdatedByUserId = _userService.UserId,
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow,
                         PlanningId = planning.Id,
@@ -552,7 +631,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         Version = 1,
                         WorkflowState = Constants.WorkflowStates.Created,
                         CreatedAt = DateTime.UtcNow,
-                        CreatedByUserId = UserId,
+                        CreatedByUserId = _userService.UserId,
                         UpdatedAt = DateTime.UtcNow,
                         Enabled = true,
                         BuildYear = updateModel.Item.BuildYear,
@@ -568,7 +647,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     item.ItemNumber = updateModel.Item.ItemNumber;
                     item.Description = updateModel.Item.Description;
                     item.Name = updateModel.Item.Name;
-                    item.UpdatedByUserId = UserId;
+                    item.UpdatedByUserId = _userService.UserId;
                     item.UpdatedAt = DateTime.UtcNow;
                     item.Enabled = true;
                     item.BuildYear = updateModel.Item.BuildYear;
@@ -618,12 +697,12 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 {
                     var planningCaseSites = await _dbContext.PlanningCaseSites
                         .Where(x => x.PlanningCaseId == planningCase.Id).ToListAsync();
-                    foreach (PlanningCaseSite planningCaseSite in planningCaseSites)
+                    foreach (var planningCaseSite in planningCaseSites.Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0))
                     {
-                        if (planningCaseSite.MicrotingSdkCaseId != 0)
+                        var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
+                        if (result.MicrotingUid != null)
                         {
-                            var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
-                             await core.CaseDelete((int)result.MicrotingUid);
+                            await core.CaseDelete((int)result.MicrotingUid);
                         }
                     }
                     // Delete planning case
@@ -634,6 +713,14 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 foreach (var planningSite in planningSites)
                 {
                     await planningSite.Delete(_dbContext);
+                }
+
+                var nameTranslationsPlaning =
+                    await _dbContext.PlanningNameTranslation.Where(x => x.Planning.Id == planning.Id).ToListAsync();
+
+                foreach (var translation in nameTranslationsPlaning)
+                {
+                    await translation.Delete(_dbContext);
                 }
 
                 // Delete planning
@@ -661,13 +748,13 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
             if (numberExists)
             {
-                string itemNo = itemObj[numberColumn].ToString();
+                var itemNo = itemObj[numberColumn].ToString();
                 item = _dbContext.Items.SingleOrDefault(x => x.ItemNumber == itemNo);
             }
 
             if (itemNameExists)
             {
-                string itemName = itemObj[itemNameColumn].ToString();
+                var itemName = itemObj[itemNameColumn].ToString();
                 item = _dbContext.Items.SingleOrDefault(x => x.Name == itemName);
             }
 
@@ -679,27 +766,27 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             try
             {
                 {
-                    JToken rawJson = JToken.Parse(unitAsJson.ImportList);
-                    JToken rawHeadersJson = JToken.Parse(unitAsJson.Headers);
+                    var rawJson = JToken.Parse(unitAsJson.ImportList);
+                    var rawHeadersJson = JToken.Parse(unitAsJson.Headers);
 
-                    JToken headers = rawHeadersJson;
-                    IEnumerable<JToken> itemObjects = rawJson.Skip(1);
+                    var headers = rawHeadersJson;
+                    var itemObjects = rawJson.Skip(1);
 
-                    foreach (JToken itemObj in itemObjects)
+                    foreach (var itemObj in itemObjects)
                     {
-                        bool numberExists = int.TryParse(headers[0]["headerValue"].ToString(), out int numberColumn);
-                        bool itemNameExists = int.TryParse(headers[1]["headerValue"].ToString(),
-                            out int nameColumn);
+                        var numberExists = int.TryParse(headers[0]["headerValue"].ToString(), out var numberColumn);
+                        var itemNameExists = int.TryParse(headers[1]["headerValue"].ToString(),
+                            out var nameColumn);
                         if (numberExists || itemNameExists)
                         {
-                            Item existingItem = FindItem(numberExists, numberColumn, itemNameExists,
+                            var existingItem = FindItem(numberExists, numberColumn, itemNameExists,
                                 nameColumn, itemObj);
                             if (existingItem == null)
                             {
-                                PlanningItemModel itemModel =
+                                var itemModel =
                                     ItemsHelper.ComposeValues(new PlanningItemModel(), headers, itemObj);
 
-                                Item newItem = new Item
+                                var newItem = new Item
                                 {
                                     ItemNumber = itemModel.ItemNumber,
                                     Name = itemModel.Name,
@@ -715,7 +802,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             {
                                 if (existingItem.WorkflowState == Constants.WorkflowStates.Removed)
                                 {
-                                    Item item = await _dbContext.Items.SingleOrDefaultAsync(x => x.Id == existingItem.Id);
+                                    var item = await _dbContext.Items.SingleOrDefaultAsync(x => x.Id == existingItem.Id);
                                     if (item != null)
                                     {
                                         item.Name = existingItem.Name;
@@ -741,15 +828,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 _coreService.LogException(e.Message);
                 return new OperationResult(false,
                     _itemsPlanningLocalizationService.GetString("ErrorWhileImportingItems"));
-            }
-        }
-
-        public int UserId
-        {
-            get
-            {
-                var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-                return value == null ? 0 : int.Parse(value);
             }
         }
     }

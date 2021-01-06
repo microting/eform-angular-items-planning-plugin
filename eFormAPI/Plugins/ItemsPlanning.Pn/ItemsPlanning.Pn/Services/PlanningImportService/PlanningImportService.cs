@@ -22,7 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-// ReSharper disable UseAwaitUsing
 namespace ItemsPlanning.Pn.Services.PlanningImportService
 {
     using System;
@@ -355,7 +354,6 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                         var planning = new Planning
                         {
-                            Name = excelModel.ItemName,
                             CreatedByUserId = _userService.UserId,
                             CreatedAt = DateTime.UtcNow,
                             RepeatUntil = excelModel.RepeatUntil,
@@ -366,6 +364,20 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             RelatedEFormName = excelModel.EFormName,
                             PlanningsTags = new List<PlanningsTags>()
                         };
+
+                        var planingTranslationsName = new List<PlanningNameTranslation>();
+
+                        foreach (var language in sdkDbContext.Languages.ToList())
+                        {
+                            planingTranslationsName.Add(new PlanningNameTranslation()
+                            {
+                                Name = excelModel.ItemName,
+                                LanguageId = language.Id,
+                                PlanningId = planning.Id
+                            });
+                        }
+
+                        planning.NameTranslations = planingTranslationsName;
 
                         if (excelModel.RepeatEvery != null)
                         {
@@ -399,6 +411,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         }
 
                         await planning.Create(_dbContext);
+
                         var item = new Item()
                         {
                             LocationCode = string.Empty,
