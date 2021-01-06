@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2020 Microting A/S
+Copyright (c) 2007 - 2021 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,20 +42,20 @@ namespace ItemsPlanning.Pn.Services.RebusService
         private readonly IEFormCoreService _coreHelper;
 
         public RebusService(IEFormCoreService coreHelper)
-        {            
+        {
             //_dbContext = dbContext;
             _coreHelper = coreHelper;
         }
 
         public async Task Start(string connectionString)
         {
-            _connectionString = connectionString;   
+            _connectionString = connectionString;
             _container = new WindsorContainer();
             _container.Install(
                 new RebusHandlerInstaller()
                 , new RebusInstaller(connectionString, 1, 1)
             );
-            
+
             Core _core = await _coreHelper.GetCore();
             _container.Register(Component.For<Core>().Instance(_core));
             _container.Register(Component.For<ItemsPlanningPnDbContext>().Instance(GetContext()));

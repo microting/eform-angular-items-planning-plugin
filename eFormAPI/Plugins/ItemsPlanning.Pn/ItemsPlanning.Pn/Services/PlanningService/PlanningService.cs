@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2020 Microting A/S
+Copyright (c) 2007 - 2021 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -123,6 +123,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Skip(pnRequestModel.Offset)
                         .Take(pnRequestModel.PageSize);
+                        
                 var localeString = await _userService.GetCurrentUserLocale();
                 if (string.IsNullOrEmpty(localeString))
                 {
@@ -132,6 +133,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
                 var languageIemPlanning = _dbContext.Languages.Single(x => x.Id == language.Id);
                 var plannings = await planningsQuery.Select(x => new PlanningPnModel()
+
                 {
                     Id = x.Id,
                     TranslationsName = x.NameTranslations.Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
@@ -256,6 +258,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 tagIds.AddRange(model.TagsIds);
 
+
                 var localeString = await _userService.GetCurrentUserLocale();
                 if (string.IsNullOrEmpty(localeString))
                 {
@@ -264,6 +267,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
                 var language = sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+
                 var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId, language);
 
                 var sdkFolder = await sdkDbContext.Folders
@@ -508,6 +512,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
             try
             {
+
                 var localeString = await _userService.GetCurrentUserLocale();
                 if (string.IsNullOrEmpty(localeString))
                 {
@@ -517,6 +522,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 }
                 var language = sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
                 var template = await sdkCore.TemplateItemRead(updateModel.RelatedEFormId, language);
+
 
                 var sdkFolder = await sdkDbContext.Folders
                     .Include(x => x.Parent)

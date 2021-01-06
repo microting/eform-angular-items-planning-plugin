@@ -1,7 +1,7 @@
 /*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2020 Microting A/S
+Copyright (c) 2007 - 2021 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -85,7 +85,7 @@ namespace ItemsPlanning.Pn.Services.UploadedDataService
                 uploadedDatasModel.Total =
                     _dbContext.UploadedDatas.Count(x => x.WorkflowState != Constants.WorkflowStates.Removed);
                 uploadedDatasModel.UploadedDatas = uploadedDatas;
-                
+
                 return new OperationDataResult<UploadedDatasModel>(true, uploadedDatasModel);
             }
             catch (Exception e)
@@ -96,7 +96,7 @@ namespace ItemsPlanning.Pn.Services.UploadedDataService
                     _itemsPlanningLocalizationService.GetString("ErrorObtainingUploadedDatas"));
             }
         }
-        
+
         public async Task<OperationDataResult<UploadedDataModel>> Read(int selectedListItemCaseId)
         {
             try
@@ -113,7 +113,7 @@ namespace ItemsPlanning.Pn.Services.UploadedDataService
                 uploadedDataModel.FileName = uploadedData.FileName;
                 uploadedDataModel.UploaderType = uploadedData.UploaderType;
                 uploadedDataModel.PlanningCaseId = uploadedData.PlanningCaseId;
-                
+
                 return new OperationDataResult<UploadedDataModel>(true, uploadedDataModel);
             }
             catch (Exception e)
@@ -123,9 +123,9 @@ namespace ItemsPlanning.Pn.Services.UploadedDataService
                 return new OperationDataResult<UploadedDataModel>(false,
                     _itemsPlanningLocalizationService.GetString($"ErrorObtainingUploadedDataWithItemCaseID:{selectedListItemCaseId}"));
             }
-            
+
         }
-        
+
         public async Task<OperationResult> Update(UploadedDataModel uploadedDataModel)
         {
 
@@ -166,7 +166,7 @@ namespace ItemsPlanning.Pn.Services.UploadedDataService
             try
             {
                 var core =_core.GetCore();
-                
+
                 var saveFolder = Path.Combine(await core.Result.GetSdkSetting(Settings.fileLocationPdf), Path.Combine("pdfFiles"));
 
                 Directory.CreateDirectory(saveFolder);
@@ -189,10 +189,10 @@ namespace ItemsPlanning.Pn.Services.UploadedDataService
                 uploadedData.FileLocation = saveFolder;
                 uploadedData.FileName = fileName;
                 uploadedData.PlanningCaseId = pdfUploadModel.ItemCaseId;
-                
+
                 await uploadedData.Create(_dbContext);
-                
-                
+
+
                 return new OkResult();
 
             }
@@ -213,7 +213,7 @@ namespace ItemsPlanning.Pn.Services.UploadedDataService
             if (core.Result.GetSdkSetting(Settings.swiftEnabled).ToString().ToLower() == "true")
             {
                 var ss = await core.Result.GetFileFromSwiftStorage(fileName);
-                
+
                 if (ss == null)
                 {
                     return new NotFoundResult();
@@ -222,7 +222,7 @@ namespace ItemsPlanning.Pn.Services.UploadedDataService
             }
 
             byte[] fileBytes;
-            
+
             if (File.Exists(filePath))
             {
                 fileBytes = File.ReadAllBytes(filePath);
@@ -231,7 +231,7 @@ namespace ItemsPlanning.Pn.Services.UploadedDataService
             {
                 return new NotFoundResult();
             }
-            
+
             return new FileContentResult(fileBytes, fileType)
             {
                 FileDownloadName = fileName

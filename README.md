@@ -1,6 +1,5 @@
-# eform-angular-itemsplanning-plugin
-Build status
-[![Build Status](https://travis-ci.org/microting/eform-angular-itemsplanning-plugin.svg?branch=stable)](https://travis-ci.org/microting/eform-angular-itemsplanning-plugin)
+# eform-angular-items-planning-plugin
+![.NET Core](https://github.com/microting/eform-angular-items-planning-plugin/workflows/.NET%20Core/badge.svg)
 
 ## NOTICE! this is not a standalone project and needs to be used with eForm Angular Frontend.
 
@@ -9,7 +8,7 @@ Build status
 | Language | C# part | Angular part |
 | ------------- |:-----:|:-----:|
 | English | 100% | 100%|
-| Danish | 0% | 0% |
+| Danish | 100% | 100% |
 | German | 0% | 0% |
 
 # Plugin manual installation tutorial
@@ -28,7 +27,7 @@ On front-end part plugins will be included into `eform-client/src/app/plugins/mo
 }
 ```
 
-On the back-end part no need to do anything if you’re unpacking plugin binaries to `eFormApi/eFormAPI/Plugins`. 
+On the back-end part no need to do anything if you’re unpacking plugin binaries to `eFormApi/eFormAPI/Plugins`.
 If building plugin from source code – you’re need to open solution of plugin and build it in **Visual Studio 2017**.
 If you’re need to implement any changes – go to `eFormAPI/Plugins/itemsplanning.Pn`. Open solution, make changes and build it.
 
@@ -58,10 +57,10 @@ Pull-reuqsts that do not pass tests, will not be accepted.
 
 ### Where to contribute
 
-Check out the [full issues list](https://github.com/microting/eform-angular-itemsplanning-plugin/issues) for a list of all potential areas for contributions.
+Check out the [full issues list](https://github.com/microting/eform-angular-items-planning-plugin/issues) for a list of all potential areas for contributions.
 
-To improve the chances to get a pull request merged you should select an issue that is labelled with the [help_wanted](https://github.com/microting/eform-angular-itemsplanning-plugin/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp_wanted) or [bug](https://github.com/microting/eform-angular-itemsplanning-plugin/issues?q=is%3Aissue+is%3Aopen+label%3Abug) labels. If the issue you want to work on is not labelled with `help-wanted` or `bug`, you can start a conversation with the issue owner asking whether an external contribution will be considered.
-	
+To improve the chances to get a pull request merged you should select an issue that is labelled with the [help_wanted](https://github.com/microting/eform-angular-items-planning-plugin/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp_wanted) or [bug](https://github.com/microting/eform-angular-items-planning-plugin/issues?q=is%3Aissue+is%3Aopen+label%3Abug) labels. If the issue you want to work on is not labelled with `help-wanted` or `bug`, you can start a conversation with the issue owner asking whether an external contribution will be considered.
+
 ### Suggestions
 
 We're also interested in your feedback for the future of Microting eForm SDK. You can submit a suggestion or feature request through the issue tracker. To make this process more effective, we're asking that these include more information to help define them more clearly.
@@ -69,13 +68,13 @@ We're also interested in your feedback for the future of Microting eForm SDK. Yo
 ## Microting Open Source Code of Conduct
 
 This project has adopted the [Microting Open Source Code of Conduct](https://www.microting.com/microting-open-source-code-of-conduct). Contact opencode@microting.com with any additional questions or comments.
-	
+
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2007-2019 Microting A/S
+Copyright (c) 2007-2021 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
