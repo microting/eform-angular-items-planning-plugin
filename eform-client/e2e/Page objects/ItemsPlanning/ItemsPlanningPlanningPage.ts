@@ -284,6 +284,7 @@ export class PlanningRowObject {
     } else {
       itemsPlanningModalPage.planningEditCancelBtn.click();
     }
+    browser.pause(2000);
     itemsPlanningPlanningPage.planningId.waitForDisplayed();
   }
 
