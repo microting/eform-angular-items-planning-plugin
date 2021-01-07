@@ -1,15 +1,18 @@
 import itemsPlanningModalPage from './ItemsPlanningModal.page';
 import {PageWithNavbarPage} from '../PageWithNavbar.page';
-import {Guid} from 'guid-typescript';
-import XMLForPlanning from './XMLForPlanning';
+import {generateRandmString} from '../../Helpers/helper-functions';
+import myEformsPage from '../../Page objects/MyEforms.page';
+import { parse } from 'date-fns';
 
 export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   constructor() {
     super();
   }
 
-  public rowNum(): number {
-    browser.pause(500);
+  public get rowNum(): number {
+    if (!$('#planningId').isExisting()) {
+      browser.pause(500);
+    }
     return $$('#tableBody > tr').length;
   }
 
@@ -48,6 +51,20 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     return el;
   }
 
+  public get planningDeleteDeleteBtn() {
+    const el = $('#planningDeleteDeleteBtn');
+    el.waitForDisplayed({timeout: 20000});
+    el.waitForClickable({timeout: 20000});
+    return el;
+  }
+
+  public get planningDeleteCancelBtn() {
+    const el = $('#planningDeleteCancelBtn');
+    el.waitForDisplayed({timeout: 20000});
+    el.waitForClickable({timeout: 20000});
+    return el;
+  }
+
   public clickIdTableHeader() {
     $('#idTableHeader').click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
@@ -62,7 +79,6 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     $('#descriptionTableHeader').click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
-
   // public getPlanningValue(selector: any, row: number) {
   //   if (selector === 'planningId') {
   //     return parseInt($('#tableBody').$(`tr:nth-child(${row})`).$('#' + selector).getText(), 10);
@@ -99,6 +115,12 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     return el;
   }
 
+  public get planningId() {
+    const el = $('#planningId');
+    el.waitForDisplayed({timeout: 20000});
+    return el;
+  }
+
   public goToPlanningsPage() {
     const spinnerAnimation = $('#spinner-animation');
     spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
@@ -108,69 +130,40 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
   }
 
-  public createDummyPlannings() {
+  public getPlaningByName(namePlanning: string) {
+    for (let i = 1; i < this.rowNum + 1; i++) {
+      const planning = new PlanningRowObject(i);
+      if (planning.name === namePlanning) {
+        return planning;
+      }
+    }
+    return null;
+  }
+
+  public createDummyPlannings(template, folderName) {
     for (let i = 0; i < 3; i++) {
       this.planningCreateBtn.click();
       const planningData = {
-        name: Guid.create().toString(),
-        template: 'Number 1',
-        description: Guid.create().toString(),
+        name: [generateRandmString(), generateRandmString(), generateRandmString()],
+        template: template,
+        description: generateRandmString(),
         repeatEvery: '1',
-        repeatType: '1',
+        repeatType: 'Day',
         repeatUntil: '5/15/2020',
-        folderName: 'My test folder'
+        folderName: folderName
       };
       itemsPlanningModalPage.createPlanning(planningData);
-      // $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-      // $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-      // itemsPlanningModalPage.createPlanningSelectorOption.click();
-      // itemsPlanningModalPage.planningCreateSaveBtn.click();
-      // $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
     }
   }
 
   public clearTable() {
-    const rowCount = itemsPlanningPlanningPage.rowNum();
+    const rowCount = itemsPlanningPlanningPage.rowNum;
     for (let i = 1; i <= rowCount; i++) {
       const planningRowObject = new PlanningRowObject(1);
       planningRowObject.clickDeletePlanning();
-      itemsPlanningModalPage.planningDeleteDeleteBtn.click();
+      this.planningDeleteDeleteBtn.click();
       $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
     }
-  }
-
-  createNewEform(eFormLabel, newTagsPlanning = [], tagAddedNum = 0) {
-    const spinnerAnimation = $('#spinner-animation');
-    this.newEformBtn.click();
-    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
-    // Create replaced xml and insert it in textarea
-    const xml = XMLForPlanning.XML.replace('TEST_LABEL', eFormLabel);
-    browser.execute(function (xmlText) {
-      (<HTMLInputElement>document.getElementById('eFormXml')).value = xmlText;
-    }, xml);
-    this.xmlTextArea.addValue(' ');
-    // Create new tags
-    const addedTags: string[] = newTagsPlanning;
-    if (newTagsPlanning.length > 0) {
-      this.createEformNewTagInput.setValue(newTagsPlanning.join(','));
-      spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
-    }
-    // Add existing tags
-    const selectedTags: string[] = [];
-    if (tagAddedNum > 0) {
-      spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
-      for (let i = 0; i < tagAddedNum; i++) {
-        this.createEformTagSelector.click();
-        const selectedTag = $('.ng-option:not(.ng-option-selected)');
-        selectedTags.push(selectedTag.getText());
-        console.log('selectedTags is ' + JSON.stringify(selectedTags));
-        selectedTag.click();
-        spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
-      }
-    }
-    this.createEformBtn.click();
-    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
-    return {added: addedTags, selected: selectedTags};
   }
 }
 
@@ -179,42 +172,131 @@ export default itemsPlanningPlanningPage;
 
 export class PlanningRowObject {
   constructor(rowNumber) {
-    if ($$('#planningId')[rowNumber - 1]) {
+    const row = $$('#tableBody tr')[rowNumber - 1];
+    if (row) {
       try {
-        this.name = $$('#planningName')[rowNumber - 1].getText();
+        this.id = +row.$('#planningId').getText();
       } catch (e) {
       }
       try {
-        this.description = $$('#planningDescription')[rowNumber - 1].getText();
+        this.name = row.$('#planningName').getText();
       } catch (e) {
       }
       try {
-        this.updateBtn = $$('#updatePlanningBtn')[rowNumber - 1];
+        this.description = row.$('#planningDescription').getText();
       } catch (e) {
       }
       try {
-        this.deleteBtn = $$('#deletePlanningBtn')[rowNumber - 1];
+        this.folderName = row.$('#planningFolderName').getText();
+      } catch (e) {
+      }
+      try {
+        this.eFormName = row.$('#planningRelatedEformName').getText();
+      } catch (e) {
+      }
+      try {
+        this.tags = row.$$('#planningTags').map(element => element.getText());
+      } catch (e) {
+      }
+      try {
+        this.repeatEvery = row.$('#planningRepeatEvery').getText();
+      } catch (e) {
+      }
+      try {
+        this.repeatType = row.$('#planningRepeatType').getText();
+      } catch (e) {
+      }
+      try {
+        const date = row.$('#planningRepeatUntil').getText();
+        this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
+      } catch (e) {
+      }
+      try {
+        this.pairingBtn = row.$('#planningAssignmentBtn');
+      } catch (e) {
+      }
+      try {
+        this.updateBtn = row.$('#updatePlanningBtn');
+      } catch (e) {
+      }
+      try {
+        this.deleteBtn = row.$('#deletePlanningBtn');
       } catch (e) {
       }
     }
   }
 
-  public id;
-  public name;
-  public description;
+  public id: number;
+  public name: string;
+  public description: string;
+  public folderName: string;
+  public eFormName: string;
+  public tags: string[];
+  public repeatEvery: string;
+  public repeatType: string;
+  public repeatUntil: Date;
   public updateBtn;
   public deleteBtn;
+  public pairingBtn;
 
   public clickDeletePlanning() {
+    this.deleteBtn.waitForClickable({ timeout: 20000});
     this.deleteBtn.click();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-    // browser.pause(3000);
+    itemsPlanningPlanningPage.planningDeleteDeleteBtn.waitForDisplayed({timeout: 20000});
   }
 
   public clickUpdatePlanning() {
     this.updateBtn.click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-    browser.pause(3000);
+    itemsPlanningModalPage.planningEditSaveBtn.waitForDisplayed({timeout: 20000});
+  }
+
+  update(planning: any, clickCancel = false) {
+    this.clickUpdatePlanning();
+    const spinnerAnimation = $('#spinner-animation');
+    const ngOption = $('.ng-option');
+    if (planning.name && planning.name.length > 0) {
+      for (let i = 0; i < planning.name.length; i++) {
+        if (itemsPlanningModalPage.editPlanningItemName(i).getValue() !== planning.name[i]) {
+          itemsPlanningModalPage.editPlanningItemName(i).setValue(planning.name[i]);
+        }
+      }
+    }
+    if (planning.description && itemsPlanningModalPage.editPlanningDescription.getValue() !== planning.description) {
+      itemsPlanningModalPage.editPlanningDescription.setValue(planning.description);
+    }
+    if (planning.repeatEvery && itemsPlanningModalPage.editPlanningDescription.getValue() !== planning.repeatEvery) {
+      itemsPlanningModalPage.editRepeatEvery.setValue(planning.repeatEvery);
+    }
+    if (planning.repeatType && itemsPlanningModalPage.editPlanningDescription.getValue() !== planning.repeatType) {
+      $('#editRepeatType input').setValue(planning.repeatType);
+      spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
+      ngOption.waitForDisplayed({timeout: 20000});
+      $('#editRepeatType ng-dropdown-panel').$(`.ng-option=${planning.repeatType}`).click();
+      // itemsPlanningModalPage.selectEditRepeatType(planning.repeatType);
+    }
+    if (planning.repeatUntil && itemsPlanningModalPage.editPlanningDescription.getValue() !== planning.repeatUntil) {
+      itemsPlanningModalPage.editRepeatUntil.setValue(planning.repeatUntil);
+    }
+    if (!clickCancel) {
+      itemsPlanningModalPage.planningEditSaveBtn.click();
+      $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    } else {
+      itemsPlanningModalPage.planningEditCancelBtn.click();
+    }
+    browser.pause(2000);
+    itemsPlanningPlanningPage.planningId.waitForDisplayed();
+  }
+
+  delete(clickCancel = false) {
+    this.clickDeletePlanning();
+    if (!clickCancel) {
+      itemsPlanningPlanningPage.planningDeleteDeleteBtn.click();
+      $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    } else {
+      itemsPlanningPlanningPage.planningDeleteCancelBtn.click();
+    }
+    browser.pause(500);
   }
 }
 

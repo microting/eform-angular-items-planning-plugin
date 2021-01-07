@@ -56,7 +56,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
         private readonly ICasePostBaseService _casePostBaseService;
         private readonly ItemsPlanningPnDbContext _dbContext;
         private readonly IUserService _userService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         // ReSharper disable once SuggestBaseTypeForParameter
         public ItemsPlanningReportService(
@@ -66,7 +65,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             IWordService wordService,
             ICasePostBaseService casePostBaseService,
             ItemsPlanningPnDbContext dbContext,
-            IHttpContextAccessor httpContextAccessor,
             IUserService userService)
         {
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
@@ -77,7 +75,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             _casePostBaseService = casePostBaseService;
             _dbContext = dbContext;
             _userService = userService;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model)
