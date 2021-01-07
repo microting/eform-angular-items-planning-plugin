@@ -1,7 +1,7 @@
 ﻿/*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2021 Microting A/S
+Copyright (c) 2007 - 2020 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,36 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Infrastructure.Models.Import
+namespace ItemsPlanning.Pn.Infrastructure.Models
 {
-    using System;
-    using System.Collections.Generic;
-    using Microting.ItemsPlanningBase.Infrastructure.Enums;
-
-    public class PlanningImportExcelModel
+    public class PlanningNameTranslations
     {
-        public int ExcelRow { get; set; }
-
-        public string ItemName { get; set; }
-
-        public int? RepeatEvery { get; set; }
-
-        public RepeatType? RepeatType { get; set; }
-
-        public DateTime? RepeatUntil { get; set; }
-
-        public DayOfWeek? DayOfWeek { get; set; }
-
-        public int? DayOfMonth { get; set; }
-
-        public string EFormName { get; set; }
-
-        public int? EFormId { get; set; }
-
-        public List<string> Tags { get; set; }
-            = new List<string>();
-
-        public List<PlanningImportFolderModel> Folders { get; set; }
-            = new List<PlanningImportFolderModel>();
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string LocaleName { get; set; }
+        public string Language { get; set; }
     }
 }

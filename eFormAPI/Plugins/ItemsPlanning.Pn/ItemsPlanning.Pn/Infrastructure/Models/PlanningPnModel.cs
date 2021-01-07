@@ -22,19 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
 
 namespace ItemsPlanning.Pn.Infrastructure.Models
 {
     using System;
     using System.Collections.Generic;
     using Microting.ItemsPlanningBase.Infrastructure.Enums;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
 
     public class PlanningPnModel
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string TranslatedName { get; set; }
+
+        public List<PlanningNameTranslations> TranslationsName { get; set; }
+            = new List<PlanningNameTranslations>();
 
         public string Description { get; set; }
 

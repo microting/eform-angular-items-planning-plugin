@@ -486,5 +486,13 @@
       "en-US": "Planning with name {0} already exists",
       "uk-UA": "Планування з ім'ям {0} вже існує"
     }
+  },
+  {
+    "Key": "LocaleDoesNotExist",
+    "LoclizedValue": {
+      "da": "Locale findes ikke",
+      "en-US": "Locale does not exist",
+      "uk-UA": "Така локаль не існує"
+    }
   }
 ]

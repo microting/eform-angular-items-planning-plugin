@@ -1,9 +1,10 @@
 import {PlanningItemModel} from './planning-item.model';
 import {Moment} from 'moment';
+import {CommonTranslationModel} from 'src/app/common/models';
 
 export class PlanningUpdateModel {
   id: number;
-  name: string;
+  translationsName: CommonTranslationModel[];
   description: string;
   repeatEvery: number;
   repeatType: number;

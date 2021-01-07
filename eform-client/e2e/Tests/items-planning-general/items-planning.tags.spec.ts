@@ -1,5 +1,5 @@
 import loginPage from '../../Page objects/Login.page';
-import itemsPlanningPlanningPage, {PlanningRowObject} from '../../Page objects/ItemsPlanning/ItemsPlanningPlanningPage';
+import itemsPlanningPlanningPage from '../../Page objects/ItemsPlanning/ItemsPlanningPlanningPage';
 import tagsModalPage, {TagRowObject} from '../../Page objects/TagsModal.page';
 
 const expect = require('chai').expect;

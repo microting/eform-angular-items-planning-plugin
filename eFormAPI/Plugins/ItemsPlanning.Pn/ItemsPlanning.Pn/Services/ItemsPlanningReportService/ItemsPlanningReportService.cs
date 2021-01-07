@@ -37,6 +37,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
     using System.Threading.Tasks;
     using Infrastructure.Models.Report;
     using ItemsPlanningLocalizationService;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
     using Microting.eForm.Infrastructure.Constants;
@@ -141,14 +142,13 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 {
                     3,5,6,7,12,16,17,18
                 };
+                var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+                var localeString = await _userService.GetUserLocale(int.Parse(value));
+                Language language = core.dbContextHelper.GetDbContext().Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
                 foreach (var groupedCase in groupedCases)
                 {
-
-                    var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-                    var localeString = await _userService.GetUserLocale(int.Parse(value));
-                    Language language = sdkDbContext.Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
-                    var template = await core.ReadeForm(groupedCase.templateId, language);
-
+                    var template = await core.TemplateItemRead(groupedCase.templateId, language);
+                    
                     // Posts - check mailing in main app
                     var reportModel = new ReportEformModel
                     {

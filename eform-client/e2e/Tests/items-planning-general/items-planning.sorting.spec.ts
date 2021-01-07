@@ -1,16 +1,31 @@
 import loginPage from '../../Page objects/Login.page';
 import itemsPlanningPlanningPage from '../../Page objects/ItemsPlanning/ItemsPlanningPlanningPage';
+import myEformsPage from '../../Page objects/MyEforms.page';
+import foldersPage from '../../Page objects/Folders.page';
+import {generateRandmString} from '../../Helpers/helper-functions';
 
 const expect = require('chai').expect;
-
+let template = generateRandmString();
+let folderName = generateRandmString();
 describe('Items planning plannings - Sorting', function () {
   before(function () {
     loginPage.open('/auth');
     loginPage.login();
+    if (myEformsPage.rowNum <= 0) {
+      myEformsPage.createNewEform(template); // Create eform
+    } else {
+      template = myEformsPage.getFirstMyEformsRowObj().eFormName;
+    }
+    myEformsPage.Navbar.goToFolderPage();
+    if (foldersPage.rowNum <= 0) {
+      foldersPage.createNewFolder(folderName, 'Description'); // Create folder
+    } else {
+      folderName = foldersPage.getFolder(1).name;
+    }
     itemsPlanningPlanningPage.goToPlanningsPage();
   });
   it('should create dummy plannings', function () {
-    itemsPlanningPlanningPage.createDummyPlannings();
+    itemsPlanningPlanningPage.createDummyPlannings(template, folderName);
   });
   it('should be able to sort by ID', function () {
     browser.pause(1000);

@@ -5,9 +5,7 @@
       id="planningEditSaveBtn"
       class="btn-success btn-small-height"
       [disabled]="
-        saveButtonDisabled ||
-        selectedPlanningModel.item.name == null ||
-        selectedPlanningModel.item.name == ''
+        saveButtonDisabled
       "
       (click)="updatePlanning()"
     >
@@ -28,78 +26,46 @@
   <div class="row mt-4">
     <div class="col-md-12 col-xs-12" role="main">
       <mdb-card>
+        <mdb-card-header>{{ 'Name' | translate }}</mdb-card-header>
         <mdb-card-body>
           <div class="row">
-            <div
-              class="col-md-3 col-sm-6 col-xs-6"
-              *ngIf="selectedPlanningModel.item"
+            <ng-container
+              *ngFor="
+                let translationControls of translationsArray.controls;
+                let translationIndex = index
+              "
             >
-              <div class="md-form">
-                <input
-                  mdbInput
-                  [(ngModel)]="selectedPlanningModel.item.name"
-                  type="text"
-                  id="editPlanningItemName"
-                  name="editPlanningItemName"
-                  class="form-control"
-                />
-                <label for="editPlanningItemName">{{
-                  'Name' | translate
-                }}</label>
-              </div>
-            </div>
-            <div
-              class="col-md-3 col-sm-6 col-xs-6"
-              *ngIf="foldersTreeDto.length > 0 && selectedPlanningModel.item"
-            >
-              <div class="md-form" (click)="openFoldersModal()">
-                <input
-                  mdbInput
-                  type="text"
-                  id="folderSelector"
-                  [ngModel]="selectedFolderName"
-                  [disabled]="true"
-                  name="folderSelector"
-                  class="form-control"
-                />
-                <label for="folderSelector">{{ 'Folders' | translate }}</label>
-              </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
-              <ng-select
-                [items]="templatesModel.templates"
-                bindLabel="label"
-                [placeholder]="'Selected template' | translate"
-                bindValue="id"
-                [typeahead]="typeahead"
-                [(ngModel)]="selectedPlanningModel.relatedEFormId"
-                id="editPlanningSelector"
-              >
-                <ng-template ng-label-tmp let-item="item">
-                  <fa-icon
-                    *ngIf="selectedPlanningModel.isEformRemoved
-                    && selectedPlanningModel.currentRelatedEformId == item.id"
-                    icon="exclamation-triangle"
-                    style="color: red"
-                  ></fa-icon>
-                  {{item.label}}
-                </ng-template>
-              </ng-select>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
-              <ng-select
-                class="custom"
-                dropdownPosition="'bottom'"
-                [placeholder]="'Tags' | translate"
-                [(ngModel)]="selectedPlanningModel.tagsIds"
-                [bindValue]="'id'"
-                [bindLabel]="'name'"
-                [items]="availableTags"
-                id="editPlanningTagsSelector"
-                [multiple]="true"
-              ></ng-select>
-            </div>
+              <ng-container [formGroup]="translationControls">
+                <div class="col-md-3 col-sm-6 col-xs-6">
+                  <div class="md-form">
+                    <input
+                      mdbInput
+                      type="text"
+                      id="editPlanningNameTranslation_{{ translationIndex }}"
+                      name="editPlanningNameTranslation_{{
+                        translationIndex
+                      }}"
+                      formControlName="name"
+                      class="form-control"
+                    />
+                    <label
+                      for="editPlanningNameTranslation_{{ translationIndex }}"
+                    >
+                      {{ translationControls.get('language').value }}
+                    </label>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
           </div>
+        </mdb-card-body>
+      </mdb-card>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-12 col-xs-12" role="main">
+      <mdb-card>
+        <mdb-card-body>
           <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-6">
               <div class="md-form">
@@ -220,7 +186,7 @@
               <div class="md-form">
                 <input
                   mdbInput
-                  [(ngModel)]="selectedPlanningModel.item.description"
+                  [(ngModel)]="selectedPlanningModel.description"
                   type="text"
                   id="editPlanningItemDescription"
                   name="editPlanningItemDescription"

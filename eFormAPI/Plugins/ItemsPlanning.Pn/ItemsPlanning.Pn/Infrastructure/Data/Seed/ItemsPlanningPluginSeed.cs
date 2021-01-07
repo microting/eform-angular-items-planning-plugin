@@ -22,6 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microting.eForm.Infrastructure.Data.Entities;
+
 namespace ItemsPlanning.Pn.Infrastructure.Data.Seed
 {
     using System;
@@ -69,6 +73,41 @@ namespace ItemsPlanning.Pn.Infrastructure.Data.Seed
                     CreatedByUserId = 1
                 }
                 );
+            if(!dbContext.Languages.Any())
+            {
+                var languages = new List<Language>()
+                {
+                    new Language()
+                    {
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                        Version = 1,
+                        WorkflowState = Constants.WorkflowStates.Created,
+                        Name = "Danish",
+                        LanguageCode = "da"
+                    },
+                    new Language()
+                    {
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                        Version = 1,
+                        WorkflowState = Constants.WorkflowStates.Created,
+                        Name = "English",
+                        LanguageCode = "en-US"
+                    },
+                    new Language()
+                    {
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                        Version = 1,
+                        WorkflowState = Constants.WorkflowStates.Created,
+                        Name = "German",
+                        LanguageCode = "de-DE"
+                    }
+                };
+
+                dbContext.Languages.AddRange(languages);
+            }
             dbContext.PluginPermissions.AddRange(newPermissions);
 
             dbContext.SaveChanges();
