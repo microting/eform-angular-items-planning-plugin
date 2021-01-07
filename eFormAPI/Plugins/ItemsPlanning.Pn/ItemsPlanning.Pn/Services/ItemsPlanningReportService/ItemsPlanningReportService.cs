@@ -52,7 +52,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
         private readonly ILogger<ItemsPlanningReportService> _logger;
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
         private readonly IWordService _wordService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEFormCoreService _coreHelper;
         private readonly ICasePostBaseService _casePostBaseService;
         private readonly ItemsPlanningPnDbContext _dbContext;
@@ -65,7 +64,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             ILogger<ItemsPlanningReportService> logger,
             IEFormCoreService coreHelper,
             IWordService wordService,
-            IHttpContextAccessor httpContextAccessor,
             ICasePostBaseService casePostBaseService,
             ItemsPlanningPnDbContext dbContext,
             IHttpContextAccessor httpContextAccessor,
@@ -151,7 +149,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 foreach (var groupedCase in groupedCases)
                 {
                     var template = await core.TemplateItemRead(groupedCase.templateId, language);
-                    
+
                     // Posts - check mailing in main app
                     var reportModel = new ReportEformModel
                     {
