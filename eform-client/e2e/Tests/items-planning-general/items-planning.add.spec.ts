@@ -35,7 +35,7 @@ describe('Items planning - Add', function () {
       template: eformLabel,
       description: 'Description',
       repeatEvery: '1',
-      repeatType: 'Day',
+      repeatType: 'Dag',
       repeatUntil: '5/15/2020',
       folderName: folderName
     };

@@ -11,7 +11,7 @@ const planningData = {
   template: generateRandmString(),
   description: 'Description',
   repeatEvery: '1',
-  repeatType: 'Day',
+  repeatType: 'Dag',
   repeatUntil: '5/15/2020',
   folderName: generateRandmString()
 };
@@ -41,7 +41,7 @@ describe('Items planning actions - Edit', function () {
   it('should change all fields after edit', function () {
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
     let planningRowObject = itemsPlanningPlanningPage.getPlaningByName(planningData.name[1]);
-    planningData.repeatType = 'Week';
+    planningData.repeatType = 'Uge';
     planningData.name[1] = generateRandmString();
     planningData.description = generateRandmString();
     planningRowObject.update(planningData);

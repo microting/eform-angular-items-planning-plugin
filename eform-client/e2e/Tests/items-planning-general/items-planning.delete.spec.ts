@@ -11,7 +11,7 @@ const planningData = {
   template: generateRandmString(),
   description: 'Description',
   repeatEvery: '1',
-  repeatType: 'Day',
+  repeatType: 'Dag',
   repeatUntil: '5/15/2020',
   folderName: generateRandmString()
 };
