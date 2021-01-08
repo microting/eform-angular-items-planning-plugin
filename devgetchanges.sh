@@ -14,8 +14,10 @@ cp -a Documents/workspace/microting/eform-angular-frontend/eFormAPI/Plugins/Item
 rm -fR Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-settings/
 rm -fR Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-general/
 rm -fR Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/wdio-headless-plugin-step2.conf.js
+rm -fR Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Page\ objects/ItemsPlanning
 
 # Test files cp
 cp -a Documents/workspace/microting/eform-angular-frontend/eform-client/e2e/Tests/items-planning-settings Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-settings
 cp -a Documents/workspace/microting/eform-angular-frontend/eform-client/e2e/Tests/items-planning-general Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-general
 cp -a Documents/workspace/microting/eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/wdio-headless-plugin-step2.conf.js
+cp -a Documents/workspace/microting/eform-angular-frontend/eform-client/e2e/Page\ objects/ItemsPlanning Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Page\ objects/ItemsPlanning
