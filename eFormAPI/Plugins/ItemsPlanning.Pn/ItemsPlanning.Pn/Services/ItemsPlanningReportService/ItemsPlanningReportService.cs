@@ -52,7 +52,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
         private readonly ILogger<ItemsPlanningReportService> _logger;
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
         private readonly IWordService _wordService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEFormCoreService _coreHelper;
         private readonly ICasePostBaseService _casePostBaseService;
         private readonly ItemsPlanningPnDbContext _dbContext;
@@ -64,7 +63,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             ILogger<ItemsPlanningReportService> logger,
             IEFormCoreService coreHelper,
             IWordService wordService,
-            IHttpContextAccessor httpContextAccessor,
             ICasePostBaseService casePostBaseService,
             ItemsPlanningPnDbContext dbContext,
             IUserService userService)
@@ -73,7 +71,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             _logger = logger;
             _coreHelper = coreHelper;
             _wordService = wordService;
-            _httpContextAccessor = httpContextAccessor;
             _casePostBaseService = casePostBaseService;
             _dbContext = dbContext;
             _userService = userService;
@@ -142,13 +139,12 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 {
                     3,5,6,7,12,16,17,18
                 };
-                var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-                var localeString = await _userService.GetUserLocale(int.Parse(value));
+                var localeString = await _userService.GetCurrentUserLocale();
                 Language language = core.dbContextHelper.GetDbContext().Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
                 foreach (var groupedCase in groupedCases)
                 {
                     var template = await core.TemplateItemRead(groupedCase.templateId, language);
-                    
+
                     // Posts - check mailing in main app
                     var reportModel = new ReportEformModel
                     {

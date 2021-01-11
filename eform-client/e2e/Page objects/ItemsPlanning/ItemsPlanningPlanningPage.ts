@@ -148,10 +148,12 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
         template: template,
         description: generateRandmString(),
         repeatEvery: '1',
-        repeatType: 'Day',
+        repeatType: 'Dag',
         repeatUntil: '5/15/2020',
         folderName: folderName
       };
+      const spinnerAnimation = $('#spinner-animation');
+      spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
       itemsPlanningModalPage.createPlanning(planningData);
     }
   }
