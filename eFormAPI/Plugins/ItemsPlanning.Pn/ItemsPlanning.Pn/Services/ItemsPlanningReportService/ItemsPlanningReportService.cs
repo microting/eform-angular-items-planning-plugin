@@ -26,6 +26,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microting.eForm.Infrastructure.Data.Entities;
 using Microting.eForm.Infrastructure.Models;
+using UploadedData = Microting.eForm.Infrastructure.Models.UploadedData;
 
 namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 {
@@ -177,7 +178,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 
                     foreach (var imageField in imagesForEform)
                     {
-                        if (!string.IsNullOrEmpty(imageField.UploadedData?.FileName))
+                        if (imageField.UploadedDataId != null)
                         {
                             var bla = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
                             DateTime doneAt = (DateTime)bla.MicrotingSdkCaseDoneAt;
@@ -193,7 +194,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             keyList.Add(imageField.CaseId.ToString());
                             keyList.Add(label);
                             var list = new List<string>();
-                            list.Add(imageField.UploadedData.FileName);
+                            Microting.eForm.Infrastructure.Data.Entities.UploadedData uploadedData =
+                                await sdkDbContext.UploadedDatas.SingleAsync(x => x.Id == imageField.UploadedDataId);
+                            list.Add(uploadedData.FileName);
                             list.Add(geoTag);
                             reportModel.ImageNames.Add(new KeyValuePair<List<string>, List<string>>(keyList, list));
                         }
@@ -248,7 +251,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             new List<int>()
                             {
                                 caseDto.MicrotingSdkCaseId
-                            });
+                            }, language);
 
                         foreach (var itemHeader in reportModel.ItemHeaders)
                         {
