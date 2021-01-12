@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microting.eForm.Infrastructure.Data.Entities;
+
 namespace ItemsPlanning.Pn.Services.PlanningImportService
 {
     using System;
@@ -76,6 +78,9 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                 var core = await _coreService.GetCore();
 
                 var timeZone = await _userService.GetCurrentUserTimeZoneInfo();
+                var locale = await _userService.GetCurrentUserLocale();
+                Language theLanguage = await core.dbContextHelper.GetDbContext().Languages
+                    .SingleAsync(x => x.LanguageCode == locale.ToLower());
                 var templatesDto = await core.TemplateItemReadAll(
                     false,
                     "",
@@ -83,7 +88,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                     false,
                     "",
                     new List<int>(),
-                    timeZone);
+                    timeZone, theLanguage);
 
                 // Parse excel file
                 var fileResult = _planningExcelService.ParsePlanningImportFile(excelStream);
