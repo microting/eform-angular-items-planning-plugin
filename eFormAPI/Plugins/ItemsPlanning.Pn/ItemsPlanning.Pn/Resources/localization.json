@@ -494,5 +494,13 @@
       "en-US": "Locale does not exist",
       "uk-UA": "Така локаль не існує"
     }
+  },
+  {
+    "Key": "Table",
+    "LoclizedValue": {
+      "da": "Tabel",
+      "en-US": "Table",
+      "uk-UA": "Таблиця"
+    }
   }
 ]
