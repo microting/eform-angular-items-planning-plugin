@@ -3,8 +3,20 @@ import {ReportEformPostModel} from './report-eform-post-pn.model';
 
 export class ReportEformPnModel {
   name: string;
+
+  textHeaders: ReportEformTextHeaderModel;
+  descriptionBlocks: string[];
+
   items: ReportEformItemModel[] = [];
   itemHeaders: {key: string, value: string}[] = [];
   imageNames: {key: {key: number, value: string}, value: {key: string, value: string}}[] = [];
   posts: ReportEformPostModel[] = [];
+}
+
+export class ReportEformTextHeaderModel {
+  header1: string;
+  header2: string;
+  header3: string;
+  header4: string;
+  header5: string;
 }
