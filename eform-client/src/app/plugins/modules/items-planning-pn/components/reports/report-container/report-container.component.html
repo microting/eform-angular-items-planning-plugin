@@ -8,7 +8,7 @@
                                        (downloadReport)="onDownloadReport($event)"
                                        (generateReport)="onGenerateReport($event)">
   </app-items-planning-pn-report-header>
-  <ng-container *ngFor="let report of reportsModel">
+  <ng-container *ngFor="let report of reportsModel; let i = index;">
     <div class="mb-4">
 
 
@@ -24,7 +24,7 @@
         <p *ngFor="let descriptionBlock of report.descriptionBlocks">{{descriptionBlock}}</p>
       </ng-container>
 
-      <div>{{report.tableName}}</div>
+      <div>{{'Table' | translate}} {{i}}: {{report.tableName}}</div>
       <app-report-table [items]="report.items"
                         [itemHeaders]="report.itemHeaders"
                         [dateFrom]="dateFrom"
