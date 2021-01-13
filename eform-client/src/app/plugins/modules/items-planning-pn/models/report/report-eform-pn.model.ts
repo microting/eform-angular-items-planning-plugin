@@ -2,10 +2,11 @@ import {ReportEformItemModel} from './report-eform-item-pn.model';
 import {ReportEformPostModel} from './report-eform-post-pn.model';
 
 export class ReportEformPnModel {
-  name: string;
+  templateName: string;
 
   textHeaders: ReportEformTextHeaderModel;
   descriptionBlocks: string[];
+  tableName: string;
 
   items: ReportEformItemModel[] = [];
   itemHeaders: {key: string, value: string}[] = [];
