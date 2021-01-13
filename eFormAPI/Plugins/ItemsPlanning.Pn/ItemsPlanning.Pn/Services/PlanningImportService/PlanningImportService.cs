@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microting.eForm.Infrastructure;
 using Microting.eForm.Infrastructure.Data.Entities;
 
 namespace ItemsPlanning.Pn.Services.PlanningImportService
@@ -79,8 +80,9 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                 var timeZone = await _userService.GetCurrentUserTimeZoneInfo();
                 var locale = await _userService.GetCurrentUserLocale();
-                Language theLanguage = await core.dbContextHelper.GetDbContext().Languages
-                    .SingleAsync(x => x.LanguageCode == locale.ToLower());
+                await using MicrotingDbContext dbContext = core.dbContextHelper.GetDbContext();
+                Language theLanguage = await dbContext.Languages
+                    .SingleAsync(x => x.LanguageCode == "da");
                 var templatesDto = await core.TemplateItemReadAll(
                     false,
                     "",
@@ -94,10 +96,11 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                 var fileResult = _planningExcelService.ParsePlanningImportFile(excelStream);
 
                 // Get planning names list
-                var planningNames = await _dbContext.Plannings
+                var planningNames = await _dbContext.PlanningNameTranslation
                     .AsNoTracking()
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                    .Select(x => x.Item.Name)
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed
+                    && x.LanguageId == theLanguage.Id)
+                    .Select(x => x.Name)
                     .ToListAsync();
 
                 // Validation
@@ -147,7 +150,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                     var planningName = planningNames.FirstOrDefault(x =>
                         string.Equals(
                             x,
-                            excelModel.ItemName,
+                            excelModel.ItemName.Split("|").First(),
                             StringComparison.CurrentCultureIgnoreCase));
 
                     if (!string.IsNullOrEmpty(planningName))
@@ -203,7 +206,6 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                 //{
                 try
                 {
-                    var sdkDbContext = core.dbContextHelper.GetDbContext();
 
                     // Process planning tags
                     var tags = await _dbContext.PlanningTags
@@ -263,7 +265,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         }).ToListAsync();
 
                     // Folders
-                    var folders = await sdkDbContext.Folders
+                    var folders = await dbContext.Folders
                         .AsNoTracking()
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Select(x => new PlanningImportFolderModel
@@ -370,19 +372,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             PlanningsTags = new List<PlanningsTags>()
                         };
 
-                        var planingTranslationsName = new List<PlanningNameTranslation>();
 
-                        foreach (var language in sdkDbContext.Languages.ToList())
-                        {
-                            planingTranslationsName.Add(new PlanningNameTranslation()
-                            {
-                                Name = excelModel.ItemName,
-                                LanguageId = language.Id,
-                                PlanningId = planning.Id
-                            });
-                        }
-
-                        planning.NameTranslations = planingTranslationsName;
 
                         if (excelModel.RepeatEvery != null)
                         {
@@ -416,6 +406,20 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         }
 
                         await planning.Create(_dbContext);
+
+                        int i = 1;
+                        foreach (var translationText in excelModel.ItemName.Split("|"))
+                        {
+                            Language language = await dbContext.Languages.SingleAsync(x => x.Id == i);
+                            PlanningNameTranslation planningNameTranslation = new PlanningNameTranslation()
+                            {
+                                Name = translationText,
+                                LanguageId = language.Id,
+                                PlanningId = planning.Id
+                            };
+                            await planningNameTranslation.Create(_dbContext);
+                            i += 1;
+                        }
 
                         var item = new Item()
                         {
