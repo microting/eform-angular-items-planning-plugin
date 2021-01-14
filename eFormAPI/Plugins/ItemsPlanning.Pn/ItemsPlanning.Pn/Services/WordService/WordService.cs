@@ -101,15 +101,20 @@ namespace ItemsPlanning.Pn.Services.WordService
                 var header = _dbContext.PluginConfigurationValues.Single(x => x.Name == "ItemsPlanningBaseSettings:ReportHeaderName").Value;
                 var subHeader = _dbContext.PluginConfigurationValues.Single(x => x.Name == "ItemsPlanningBaseSettings:ReportSubHeaderName").Value;
                 itemsHtml += "<body>";
-                itemsHtml += $@"<p style='font-size: 24px;margin:25%;text-align:center;'>{header}</p>";
-                itemsHtml += $@"<p style='font-size: 20px;margin:25%;text-align:center;'>{subHeader}</p>";
-                itemsHtml += $@"<p style='font-size: 15px;margin:25%;text-align:center;page-break-after:always;'>{_localizationService.GetString("ReportPeriod")}: {reportModel.First().FromDate} - {reportModel.First().ToDate}</p>";
+                itemsHtml += @"<p style='display:flex;align-content:center;justify-content:center;flex-wrap:wrap;'>";
+                for (var i = 0; i < 8; i++)
+                {
+                    itemsHtml += @"<p style='font-size:24px;text-align:center;color:#fff;'>Enter</p>";
+                }
+                itemsHtml += $@"<p style='font-size:24px;text-align:center;'>{header}</p>";
+                itemsHtml += $@"<p style='font-size:20px;text-align:center;'>{subHeader}</p>";
+                itemsHtml += $@"<p style='font-size:15px;text-align:center;'>{_localizationService.GetString("ReportPeriod")}: {reportModel.First().FromDate} - {reportModel.First().ToDate}</p>";
                 if (!string.IsNullOrEmpty(headerImageName) && headerImageName != "../../../assets/images/logo.png")
                 {
                     itemsHtml = await InsertImage(headerImageName, itemsHtml, 150, 150, core, basePicturePath);
                 }
-
-                itemsHtml += @"<div>";
+                itemsHtml += @"</p>";
+                itemsHtml += @"<div style='page-break-before:always;'>";
                 for (var i = 0; i < reportModel.Count; i++)
                 {
                     var reportEformModel = reportModel[i];
