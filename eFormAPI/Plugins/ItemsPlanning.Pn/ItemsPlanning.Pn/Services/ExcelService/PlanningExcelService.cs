@@ -64,8 +64,8 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                     };
 
                     // Folder 1
-                    var folder1Label = row.Cell(PlanningImportExcelConsts.Folder1Label).Value.ToString();
-                    var folder1Description = row.Cell(PlanningImportExcelConsts.Folder1Description).Value.ToString();
+                    var folder1Label = row.Cell(PlanningImportExcelConsts.Folder1Label).Value.ToString().Trim();
+                    var folder1Description = row.Cell(PlanningImportExcelConsts.Folder1Description).Value.ToString().Trim();
 
                     if (!string.IsNullOrEmpty(folder1Label))
                     {
@@ -80,8 +80,8 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                     }
 
                     // Folder 2
-                    var folder2Label = row.Cell(PlanningImportExcelConsts.Folder2Label).Value.ToString();
-                    var folder2Description = row.Cell(PlanningImportExcelConsts.Folder2Description).Value.ToString();
+                    var folder2Label = row.Cell(PlanningImportExcelConsts.Folder2Label).Value.ToString().Trim();
+                    var folder2Description = row.Cell(PlanningImportExcelConsts.Folder2Description).Value.ToString().Trim();
 
                     if (!string.IsNullOrEmpty(folder2Label))
                     {
@@ -96,8 +96,8 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                     }
 
                     // Folder 3
-                    var folder3Label = row.Cell(PlanningImportExcelConsts.Folder3Label).Value.ToString();
-                    var folder3Description = row.Cell(PlanningImportExcelConsts.Folder3Description).Value.ToString();
+                    var folder3Label = row.Cell(PlanningImportExcelConsts.Folder3Label).Value.ToString().Trim();
+                    var folder3Description = row.Cell(PlanningImportExcelConsts.Folder3Description).Value.ToString().Trim();
 
                     if (!string.IsNullOrEmpty(folder3Label))
                     {
@@ -112,8 +112,8 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                     }
 
                     // Folder 4
-                    var folder4Label = row.Cell(PlanningImportExcelConsts.Folder4Label).Value.ToString();
-                    var folder4Description = row.Cell(PlanningImportExcelConsts.Folder4Description).Value.ToString();
+                    var folder4Label = row.Cell(PlanningImportExcelConsts.Folder4Label).Value.ToString().Trim();
+                    var folder4Description = row.Cell(PlanningImportExcelConsts.Folder4Description).Value.ToString().Trim();
 
                     if (!string.IsNullOrEmpty(folder4Label))
                     {
@@ -128,8 +128,8 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                     }
 
                     // Folder 5
-                    var folder5Label = row.Cell(PlanningImportExcelConsts.Folder5Label).Value.ToString();
-                    var folder5Description = row.Cell(PlanningImportExcelConsts.Folder5Description).Value.ToString();
+                    var folder5Label = row.Cell(PlanningImportExcelConsts.Folder5Label).Value.ToString().Trim();
+                    var folder5Description = row.Cell(PlanningImportExcelConsts.Folder5Description).Value.ToString().Trim();
 
                     if (!string.IsNullOrEmpty(folder5Label))
                     {
@@ -144,8 +144,8 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                     }
 
                     // Folder 6
-                    var folder6Label = row.Cell(PlanningImportExcelConsts.Folder6Label).Value.ToString();
-                    var folder6Description = row.Cell(PlanningImportExcelConsts.Folder6Description).Value.ToString();
+                    var folder6Label = row.Cell(PlanningImportExcelConsts.Folder6Label).Value.ToString().Trim();
+                    var folder6Description = row.Cell(PlanningImportExcelConsts.Folder6Description).Value.ToString().Trim();
 
                     if (!string.IsNullOrEmpty(folder6Label))
                     {
@@ -160,8 +160,8 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                     }
 
                     // Folder 7
-                    var folder7Label = row.Cell(PlanningImportExcelConsts.Folder7Label).Value.ToString();
-                    var folder7Description = row.Cell(PlanningImportExcelConsts.Folder7Description).Value.ToString();
+                    var folder7Label = row.Cell(PlanningImportExcelConsts.Folder7Label).Value.ToString().Trim();
+                    var folder7Description = row.Cell(PlanningImportExcelConsts.Folder7Description).Value.ToString().Trim();
 
                     if (!string.IsNullOrEmpty(folder7Label))
                     {
@@ -176,8 +176,8 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                     }
 
                     // Folder 8
-                    var folder8Label = row.Cell(PlanningImportExcelConsts.Folder8Label).Value.ToString();
-                    var folder8Description = row.Cell(PlanningImportExcelConsts.Folder8Description).Value.ToString();
+                    var folder8Label = row.Cell(PlanningImportExcelConsts.Folder8Label).Value.ToString().Trim();
+                    var folder8Description = row.Cell(PlanningImportExcelConsts.Folder8Description).Value.ToString().Trim();
 
                     if (!string.IsNullOrEmpty(folder8Label))
                     {
@@ -192,8 +192,8 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                     }
 
                     // Folder 9
-                    var folder9Label = row.Cell(PlanningImportExcelConsts.Folder9Label).Value.ToString();
-                    var folder9Description = row.Cell(PlanningImportExcelConsts.Folder9Description).Value.ToString();
+                    var folder9Label = row.Cell(PlanningImportExcelConsts.Folder9Label).Value.ToString().Trim();
+                    var folder9Description = row.Cell(PlanningImportExcelConsts.Folder9Description).Value.ToString().Trim();
 
                     if (!string.IsNullOrEmpty(folder9Label))
                     {
@@ -208,8 +208,8 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                     }
 
                     // Folder 10
-                    var folder10Label = row.Cell(PlanningImportExcelConsts.Folder10Label).Value.ToString();
-                    var folder10Description = row.Cell(PlanningImportExcelConsts.Folder10Description).Value.ToString();
+                    var folder10Label = row.Cell(PlanningImportExcelConsts.Folder10Label).Value.ToString().Trim();
+                    var folder10Description = row.Cell(PlanningImportExcelConsts.Folder10Description).Value.ToString().Trim();
 
                     if (!string.IsNullOrEmpty(folder10Label))
                     {
