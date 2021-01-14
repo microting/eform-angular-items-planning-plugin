@@ -24,33 +24,12 @@ SOFTWARE.
 
 namespace ItemsPlanning.Pn.Infrastructure.Models.Report
 {
-    using System.Collections.Generic;
-
-    public class ReportEformModel
+    public class ReportEformTextHeaderModel
     {
-        public string TemplateName { get; set; }
-
-        public string FromDate { get; set; }
-
-        public string ToDate { get; set; }
-
-        public string TableName { get; set; }
-
-        public List<string> DescriptionBlocks { get; set; }
-            = new List<string>();
-
-        public List<KeyValuePair<List<string>, List<string>>> ImageNames { get; set; }
-            = new List<KeyValuePair<List<string>, List<string>>>();
-
-        public List<KeyValuePair<int, string>> ItemHeaders { get; set; }
-            = new List<KeyValuePair<int, string>>();
-
-        public List<ReportEformItemModel> Items { get; set; }
-            = new List<ReportEformItemModel>();
-
-        public List<ReportEformPostModel> Posts { get; set; }
-            = new List<ReportEformPostModel>();
-        
-        public ReportEformTextHeaderModel TextHeaders { get; set; }
+        public string Header1 { get; set; }
+        public string Header2 { get; set; }
+        public string Header3 { get; set; }
+        public string Header4 { get; set; }
+        public string Header5 { get; set; }
     }
 }

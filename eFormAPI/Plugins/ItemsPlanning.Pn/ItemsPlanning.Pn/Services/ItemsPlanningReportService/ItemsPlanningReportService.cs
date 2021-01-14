@@ -149,16 +149,66 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     // Posts - check mailing in main app
                     var reportModel = new ReportEformModel
                     {
-                        Name = template.Label,
+                        TemplateName = template.Label,
                         FromDate = $"{FromDate:yyyy-MM-dd}",
-                        ToDate = $"{ToDate:yyyy-MM-dd}"
+                        ToDate = $"{ToDate:yyyy-MM-dd}",
+                        TextHeaders = new ReportEformTextHeaderModel(),
+                        TableName = sdkDbContext.CheckListTranslations.Single(x => x.LanguageId == language.Id && x.CheckListId == template.Id).Text,
                     };
+                    // first pass
+                    if (result.Count <= 0)
+                    {
+                        reportModel.TextHeaders.Header1 = template.ReportH1;
+                        reportModel.TextHeaders.Header2 = template.ReportH2;
+                        reportModel.TextHeaders.Header3 = template.ReportH3;
+                        reportModel.TextHeaders.Header4 = template.ReportH4;
+                        reportModel.TextHeaders.Header5 = template.ReportH5;
+                    }
+                    else // other pass
+                    {
+                        var header1 = result.LastOrDefault(x => x.TextHeaders.Header1 != default).TextHeaders.Header1;
+                        var header2 = result.LastOrDefault(x => x.TextHeaders.Header2 != default).TextHeaders.Header2;
+                        var header3 = result.LastOrDefault(x => x.TextHeaders.Header3 != default).TextHeaders.Header3;
+                        var header4 = result.LastOrDefault(x => x.TextHeaders.Header4 != default).TextHeaders.Header4;
+                        var header5 = result.LastOrDefault(x => x.TextHeaders.Header5 != default).TextHeaders.Header5;
+
+                        // if not find or finded and templateHeader not equal
+                        if (header1 == default || template.ReportH1 != header1)
+                        {
+                            reportModel.TextHeaders.Header1 = template.ReportH1;
+                        }
+
+                        if (header2 == default || template.ReportH2 != header2)
+                        {
+                            reportModel.TextHeaders.Header2 = template.ReportH2;
+                        }
+
+                        if (header3 == default || template.ReportH3 != header3)
+                        {
+                            reportModel.TextHeaders.Header3 = template.ReportH3;
+                        }
+
+                        if (header4 == default || template.ReportH4 != header4)
+                        {
+                            reportModel.TextHeaders.Header4 = template.ReportH4;
+                        }
+
+                        if (header5 == default || template.ReportH5 != header5)
+                        {
+                            reportModel.TextHeaders.Header5 = template.ReportH5;
+                        }
+
+                    }
 
                     var fields = await core.Advanced_TemplateFieldReadAll(
                         groupedCase.templateId);
 
                     foreach (var fieldDto in fields)
                     {
+                        if(fieldDto.FieldType == Constants.FieldTypes.None)
+                        {
+                            reportModel.DescriptionBlocks.Add(fieldDto.Label);
+                        }
                         if (!excludedFieldTypeIds.Contains(fieldDto.FieldTypeId))
                         {
                             KeyValuePair<int, string> kvp = new KeyValuePair<int, string>(fieldDto.Id, fieldDto.Label);

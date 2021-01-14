@@ -1,4 +1,4 @@
-﻿/*
+/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2021 Microting A/S
@@ -101,24 +101,55 @@ namespace ItemsPlanning.Pn.Services.WordService
                 var header = _dbContext.PluginConfigurationValues.Single(x => x.Name == "ItemsPlanningBaseSettings:ReportHeaderName").Value;
                 var subHeader = _dbContext.PluginConfigurationValues.Single(x => x.Name == "ItemsPlanningBaseSettings:ReportSubHeaderName").Value;
                 itemsHtml += "<body>";
-                itemsHtml += @"<table width=""100%"" border=""0"">";
-                itemsHtml += @"<tr style=""background-color:white;"">";
-                itemsHtml += $@"<td><div style='font-size: 24px;'>{header}</div><div style='font-size: 20px;'>{subHeader}</div>";
-                itemsHtml += $@"<div style='font-size: 15px;'>{_localizationService.GetString("ReportPeriod")}: {reportModel.First().FromDate} - {reportModel.First().ToDate}</div></td>";
-                itemsHtml += $@"<td rowscan='2'><div style='text-align: right;'>";
-                if (!string.IsNullOrEmpty(headerImageName) && headerImageName != "../../../assets/images/logo.png") {
+                itemsHtml += $@"<p style='font-size: 24px;margin:25%;text-align:center;'>{header}</p>";
+                itemsHtml += $@"<p style='font-size: 20px;margin:25%;text-align:center;'>{subHeader}</p>";
+                itemsHtml += $@"<p style='font-size: 15px;margin:25%;text-align:center;page-break-after:always;'>{_localizationService.GetString("ReportPeriod")}: {reportModel.First().FromDate} - {reportModel.First().ToDate}</p>";
+                if (!string.IsNullOrEmpty(headerImageName) && headerImageName != "../../../assets/images/logo.png")
+                {
                     itemsHtml = await InsertImage(headerImageName, itemsHtml, 150, 150, core, basePicturePath);
                 }
-                itemsHtml += $@"</div></td>";
-                itemsHtml += @"</tr>";
-                itemsHtml += @"</table>";
 
-                //int i = 0;
-                foreach (var reportEformModel in reportModel)
+                itemsHtml += @"<div>";
+                for (var i = 0; i < reportModel.Count; i++)
                 {
-                    if (!string.IsNullOrEmpty(reportEformModel.Name))
+                    var reportEformModel = reportModel[i];
+                    if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header1))
                     {
-                        itemsHtml += $@"<h1><b>{reportEformModel.Name}</b></h1>";
+                        itemsHtml += $@"<p style='font-size:16pt;color:#2e74b5;'>{reportEformModel.TextHeaders.Header1}</p>";
+                    }
+
+
+                    if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header2))
+                    {
+                        itemsHtml += $@"<p style='font-size:13pt;color:#2e74b5;'>{reportEformModel.TextHeaders.Header2}</p>";
+                    }
+
+
+                    if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header3))
+                    {
+                        itemsHtml += $@"<p style='font-size:12pt;color:#1f4d78;'>{reportEformModel.TextHeaders.Header3}</p>";
+                    }
+
+
+                    if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header4))
+                    {
+                        itemsHtml += $@"<p style='font-size:11pt;font-style:normal;'>{reportEformModel.TextHeaders.Header4}</p>";
+                    }
+
+
+                    if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header5))
+                    {
+                        itemsHtml += $@"<p style='font-size:10pt;font-style:normal;'>{reportEformModel.TextHeaders.Header5}</p>";
+                    }
+
+                    foreach (var description in reportEformModel.DescriptionBlocks)
+                    {
+                        itemsHtml += $@"<p>{description}</p>";
+                    }
+
+                    if (!string.IsNullOrEmpty(reportEformModel.TableName))
+                    {
+                        itemsHtml += $@"<p style='padding-bottom: 0;'>{_localizationService.GetString("Table")} {i + 1}: {reportEformModel.TableName}</p>";
                     }
 
                     itemsHtml += @"<table width=""100%"" border=""1"">";
@@ -157,13 +188,21 @@ namespace ItemsPlanning.Pn.Services.WordService
                         // itemsHtml += $@"<td>{dataModel.PostsCount}</td>";
                         itemsHtml += @"</tr>";
                     }
+
                     itemsHtml += @"</table>";
 
                     itemsHtml += @"<br/>";
 
+                    if (!string.IsNullOrEmpty(reportEformModel.TemplateName))
+                    {
+                        itemsHtml += $@"{reportEformModel.TemplateName}";
+                    }
+
+
                     foreach (var imagesName in reportEformModel.ImageNames)
                     {
-                        itemsHtml += $@"<h2><b>{_localizationService.GetString("Picture")}: {imagesName.Key[1]}</b></h2>";
+                        itemsHtml +=
+                            $@"<p>{_localizationService.GetString("Picture")}: {imagesName.Key[1]}</p>";
 
                         itemsHtml = await InsertImage(imagesName.Value[0], itemsHtml, 700, 650, core, basePicturePath);
 
@@ -198,6 +237,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                     // itemsHtml += @"</table>";
                 }
 
+                itemsHtml += @"</div>";
                 itemsHtml += "</body>";
 
                 html = html.Replace("{%ItemList%}", itemsHtml);
