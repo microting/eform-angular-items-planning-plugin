@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microting.eForm.Infrastructure.Data.Entities;
+
 namespace ItemsPlanning.Pn.Services.PlanningService
 {
     using System;
@@ -123,7 +125,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Skip(pnRequestModel.Offset)
                         .Take(pnRequestModel.PageSize);
-                        
+
                 var localeString = await _userService.GetCurrentUserLocale();
                 if (string.IsNullOrEmpty(localeString))
                 {
@@ -132,6 +134,14 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 }
                 var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
                 var languageIemPlanning = _dbContext.Languages.Single(x => x.Id == language.Id);
+                List<int> checkListIds = await planningsQuery.Select(x => x.RelatedEFormId).ToListAsync();
+                List<KeyValuePair<int, string>> checkListWorkflowState = new List<KeyValuePair<int, string>>();
+                foreach (CheckList checkList in sdkDbContext.CheckLists.Where(x => checkListIds.Contains(x.Id)).ToList())
+                {
+                    KeyValuePair<int, string>
+                        kvp = new KeyValuePair<int, string>(checkList.Id, checkList.WorkflowState);
+                    checkListWorkflowState.Add(kvp);
+                }
                 var plannings = await planningsQuery.Select(x => new PlanningPnModel()
 
                 {
@@ -156,7 +166,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     DayOfWeek = x.DayOfWeek,
                     DayOfMonth = x.DayOfMonth,
                     RelatedEFormId = x.RelatedEFormId,
-                    isEformRemoved = sdkCore.TemplateItemRead(x.RelatedEFormId, language).Result.WorkflowState == Constants.WorkflowStates.Removed,
                     RelatedEFormName = x.RelatedEFormName,
                     SdkFolderName = x.SdkFolderName,
                     StartDate = x.StartDate,
@@ -189,28 +198,29 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 }).ToListAsync();
 
                 // get site names
-                var core = await _coreService.GetCore();
-                await using (var dbContext = core.dbContextHelper.GetDbContext())
-                {
-                    var sites = await dbContext.Sites
-                        .AsNoTracking()
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Select(x => new CommonDictionaryModel
-                        {
-                            Id = x.Id,
-                            Name = x.Name,
-                        }).ToListAsync();
 
-                    foreach (var planning in plannings)
+                var sites = await sdkDbContext.Sites
+                    .AsNoTracking()
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Select(x => new CommonDictionaryModel
                     {
-                        foreach (var assignedSite in planning.AssignedSites)
+                        Id = x.Id,
+                        Name = x.Name,
+                    }).ToListAsync();
+
+                foreach (var planning in plannings)
+                {
+                    foreach (var assignedSite in planning.AssignedSites)
+                    {
+                        foreach (var site in sites.Where(site => site.Id == assignedSite.SiteId))
                         {
-                            foreach (var site in sites.Where(site => site.Id == assignedSite.SiteId))
-                            {
-                                assignedSite.Name = site.Name;
-                            }
+                            assignedSite.Name = site.Name;
                         }
                     }
+
+                    planning.isEformRemoved =
+                        checkListWorkflowState.Single(x => x.Key == planning.RelatedEFormId).Value ==
+                        Constants.WorkflowStates.Removed;
                 }
 
                 planningsModel.Total = await _dbContext.Plannings.CountAsync(x =>
@@ -237,6 +247,11 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 return new OperationDataResult<PlanningsPnModel>(false,
                     _itemsPlanningLocalizationService.GetString("ErrorObtainingLists"));
             }
+        }
+
+        private string CheckWorkflowState(List<KeyValuePair<int, string>> keyValuePairs, int id)
+        {
+            return keyValuePairs.Single(y => y.Key == id).Value;
         }
 
         public async Task<OperationResult> Create(PlanningPnModel model)
