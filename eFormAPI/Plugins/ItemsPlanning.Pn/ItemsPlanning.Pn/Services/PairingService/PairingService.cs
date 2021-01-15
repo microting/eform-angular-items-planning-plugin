@@ -161,6 +161,9 @@ namespace ItemsPlanning.Pn.Services.PairingService
 
         public async Task<OperationResult> PairSingle(PlanningAssignSitesModel requestModel)
         {
+            var sdkCore =
+                await _coreService.GetCore();
+            var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
             try
             {
                 var planning = await _dbContext.Plannings
@@ -189,7 +192,25 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 {
                     await planningSite.Delete(_dbContext);
                 }
+                var planningCases = await _dbContext.PlanningCases
+                    .Where(x => x.ItemId == planning.Item.Id)
+                    .ToListAsync();
 
+                foreach (var planningCase in planningCases)
+                {
+                    var planningCaseSites = await _dbContext.PlanningCaseSites
+                        .Where(x => x.PlanningCaseId == planningCase.Id).ToListAsync();
+                    foreach (var planningCaseSite in planningCaseSites.Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0))
+                    {
+                        var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
+                        if (result.MicrotingUid != null)
+                        {
+                            await sdkCore.CaseDelete((int)result.MicrotingUid);
+                        }
+                    }
+                    // Delete planning case
+                    await planningCase.Delete(_dbContext);
+                }
                 // for create
                 var assignmentsIds = planning.PlanningSites
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
@@ -227,6 +248,9 @@ namespace ItemsPlanning.Pn.Services.PairingService
 
         public async Task<OperationResult> UpdatePairings(List<PairingUpdateModel> updateModels)
         {
+            var sdkCore =
+                await _coreService.GetCore();
+            var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
             try
             {
                 var plannings = await _dbContext.Plannings
@@ -237,6 +261,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         Entities = x.PlanningSites
                             .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                             .ToList(),
+                        Item = x.Item,
                     })
                     .ToListAsync();
 
@@ -264,9 +289,29 @@ namespace ItemsPlanning.Pn.Services.PairingService
                             .Where(x => sitesForRemoveIds.Contains(x.SiteId))
                             .ToList();
 
+                        var planningCases = await _dbContext.PlanningCases
+                            .Where(x => x.ItemId == planning.Item.Id)
+                            .ToListAsync();
+
                         foreach (var site in forRemove)
                         {
                             await site.Delete(_dbContext);
+                        }
+
+                        foreach (var planningCase in planningCases)
+                        {
+                            var planningCaseSites = await _dbContext.PlanningCaseSites
+                                .Where(x => x.PlanningCaseId == planningCase.Id).ToListAsync();
+                            foreach (var planningCaseSite in planningCaseSites.Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0))
+                            {
+                                var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
+                                if (result.MicrotingUid != null)
+                                {
+                                    await sdkCore.CaseDelete((int)result.MicrotingUid);
+                                }
+                            }
+                            // Delete planning case
+                            await planningCase.Delete(_dbContext);
                         }
 
                         // for create
