@@ -192,13 +192,16 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 {
                     await planningSite.Delete(_dbContext);
                 }
+
                 var planningCases = await _dbContext.PlanningCases
-                    .Where(x => x.ItemId == planning.Item.Id)
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Where(x => assignmentsRequestIds.Contains(x.DoneByUserId))
                     .ToListAsync();
 
                 foreach (var planningCase in planningCases)
                 {
                     var planningCaseSites = await _dbContext.PlanningCaseSites
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Where(x => x.PlanningCaseId == planningCase.Id).ToListAsync();
                     foreach (var planningCaseSite in planningCaseSites.Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0))
                     {
@@ -261,7 +264,6 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         Entities = x.PlanningSites
                             .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                             .ToList(),
-                        Item = x.Item,
                     })
                     .ToListAsync();
 
@@ -280,17 +282,19 @@ namespace ItemsPlanning.Pn.Services.PairingService
                     if (planning != null)
                     {
                         // for remove
-                        var sitesForRemoveIds = pairing.Models
+                        var deviceUserIdsForRemove = pairing.Models
                             .Where(x => !x.Paired)
                             .Select(x => x.DeviceUserId)
                             .ToList();
 
                         var forRemove = planning.Entities
-                            .Where(x => sitesForRemoveIds.Contains(x.SiteId))
+                            .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Where(x => deviceUserIdsForRemove.Contains(x.SiteId))
                             .ToList();
 
                         var planningCases = await _dbContext.PlanningCases
-                            .Where(x => x.ItemId == planning.Item.Id)
+                            .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Where(x => deviceUserIdsForRemove.Contains(x.DoneByUserId))
                             .ToListAsync();
 
                         foreach (var site in forRemove)
@@ -301,6 +305,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         foreach (var planningCase in planningCases)
                         {
                             var planningCaseSites = await _dbContext.PlanningCaseSites
+                                .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                                 .Where(x => x.PlanningCaseId == planningCase.Id).ToListAsync();
                             foreach (var planningCaseSite in planningCaseSites.Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0))
                             {
