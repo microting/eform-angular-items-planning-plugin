@@ -87,9 +87,14 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadFoldersTree();
-    this.loadFoldersList();
-    this.getTags();
-    this.initTranslations();
+  }
+
+  show() {
+    this.frame.show();
+  }
+
+  goBack() {
+    this.location.back();
   }
 
   initTranslations() {
@@ -111,14 +116,11 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
     }
   }
 
-  goBack() {
-    this.location.back();
-  }
-
   getTags() {
     this.getTagsSub$ = this.tagsService.getPlanningsTags().subscribe((data) => {
       if (data && data.success) {
         this.availableTags = data.model;
+        this.initTranslations();
       }
     });
   }
@@ -141,16 +143,13 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
       });
   }
 
-  show() {
-    this.frame.show();
-  }
-
   ngOnDestroy(): void {}
 
   loadFoldersTree() {
     this.foldersService.getAllFolders().subscribe((operation) => {
       if (operation && operation.success) {
         this.foldersTreeDto = operation.model;
+        this.loadFoldersList();
       }
     });
   }
@@ -161,6 +160,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
       .subscribe((operation) => {
         if (operation && operation.success) {
           this.foldersListDto = operation.model;
+          this.getTags();
         }
       });
   }
