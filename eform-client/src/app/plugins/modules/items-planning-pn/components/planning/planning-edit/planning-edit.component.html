@@ -71,17 +71,21 @@
               class="col-md-3 col-sm-6 col-xs-6"
               *ngIf="foldersTreeDto.length > 0 && selectedPlanningModel.item"
             >
-              <div class="md-form" (click)="openFoldersModal()">
+              <div
+                class="md-form"
+                (click)="openFoldersModal()"
+                id="editFolderSelector"
+              >
                 <input
                   mdbInput
                   type="text"
-                  id="folderSelector"
+                  id="editFolderSelectorInput"
                   [ngModel]="selectedFolderName"
                   [disabled]="true"
                   name="folderSelector"
                   class="form-control"
                 />
-                <label for="folderSelector">{{ 'Folders' | translate }}</label>
+                <label for="editFolderSelectorInput">{{ 'Folders' | translate }}</label>
               </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">

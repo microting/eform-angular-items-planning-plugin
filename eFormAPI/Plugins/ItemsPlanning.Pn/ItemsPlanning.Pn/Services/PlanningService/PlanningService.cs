@@ -28,12 +28,10 @@ namespace ItemsPlanning.Pn.Services.PlanningService
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using System.Security.Claims;
     using System.Threading.Tasks;
     using Infrastructure.Helpers;
     using Infrastructure.Models;
     using ItemsPlanningLocalizationService;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using Microting.eForm.Infrastructure.Constants;
     using Microting.eFormApi.BasePn.Abstractions;
@@ -48,7 +46,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
     {
         private readonly ItemsPlanningPnDbContext _dbContext;
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserService _userService;
         private readonly IEFormCoreService _coreService;
 
@@ -56,12 +53,10 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             ItemsPlanningPnDbContext dbContext,
             IItemsPlanningLocalizationService itemsPlanningLocalizationService,
             IUserService userService,
-            IHttpContextAccessor httpContextAccessor,
             IEFormCoreService coreService)
         {
             _dbContext = dbContext;
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
-            _httpContextAccessor = httpContextAccessor;
             _coreService = coreService;
             _userService = userService;
         }
@@ -401,13 +396,13 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         false,
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
-                var language = _dbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+                var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
                 var planning = await _dbContext.Plannings
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == listId)
                     .Select(x => new PlanningPnModel()
                     {
                         TranslationsName = x.NameTranslations.Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
-                            .Select(y => new Infrastructure.Models.PlanningNameTranslations()
+                            .Select(y => new PlanningNameTranslations()
                             {
                                 Id = y.Id,
                                 Language = y.Language.Name,
@@ -416,7 +411,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             }).ToList(),
                         TranslatedName = x.NameTranslations
                             .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
-                            .Where(y => y.Language.Id == language.Id)
+                            .Where(y => y.LanguageId == language.Id)
                             .Select(y => y.Name)
                             .FirstOrDefault(),
                         Id = x.Id,

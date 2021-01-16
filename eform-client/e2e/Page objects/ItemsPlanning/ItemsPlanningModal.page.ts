@@ -1,4 +1,6 @@
 import Page from '../Page';
+import itemsPlanningPlanningPage, {PlanningCreateUpdate} from './ItemsPlanningPlanningPage';
+import {format} from 'date-fns';
 
 export class ItemsPlanningModalPage extends Page {
   constructor() {
@@ -6,14 +8,14 @@ export class ItemsPlanningModalPage extends Page {
   }
 
   // Create page elements
-  public createPlanningItemName(index) {
+  public createPlanningItemName(index: number) {
     const ele = $(`#createPlanningNameTranslation_${index}`);
     ele.waitForDisplayed({timeout: 20000});
     return ele;
   }
 
   public get createPlanningSelector() {
-    const ele = $('#createPlanningSelector input');
+    const ele = $('#createPlanningSelector');
     ele.waitForDisplayed({timeout: 20000});
     ele.waitForClickable({timeout: 20000});
     return ele;
@@ -49,14 +51,26 @@ export class ItemsPlanningModalPage extends Page {
   }
 
   public selectFolder(nameFolder: string) {
-    this.createFolderName.click();
-    $('tree-viewport').waitForDisplayed({timeout: 20000});
+    if (this.createFolderName.isExisting()) {
+      this.createFolderName.click();
+    } else {
+      this.editFolderName.click();
+    }
+    const treeViewport = $('tree-viewport');
+    treeViewport.waitForDisplayed({timeout: 20000});
     $(`#folderTreeName=${nameFolder}`).click();
+    treeViewport.waitForDisplayed({timeout: 2000, reverse: true});
   }
 
   public get createFolderName() {
-    const ele = $('#folderSelector');
-    ele.waitForDisplayed({timeout: 20000});
+    const ele = $('#createFolderSelector');
+    // ele.waitForDisplayed({timeout: 20000});
+    return ele;
+  }
+
+  public get editFolderName() {
+    const ele = $('#editFolderSelector');
+    // ele.waitForDisplayed({timeout: 20000});
     return ele;
   }
 
@@ -80,6 +94,47 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
 
+  public get createPlanningTagsSelector() {
+    const ele = $('#createPlanningTagsSelector');
+    ele.waitForDisplayed({timeout: 20000});
+    // ele.waitForClickable({timeout: 20000});
+    return ele;
+  }
+
+  public get createStartFrom() {
+    const ele = $('#createStartFrom');
+    ele.waitForDisplayed({timeout: 20000});
+    // ele.waitForClickable({timeout: 20000});
+    return ele;
+  }
+
+  public get createItemNumber() {
+    const ele = $('#createItemNumber');
+    ele.waitForDisplayed({timeout: 20000});
+    // ele.waitForClickable({timeout: 20000});
+    return ele;
+  }
+
+  public get createItemLocationCode() {
+    const ele = $('#createItemLocationCode');
+    ele.waitForDisplayed({timeout: 20000});
+    // ele.waitForClickable({timeout: 20000});
+    return ele;
+  }
+
+  public get createItemBuildYear() {
+    const ele = $('#createItemBuildYear');
+    ele.waitForDisplayed({timeout: 20000});
+    // ele.waitForClickable({timeout: 20000});
+    return ele;
+  }
+
+  public get createItemType() {
+    const ele = $('#createItemType');
+    ele.waitForDisplayed({timeout: 20000});
+    // ele.waitForClickable({timeout: 20000});
+    return ele;
+  }
   // Edit page elements
   public editPlanningItemName(index: number) {
     const ele = $(`#editPlanningNameTranslation_${index}`);
@@ -89,7 +144,7 @@ export class ItemsPlanningModalPage extends Page {
   }
 
   public get editPlanningSelector() {
-    const ele = $('#editPlanningSelector input');
+    const ele = $('#editPlanningSelector');
     ele.waitForDisplayed({timeout: 20000});
     ele.waitForClickable({timeout: 20000});
     return ele;
@@ -97,6 +152,19 @@ export class ItemsPlanningModalPage extends Page {
 
   public get editPlanningSelectorValue() {
     return $(`/ /*[contains(@id, 'editPlanningSelector')]//*[contains(@class, 'ng-value')]//div[contains(@class, 'ng-star-inserted')]`);
+  }
+
+  public get editPlanningTagsSelector() {
+    const ele = $('#editPlanningTagsSelector');
+    // ele.waitForDisplayed({timeout: 20000});
+    // ele.waitForClickable({timeout: 20000});
+    return ele;
+  }
+  public get editItemNumber() {
+    const ele = $('#editItemNumber');
+    ele.waitForDisplayed({timeout: 20000});
+    // ele.waitForClickable({timeout: 20000});
+    return ele;
   }
 
   public get editPlanningDescription() {
@@ -119,11 +187,17 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
 
+  public get editRepeatType() {
+    const ele = $('#editRepeatType');
+    ele.waitForDisplayed({timeout: 20000});
+    return ele;
+  }
+
   public selectEditRepeatType(n: number) {
     const spinnerAnimation = $('#spinner-animation');
-    $('#editRepeatType').click();
+    this.editRepeatType.click();
     spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
-    const choices = $$('#editRepeatType .ng-option');
+    const choices = this.editRepeatType.$$('.ng-option');
     choices[n].click();
     spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
   }
@@ -132,6 +206,34 @@ export class ItemsPlanningModalPage extends Page {
     const ele = $('#editRepeatUntil');
     ele.waitForDisplayed({timeout: 20000});
     ele.waitForClickable({timeout: 20000});
+    return ele;
+  }
+
+  public get editStartFrom() {
+    const ele = $('#editStartFrom');
+    ele.waitForDisplayed({timeout: 20000});
+    // ele.waitForClickable({timeout: 20000});
+    return ele;
+  }
+
+  public get editItemLocationCode() {
+    const ele = $('#editItemLocationCode');
+    ele.waitForDisplayed({timeout: 20000});
+    // ele.waitForClickable({timeout: 20000});
+    return ele;
+  }
+
+  public get editItemBuildYear() {
+    const ele = $('#editItemBuildYear');
+    ele.waitForDisplayed({timeout: 20000});
+    // ele.waitForClickable({timeout: 20000});
+    return ele;
+  }
+
+  public get editItemType() {
+    const ele = $('#editItemType');
+    ele.waitForDisplayed({timeout: 20000});
+    // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
@@ -172,27 +274,62 @@ export class ItemsPlanningModalPage extends Page {
     return cancelBtn;
   }
 
-  public createPlanning(planning: any, clickCancel = false) {
+  public createPlanning(planning: PlanningCreateUpdate, clickCancel = false) {
     const spinnerAnimation = $('#spinner-animation');
+    itemsPlanningPlanningPage.planningCreateBtn.click();
+    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
     const ngOption = $('.ng-option');
     this.planningCreateSaveBtn.waitForDisplayed();
     for (let i = 0; i < planning.name.length; i++) {
       this.createPlanningItemName(i).setValue(planning.name[i]);
     }
-    this.createPlanningSelector.setValue(planning.template);
-    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
-    ngOption.waitForDisplayed({timeout: 20000});
-    $('#createPlanningSelector ng-dropdown-panel').$(`.ng-option=${planning.template}`).click();
-    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
-    this.createPlanningItemDescription.setValue(planning.description);
-    this.createRepeatEvery.setValue(planning.repeatEvery);
-    $('#createRepeatType input').setValue(planning.repeatType);
-    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
-    ngOption.waitForDisplayed({timeout: 20000});
-    $('#createRepeatType ng-dropdown-panel').$(`.ng-option=${planning.repeatType}`).click();
-    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
-    this.createRepeatUntil.setValue(planning.repeatUntil);
-    this.selectFolder(planning.folderName);
+    // if (planning.folderName) {
+      this.selectFolder(planning.folderName);
+    // }
+    // if (planning.eFormName) {
+      this.createPlanningSelector.$('input').setValue(planning.eFormName);
+      spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
+      ngOption.waitForDisplayed({timeout: 20000});
+      this.createPlanningSelector.$('ng-dropdown-panel').$(`.ng-option=${planning.eFormName}`).click();
+      spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
+    // }
+    if (planning.tags && planning.tags.length > 0) {
+      for (let i = 0; i < planning.tags.length; i++) {
+        this.createPlanningTagsSelector.addValue(planning.tags[i]);
+        browser.keys(['Return']);
+      }
+    }
+    if (planning.repeatEvery) {
+      this.createRepeatEvery.setValue(planning.repeatEvery);
+    }
+    if (planning.repeatType) {
+      $('#createRepeatType input').setValue(planning.repeatType);
+      spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
+      ngOption.waitForDisplayed({timeout: 20000});
+      $('#createRepeatType ng-dropdown-panel').$(`.ng-option=${planning.repeatType}`).click();
+      spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
+    }
+    if (planning.startFrom) {
+      this.createStartFrom.setValue(format(planning.startFrom, 'M/d/yyyy'));
+    }
+    if (planning.repeatUntil) {
+      this.createRepeatUntil.setValue(format(planning.repeatUntil, 'M/d/yyyy'));
+    }
+    if (planning.description) {
+      this.createPlanningItemDescription.setValue(planning.description);
+    }
+    if (planning.number) {
+      this.createItemNumber.setValue(planning.number);
+    }
+    if (planning.locationCode) {
+      this.createItemLocationCode.setValue(planning.locationCode);
+    }
+    if (planning.buildYear) {
+      this.createItemBuildYear.setValue(planning.buildYear);
+    }
+    if (planning.type) {
+      this.createItemType.setValue(planning.type);
+    }
     if (!clickCancel) {
       this.planningCreateSaveBtn.click();
       spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
