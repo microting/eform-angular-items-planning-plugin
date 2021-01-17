@@ -17,7 +17,8 @@ exports.config = {
       'e2e/Tests/items-planning-general/items-planning.delete.spec.ts',
       // 'e2e/Tests/items-planning-general/items-planning.settings.spec.ts',
       'e2e/Tests/items-planning-general/items-planning.sorting.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.tags.spec.ts'
+      'e2e/Tests/items-planning-general/items-planning.tags.spec.ts',
+      'e2e/Tests/items-planning-general/items-planning.pairing.spec.ts',
     ],
     suites: {
         settings: [
@@ -158,7 +159,7 @@ exports.config = {
         ui: 'bdd',
         require: 'ts-node/register',
         compilers: ['tsconfig-paths/register'],
-        timeout: 60000
+        timeout: 120000
     },
     //
     // =====

@@ -9,24 +9,8 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public get rowNum(): number {
-    if (!$('#planningId').isExisting()) {
-      browser.pause(500);
-    }
+    browser.pause(500);
     return $$('#tableBody > tr').length;
-  }
-
-  public get createEformTagSelector() {
-    const el = $('#createEFormMultiSelector');
-    el.waitForDisplayed({timeout: 20000});
-    el.waitForClickable({timeout: 20000});
-    return el;
-  }
-
-  public get createEformNewTagInput() {
-    const el = $('#addTagInput');
-    el.waitForDisplayed({timeout: 20000});
-    el.waitForClickable({timeout: 20000});
-    return el;
   }
 
   public get planningDeleteDeleteBtn() {
@@ -57,6 +41,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     $('#descriptionTableHeader').click();
     $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
   }
+
   // public getPlanningValue(selector: any, row: number) {
   //   if (selector === 'planningId') {
   //     return parseInt($('#tableBody').$(`tr:nth-child(${row})`).$('#' + selector).getText(), 10);
@@ -101,9 +86,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
 
   public goToPlanningsPage() {
     const spinnerAnimation = $('#spinner-animation');
-    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
     this.itemPlanningButton.click();
-    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
     this.planningsButton.click();
     spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
   }
@@ -118,8 +101,9 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     return null;
   }
 
-  public createDummyPlannings(template, folderName) {
-    for (let i = 0; i < 3; i++) {
+  public createDummyPlannings(template, folderName, createCount = 3): PlanningCreateUpdate[] {
+    const masResult = new Array<PlanningCreateUpdate>();
+    for (let i = 0; i < createCount; i++) {
       const planningData: PlanningCreateUpdate = {
         name: [generateRandmString(), generateRandmString(), generateRandmString()],
         eFormName: template,
@@ -129,16 +113,31 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
         repeatUntil: new Date('5/15/2020'),
         folderName: folderName
       };
+      masResult.push(planningData);
       itemsPlanningModalPage.createPlanning(planningData);
     }
+    return masResult;
   }
 
   public clearTable() {
+    browser.pause(2000);
     const rowCount = itemsPlanningPlanningPage.rowNum;
     for (let i = 1; i <= rowCount; i++) {
       const planningRowObject = new PlanningRowObject(1);
       planningRowObject.delete();
     }
+  }
+
+  getAllPlannings(countFirstElements = 0): PlanningRowObject[] {
+    browser.pause(1000);
+    const resultMas = new Array<PlanningRowObject>();
+    if (countFirstElements === 0) {
+      countFirstElements = this.rowNum;
+    }
+    for (let i = 1; i < countFirstElements + 1; i++) {
+      resultMas.push(new PlanningRowObject(i));
+    }
+    return resultMas;
   }
 }
 
@@ -216,14 +215,15 @@ export class PlanningRowObject {
 
   public static closeEdit(clickCancel = false) {
     if (!clickCancel) {
-    itemsPlanningModalPage.planningEditSaveBtn.click();
+      itemsPlanningModalPage.planningEditSaveBtn.click();
       $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-  } else {
-    itemsPlanningModalPage.planningEditCancelBtn.click();
-  }
+    } else {
+      itemsPlanningModalPage.planningEditCancelBtn.click();
+    }
     itemsPlanningPlanningPage.planningId.waitForDisplayed();
   }
-  public static closeDelete (clickCancel = false) {
+
+  public static closeDelete(clickCancel = false) {
     if (!clickCancel) {
       itemsPlanningPlanningPage.planningDeleteDeleteBtn.click();
       $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
@@ -234,7 +234,7 @@ export class PlanningRowObject {
   }
 
   public openDelete() {
-    this.deleteBtn.waitForClickable({ timeout: 20000});
+    this.deleteBtn.waitForClickable({timeout: 20000});
     this.deleteBtn.click();
     itemsPlanningPlanningPage.planningDeleteDeleteBtn.waitForDisplayed({timeout: 20000});
   }
