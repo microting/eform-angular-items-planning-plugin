@@ -155,13 +155,14 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
 
   updatePlanning() {
     if (this.selectedPlanningModel.internalRepeatUntil) {
-      const tempDate = moment(
+      this.selectedPlanningModel.repeatUntil = moment(
         this.selectedPlanningModel.internalRepeatUntil
-      ).format('DD/MM/YYYY');
-      const datTime = moment.utc(tempDate, 'DD/MM/YYYY');
-      this.selectedPlanningModel.repeatUntil = datTime
-        .format('YYYY-MM-DDT00:00:00')
-        .toString();
+      ).format('YYYY-MM-DDT00:00:00');
+    }
+    if (this.selectedPlanningModel.startDate) {
+      this.selectedPlanningModel.startDate = moment(
+        this.selectedPlanningModel.startDate
+      ).format('YYYY-MM-DDT00:00:00');
     }
     const model = {
       ...this.selectedPlanningModel,

@@ -37,34 +37,30 @@
       </tr>
     </thead>
     <tbody id="tableBody">
-      <tr *ngFor="let pairing of pairingsModel.pairings; let y = index">
-        <td id="planningName{{ pairing.planningId }}">
+      <tr *ngFor="let pairing of pairingsModel.pairings; let i = index">
+        <td id="planningName">
           <div class="d-flex justify-content-between">
             <div class="text-center">{{ pairing.planningName }}</div>
             <div>
-              <div class="mat-checkbox" *ngIf="selectedRowCheckboxes[y]">
+              <div class="mat-checkbox" *ngIf="selectedRowCheckboxes[i]">
                 <input
-                  id="planningRowCheckbox{{ y }}"
-                  name="planningRowCheckbox{{ y }}"
-                  (click)="selectPlanningRow($event, y)"
+                  id="planningRowCheckbox{{ i }}"
+                  name="planningRowCheckbox{{ i }}"
+                  (click)="selectPlanningRow($event, i)"
                   type="checkbox"
-                  [value]="selectedRowCheckboxes[y].checked"
-                  [checked]="selectedRowCheckboxes[y].checked"
+                  [value]="selectedRowCheckboxes[i].checked"
+                  [checked]="selectedRowCheckboxes[i].checked"
                 />
-                <label for="planningRowCheckbox{{ y }}"></label>
+                <label for="planningRowCheckbox{{ i }}" id="planningRowLabelCheckbox{{ i }}"></label>
               </div>
             </div>
           </div>
         </td>
-        <td *ngFor="let planningValue of pairing.pairingValues">
+        <td *ngFor="let planningValue of pairing.pairingValues; let j = index">
           <div class="mat-checkbox">
             <input
-              id="deviceUserCheckbox{{ planningValue.deviceUserId }}_planning{{
-                pairing.planningId
-              }}"
-              name="deviceUserCheckbox{{
-                planningValue.deviceUserId
-              }}_planning{{ pairing.planningId }}"
+              id="deviceUserCheckbox{{ j }}_planning{{ i }}"
+              name="deviceUserCheckbox{{ j }}_planning{{ i }}"
               (click)="
                 checked($event, pairing.planningId, planningValue.deviceUserId)
               "
@@ -73,9 +69,8 @@
               type="checkbox"
             />
             <label
-              for="deviceUserCheckbox{{ planningValue.deviceUserId }}_planning{{
-                pairing.planningId
-              }}"
+              id="deviceUserCheckboxLabel{{ j }}_planning{{ i }}"
+              for="deviceUserCheckbox{{ j }}_planning{{ i }}"
             ></label>
           </div>
         </td>

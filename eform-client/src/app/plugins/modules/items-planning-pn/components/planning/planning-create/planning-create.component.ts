@@ -127,11 +127,14 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
 
   createPlanning() {
     if (this.newPlanningModel.internalRepeatUntil) {
-      const tempDate = moment(this.newPlanningModel.internalRepeatUntil).format(
-        'DD/MM/YYYY'
-      );
-      const datTime = moment.utc(tempDate, 'DD/MM/YYYY');
-      this.newPlanningModel.repeatUntil = datTime.format('YYYY-MM-DD');
+      this.newPlanningModel.repeatUntil = moment(
+        this.newPlanningModel.internalRepeatUntil
+      ).format('YYYY-MM-DDT00:00:00');
+    }
+    if (this.newPlanningModel.startDate) {
+      this.newPlanningModel.startDate = moment(
+        this.newPlanningModel.startDate
+      ).format('YYYY-MM-DDT00:00:00');
     }
 
     this.createSub$ = this.itemsPlanningPnPlanningsService

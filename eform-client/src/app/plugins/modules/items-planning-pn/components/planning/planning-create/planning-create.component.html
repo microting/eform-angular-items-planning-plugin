@@ -72,20 +72,20 @@
             >
               <div
                 class="md-form"
-                id="folderSelector"
+                id="createFolderSelector"
                 (click)="openFoldersModal()"
               >
                 <input
                   mdbInput
                   type="text"
-                  id="folderSelectorInput"
+                  id="createFolderSelectorInput"
                   [ngModel]="selectedFolderName"
                   [disabled]="true"
                   name="folderSelectorInput"
                   class="form-control"
                 />
                 <label
-                  for="folderSelectorInput"
+                  for="createFolderSelectorInput"
                   id="folderSelectorLabel"
                   (click)="openFoldersModal()"
                   >{{ 'Folders' | translate }}</label

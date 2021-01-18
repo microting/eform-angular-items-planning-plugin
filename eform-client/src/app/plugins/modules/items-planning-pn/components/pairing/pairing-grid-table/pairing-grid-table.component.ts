@@ -30,7 +30,8 @@ export class PairingGridTableComponent implements OnInit {
       this.checked($event, pairing.planningId, pairing.pairingValues[i].deviceUserId));
   }
 
-  selectPlanningRow($event: MouseEvent, y: number) {
+  selectPlanningRow($event: any, y: number) {
+    this.selectedRowCheckboxes[y].checked = $event.target.checked;
     this.pairingsModel.pairings[y].pairingValues.forEach(pairingValue =>
         this.checked($event, this.pairingsModel.pairings[y].planningId, pairingValue.deviceUserId));
   }
