@@ -145,7 +145,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 foreach (var groupedCase in groupedCases)
                 {
                     var template = await core.TemplateItemRead(groupedCase.templateId, language);
-
+                    var checkListTranslation = sdkDbContext.CheckListTranslations
+                        .Single(x => x.LanguageId == language.Id && x.CheckListId == template.Id).Text;
                     // Posts - check mailing in main app
                     var reportModel = new ReportEformModel
                     {
@@ -153,12 +154,21 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         FromDate = $"{FromDate:yyyy-MM-dd}",
                         ToDate = $"{ToDate:yyyy-MM-dd}",
                         TextHeaders = new ReportEformTextHeaderModel(),
-                        TableName = sdkDbContext.CheckListTranslations.Single(x => x.LanguageId == language.Id && x.CheckListId == template.Id).Text,
+                        TableName = checkListTranslation,
                     };
                     // first pass
                     if (result.Count <= 0)
                     {
-                        reportModel.TextHeaders.Header1 = template.ReportH1;
+                        if (template.ReportH1 != null)
+                        {
+                            reportModel.TextHeaders.Header1 = template.ReportH1;
+                        }
+                        else
+                        {
+                            reportModel.TextHeaders.Header1 = checkListTranslation;
+                            reportModel.TableName = null;
+                            reportModel.TemplateName = null;
+                        }
                         reportModel.TextHeaders.Header2 = template.ReportH2;
                         reportModel.TextHeaders.Header3 = template.ReportH3;
                         reportModel.TextHeaders.Header4 = template.ReportH4;
@@ -166,34 +176,34 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     }
                     else // other pass
                     {
-                        var header1 = result.LastOrDefault(x => x.TextHeaders.Header1 != default).TextHeaders.Header1;
-                        var header2 = result.LastOrDefault(x => x.TextHeaders.Header2 != default).TextHeaders.Header2;
-                        var header3 = result.LastOrDefault(x => x.TextHeaders.Header3 != default).TextHeaders.Header3;
-                        var header4 = result.LastOrDefault(x => x.TextHeaders.Header4 != default).TextHeaders.Header4;
-                        var header5 = result.LastOrDefault(x => x.TextHeaders.Header5 != default).TextHeaders.Header5;
+                        var header1 = result.LastOrDefault(x => x.TextHeaders.Header1 != null)?.TextHeaders.Header1;
+                        var header2 = result.LastOrDefault(x => x.TextHeaders.Header2 != null)?.TextHeaders.Header2;
+                        var header3 = result.LastOrDefault(x => x.TextHeaders.Header3 != null)?.TextHeaders.Header3;
+                        var header4 = result.LastOrDefault(x => x.TextHeaders.Header4 != null)?.TextHeaders.Header4;
+                        var header5 = result.LastOrDefault(x => x.TextHeaders.Header5 != null)?.TextHeaders.Header5;
 
                         // if not find or finded and templateHeader not equal
-                        if (header1 == default || template.ReportH1 != header1)
+                        if (header1 == null || template.ReportH1 != header1)
                         {
                             reportModel.TextHeaders.Header1 = template.ReportH1;
                         }
 
-                        if (header2 == default || template.ReportH2 != header2)
+                        if (header2 == null || template.ReportH2 != header2)
                         {
                             reportModel.TextHeaders.Header2 = template.ReportH2;
                         }
 
-                        if (header3 == default || template.ReportH3 != header3)
+                        if (header3 == null || template.ReportH3 != header3)
                         {
                             reportModel.TextHeaders.Header3 = template.ReportH3;
                         }
 
-                        if (header4 == default || template.ReportH4 != header4)
+                        if (header4 == null || template.ReportH4 != header4)
                         {
                             reportModel.TextHeaders.Header4 = template.ReportH4;
                         }
 
-                        if (header5 == default || template.ReportH5 != header5)
+                        if (header5 == null || template.ReportH5 != header5)
                         {
                             reportModel.TextHeaders.Header5 = template.ReportH5;
                         }
