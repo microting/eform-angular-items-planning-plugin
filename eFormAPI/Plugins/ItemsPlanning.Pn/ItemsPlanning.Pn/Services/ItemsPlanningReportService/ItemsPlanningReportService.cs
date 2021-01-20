@@ -24,6 +24,7 @@ SOFTWARE.
 
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using Microting.eForm.Infrastructure;
 using Microting.eForm.Infrastructure.Data.Entities;
 using Microting.eForm.Infrastructure.Models;
 using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
@@ -121,6 +122,15 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             x.Item.Planning.PlanningsTags.Any(y => y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
                     }
                 }
+                var groupedCaseCheckListIds = casesQuery.GroupBy(x => x.MicrotingSdkeFormId).Select(x => x.Key).ToList();
+
+                var checkLists = await sdkDbContext.CheckLists
+                    .Where(x => groupedCaseCheckListIds.Contains(x.Id))
+                    .OrderBy(x => x.ReportH1)
+                    .ThenBy(x => x.ReportH2)
+                    .ThenBy(x => x.ReportH3)
+                    .ThenBy(x => x.ReportH4)
+                    .ThenBy(x => x.ReportH5).ToListAsync();
 
                 var itemCases = await casesQuery
                     .OrderBy(x => x.Item.Planning.RelatedEFormName)
@@ -135,6 +145,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     })
                     .ToList();
 
+
                 var result = new List<ReportEformModel>();
                 // Exclude field types: None, Picture, Audio, Movie, Signature, Show PDF, FieldGroup, SaveButton
                 List<int> excludedFieldTypeIds = new List<int>()
@@ -142,28 +153,32 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     3,5,6,7,12,16,17,18
                 };
                 var localeString = await _userService.GetCurrentUserLocale();
-                Language language = core.dbContextHelper.GetDbContext().Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
-                foreach (var groupedCase in groupedCases)
+                Language language = sdkDbContext.Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
+                //foreach (var groupedCase in groupedCases)
+                foreach (var checkList in checkLists)
                 {
-                    var template = await core.TemplateItemRead(groupedCase.templateId, language);
+                    //var template = await sdkDbContext.CheckLists.SingleAsync(x => x.Id == groupedCase.templateId);
+                    var groupedCase = groupedCases.SingleOrDefault(x => x.templateId == checkList.Id);
 
-                    // Posts - check mailing in main app
+                    if (groupedCase != null)
+                    {
+                        // Posts - check mailing in main app
                     var reportModel = new ReportEformModel
                     {
-                        TemplateName = template.Label,
+                        TemplateName = checkList.Label,
                         FromDate = $"{FromDate:yyyy-MM-dd}",
                         ToDate = $"{ToDate:yyyy-MM-dd}",
                         TextHeaders = new ReportEformTextHeaderModel(),
-                        TableName = sdkDbContext.CheckListTranslations.Single(x => x.LanguageId == language.Id && x.CheckListId == template.Id).Text,
+                        TableName = sdkDbContext.CheckListTranslations.Single(x => x.LanguageId == language.Id && x.CheckListId == checkList.Id).Text,
                     };
                     // first pass
                     if (result.Count <= 0)
                     {
-                        reportModel.TextHeaders.Header1 = template.ReportH1;
-                        reportModel.TextHeaders.Header2 = template.ReportH2;
-                        reportModel.TextHeaders.Header3 = template.ReportH3;
-                        reportModel.TextHeaders.Header4 = template.ReportH4;
-                        reportModel.TextHeaders.Header5 = template.ReportH5;
+                        reportModel.TextHeaders.Header1 = checkList.ReportH1 ?? "";
+                        reportModel.TextHeaders.Header2 = checkList.ReportH2 ?? "";
+                        reportModel.TextHeaders.Header3 = checkList.ReportH3 ?? "";
+                        reportModel.TextHeaders.Header4 = checkList.ReportH4 ?? "";
+                        reportModel.TextHeaders.Header5 = checkList.ReportH5 ?? "";
                     }
                     else // other pass
                     {
@@ -174,35 +189,35 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         var header5 = result.LastOrDefault(x => x.TextHeaders.Header5 != default).TextHeaders.Header5;
 
                         // if not find or finded and templateHeader not equal
-                        if (header1 == default || template.ReportH1 != header1)
+                        if (header1 == default || checkList.ReportH1 != header1)
                         {
-                            reportModel.TextHeaders.Header1 = template.ReportH1;
+                            reportModel.TextHeaders.Header1 = checkList.ReportH1 ?? "";
                         }
 
-                        if (header2 == default || template.ReportH2 != header2)
+                        if (header2 == default || checkList.ReportH2 != header2)
                         {
-                            reportModel.TextHeaders.Header2 = template.ReportH2;
+                            reportModel.TextHeaders.Header2 = checkList.ReportH2 ?? "";
                         }
 
-                        if (header3 == default || template.ReportH3 != header3)
+                        if (header3 == default || checkList.ReportH3 != header3)
                         {
-                            reportModel.TextHeaders.Header3 = template.ReportH3;
+                            reportModel.TextHeaders.Header3 = checkList.ReportH3 ?? "";
                         }
 
-                        if (header4 == default || template.ReportH4 != header4)
+                        if (header4 == default || checkList.ReportH4 != header4)
                         {
-                            reportModel.TextHeaders.Header4 = template.ReportH4;
+                            reportModel.TextHeaders.Header4 = checkList.ReportH4 ?? "";
                         }
 
-                        if (header5 == default || template.ReportH5 != header5)
+                        if (header5 == default || checkList.ReportH5 != header5)
                         {
-                            reportModel.TextHeaders.Header5 = template.ReportH5;
+                            reportModel.TextHeaders.Header5 = checkList.ReportH5 ?? "";
                         }
 
                     }
 
                     var fields = await core.Advanced_TemplateFieldReadAll(
-                        groupedCase.templateId);
+                        checkList.Id);
 
                     foreach (var fieldDto in fields)
                     {
@@ -265,7 +280,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     {
                         Offset = 0,
                         PageSize = int.MaxValue,
-                        TemplateId = groupedCase.templateId,
+                        TemplateId = checkList.Id,
                     };
 
                     var casePostListResult = await _casePostBaseService.GetCommonPosts(casePostRequest);
@@ -354,6 +369,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     }
 
                     result.Add(reportModel);
+                    }
                 }
 
                 return new OperationDataResult<List<ReportEformModel>>(true, result);
