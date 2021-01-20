@@ -26,6 +26,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microting.eForm.Infrastructure.Data.Entities;
 using Microting.eForm.Infrastructure.Models;
+using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
 using UploadedData = Microting.eForm.Infrastructure.Models.UploadedData;
 
 namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
@@ -211,7 +212,10 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         }
                         if (!excludedFieldTypeIds.Contains(fieldDto.FieldTypeId))
                         {
-                            KeyValuePair<int, string> kvp = new KeyValuePair<int, string>(fieldDto.Id, fieldDto.Label);
+                            FieldTranslation fieldTranslation =
+                                await sdkDbContext.FieldTranslations.SingleAsync(x =>
+                                    x.FieldId == fieldDto.Id && x.LanguageId == language.Id);
+                            KeyValuePair<int, string> kvp = new KeyValuePair<int, string>(fieldDto.Id, fieldTranslation.Text);
 
                             reportModel.ItemHeaders.Add(kvp);
                         }
@@ -230,10 +234,14 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     {
                         if (imageField.UploadedDataId != null)
                         {
-                            var bla = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
-                            DateTime doneAt = (DateTime)bla.MicrotingSdkCaseDoneAt;
+                            var planningCase = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
+                            DateTime doneAt = (DateTime)planningCase.MicrotingSdkCaseDoneAt;
                             doneAt = TimeZoneInfo.ConvertTimeFromUtc(doneAt, timeZoneInfo);
-                            var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {bla.Item.Name}";
+
+                            PlanningNameTranslation planningNameTranslation =
+                                await _dbContext.PlanningNameTranslation.SingleAsync(x =>
+                                    x.PlanningId == planningCase.Item.PlanningId && x.LanguageId == language.Id);
+                            var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {planningNameTranslation.Name}";
                             string geoTag = "";
                             if (!string.IsNullOrEmpty((imageField.Latitude)))
                             {
@@ -283,24 +291,27 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     }
 
                     // add cases
-                    foreach (var caseDto in groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt))
+                    foreach (var planningCase in groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt))
                     {
+                        PlanningNameTranslation planningNameTranslation =
+                            await _dbContext.PlanningNameTranslation.SingleAsync(x =>
+                                x.PlanningId == planningCase.Item.PlanningId && x.LanguageId == language.Id);
                         var item = new ReportEformItemModel
                         {
-                            Id = caseDto.Id,
-                            MicrotingSdkCaseId = caseDto.MicrotingSdkCaseId,
-                            MicrotingSdkCaseDoneAt = TimeZoneInfo.ConvertTimeFromUtc((DateTime) caseDto.MicrotingSdkCaseDoneAt, timeZoneInfo),
-                            eFormId = caseDto.MicrotingSdkeFormId,
-                            DoneBy = caseDto.DoneByUserName,
-                            ItemName = caseDto.Item.Name,
-                            ItemDescription = caseDto.Item.Description,
+                            Id = planningCase.Id,
+                            MicrotingSdkCaseId = planningCase.MicrotingSdkCaseId,
+                            MicrotingSdkCaseDoneAt = TimeZoneInfo.ConvertTimeFromUtc((DateTime) planningCase.MicrotingSdkCaseDoneAt, timeZoneInfo),
+                            eFormId = planningCase.MicrotingSdkeFormId,
+                            DoneBy = planningCase.DoneByUserName,
+                            ItemName = planningNameTranslation.Name,
+                            ItemDescription = planningCase.Item.Description,
                         };
 
 
                         var caseFields = await core.Advanced_FieldValueReadList(
                             new List<int>()
                             {
-                                caseDto.MicrotingSdkCaseId
+                                planningCase.MicrotingSdkCaseId
                             }, language);
 
                         foreach (var itemHeader in reportModel.ItemHeaders)
@@ -330,12 +341,12 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         item.ImagesCount = await sdkDbContext.FieldValues
                             .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                             .Where(x => x.Field.FieldTypeId == 5)
-                            .Where(x => x.CaseId == caseDto.MicrotingSdkCaseId)
+                            .Where(x => x.CaseId == planningCase.MicrotingSdkCaseId)
                             .Select(x => x.Id)
                             .CountAsync();
 
                         item.PostsCount = casePostListResult.Model.Entities
-                            .Where(x => x.CaseId == caseDto.MicrotingSdkCaseId)
+                            .Where(x => x.CaseId == planningCase.MicrotingSdkCaseId)
                             .Select(x => x.PostId)
                             .Count();
 
