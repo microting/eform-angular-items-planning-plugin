@@ -502,5 +502,13 @@
       "en-US": "Table",
       "uk-UA": "Таблиця"
     }
+  },
+  {
+    "Key": "Position",
+    "LocalizedValue": {
+      "da": "Position",
+      "en-US": "Position",
+      "uk-UA": "Позиція"
+    }
   }
 ]

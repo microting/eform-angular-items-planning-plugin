@@ -24,14 +24,14 @@
         <p *ngFor="let descriptionBlock of report.descriptionBlocks">{{descriptionBlock}}</p>
       </ng-container>
 
-      <div>{{'Table' | translate}} {{i}}: {{report.tableName}}</div>
+      <div>{{'Table' | translate}}: {{report.tableName}}</div>
       <app-report-table [items]="report.items"
                         [itemHeaders]="report.itemHeaders"
                         [dateFrom]="dateFrom"
                         [dateTo]="dateTo"
                         [newPostModal]="newPostModal"></app-report-table>
       <p>{{report.templateName}}</p>
-      <app-report-images [imageNames]="report.imageNames"></app-report-images>
+      <app-report-images [imageNames]="report.imageNames" *ngIf="report.imageNames.length > 0"></app-report-images>
     </div>
   </ng-container>
 </div>

@@ -90,9 +90,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 //    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 //    .Include(x => x.Site)
                 //    .AsQueryable();
-                DateTime FromDate = new DateTime(model.DateFrom.Value.Year, model.DateFrom.Value.Month,
+                DateTime fromDate = new DateTime(model.DateFrom.Value.Year, model.DateFrom.Value.Month,
                     model.DateFrom.Value.Day, 0, 0, 0);
-                DateTime ToDate = new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month,
+                DateTime toDate = new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month,
                     model.DateTo.Value.Day, 23, 59, 59);
 
                 var casesQuery = _dbContext.PlanningCases
@@ -105,13 +105,13 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 if (model.DateFrom != null)
                 {
                     casesQuery = casesQuery.Where(x =>
-                        x.MicrotingSdkCaseDoneAt >= FromDate);
+                        x.MicrotingSdkCaseDoneAt >= fromDate);
                 }
 
                 if (model.DateTo != null)
                 {
                     casesQuery = casesQuery.Where(x =>
-                        x.MicrotingSdkCaseDoneAt <= ToDate);
+                        x.MicrotingSdkCaseDoneAt <= toDate);
                 }
 
                 if (model.TagIds.Count > 0)
@@ -163,8 +163,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     var reportModel = new ReportEformModel
                     {
                         TemplateName = checkList.Label,
-                        FromDate = $"{FromDate:yyyy-MM-dd}",
-                        ToDate = $"{ToDate:yyyy-MM-dd}",
+                        FromDate = $"{fromDate:yyyy-MM-dd}",
+                        ToDate = $"{toDate:yyyy-MM-dd}",
                         TextHeaders = new ReportEformTextHeaderModel(),
                         TableName = sdkDbContext.CheckListTranslations.Single(x => x.LanguageId == language.Id && x.CheckListId == checkList.Id).Text,
                     };
@@ -253,7 +253,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             PlanningNameTranslation planningNameTranslation =
                                 await _dbContext.PlanningNameTranslation.SingleAsync(x =>
                                     x.PlanningId == planningCase.Item.PlanningId && x.LanguageId == language.Id);
-                            var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {planningNameTranslation.Name}";
+                            //var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {planningNameTranslation.Name}"; // Disabling date until we have correct date pr image.
+                            var label = $"{imageField.CaseId}; {planningNameTranslation.Name}";
                             string geoTag = "";
                             if (!string.IsNullOrEmpty((imageField.Latitude)))
                             {
