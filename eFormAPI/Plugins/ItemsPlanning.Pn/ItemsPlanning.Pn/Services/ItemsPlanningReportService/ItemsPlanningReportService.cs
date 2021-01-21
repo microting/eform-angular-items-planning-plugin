@@ -125,12 +125,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 var groupedCaseCheckListIds = casesQuery.GroupBy(x => x.MicrotingSdkeFormId).Select(x => x.Key).ToList();
 
                 var checkLists = await sdkDbContext.CheckLists
-                    .Where(x => groupedCaseCheckListIds.Contains(x.Id))
-                    .OrderBy(x => x.ReportH1)
-                    .ThenBy(x => x.ReportH2)
-                    .ThenBy(x => x.ReportH3)
-                    .ThenBy(x => x.ReportH4)
-                    .ThenBy(x => x.ReportH5).ToListAsync();
+                    .FromSqlRaw($"SELECT * FROM CheckLists WHERE" +
+                                $" Id IN ({string.Join(",", groupedCaseCheckListIds)})" +
+                                $" ORDER BY ReportH1  * 1, ReportH2 * 1, ReportH3 * 1, ReportH4 * 1").ToListAsync();
 
                 var itemCases = await casesQuery
                     .OrderBy(x => x.Item.Planning.RelatedEFormName)
