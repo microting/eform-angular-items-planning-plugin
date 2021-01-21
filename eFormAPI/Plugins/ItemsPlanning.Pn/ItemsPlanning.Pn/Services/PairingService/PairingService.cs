@@ -66,18 +66,15 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 List<CommonDictionaryModel> deviceUsers;
                 var sdkCore =
                     await _coreService.GetCore();
-                var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
-                await using (var dbContext = core.dbContextHelper.GetDbContext())
-                {
-                    deviceUsers = await dbContext.Sites
-                        .AsNoTracking()
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Select(x => new CommonDictionaryModel
-                        {
-                            Id = x.Id,
-                            Name = x.Name,
-                        }).ToListAsync();
-                }
+                await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
+                deviceUsers = await sdkDbContext.Sites
+                    .AsNoTracking()
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Select(x => new CommonDictionaryModel
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                    }).ToListAsync();
 
                 var pairingQuery =  _dbContext.Plannings.AsQueryable();
 
@@ -163,7 +160,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
         {
             var sdkCore =
                 await _coreService.GetCore();
-            var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
+            await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
             try
             {
                 var planning = await _dbContext.Plannings
@@ -253,7 +250,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
         {
             var sdkCore =
                 await _coreService.GetCore();
-            var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
+            await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
             try
             {
                 var plannings = await _dbContext.Plannings

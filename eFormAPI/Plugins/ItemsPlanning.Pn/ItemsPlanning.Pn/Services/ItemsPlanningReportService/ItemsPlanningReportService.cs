@@ -85,7 +85,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             {
                 TimeZoneInfo timeZoneInfo = await _userService.GetCurrentUserTimeZoneInfo();
                 var core = await _coreHelper.GetCore();
-                await using var sdkDbContext = core.dbContextHelper.GetDbContext();
+                await using var sdkDbContext = core.DbContextHelper.GetDbContext();
                 //var casesQuery = microtingDbContext.cases
                 //    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 //    .Include(x => x.Site)
@@ -214,7 +214,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     }
 
                     var fields = await core.Advanced_TemplateFieldReadAll(
-                        checkList.Id);
+                        checkList.Id, language);
 
                     foreach (var fieldDto in fields)
                     {

@@ -70,7 +70,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 var planningsModel = new PlanningsPnModel();
                 var sdkCore =
                     await _coreService.GetCore();
-                var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
+                await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
 
                 var planningsQuery = _dbContext.Plannings.AsQueryable();
                 if (!string.IsNullOrEmpty(pnRequestModel.Sort) && pnRequestModel.Sort != "TranslatedName")
@@ -254,7 +254,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             //await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             var sdkCore =
                 await _coreService.GetCore();
-            var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
+            await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
             try
             {
                 var tagIds = new List<int>();
@@ -288,7 +288,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         true,
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
-                var language = sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+                var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
 
                 var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId, language);
 
@@ -403,7 +403,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             {
                 var sdkCore =
                     await _coreService.GetCore();
-                var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
+                await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
                 var localeString = await _userService.GetCurrentUserLocale();
                 if (string.IsNullOrEmpty(localeString))
                 {
@@ -485,31 +485,27 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 }
 
                 // get site names
-                var core = await _coreService.GetCore();
-                await using (var dbContext = core.dbContextHelper.GetDbContext())
-                {
-                    planning.Item.eFormSdkFolderName = await dbContext.Folders
-                        .AsNoTracking()
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Where(x => x.Id == planning.Item.eFormSdkFolderId)
-                        .Select(x => x.Name)
-                        .FirstOrDefaultAsync();
+                planning.Item.eFormSdkFolderName = await sdkDbContext.Folders
+                    .AsNoTracking()
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Where(x => x.Id == planning.Item.eFormSdkFolderId)
+                    .Select(x => x.Name)
+                    .FirstOrDefaultAsync();
 
-                    var sites = await dbContext.Sites
-                        .AsNoTracking()
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Select(x => new CommonDictionaryModel
-                        {
-                            Id = x.Id,
-                            Name = x.Name,
-                        }).ToListAsync();
-
-                    foreach (var assignedSite in planning.AssignedSites)
+                var sites = await sdkDbContext.Sites
+                    .AsNoTracking()
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Select(x => new CommonDictionaryModel
                     {
-                        foreach (var site in sites.Where(site => site.Id == assignedSite.SiteId))
-                        {
-                            assignedSite.Name = site.Name;
-                        }
+                        Id = x.Id,
+                        Name = x.Name,
+                    }).ToListAsync();
+
+                foreach (var assignedSite in planning.AssignedSites)
+                {
+                    foreach (var site in sites.Where(site => site.Id == assignedSite.SiteId))
+                    {
+                        assignedSite.Name = site.Name;
                     }
                 }
 
@@ -531,7 +527,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             // await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             var sdkCore =
                 await _coreService.GetCore();
-            var sdkDbContext = sdkCore.dbContextHelper.GetDbContext();
+            await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
             try
             {
 
@@ -542,7 +538,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         false,
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
-                var language = sdkCore.dbContextHelper.GetDbContext().Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+                var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
                 var template = await sdkCore.TemplateItemRead(updateModel.RelatedEFormId, language);
 
 
@@ -700,7 +696,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             try
             {
                 var core = await _coreService.GetCore();
-                var sdkDbContext = core.dbContextHelper.GetDbContext();
+                await using var sdkDbContext = core.DbContextHelper.GetDbContext();
                 var planning = await _dbContext.Plannings
                     .Include(x => x.Item)
                     .SingleAsync(x => x.Id == id);

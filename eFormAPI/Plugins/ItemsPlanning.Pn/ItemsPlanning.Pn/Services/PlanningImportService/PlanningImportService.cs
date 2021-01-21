@@ -80,7 +80,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                 var timeZone = await _userService.GetCurrentUserTimeZoneInfo();
                 var locale = await _userService.GetCurrentUserLocale();
-                await using MicrotingDbContext dbContext = core.dbContextHelper.GetDbContext();
+                await using MicrotingDbContext dbContext = core.DbContextHelper.GetDbContext();
                 Language theLanguage = await dbContext.Languages
                     .SingleAsync(x => x.LanguageCode == "da");
                 var templatesDto = await core.TemplateItemReadAll(
