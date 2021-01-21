@@ -21,7 +21,7 @@
       </ng-container>
 
       <ng-container *ngIf="report.descriptionBlocks">
-        <p *ngFor="let descriptionBlock of report.descriptionBlocks">{{descriptionBlock}}</p>
+        <p *ngFor="let descriptionBlock of report.descriptionBlocks" [innerHTML]="descriptionBlock"></p>
       </ng-container>
 
       <div>{{'Table' | translate}}: {{report.tableName}}</div>

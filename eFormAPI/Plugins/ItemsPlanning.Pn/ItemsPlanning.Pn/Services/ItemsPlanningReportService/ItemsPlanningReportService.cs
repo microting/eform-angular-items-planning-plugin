@@ -220,7 +220,10 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     {
                         if(fieldDto.FieldType == Constants.FieldTypes.None)
                         {
-                            reportModel.DescriptionBlocks.Add(fieldDto.Label);
+                            FieldTranslation fieldTranslation =
+                                await sdkDbContext.FieldTranslations.SingleAsync(x =>
+                                    x.FieldId == fieldDto.Id && x.LanguageId == language.Id);
+                            reportModel.DescriptionBlocks.Add(fieldTranslation.Description);
                         }
                         if (!excludedFieldTypeIds.Contains(fieldDto.FieldTypeId))
                         {

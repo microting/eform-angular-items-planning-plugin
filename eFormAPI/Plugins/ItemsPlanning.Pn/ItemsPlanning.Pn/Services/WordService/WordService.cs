@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Text.RegularExpressions;
 using eFormCore;
 using ImageMagick;
 using Microting.ItemsPlanningBase.Infrastructure.Data;
@@ -82,7 +83,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                 string html;
                 using (var reader = new StreamReader(resourceStream ?? throw new InvalidOperationException($"{nameof(resourceStream)} is null")))
                 {
-                    html = reader.ReadToEnd();
+                    html = await reader.ReadToEndAsync();
                 }
 
                 resourceString = "ItemsPlanning.Pn.Resources.Templates.WordExport.file.docx";
@@ -120,7 +121,9 @@ namespace ItemsPlanning.Pn.Services.WordService
                     var reportEformModel = reportModel[i];
                     if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header1))
                     {
-                        itemsHtml += $@"<h1>{reportEformModel.TextHeaders.Header1}</h1>";
+                        itemsHtml += $@"<h1>{Regex.Replace(reportEformModel.TextHeaders.Header1, @"\. ", ".")}</h1>";
+                        // We do this, even thought some would look at it and find it looking stupid. But if we don't do it,
+                        // Word WILL mess up the header titles, because it thinks it needs to fix the number order.
                     }
 
                     if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header2))
@@ -145,7 +148,7 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                     foreach (var description in reportEformModel.DescriptionBlocks)
                     {
-                        itemsHtml += $@"<p>{description}</p>";
+                        itemsHtml += $@"<p style='font-size: 7pt;'>{description}</p>";
                     }
 
                     if (!string.IsNullOrEmpty(reportEformModel.TableName))
@@ -156,7 +159,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                     itemsHtml += @"<table width=""100%"" border=""1"">"; // TODO change font-size 7
 
                     // Table header
-                    itemsHtml += @"<tr style=""background-color:#f5f5f5;font-weight:bold; font-size: 7px;"">";
+                    itemsHtml += @"<tr style='background-color:#f5f5f5;font-weight:bold;font-size: 7pt;'>";
                     itemsHtml += $@"<td>{_localizationService.GetString("Id")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("CreatedAt")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("DoneBy")}</td>";
@@ -173,7 +176,7 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                     foreach (var dataModel in reportEformModel.Items)
                     {
-                        itemsHtml += @"<tr>";
+                        itemsHtml += @"<tr style='font-size: 7pt;'>";
                         itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseId}</td>";
 
                         itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}</td>";
@@ -203,13 +206,13 @@ namespace ItemsPlanning.Pn.Services.WordService
                     foreach (var imagesName in reportEformModel.ImageNames)
                     {
                         itemsHtml +=
-                            $@"<p>{_localizationService.GetString("Id")}: {imagesName.Key[1]}</p>"; // TODO change to ID: {id}; imagesName.Key[1]
+                            $@"<p style='font-size: 7pt;'>{_localizationService.GetString("Id")}: {imagesName.Key[1]}</p>"; // TODO change to ID: {id}; imagesName.Key[1]
 
                         itemsHtml = await InsertImage(imagesName.Value[0], itemsHtml, 700, 650, core, basePicturePath);
 
                         if (!string.IsNullOrEmpty(imagesName.Value[1]))
                         {
-                            itemsHtml += $@"<p>{_localizationService.GetString("Position")}:<a href=""{imagesName.Value[1]}"">{imagesName.Value[1]}</a></p>"; // TODO change to Position : URL
+                            itemsHtml += $@"<p style='font-size: 7pt;'>{_localizationService.GetString("Position")}:<a href=""{imagesName.Value[1]}"">{imagesName.Value[1]}</a></p>"; // TODO change to Position : URL
                         }
                     }
 
