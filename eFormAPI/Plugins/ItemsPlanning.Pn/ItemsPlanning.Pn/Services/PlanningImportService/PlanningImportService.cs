@@ -77,6 +77,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
             {
                 var result = new ExcelParseResult();
                 var core = await _coreService.GetCore();
+                await using MicrotingDbContext microtingDbContext = core.DbContextHelper.GetDbContext();
 
                 var timeZone = await _userService.GetCurrentUserTimeZoneInfo();
                 var locale = await _userService.GetCurrentUserLocale();
@@ -152,6 +153,10 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             x,
                             excelModel.ItemName.Split("|").First(),
                             StringComparison.CurrentCultureIgnoreCase));
+
+                    var firstFolder = excelModel.Folders.First();
+
+                    planningName = microtingDbContext.Folders.Any(x => x.Name == firstFolder.Label) ? planningName : "";
 
                     if (!string.IsNullOrEmpty(planningName))
                     {
