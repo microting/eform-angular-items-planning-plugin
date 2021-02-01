@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Text.RegularExpressions;
 using eFormCore;
 using ImageMagick;
 using Microting.ItemsPlanningBase.Infrastructure.Data;
@@ -82,7 +83,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                 string html;
                 using (var reader = new StreamReader(resourceStream ?? throw new InvalidOperationException($"{nameof(resourceStream)} is null")))
                 {
-                    html = reader.ReadToEnd();
+                    html = await reader.ReadToEndAsync();
                 }
 
                 resourceString = "ItemsPlanning.Pn.Resources.Templates.WordExport.file.docx";
@@ -109,10 +110,10 @@ namespace ItemsPlanning.Pn.Services.WordService
                 itemsHtml += $@"<p style='font-size:24px;text-align:center;'>{header}</p>";
                 itemsHtml += $@"<p style='font-size:20px;text-align:center;'>{subHeader}</p>";
                 itemsHtml += $@"<p style='font-size:15px;text-align:center;'>{_localizationService.GetString("ReportPeriod")}: {reportModel.First().FromDate} - {reportModel.First().ToDate}</p>";
-                if (!string.IsNullOrEmpty(headerImageName) && headerImageName != "../../../assets/images/logo.png")
-                {
-                    itemsHtml = await InsertImage(headerImageName, itemsHtml, 150, 150, core, basePicturePath);
-                }
+                // if (!string.IsNullOrEmpty(headerImageName) && headerImageName != "../../../assets/images/logo.png")
+                // {
+                //     itemsHtml = await InsertImage(headerImageName, itemsHtml, 150, 150, core, basePicturePath);
+                // }
                 itemsHtml += @"</p>";
                 itemsHtml += @"<div style='page-break-before:always;'>";
                 for (var i = 0; i < reportModel.Count; i++)
@@ -120,48 +121,46 @@ namespace ItemsPlanning.Pn.Services.WordService
                     var reportEformModel = reportModel[i];
                     if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header1))
                     {
-                        itemsHtml += $@"<p style='font-size:16pt;color:#2e74b5;'>{reportEformModel.TextHeaders.Header1}</p>";
+                        itemsHtml += $@"<h1>{Regex.Replace(reportEformModel.TextHeaders.Header1, @"\. ", ".")}</h1>";
+                        // We do this, even thought some would look at it and find it looking stupid. But if we don't do it,
+                        // Word WILL mess up the header titles, because it thinks it needs to fix the number order.
                     }
-
 
                     if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header2))
                     {
-                        itemsHtml += $@"<p style='font-size:13pt;color:#2e74b5;'>{reportEformModel.TextHeaders.Header2}</p>";
+                        itemsHtml += $@"<h2>{reportEformModel.TextHeaders.Header2}</h2>";
                     }
-
 
                     if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header3))
                     {
-                        itemsHtml += $@"<p style='font-size:12pt;color:#1f4d78;'>{reportEformModel.TextHeaders.Header3}</p>";
+                        itemsHtml += $@"<h3>{reportEformModel.TextHeaders.Header3}</h3>";
                     }
-
 
                     if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header4))
                     {
-                        itemsHtml += $@"<p style='font-size:11pt;font-style:normal;'>{reportEformModel.TextHeaders.Header4}</p>";
+                        itemsHtml += $@"<h4>{reportEformModel.TextHeaders.Header4}</h4>";
                     }
-
 
                     if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header5))
                     {
-                        itemsHtml += $@"<p style='font-size:10pt;font-style:normal;'>{reportEformModel.TextHeaders.Header5}</p>";
+                        itemsHtml += $@"<h5>{reportEformModel.TextHeaders.Header5}</h5>";
                     }
 
                     foreach (var description in reportEformModel.DescriptionBlocks)
                     {
-                        itemsHtml += $@"<p>{description}</p>";
+                        itemsHtml += $@"<p style='font-size: 7pt;'>{description}</p>";
                     }
 
                     if (!string.IsNullOrEmpty(reportEformModel.TableName))
                     {
-                        itemsHtml += $@"<p style='padding-bottom: 0;'>{_localizationService.GetString("Table")} {i + 1}: {reportEformModel.TableName}</p>";
+                        itemsHtml += $@"<p style='padding-bottom: 0;'>{_localizationService.GetString("Table")}: {reportEformModel.TableName}</p>";
                     }
 
-                    itemsHtml += @"<table width=""100%"" border=""1"">";
+                    itemsHtml += @"<table width=""100%"" border=""1"">"; // TODO change font-size 7
 
                     // Table header
-                    itemsHtml += @"<tr style=""background-color:#f5f5f5;font-weight:bold"">";
-                    itemsHtml += $@"<td>{_localizationService.GetString("CaseId")}</td>";
+                    itemsHtml += @"<tr style='background-color:#f5f5f5;font-weight:bold;font-size: 7pt;'>";
+                    itemsHtml += $@"<td>{_localizationService.GetString("Id")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("CreatedAt")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("DoneBy")}</td>";
                     itemsHtml += $@"<td>{_localizationService.GetString("ItemName")}</td>";
@@ -177,7 +176,7 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                     foreach (var dataModel in reportEformModel.Items)
                     {
-                        itemsHtml += @"<tr>";
+                        itemsHtml += @"<tr style='font-size: 7pt;'>";
                         itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseId}</td>";
 
                         itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}</td>";
@@ -207,13 +206,13 @@ namespace ItemsPlanning.Pn.Services.WordService
                     foreach (var imagesName in reportEformModel.ImageNames)
                     {
                         itemsHtml +=
-                            $@"<p>{_localizationService.GetString("Picture")}: {imagesName.Key[1]}</p>";
+                            $@"<p style='font-size: 7pt;'>{_localizationService.GetString("Id")}: {imagesName.Key[1]}</p>"; // TODO change to ID: {id}; imagesName.Key[1]
 
                         itemsHtml = await InsertImage(imagesName.Value[0], itemsHtml, 700, 650, core, basePicturePath);
 
                         if (!string.IsNullOrEmpty(imagesName.Value[1]))
                         {
-                            itemsHtml += $@"<a href=""{imagesName.Value[1]}"">{imagesName.Value[1]}</a>";
+                            itemsHtml += $@"<p style='font-size: 7pt;'>{_localizationService.GetString("Position")}:<a href=""{imagesName.Value[1]}"">{imagesName.Value[1]}</a></p>"; // TODO change to Position : URL
                         }
                     }
 

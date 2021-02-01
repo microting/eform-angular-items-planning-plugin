@@ -24,8 +24,10 @@ SOFTWARE.
 
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using Microting.eForm.Infrastructure;
 using Microting.eForm.Infrastructure.Data.Entities;
 using Microting.eForm.Infrastructure.Models;
+using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
 using UploadedData = Microting.eForm.Infrastructure.Models.UploadedData;
 
 namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
@@ -83,14 +85,14 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             {
                 TimeZoneInfo timeZoneInfo = await _userService.GetCurrentUserTimeZoneInfo();
                 var core = await _coreHelper.GetCore();
-                await using var sdkDbContext = core.dbContextHelper.GetDbContext();
+                await using var sdkDbContext = core.DbContextHelper.GetDbContext();
                 //var casesQuery = microtingDbContext.cases
                 //    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 //    .Include(x => x.Site)
                 //    .AsQueryable();
-                DateTime FromDate = new DateTime(model.DateFrom.Value.Year, model.DateFrom.Value.Month,
+                DateTime fromDate = new DateTime(model.DateFrom.Value.Year, model.DateFrom.Value.Month,
                     model.DateFrom.Value.Day, 0, 0, 0);
-                DateTime ToDate = new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month,
+                DateTime toDate = new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month,
                     model.DateTo.Value.Day, 23, 59, 59);
 
                 var casesQuery = _dbContext.PlanningCases
@@ -103,13 +105,13 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 if (model.DateFrom != null)
                 {
                     casesQuery = casesQuery.Where(x =>
-                        x.MicrotingSdkCaseDoneAt >= FromDate);
+                        x.MicrotingSdkCaseDoneAt >= fromDate);
                 }
 
                 if (model.DateTo != null)
                 {
                     casesQuery = casesQuery.Where(x =>
-                        x.MicrotingSdkCaseDoneAt <= ToDate);
+                        x.MicrotingSdkCaseDoneAt <= toDate);
                 }
 
                 if (model.TagIds.Count > 0)
@@ -120,6 +122,12 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             x.Item.Planning.PlanningsTags.Any(y => y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
                     }
                 }
+                var groupedCaseCheckListIds = casesQuery.GroupBy(x => x.MicrotingSdkeFormId).Select(x => x.Key).ToList();
+
+                var checkLists = await sdkDbContext.CheckLists
+                    .FromSqlRaw($"SELECT * FROM CheckLists WHERE" +
+                                $" Id IN ({string.Join(",", groupedCaseCheckListIds)})" +
+                                $" ORDER BY ReportH1  * 1, ReportH2 * 1, ReportH3 * 1, ReportH4 * 1").ToListAsync();
 
                 var itemCases = await casesQuery
                     .OrderBy(x => x.Item.Planning.RelatedEFormName)
@@ -134,6 +142,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     })
                     .ToList();
 
+
                 var result = new List<ReportEformModel>();
                 // Exclude field types: None, Picture, Audio, Movie, Signature, Show PDF, FieldGroup, SaveButton
                 List<int> excludedFieldTypeIds = new List<int>()
@@ -141,18 +150,21 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     3,5,6,7,12,16,17,18
                 };
                 var localeString = await _userService.GetCurrentUserLocale();
-                Language language = core.dbContextHelper.GetDbContext().Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
-                foreach (var groupedCase in groupedCases)
+                Language language = sdkDbContext.Languages.Single(x => x.LanguageCode.ToLower() == localeString.ToLower());
+                //foreach (var groupedCase in groupedCases)
+                foreach (var checkList in checkLists)
                 {
-                    var template = await core.TemplateItemRead(groupedCase.templateId, language);
-                    var checkListTranslation = sdkDbContext.CheckListTranslations
-                        .Single(x => x.LanguageId == language.Id && x.CheckListId == template.Id).Text;
-                    // Posts - check mailing in main app
+                    //var template = await sdkDbContext.CheckLists.SingleAsync(x => x.Id == groupedCase.templateId);
+                    var groupedCase = groupedCases.SingleOrDefault(x => x.templateId == checkList.Id);
+
+                    if (groupedCase != null)
+                    {
+                    
                     var reportModel = new ReportEformModel
                     {
-                        TemplateName = template.Label,
-                        FromDate = $"{FromDate:yyyy-MM-dd}",
-                        ToDate = $"{ToDate:yyyy-MM-dd}",
+                        TemplateName = checkList.Label,
+                        FromDate = $"{fromDate:yyyy-MM-dd}",
+                        ToDate = $"{toDate:yyyy-MM-dd}",
                         TextHeaders = new ReportEformTextHeaderModel(),
                         TableName = checkListTranslation,
                     };
@@ -183,45 +195,52 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         var header5 = result.LastOrDefault(x => x.TextHeaders.Header5 != null)?.TextHeaders.Header5;
 
                         // if not find or finded and templateHeader not equal
+
                         if (header1 == null || template.ReportH1 != header1)
                         {
-                            reportModel.TextHeaders.Header1 = template.ReportH1;
+                            reportModel.TextHeaders.Header1 = checkList.ReportH1 ?? "";
                         }
 
                         if (header2 == null || template.ReportH2 != header2)
                         {
-                            reportModel.TextHeaders.Header2 = template.ReportH2;
+                            reportModel.TextHeaders.Header2 = checkList.ReportH2 ?? "";
                         }
 
                         if (header3 == null || template.ReportH3 != header3)
                         {
-                            reportModel.TextHeaders.Header3 = template.ReportH3;
+                            reportModel.TextHeaders.Header3 = checkList.ReportH3 ?? "";
                         }
 
                         if (header4 == null || template.ReportH4 != header4)
                         {
-                            reportModel.TextHeaders.Header4 = template.ReportH4;
+                            reportModel.TextHeaders.Header4 = checkList.ReportH4 ?? "";
                         }
 
                         if (header5 == null || template.ReportH5 != header5)
                         {
-                            reportModel.TextHeaders.Header5 = template.ReportH5;
+                            reportModel.TextHeaders.Header5 = checkList.ReportH5 ?? "";
                         }
 
                     }
 
                     var fields = await core.Advanced_TemplateFieldReadAll(
-                        groupedCase.templateId);
+                        checkList.Id, language);
 
                     foreach (var fieldDto in fields)
                     {
                         if(fieldDto.FieldType == Constants.FieldTypes.None)
                         {
-                            reportModel.DescriptionBlocks.Add(fieldDto.Label);
+                            FieldTranslation fieldTranslation =
+                                await sdkDbContext.FieldTranslations.SingleAsync(x =>
+                                    x.FieldId == fieldDto.Id && x.LanguageId == language.Id);
+                            reportModel.DescriptionBlocks.Add(fieldTranslation.Description);
                         }
                         if (!excludedFieldTypeIds.Contains(fieldDto.FieldTypeId))
                         {
-                            KeyValuePair<int, string> kvp = new KeyValuePair<int, string>(fieldDto.Id, fieldDto.Label);
+                            FieldTranslation fieldTranslation =
+                                await sdkDbContext.FieldTranslations.SingleAsync(x =>
+                                    x.FieldId == fieldDto.Id && x.LanguageId == language.Id);
+                            KeyValuePair<int, string> kvp = new KeyValuePair<int, string>(fieldDto.Id, fieldTranslation.Text);
 
                             reportModel.ItemHeaders.Add(kvp);
                         }
@@ -240,10 +259,15 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     {
                         if (imageField.UploadedDataId != null)
                         {
-                            var bla = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
-                            DateTime doneAt = (DateTime)bla.MicrotingSdkCaseDoneAt;
+                            var planningCase = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
+                            DateTime doneAt = (DateTime)planningCase.MicrotingSdkCaseDoneAt;
                             doneAt = TimeZoneInfo.ConvertTimeFromUtc(doneAt, timeZoneInfo);
-                            var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {bla.Item.Name}";
+
+                            PlanningNameTranslation planningNameTranslation =
+                                await _dbContext.PlanningNameTranslation.SingleAsync(x =>
+                                    x.PlanningId == planningCase.Item.PlanningId && x.LanguageId == language.Id);
+                            //var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {planningNameTranslation.Name}"; // Disabling date until we have correct date pr image.
+                            var label = $"{imageField.CaseId}; {planningNameTranslation.Name}";
                             string geoTag = "";
                             if (!string.IsNullOrEmpty((imageField.Latitude)))
                             {
@@ -267,7 +291,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     {
                         Offset = 0,
                         PageSize = int.MaxValue,
-                        TemplateId = groupedCase.templateId,
+                        TemplateId = checkList.Id,
                     };
 
                     var casePostListResult = await _casePostBaseService.GetCommonPosts(casePostRequest);
@@ -293,24 +317,27 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     }
 
                     // add cases
-                    foreach (var caseDto in groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt))
+                    foreach (var planningCase in groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt))
                     {
+                        PlanningNameTranslation planningNameTranslation =
+                            await _dbContext.PlanningNameTranslation.SingleAsync(x =>
+                                x.PlanningId == planningCase.Item.PlanningId && x.LanguageId == language.Id);
                         var item = new ReportEformItemModel
                         {
-                            Id = caseDto.Id,
-                            MicrotingSdkCaseId = caseDto.MicrotingSdkCaseId,
-                            MicrotingSdkCaseDoneAt = TimeZoneInfo.ConvertTimeFromUtc((DateTime) caseDto.MicrotingSdkCaseDoneAt, timeZoneInfo),
-                            eFormId = caseDto.MicrotingSdkeFormId,
-                            DoneBy = caseDto.DoneByUserName,
-                            ItemName = caseDto.Item.Name,
-                            ItemDescription = caseDto.Item.Description,
+                            Id = planningCase.Id,
+                            MicrotingSdkCaseId = planningCase.MicrotingSdkCaseId,
+                            MicrotingSdkCaseDoneAt = TimeZoneInfo.ConvertTimeFromUtc((DateTime) planningCase.MicrotingSdkCaseDoneAt, timeZoneInfo),
+                            eFormId = planningCase.MicrotingSdkeFormId,
+                            DoneBy = planningCase.DoneByUserName,
+                            ItemName = planningNameTranslation.Name,
+                            ItemDescription = planningCase.Item.Description,
                         };
 
 
                         var caseFields = await core.Advanced_FieldValueReadList(
                             new List<int>()
                             {
-                                caseDto.MicrotingSdkCaseId
+                                planningCase.MicrotingSdkCaseId
                             }, language);
 
                         foreach (var itemHeader in reportModel.ItemHeaders)
@@ -340,12 +367,12 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         item.ImagesCount = await sdkDbContext.FieldValues
                             .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                             .Where(x => x.Field.FieldTypeId == 5)
-                            .Where(x => x.CaseId == caseDto.MicrotingSdkCaseId)
+                            .Where(x => x.CaseId == planningCase.MicrotingSdkCaseId)
                             .Select(x => x.Id)
                             .CountAsync();
 
                         item.PostsCount = casePostListResult.Model.Entities
-                            .Where(x => x.CaseId == caseDto.MicrotingSdkCaseId)
+                            .Where(x => x.CaseId == planningCase.MicrotingSdkCaseId)
                             .Select(x => x.PostId)
                             .Count();
 
@@ -353,6 +380,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     }
 
                     result.Add(reportModel);
+                    }
                 }
 
                 return new OperationDataResult<List<ReportEformModel>>(true, result);

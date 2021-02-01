@@ -489,7 +489,7 @@
   },
   {
     "Key": "LocaleDoesNotExist",
-    "LoclizedValue": {
+    "LocalizedValue": {
       "da": "Locale findes ikke",
       "en-US": "Locale does not exist",
       "uk-UA": "Така локаль не існує"
@@ -497,10 +497,18 @@
   },
   {
     "Key": "Table",
-    "LoclizedValue": {
+    "LocalizedValue": {
       "da": "Tabel",
       "en-US": "Table",
       "uk-UA": "Таблиця"
+    }
+  },
+  {
+    "Key": "Position",
+    "LocalizedValue": {
+      "da": "Position",
+      "en-US": "Position",
+      "uk-UA": "Позиція"
     }
   }
 ]

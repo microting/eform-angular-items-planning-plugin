@@ -40,7 +40,7 @@
       <tr *ngFor="let pairing of pairingsModel.pairings; let i = index">
         <td id="planningName">
           <div class="d-flex justify-content-between">
-            <div class="text-center">{{ pairing.planningName }}</div>
+            <div class="text-center">{{ pairing.planningId}} - {{ pairing.planningName }}</div>
             <div>
               <div class="mat-checkbox" *ngIf="selectedRowCheckboxes[i]">
                 <input

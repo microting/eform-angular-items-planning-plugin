@@ -181,7 +181,6 @@ exports.config = {
      * @param {Array.<String>} specs List of spec file paths that are to be run
      */
     before: function () {
-        require('ts-node/register');
         browser.timeouts('implicit', 5000);
     },
     /**
