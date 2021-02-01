@@ -22,24 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Text.RegularExpressions;
-using eFormCore;
-using ImageMagick;
-using Microting.ItemsPlanningBase.Infrastructure.Data;
-
 namespace ItemsPlanning.Pn.Services.WordService
 {
+    using eFormCore;
+    using ImageMagick;
+    using Microting.ItemsPlanningBase.Infrastructure.Data;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Drawing;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
+    using System.Text.RegularExpressions;
     using Infrastructure.Models.Report;
     using ItemsPlanningLocalizationService;
-    using Microsoft.EntityFrameworkCore.Internal;
     using Microsoft.Extensions.Logging;
     using Microting.eForm.Dto;
     using Microting.eFormApi.BasePn.Abstractions;
