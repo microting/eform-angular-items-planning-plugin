@@ -156,7 +156,9 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                     var firstFolder = excelModel.Folders.First();
 
-                    planningName = microtingDbContext.Folders.Any(x => x.Name == firstFolder.Label) ? planningName : "";
+                    planningName = microtingDbContext.Folders
+                        .Any(x => x.Name == firstFolder.Label
+                                  && x.WorkflowState != Constants.WorkflowStates.Removed) ? planningName : "";
 
                     if (!string.IsNullOrEmpty(planningName))
                     {
