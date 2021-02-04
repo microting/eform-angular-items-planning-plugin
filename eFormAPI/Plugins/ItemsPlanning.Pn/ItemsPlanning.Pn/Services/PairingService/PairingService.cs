@@ -25,6 +25,7 @@ SOFTWARE.
 namespace ItemsPlanning.Pn.Services.PairingService
 {
     using System;
+    using Helpers;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
@@ -46,6 +47,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
         private readonly IEFormCoreService _coreService;
         private readonly IUserService _userService;
+        private readonly PairItemWichSiteHelper _pairItemWichSiteHelper;
 
         public PairingService(
             ItemsPlanningPnDbContext dbContext,
@@ -57,17 +59,16 @@ namespace ItemsPlanning.Pn.Services.PairingService
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
             _coreService = coreService;
             _userService = userService;
+            _pairItemWichSiteHelper = new PairItemWichSiteHelper(_dbContext, _coreService);
         }
         public async Task<OperationDataResult<PairingsModel>> GetAllPairings(PairingRequestModel pairingRequestModel)
         {
             try
             {
-                var core = await _coreService.GetCore();
-                List<CommonDictionaryModel> deviceUsers;
                 var sdkCore =
                     await _coreService.GetCore();
                 await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
-                deviceUsers = await sdkDbContext.Sites
+                var deviceUsers = await sdkDbContext.Sites
                     .AsNoTracking()
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                     .Select(x => new CommonDictionaryModel
@@ -76,11 +77,11 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         Name = x.Name,
                     }).ToListAsync();
 
-                var pairingQuery =  _dbContext.Plannings.AsQueryable();
+                var pairingQuery = _dbContext.Plannings.AsQueryable();
 
-                if(pairingRequestModel.TagIds.Any())
+                if (pairingRequestModel.TagIds.Any())
                 {
-                    foreach(var tagId in pairingRequestModel.TagIds)
+                    foreach (var tagId in pairingRequestModel.TagIds)
                     {
                         pairingQuery = pairingQuery.Where(x => x.Item.Planning.PlanningsTags.Any(y =>
                             y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
@@ -97,27 +98,27 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 var pairing = await pairingQuery.Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                   .Select(x => new PairingModel
                   {
-                    PlanningId = x.Id,
-                    PlanningName = x.NameTranslations
+                      PlanningId = x.Id,
+                      PlanningName = x.NameTranslations
                         .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                         .Where(y => y.Language.Id == language.Id)
                         .Select(y => y.Name)
                         .FirstOrDefault(),
-                    PairingValues = x.PlanningSites
+                      PairingValues = x.PlanningSites
                       .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                       .Select(y => new PairingValueModel
                       {
-                        DeviceUserId = y.SiteId,
-                        Paired = true
+                          DeviceUserId = y.SiteId,
+                          Paired = true
                       }).ToList(),
                   }).ToListAsync();
 
-        // Add users who is not paired
-        foreach(var pairingModel in pairing)
+                // Add users who is not paired
+                foreach (var pairingModel in pairing)
                 {
                     foreach (var deviceUser in deviceUsers)
                     {
-                        if (pairingModel.PairingValues.All(x => x.DeviceUserId != deviceUser.Id))
+                        if (deviceUser.Id != null && pairingModel.PairingValues.All(x => x.DeviceUserId != deviceUser.Id))
                         {
                             var pairingValue = new PairingValueModel
                             {
@@ -233,6 +234,9 @@ namespace ItemsPlanning.Pn.Services.PairingService
                     };
 
                     await planningSite.Create(_dbContext);
+
+                    var item = await _dbContext.Items.SingleAsync(x => x.PlanningId == planning.Id);
+                    await _pairItemWichSiteHelper.Pair(item, assignmentSiteId, planning.RelatedEFormId);
                 }
 
                 return new OperationResult(true,
@@ -261,6 +265,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         Entities = x.PlanningSites
                             .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                             .ToList(),
+                        x.RelatedEFormId,
                     })
                     .ToListAsync();
 
@@ -292,8 +297,8 @@ namespace ItemsPlanning.Pn.Services.PairingService
 
                         var planningCaseSites = await _dbContext.PlanningCaseSites
                             .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.WorkflowState != Constants.WorkflowStates.Retracted)
-                            .Where(x => deviceUserIdsForRemove.Contains(x.MicrotingSdkSiteId)
-                            && x.ItemId == item.Id)
+                            .Where(x => deviceUserIdsForRemove.Contains(x.MicrotingSdkSiteId))
+                            .Where(x => x.ItemId == item.Id)
                             .ToListAsync();
 
                         foreach (var site in forRemove)
@@ -311,9 +316,6 @@ namespace ItemsPlanning.Pn.Services.PairingService
                                     await sdkCore.CaseDelete((int)result.MicrotingUid);
                                 }
                             }
-                            //     {
-                            //         await sdkCore.CaseDelete((int)result.MicrotingUid);
-                            //     }
                         }
 
                         var planningCases = await _dbContext.PlanningCases
@@ -349,8 +351,9 @@ namespace ItemsPlanning.Pn.Services.PairingService
                                 PlanningId = pairing.PlanningId,
                                 SiteId = assignmentSiteId,
                             };
-
                             await newPlanningSite.Create(_dbContext);
+
+                            await _pairItemWichSiteHelper.Pair(item, assignmentSiteId, planning.RelatedEFormId);
                         }
                     }
                 }
