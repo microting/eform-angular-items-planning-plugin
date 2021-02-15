@@ -2,7 +2,7 @@ import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core'
 import {
   ItemsPlanningPnPlanningsService
 } from 'src/app/plugins/modules/items-planning-pn/services';
-import {PlanningPnModel} from '../../../models/plannings';
+import {PlanningModel} from '../../../models/plannings';
 
 @Component({
   selector: 'app-planning-delete',
@@ -12,13 +12,13 @@ import {PlanningPnModel} from '../../../models/plannings';
 export class PlanningDeleteComponent implements OnInit {
   @ViewChild('frame', {static: false}) frame;
   @Output() planningDeleted: EventEmitter<void> = new EventEmitter<void>();
-  planningModel: PlanningPnModel = new PlanningPnModel();
+  planningModel: PlanningModel = new PlanningModel();
   constructor(private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService) { }
 
   ngOnInit() {
   }
 
-  show(planningModel: PlanningPnModel) {
+  show(planningModel: PlanningModel) {
     this.planningModel = planningModel;
     this.frame.show();
   }

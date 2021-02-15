@@ -1,5 +1,5 @@
 <subheader-pn [title]="'Edit Planning' | translate">
-  <div class="p-3" *ngIf="selectedPlanningModel.item">
+  <div class="p-3">
     <button
       mdbBtn
       id="planningEditSaveBtn"
@@ -69,7 +69,7 @@
           <div class="row">
             <div
               class="col-md-3 col-sm-6 col-xs-6"
-              *ngIf="foldersTreeDto.length > 0 && selectedPlanningModel.item"
+              *ngIf="foldersTreeDto.length > 0"
             >
               <div
                 class="md-form"
@@ -95,13 +95,13 @@
                 [placeholder]="'Selected template' | translate"
                 bindValue="id"
                 [typeahead]="typeahead"
-                [(ngModel)]="selectedPlanningModel.relatedEFormId"
+                [(ngModel)]="selectedPlanningModel.boundEform.relatedEFormId"
                 id="editPlanningSelector"
               >
                 <ng-template ng-label-tmp let-item="item">
                   <fa-icon
-                    *ngIf="selectedPlanningModel.isEformRemoved
-                    && selectedPlanningModel.currentRelatedEformId == item.id"
+                    *ngIf="selectedPlanningModel.enabledFields.isEformRemoved
+                    && selectedPlanningModel.boundEform.currentRelatedEformId == item.id"
                     icon="exclamation-triangle"
                     style="color: red"
                   ></fa-icon>
@@ -128,7 +128,7 @@
               <div class="md-form">
                 <input
                   mdbInput
-                  [(ngModel)]="selectedPlanningModel.repeatEvery"
+                  [(ngModel)]="selectedPlanningModel.reiteration.repeatEvery"
                   type="text"
                   id="editRepeatEvery"
                   name="editRepeatEvery"
@@ -150,12 +150,12 @@
                 [placeholder]="'Repeat type' | translate"
                 bindValue="id"
                 [typeahead]="typeahead"
-                [(ngModel)]="selectedPlanningModel.repeatType"
+                [(ngModel)]="selectedPlanningModel.reiteration.repeatType"
                 id="editRepeatType"
               >
               </ng-select>
             </div>
-            <ng-template [ngIf]="selectedPlanningModel.repeatType == 2">
+            <ng-template [ngIf]="selectedPlanningModel.reiteration.repeatType == 2">
               <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
                 <ng-select
                   [items]="[
@@ -171,18 +171,18 @@
                   [placeholder]="'Day of week' | translate"
                   bindValue="id"
                   [typeahead]="typeahead"
-                  [(ngModel)]="selectedPlanningModel.dayOfWeek"
+                  [(ngModel)]="selectedPlanningModel.reiteration.dayOfWeek"
                   id="editDayOfWeek"
                 >
                 </ng-select>
               </div>
             </ng-template>
-            <ng-template [ngIf]="selectedPlanningModel.repeatType == 3">
+            <ng-template [ngIf]="selectedPlanningModel.reiteration.repeatType == 3">
               <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="md-form">
                   <input
                     mdbInput
-                    [(ngModel)]="selectedPlanningModel.dayOfMonth"
+                    [(ngModel)]="selectedPlanningModel.reiteration.dayOfMonth"
                     type="text"
                     id="editDayOfMonth"
                     name="editDayOfMonth"
@@ -198,8 +198,8 @@
               <div class="md-form" [owlDateTimeTrigger]="dt2">
                 <input mdbInput
                        [owlDateTime]="dt2"
-                       [max]="selectedPlanningModel.internalRepeatUntil"
-                       [(ngModel)]="selectedPlanningModel.startDate"
+                       [max]="selectedPlanningModel.reiteration.internalRepeatUntil"
+                       [(ngModel)]="selectedPlanningModel.reiteration.startDate"
                        type="text" id="editStartFrom"
                        name="editStartFrom" class="form-control">
                 <owl-date-time [pickerType]="'calendar'" #dt2></owl-date-time>
@@ -210,9 +210,9 @@
               <div class="md-form" [owlDateTimeTrigger]="dt1">
                 <input
                   mdbInput
-                  [min]="selectedPlanningModel.startDate"
+                  [min]="selectedPlanningModel.reiteration.startDate"
                   [owlDateTime]="dt1"
-                  [(ngModel)]="selectedPlanningModel.internalRepeatUntil"
+                  [(ngModel)]="selectedPlanningModel.reiteration.internalRepeatUntil"
                   type="text"
                   id="editRepeatUntil"
                   name="editRepeatUntil"
@@ -225,12 +225,12 @@
               </div>
             </div>
           </div>
-          <div class="row" *ngIf="selectedPlanningModel.item">
+          <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-6">
               <div class="md-form">
                 <input
                   mdbInput
-                  [(ngModel)]="selectedPlanningModel.item.itemNumber"
+                  [(ngModel)]="selectedPlanningModel.itemNumber"
                   type="text"
                   id="editItemNumber"
                   name="editItemNumber"
@@ -243,22 +243,7 @@
               <div class="md-form">
                 <input
                   mdbInput
-                  [(ngModel)]="selectedPlanningModel.description"
-                  type="text"
-                  id="editPlanningItemDescription"
-                  name="editPlanningItemDescription"
-                  class="form-control"
-                />
-                <label for="editPlanningItemDescription">{{
-                  'Description' | translate
-                }}</label>
-              </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-              <div class="md-form">
-                <input
-                  mdbInput
-                  [(ngModel)]="selectedPlanningModel.item.locationCode"
+                  [(ngModel)]="selectedPlanningModel.locationCode"
                   type="text"
                   id="editItemLocationCode"
                   name="editItemLocationCode"
@@ -273,7 +258,7 @@
               <div class="md-form">
                 <input
                   mdbInput
-                  [(ngModel)]="selectedPlanningModel.item.buildYear"
+                  [(ngModel)]="selectedPlanningModel.buildYear"
                   type="text"
                   id="editItemBuildYear"
                   name="editItemBuildYear"
@@ -288,7 +273,7 @@
               <div class="md-form">
                 <input
                   mdbInput
-                  [(ngModel)]="selectedPlanningModel.item.type"
+                  [(ngModel)]="selectedPlanningModel.type"
                   type="text"
                   id="editItemType"
                   name="editItemType"

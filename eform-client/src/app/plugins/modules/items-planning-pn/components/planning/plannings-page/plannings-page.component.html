@@ -341,12 +341,6 @@
               >
             </div>
           </th>
-          <!--        <th scope="col" id="sitesTableHeader">-->
-          <!--          <div class="d-flex align-items-center justify-content-center">-->
-          <!--            {{'Sites' | translate}}-->
-          <!--          </div>-->
-          <!--        </th>-->
-
           <th scope="col">
             {{ 'Actions' | translate }}
           </th>
@@ -364,12 +358,12 @@
             {{ planning.description }}
           </td>
           <td id="planningFolderName">
-            {{ planning.item.eFormSdkFolderName }}
+            {{ planning.folder.eFormSdkFolderName }}
           </td>
           <td id="planningRelatedEformName">
-            {{ planning.relatedEFormName }}
+            {{ planning.boundEform.relatedEFormName }}
             <fa-icon
-              *ngIf="planning.isEformRemoved"
+              *ngIf="planning.boundEform.isEformRemoved"
               icon="exclamation-triangle"
               style="color: red"
               mdbTooltip="{{'Eform was deleted' | translate}}"
@@ -389,22 +383,22 @@
             </ng-container>
           </td>
           <td id="planningRepeatEvery">
-            {{ planning.repeatEvery }}
+            {{ planning.reiteration.repeatEvery }}
           </td>
           <td id="planningRepeatType">
-            <div *ngIf="planning.repeatType == 1">
+            <div *ngIf="planning.reiteration.repeatType == 1">
               {{ 'Day' | translate }}
             </div>
-            <div *ngIf="planning.repeatType == 2">
+            <div *ngIf="planning.reiteration.repeatType == 2">
               {{ 'Week' | translate }}
             </div>
-            <div *ngIf="planning.repeatType == 3">
+            <div *ngIf="planning.reiteration.repeatType == 3">
               {{ 'Month' | translate }}
             </div>
           </td>
           <td id="planningRepeatUntil">
             <date-formatter
-              [date]="planning.repeatUntil"
+              [date]="planning.reiteration.repeatUntil"
               [Format]="'datetime'"
             ></date-formatter>
           </td>

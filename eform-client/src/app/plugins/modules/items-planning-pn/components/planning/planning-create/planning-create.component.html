@@ -99,7 +99,7 @@
                 [placeholder]="'Selected template' | translate"
                 bindValue="id"
                 [typeahead]="typeahead"
-                [(ngModel)]="newPlanningModel.relatedEFormId"
+                [(ngModel)]="newPlanningModel.boundEform.relatedEFormId"
                 id="createPlanningSelector"
               >
               </ng-select>
@@ -123,7 +123,7 @@
               <div class="md-form">
                 <input
                   mdbInput
-                  [(ngModel)]="newPlanningModel.repeatEvery"
+                  [(ngModel)]="newPlanningModel.reiteration.repeatEvery"
                   type="text"
                   id="createRepeatEvery"
                   name="createRepeatEvery"
@@ -145,12 +145,12 @@
                 [placeholder]="'Repeat Type' | translate"
                 bindValue="id"
                 [typeahead]="typeahead"
-                [(ngModel)]="newPlanningModel.repeatType"
+                [(ngModel)]="newPlanningModel.reiteration.repeatType"
                 id="createRepeatType"
               >
               </ng-select>
             </div>
-            <ng-template [ngIf]="newPlanningModel.repeatType == 2">
+            <ng-template [ngIf]="newPlanningModel.reiteration.repeatType == 2">
               <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
                 <ng-select
                   [items]="[
@@ -166,18 +166,18 @@
                   [placeholder]="'Day of week' | translate"
                   bindValue="id"
                   [typeahead]="typeahead"
-                  [(ngModel)]="newPlanningModel.dayOfWeek"
+                  [(ngModel)]="newPlanningModel.reiteration.dayOfWeek"
                   id="createDayOfWeek"
                 >
                 </ng-select>
               </div>
             </ng-template>
-            <ng-template [ngIf]="newPlanningModel.repeatType == 3">
+            <ng-template [ngIf]="newPlanningModel.reiteration.repeatType == 3">
               <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="md-form">
                   <input
                     mdbInput
-                    [(ngModel)]="newPlanningModel.dayOfMonth"
+                    [(ngModel)]="newPlanningModel.reiteration.dayOfMonth"
                     type="text"
                     id="createDayOfMonth"
                     name="createDayOfMonth"
@@ -194,8 +194,8 @@
                 <input
                   mdbInput
                   [owlDateTime]="dt2"
-                  [max]="newPlanningModel.internalRepeatUntil"
-                  [(ngModel)]="newPlanningModel.startDate"
+                  [max]="newPlanningModel.reiteration.internalRepeatUntil"
+                  [(ngModel)]="newPlanningModel.reiteration.startDate"
                   type="text"
                   id="createStartFrom"
                   name="createStartFrom"
@@ -212,8 +212,8 @@
                 <input
                   mdbInput
                   [owlDateTime]="dt1"
-                  [min]="newPlanningModel.startDate"
-                  [(ngModel)]="newPlanningModel.internalRepeatUntil"
+                  [min]="newPlanningModel.reiteration.startDate"
+                  [(ngModel)]="newPlanningModel.reiteration.internalRepeatUntil"
                   type="text"
                   id="createRepeatUntil"
                   name="createRepeatUntil"
@@ -231,22 +231,7 @@
               <div class="md-form">
                 <input
                   mdbInput
-                  [(ngModel)]="newPlanningModel.item.description"
-                  type="text"
-                  id="createPlanningItemDescription"
-                  name="createPlanningItemDescription"
-                  class="form-control"
-                />
-                <label for="createPlanningItemDescription">{{
-                  'Description' | translate
-                }}</label>
-              </div>
-            </div>
-            <div class="col-md-3 col-sm-6 col-xs-6">
-              <div class="md-form">
-                <input
-                  mdbInput
-                  [(ngModel)]="newPlanningModel.item.itemNumber"
+                  [(ngModel)]="newPlanningModel.planningNumber"
                   type="text"
                   id="createItemNumber"
                   name="createItemNumber"
@@ -259,7 +244,7 @@
               <div class="md-form">
                 <input
                   mdbInput
-                  [(ngModel)]="newPlanningModel.item.locationCode"
+                  [(ngModel)]="newPlanningModel.locationCode"
                   type="text"
                   id="createItemLocationCode"
                   name="createItemLocationCode"
@@ -274,7 +259,7 @@
               <div class="md-form">
                 <input
                   mdbInput
-                  [(ngModel)]="newPlanningModel.item.buildYear"
+                  [(ngModel)]="newPlanningModel.buildYear"
                   type="text"
                   id="createItemBuildYear"
                   name="createItemBuildYear"
@@ -289,7 +274,7 @@
               <div class="md-form">
                 <input
                   mdbInput
-                  [(ngModel)]="newPlanningModel.item.type"
+                  [(ngModel)]="newPlanningModel.type"
                   type="text"
                   id="createItemType"
                   name="createItemType"

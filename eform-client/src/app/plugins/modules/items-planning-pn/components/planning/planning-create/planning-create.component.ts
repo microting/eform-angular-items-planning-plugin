@@ -111,7 +111,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   }
 
   updateSaveButtonDisabled() {
-    if (this.newPlanningModel.item.eFormSdkFolderId != null) {
+    if (this.newPlanningModel.folder.eFormSdkFolderId != null) {
       this.saveButtonDisabled = false;
     }
   }
@@ -126,14 +126,14 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   }
 
   createPlanning() {
-    if (this.newPlanningModel.internalRepeatUntil) {
-      this.newPlanningModel.repeatUntil = moment(
-        this.newPlanningModel.internalRepeatUntil
+    if (this.newPlanningModel.reiteration.internalRepeatUntil) {
+      this.newPlanningModel.reiteration.repeatUntil = moment(
+        this.newPlanningModel.reiteration.internalRepeatUntil
       ).format('YYYY-MM-DDT00:00:00');
     }
-    if (this.newPlanningModel.startDate) {
-      this.newPlanningModel.startDate = moment(
-        this.newPlanningModel.startDate
+    if (this.newPlanningModel.reiteration.startDate) {
+      this.newPlanningModel.reiteration.startDate = moment(
+        this.newPlanningModel.reiteration.startDate
       ).format('YYYY-MM-DDT00:00:00');
     }
 
@@ -173,12 +173,12 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   }
 
   onFolderSelected(folderDto: FolderDto) {
-    this.newPlanningModel.item.eFormSdkFolderId = folderDto.id;
+    this.newPlanningModel.folder.eFormSdkFolderId = folderDto.id;
     this.selectedFolderName = composeFolderName(
       folderDto.id,
       this.foldersListDto
     );
-    this.newPlanningModel.item.eFormSdkFullFolderName = folderDto.parent
+    this.newPlanningModel.folder.eFormSdkFullFolderName = folderDto.parent
         ? `${folderDto.name} - ${folderDto.parent.name}`
         : folderDto.name;
     this.updateSaveButtonDisabled();

@@ -12,8 +12,8 @@
                 <app-eform-tree-view-picker
                   [nodes]="folders"
                   [focusedNodeId]="
-                    selectedPlanning && selectedPlanning.item
-                      ? selectedPlanning.item.eFormSdkFolderId
+                    selectedPlanning
+                      ? selectedPlanning.folder.eFormSdkFolderId
                       : null
                   "
                   [showActions]="false"

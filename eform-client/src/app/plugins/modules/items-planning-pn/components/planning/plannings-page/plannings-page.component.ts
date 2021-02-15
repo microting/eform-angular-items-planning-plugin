@@ -3,7 +3,7 @@ import { PageSettingsModel } from 'src/app/common/models/settings';
 
 import { SharedPnService } from 'src/app/plugins/modules/shared/services';
 import {
-  PlanningPnModel,
+  PlanningModel,
   PlanningsPnModel,
   PlanningsRequestModel,
 } from '../../../models/plannings';
@@ -147,14 +147,13 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
               plannings: data.model.plannings.map((x) => {
                 return {
                   ...x,
-                  item: {
-                    // return same item with different folder name
-                    ...x.item,
+                  folder: {
+                    ...x.folder,
                     eFormSdkFolderName: composeFolderName(
-                      x.item.eFormSdkFolderId,
+                      x.folder.eFormSdkFolderId,
                       this.foldersListDto
-                    ),
-                  },
+                    )
+                  }
                 };
               }),
             };
@@ -184,11 +183,11 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  showDeletePlanningModal(planning: PlanningPnModel) {
+  showDeletePlanningModal(planning: PlanningModel) {
     this.deletePlanningModal.show(planning);
   }
 
-  openEditColumnsModal(planning: PlanningPnModel) {
+  openEditColumnsModal(planning: PlanningModel) {
     this.modalCasesColumnsModal.show(planning);
   }
 
@@ -216,7 +215,7 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  openAssignmentModal(planning: PlanningPnModel) {
+  openAssignmentModal(planning: PlanningModel) {
     this.assignSitesModal.show(planning);
   }
 

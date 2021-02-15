@@ -10,7 +10,7 @@ import { FolderDto, SiteNameDto } from 'src/app/common/models';
 import { FoldersService } from 'src/app/common/services/advanced';
 import { AuthService } from 'src/app/common/services';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { PlanningPnModel } from '../../../models/plannings';
+import { PlanningModel } from '../../../models/plannings';
 import { Subscription } from 'rxjs';
 
 @AutoUnsubscribe()
@@ -22,7 +22,7 @@ import { Subscription } from 'rxjs';
 export class PlanningFoldersModalComponent implements OnInit, OnDestroy {
   @ViewChild('frame', {static: true}) frame;
   @Output() folderSelected: EventEmitter<FolderDto> = new EventEmitter<FolderDto>();
-  selectedPlanning: PlanningPnModel = new PlanningPnModel();
+  selectedPlanning: PlanningModel = new PlanningModel();
   sitesDto: Array<SiteNameDto> = [];
   @Input() folders: FolderDto[] = [];
   getAllFolders$: Subscription;
@@ -39,7 +39,7 @@ export class PlanningFoldersModalComponent implements OnInit, OnDestroy {
 
   }
 
-  show(planningModel?: PlanningPnModel) {
+  show(planningModel?: PlanningModel) {
     this.selectedPlanning = planningModel;
     this.frame.show();
   }

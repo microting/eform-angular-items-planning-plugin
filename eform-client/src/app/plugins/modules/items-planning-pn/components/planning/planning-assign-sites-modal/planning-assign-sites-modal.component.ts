@@ -6,7 +6,7 @@ import {AuthService} from 'src/app/common/services';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {PlanningAssignmentSiteModel, PlanningAssignSitesModel} from '../../../models/plannings/planning-assign-sites.model';
 import {ItemsPlanningPnPairingService, ItemsPlanningPnPlanningsService} from 'src/app/plugins/modules/items-planning-pn/services';
-import {PlanningPnModel} from 'src/app/plugins/modules/items-planning-pn/models/plannings';
+import {PlanningModel} from 'src/app/plugins/modules/items-planning-pn/models/plannings';
 import {Subscription} from 'rxjs';
 
 @AutoUnsubscribe()
@@ -21,7 +21,7 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
   @Output() sitesAssigned: EventEmitter<void> = new EventEmitter<void>();
   assignModel: PlanningAssignSitesModel = new PlanningAssignSitesModel();
   assignViewModel: PlanningAssignSitesModel = new PlanningAssignSitesModel();
-  selectedPlanning: PlanningPnModel = new PlanningPnModel();
+  selectedPlanning: PlanningModel = new PlanningModel();
   pairSingle$: Subscription;
   getAllSites$: Subscription;
   matchFound = false;
@@ -41,7 +41,7 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
 
   }
 
-  show(planningModel: PlanningPnModel) {
+  show(planningModel: PlanningModel) {
     this.selectedPlanning = planningModel;
     this.assignModel = new PlanningAssignSitesModel();
     this.fillCheckboxes();

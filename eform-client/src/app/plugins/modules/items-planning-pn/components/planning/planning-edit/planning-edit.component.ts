@@ -12,7 +12,7 @@ import {
   ItemsPlanningPnTagsService,
 } from 'src/app/plugins/modules/items-planning-pn/services';
 import {
-  PlanningPnModel,
+  PlanningModel,
   PlanningUpdateModel,
 } from '../../../models/plannings';
 import {
@@ -49,7 +49,7 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
   @ViewChild('foldersModal', { static: false })
   foldersModal: PlanningFoldersModalComponent;
   @Output() planningUpdated: EventEmitter<void> = new EventEmitter<void>();
-  selectedPlanningModel: PlanningPnModel = new PlanningPnModel();
+  selectedPlanningModel: PlanningModel = new PlanningModel();
   templateRequestModel: TemplateRequestModel = new TemplateRequestModel();
   templatesModel: TemplateListModel = new TemplateListModel();
   typeahead = new EventEmitter<string>();
@@ -99,7 +99,7 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
   }
 
   updateSaveButtonDisabled() {
-    if (this.selectedPlanningModel.item.eFormSdkFolderId != null) {
+    if (this.selectedPlanningModel.folder.eFormSdkFolderId != null) {
       this.saveButtonDisabled = false;
     }
   }
@@ -124,17 +124,25 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
         if (data && data.success) {
           this.selectedPlanningModel = {
             ...data.model,
-            internalRepeatUntil: data.model.repeatUntil,
-            currentRelatedEformId: data.model.relatedEFormId,
+            reiteration: {
+              ...data.model.reiteration,
+              internalRepeatUntil: data.model.reiteration.repeatUntil
+            },
+            boundEform: {
+              ...data.model.boundEform,
+              currentRelatedEformId: data.model.boundEform.relatedEFormId,
+            }
+
+
           };
-          this.selectedPlanningModel.internalRepeatUntil = this.selectedPlanningModel.repeatUntil;
+          this.selectedPlanningModel.reiteration.internalRepeatUntil = this.selectedPlanningModel.reiteration.repeatUntil;
           this.loadFoldersTree();
           this.loadFoldersList();
           this.initTranslations(data.model.translationsName);
           this.templatesModel.templates = [
             {
-              id: this.selectedPlanningModel.relatedEFormId,
-              label: this.selectedPlanningModel.relatedEFormName,
+              id: this.selectedPlanningModel.boundEform.relatedEFormId,
+              label: this.selectedPlanningModel.boundEform.relatedEFormName,
             } as any,
           ];
         }
@@ -154,14 +162,14 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
   }
 
   updatePlanning() {
-    if (this.selectedPlanningModel.internalRepeatUntil) {
-      this.selectedPlanningModel.repeatUntil = moment(
-        this.selectedPlanningModel.internalRepeatUntil
+    if (this.selectedPlanningModel.reiteration.internalRepeatUntil) {
+      this.selectedPlanningModel.reiteration.repeatUntil = moment(
+        this.selectedPlanningModel.reiteration.internalRepeatUntil
       ).format('YYYY-MM-DDT00:00:00');
     }
-    if (this.selectedPlanningModel.startDate) {
-      this.selectedPlanningModel.startDate = moment(
-        this.selectedPlanningModel.startDate
+    if (this.selectedPlanningModel.reiteration.startDate) {
+      this.selectedPlanningModel.reiteration.startDate = moment(
+        this.selectedPlanningModel.reiteration.startDate
       ).format('YYYY-MM-DDT00:00:00');
     }
     const model = {
@@ -173,7 +181,7 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         if (data && data.success) {
           this.planningUpdated.emit();
-          this.selectedPlanningModel = new PlanningPnModel();
+          this.selectedPlanningModel = new PlanningModel();
           this.goBack();
         }
       });
@@ -185,7 +193,7 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
       .subscribe((operation) => {
         if (operation && operation.success) {
           this.foldersTreeDto = operation.model;
-          if (this.selectedPlanningModel.item.eFormSdkFolderId != null) {
+          if (this.selectedPlanningModel.folder.eFormSdkFolderId != null) {
             this.saveButtonDisabled = false;
           }
         }
@@ -199,7 +207,7 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
         if (operation && operation.success) {
           this.foldersListDto = operation.model;
           this.selectedFolderName = composeFolderName(
-            this.selectedPlanningModel.item.eFormSdkFolderId,
+            this.selectedPlanningModel.folder.eFormSdkFolderId,
             this.foldersListDto
           );
         }
@@ -211,7 +219,7 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
   }
 
   onFolderSelected(folderDto: FolderDto) {
-    this.selectedPlanningModel.item.eFormSdkFolderId = folderDto.id;
+    this.selectedPlanningModel.folder.eFormSdkFolderId = folderDto.id;
     this.selectedFolderName = composeFolderName(
       folderDto.id,
       this.foldersListDto
