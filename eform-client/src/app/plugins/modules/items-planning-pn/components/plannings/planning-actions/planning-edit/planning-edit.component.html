@@ -100,7 +100,7 @@
               >
                 <ng-template ng-label-tmp let-item="item">
                   <fa-icon
-                    *ngIf="selectedPlanningModel.enabledFields.isEformRemoved
+                    *ngIf="selectedPlanningModel.boundEform.isEformRemoved
                     && selectedPlanningModel.boundEform.currentRelatedEformId == item.id"
                     icon="exclamation-triangle"
                     style="color: red"
