@@ -5,7 +5,7 @@ export class PlanningFieldsModel {
   uploadedDataEnabled: boolean;
   labelEnabled: boolean;
   descriptionEnabled: boolean;
-  itemNumberEnabled: boolean;
+  planningNumberEnabled: boolean;
   locationCodeEnabled: boolean;
   buildYearEnabled: boolean;
   typeEnabled: boolean;

@@ -13,6 +13,7 @@ export class PlanningUpdateModel {
   locationCode: string;
   buildYear: string;
   type: string;
+  tagsIds: number[] = [];
 
   folder: PlanningFolderModel = new PlanningFolderModel();
   reiteration: PlanningReiterationModel = new PlanningReiterationModel();

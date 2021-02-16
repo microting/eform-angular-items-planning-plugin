@@ -8,6 +8,21 @@
   >
     <thead>
     <tr>
+      <th scope="col">
+        <div>
+          <div class="mat-checkbox" *ngIf="planningsModel.total">
+            <input
+              id="selectAllPlanningsCheckbox"
+              name="selectAllPlanningsCheckbox"
+              (click)="onAllPlanningsCheckboxChanged($event)"
+              [value]="allPlanningCheckbox"
+              [checked]="allPlanningCheckbox"
+              type="checkbox"
+            />
+            <label for="selectAllPlanningsCheckbox"></label>
+          </div>
+        </div>
+      </th>
       <th
         scope="col"
         class="table-header-sortable"
@@ -268,6 +283,24 @@
     </thead>
     <tbody id="tableBody">
     <tr *ngFor="let planning of planningsModel.plannings">
+      <td id="planningChecboxColumn">
+        <div class="mat-checkbox">
+          <input
+            id="deviceUserCheckbox{{ j }}_planning{{ i }}"
+            name="deviceUserCheckbox{{ j }}_planning{{ i }}"
+            (click)="
+                checked($event, pairing.planningId, planningValue.deviceUserId)
+              "
+            [value]="planningValue.paired"
+            [checked]="planningValue.paired"
+            type="checkbox"
+          />
+          <label
+            id="deviceUserCheckboxLabel{{ j }}_planning{{ i }}"
+            for="deviceUserCheckbox{{ j }}_planning{{ i }}"
+          ></label>
+        </div>
+      </td>
       <td id="planningId">
         {{ planning.id }}
       </td>

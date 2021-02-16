@@ -25,6 +25,7 @@ import {
 import { FoldersService, SitesService } from 'src/app/common/services/advanced';
 import { composeFolderName } from 'src/app/common/helpers/folder-name.helper';
 import { AuthService } from 'src/app/common/services';
+import * as R from 'ramda';
 
 @AutoUnsubscribe()
 @Component({
@@ -52,6 +53,12 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   getTagsSub$: Subscription;
   getFoldersListSub$: Subscription;
   getAllSites$: Subscription;
+  deletePlanningsSub$: Subscription;
+  selectedPlanningsCheckboxes = new Array<{
+    planningId: number;
+    checked: boolean;
+  }>();
+  allPlanningsCheckbox = false;
 
   constructor(
     private sharedPnService: SharedPnService,
@@ -93,7 +100,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
       'itemsPlanningPnSettings',
       'Plannings'
     ).settings;
-    this.localPageSettings.additional.forEach(value => {
+    this.localPageSettings.additional.forEach((value) => {
       if (value.key === 'tagIds') {
         this.planningsRequestModel.tagIds = JSON.parse(value.value);
       }
@@ -101,12 +108,21 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   }
 
   updateLocalPageSettings() {
-    const index = this.localPageSettings.additional.findIndex(item => item.key === 'tagIds');
+    const index = this.localPageSettings.additional.findIndex(
+      (item) => item.key === 'tagIds'
+    );
     if (index !== -1) {
-      this.localPageSettings.additional[index].value = JSON.stringify(this.planningsRequestModel.tagIds);
+      this.localPageSettings.additional[index].value = JSON.stringify(
+        this.planningsRequestModel.tagIds
+      );
     } else {
-      this.localPageSettings.additional = [...this.localPageSettings.additional,
-        {key: 'tagIds', value: JSON.stringify(this.planningsRequestModel.tagIds)}];
+      this.localPageSettings.additional = [
+        ...this.localPageSettings.additional,
+        {
+          key: 'tagIds',
+          value: JSON.stringify(this.planningsRequestModel.tagIds),
+        },
+      ];
     }
     this.sharedPnService.updateLocalPageSettings(
       'itemsPlanningPnSettings',
@@ -152,14 +168,16 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
                     eFormSdkFolderName: composeFolderName(
                       x.folder.eFormSdkFolderId,
                       this.foldersListDto
-                    )
-                  }
+                    ),
+                  },
                 };
               }),
             };
           } else {
             this.planningsModel = data.model;
           }
+          // Required if page or anything else was changed
+          this.resetAllPlanningsCheckboxes();
         }
       });
   }
@@ -179,6 +197,19 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
         if (operation && operation.success) {
           this.foldersListDto = operation.model;
           this.getPlannings();
+        }
+      });
+  }
+
+  deleteSelectedPlannings() {
+    const planningsIds = this.selectedPlanningsCheckboxes.map((x) => {
+      return x.planningId;
+    });
+    this.deletePlanningsSub$ = this.itemsPlanningPnPlanningsService
+      .deletePlannings(planningsIds)
+      .subscribe((data) => {
+        if (data && data.success) {
+          // close modal
         }
       });
   }
@@ -259,5 +290,46 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
 
   openPlanningsImportModal() {
     this.modalPlanningsImport.show();
+  }
+
+  onSinglePlanningCheckboxChanged(model: {
+    planningId: number;
+    checked: boolean;
+  }) {
+    if (model.checked) {
+      this.selectedPlanningsCheckboxes = [
+        ...this.selectedPlanningsCheckboxes,
+        { ...model },
+      ];
+    } else {
+      const foundObject = this.selectedPlanningsCheckboxes.findIndex(
+        (x) => x.planningId === model.planningId
+      );
+      if (foundObject > -1) {
+        this.selectedPlanningsCheckboxes = R.remove(
+          foundObject,
+          1,
+          this.selectedPlanningsCheckboxes
+        );
+      }
+    }
+  }
+
+  onAllPlanningsCheckboxChanged(isChecked: boolean) {
+    this.allPlanningsCheckbox = isChecked;
+    this.selectedPlanningsCheckboxes = [];
+    if (isChecked) {
+      this.planningsModel.plannings.map((x) => {
+        this.selectedPlanningsCheckboxes = [
+          ...this.selectedPlanningsCheckboxes,
+          { planningId: x.id, checked: true },
+        ];
+      });
+    }
+  }
+
+  resetAllPlanningsCheckboxes() {
+    this.allPlanningsCheckbox = false;
+    this.selectedPlanningsCheckboxes = [];
   }
 }

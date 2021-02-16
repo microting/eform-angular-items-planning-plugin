@@ -6,9 +6,7 @@ export class PlanningCasesModel {
 export class PlanningCaseModel {
   id: number;
   date: string;
-  name: string;
-  description: string;
-  itemNumber: string;
+  planningNumber: string;
   locationCode: string;
   buildYear: string;
   type: string;
