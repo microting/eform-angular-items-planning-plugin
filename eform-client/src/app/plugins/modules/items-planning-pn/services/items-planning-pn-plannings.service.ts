@@ -7,7 +7,7 @@ import {Router} from '@angular/router';
 import {OperationDataResult, OperationResult} from 'src/app/common/models/operation.models';
 import {BaseService} from 'src/app/common/services/base.service';
 
-import {PlanningCreateModel, PlanningModel, PlanningsPnModel, PlanningsRequestModel, PlanningUpdateModel} from '../models/plannings';
+import {PlanningCreateModel, PlanningModel, PlanningsModel, PlanningsRequestModel, PlanningUpdateModel} from '../models/plannings';
 import {PlanningAssignSitesModel} from '../models/plannings/planning-assign-sites.model';
 
 export let ItemsPlanningPnPlanningsMethods = {
@@ -23,7 +23,7 @@ export class ItemsPlanningPnPlanningsService extends BaseService {
     super(_http, router, toastrService);
   }
 
-  getAllPlannings(model: PlanningsRequestModel): Observable<OperationDataResult<PlanningsPnModel>> {
+  getAllPlannings(model: PlanningsRequestModel): Observable<OperationDataResult<PlanningsModel>> {
     return this.post(ItemsPlanningPnPlanningsMethods.Plannings + '/index', model);
   }
 

@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AdminGuard, AuthGuard, PermissionGuard } from 'src/app/common/guards';
 import { ItemsPlanningPnLayoutComponent } from './layouts';
 import {
-  PlanningsPageComponent,
+  PlanningsContainerComponent,
   ItemsPlanningSettingsComponent,
   ReportContainerComponent,
   PlanningCasePageComponent,
@@ -27,7 +27,7 @@ export const routes: Routes = [
         data: {
           requiredPermission: ItemsPlanningPnClaims.getPlannings,
         },
-        component: PlanningsPageComponent,
+        component: PlanningsContainerComponent,
       },
       {
         path: 'plannings/edit/:id',

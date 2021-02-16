@@ -2,9 +2,9 @@ import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core'
 import {TranslateService} from '@ngx-translate/core';
 import {FileUploader} from 'ng2-file-upload';
 import {ToastrService} from 'ngx-toastr';
-import {PlanningCaseModel} from '../../../models/plannings/planning-cases/planning-cases.model';
-import {ItemsPlanningPnUploadedDataService} from '../../../services';
-import {UploadedDatasModel} from '../../../models/plannings';
+import {PlanningCaseModel} from '../../../../models/plannings/planning-cases/planning-cases.model';
+import {ItemsPlanningPnUploadedDataService} from '../../../../services';
+import {UploadedDatasModel} from '../../../../models/plannings';
 
 @Component({
   selector: 'app-uploaded-data-pdf',

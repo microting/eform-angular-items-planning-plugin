@@ -14,11 +14,11 @@ import {
 import {
   PlanningModel,
   PlanningUpdateModel,
-} from '../../../models/plannings';
+} from '../../../../models/plannings';
 import {
   TemplateListModel,
   TemplateRequestModel,
-} from '../../../../../../common/models/eforms';
+} from '../../../../../../../common/models/eforms';
 import { debounceTime, switchMap } from 'rxjs/operators';
 import { EFormService } from 'src/app/common/services/eform';
 import * as moment from 'moment';
@@ -26,7 +26,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { FolderDto } from 'src/app/common/models/dto/folder.dto';
 import { FoldersService } from 'src/app/common/services/advanced/folders.service';
-import { PlanningFoldersModalComponent } from '../planning-folders-modal/planning-folders-modal.component';
+import { PlanningFoldersModalComponent } from '../../planning-additions/planning-folders-modal/planning-folders-modal.component';
 import {
   CommonDictionaryModel,
   CommonTranslationModel,

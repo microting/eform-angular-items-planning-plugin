@@ -11,11 +11,11 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 import {
   ItemsPlanningPnPlanningsService,
   ItemsPlanningPnTagsService,
-} from '../../../services';
+} from '../../../../services';
 import { EFormService } from 'src/app/common/services/eform';
 import { SitesService } from 'src/app/common/services/advanced';
 import { AuthService } from 'src/app/common/services';
-import { PlanningCreateModel } from '../../../models/plannings';
+import { PlanningCreateModel } from '../../../../models/plannings';
 import {
   TemplateListModel,
   TemplateRequestModel,
@@ -26,7 +26,7 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
 import { FoldersService } from 'src/app/common/services/advanced/folders.service';
 import { FolderDto } from 'src/app/common/models/dto/folder.dto';
-import { PlanningFoldersModalComponent } from '../planning-folders-modal/planning-folders-modal.component';
+import { PlanningFoldersModalComponent } from '../../planning-additions/planning-folders-modal/planning-folders-modal.component';
 import { CommonDictionaryModel } from 'src/app/common/models';
 import {composeFolderName} from 'src/app/common/helpers/folder-name.helper';
 import {FormArray, FormControl, FormGroup} from '@angular/forms';

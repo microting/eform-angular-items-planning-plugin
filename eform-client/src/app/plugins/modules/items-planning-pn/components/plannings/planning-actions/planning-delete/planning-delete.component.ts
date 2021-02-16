@@ -2,7 +2,7 @@ import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core'
 import {
   ItemsPlanningPnPlanningsService
 } from 'src/app/plugins/modules/items-planning-pn/services';
-import {PlanningModel} from '../../../models/plannings';
+import {PlanningModel} from '../../../../models/plannings';
 
 @Component({
   selector: 'app-planning-delete',

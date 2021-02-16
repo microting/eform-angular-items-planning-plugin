@@ -1,10 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {SharedPnService} from '../../../../shared/services';
+import {SharedPnService} from '../../../../../shared/services';
 import {ActivatedRoute} from '@angular/router';
-import {PageSettingsModel} from '../../../../../../common/models/settings';
-import {PlanningCasesModel, PlanningCaseModel} from '../../../models/plannings/planning-cases/planning-cases.model';
-import {ItemsPlanningPnCasesService} from '../../../services/items-planning-pn-cases.service';
-import {PlanningCasesRequestModel} from '../../../models/plannings/planning-cases/planning-cases-request.model';
+import {PageSettingsModel} from '../../../../../../../common/models/settings';
+import {PlanningCasesModel, PlanningCaseModel} from '../../../../models/plannings/planning-cases/planning-cases.model';
+import {ItemsPlanningPnCasesService} from '../../../../services/items-planning-pn-cases.service';
+import {PlanningCasesRequestModel} from '../../../../models/plannings/planning-cases/planning-cases-request.model';
 
 @Component({
   selector: 'app-planning-case-page',

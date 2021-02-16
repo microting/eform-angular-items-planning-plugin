@@ -4,7 +4,7 @@ import {EFormService} from 'src/app/common/services/eform';
 import {SitesService} from 'src/app/common/services/advanced';
 import {AuthService} from 'src/app/common/services';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
-import {PlanningAssignmentSiteModel, PlanningAssignSitesModel} from '../../../models/plannings/planning-assign-sites.model';
+import {PlanningAssignmentSiteModel, PlanningAssignSitesModel} from '../../../../models/plannings/planning-assign-sites.model';
 import {ItemsPlanningPnPairingService, ItemsPlanningPnPlanningsService} from 'src/app/plugins/modules/items-planning-pn/services';
 import {PlanningModel} from 'src/app/plugins/modules/items-planning-pn/models/plannings';
 import {Subscription} from 'rxjs';

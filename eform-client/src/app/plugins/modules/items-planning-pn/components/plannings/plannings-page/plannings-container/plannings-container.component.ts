@@ -4,18 +4,18 @@ import { PageSettingsModel } from 'src/app/common/models/settings';
 import { SharedPnService } from 'src/app/plugins/modules/shared/services';
 import {
   PlanningModel,
-  PlanningsPnModel,
+  PlanningsModel,
   PlanningsRequestModel,
-} from '../../../models/plannings';
+} from '../../../../models/plannings';
 import {
   ItemsPlanningPnPlanningsService,
   ItemsPlanningPnTagsService,
-} from '../../../services';
+} from '../../../../services';
 import { PluginClaimsHelper } from 'src/app/common/helpers';
-import { ItemsPlanningPnClaims } from '../../../enums';
+import { ItemsPlanningPnClaims } from '../../../../enums';
 import { debounceTime } from 'rxjs/operators';
 import { Subject, Subscription } from 'rxjs';
-import { PlanningTagsComponent } from '../planning-tags/planning-tags.component';
+import { PlanningTagsComponent } from '../../planning-additions/planning-tags/planning-tags.component';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import {
   CommonDictionaryModel,
@@ -28,11 +28,11 @@ import { AuthService } from 'src/app/common/services';
 
 @AutoUnsubscribe()
 @Component({
-  selector: 'app-plannings-page',
-  templateUrl: './plannings-page.component.html',
-  styleUrls: ['./plannings-page.component.scss'],
+  selector: 'app-plannings-container',
+  templateUrl: './plannings-container.component.html',
+  styleUrls: ['./plannings-container.component.scss'],
 })
-export class PlanningsPageComponent implements OnInit, OnDestroy {
+export class PlanningsContainerComponent implements OnInit, OnDestroy {
   @ViewChild('deletePlanningModal', { static: false }) deletePlanningModal;
   @ViewChild('modalCasesColumns', { static: false }) modalCasesColumnsModal;
   @ViewChild('assignSitesModal', { static: false }) assignSitesModal;
@@ -42,7 +42,7 @@ export class PlanningsPageComponent implements OnInit, OnDestroy {
   descriptionSearchSubject = new Subject();
   nameSearchSubject = new Subject();
   localPageSettings: PageSettingsModel = new PageSettingsModel();
-  planningsModel: PlanningsPnModel = new PlanningsPnModel();
+  planningsModel: PlanningsModel = new PlanningsModel();
   planningsRequestModel: PlanningsRequestModel = new PlanningsRequestModel();
   availableTags: CommonDictionaryModel[] = [];
   foldersListDto: FolderDto[] = [];

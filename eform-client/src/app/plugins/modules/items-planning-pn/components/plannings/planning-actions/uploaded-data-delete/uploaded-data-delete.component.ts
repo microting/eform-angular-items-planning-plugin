@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import {ItemsPlanningPnUploadedDataService} from '../../../services';
-import {UploadedDataModel} from '../../../models/plannings';
+import {ItemsPlanningPnUploadedDataService} from '../../../../services';
+import {UploadedDataModel} from '../../../../models/plannings';
 
 @Component({
   selector: 'app-uploaded-data-delete',

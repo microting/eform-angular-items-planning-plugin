@@ -4,7 +4,7 @@ import { PlanningReiterationModel } from './planning-reiteration.model';
 import { PlanningFolderModel } from './planning-folder.model';
 import { PlanningFieldsModel } from './planning-fields.model';
 
-export class PlanningsPnModel {
+export class PlanningsModel {
   total: number;
   plannings: Array<PlanningModel> = [];
 }

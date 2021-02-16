@@ -10,7 +10,7 @@ import { FolderDto, SiteNameDto } from 'src/app/common/models';
 import { FoldersService } from 'src/app/common/services/advanced';
 import { AuthService } from 'src/app/common/services';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { PlanningModel } from '../../../models/plannings';
+import { PlanningModel } from '../../../../models/plannings';
 import { Subscription } from 'rxjs';
 
 @AutoUnsubscribe()
