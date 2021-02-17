@@ -84,4 +84,8 @@ export class PlanningsTableComponent implements OnInit {
   onAllPlanningsCheckboxChanged(e: any) {
     this.allPlanningCheckboxChanged.emit(e.target.checked);
   }
+
+  getCheckedPlanning(id: number) {
+    return this.selectedColCheckboxes.findIndex(x => x.planningId === id) > -1;
+  }
 }

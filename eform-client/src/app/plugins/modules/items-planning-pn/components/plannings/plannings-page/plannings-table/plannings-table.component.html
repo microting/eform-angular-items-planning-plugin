@@ -282,22 +282,22 @@
     </tr>
     </thead>
     <tbody id="tableBody">
-    <tr *ngFor="let planning of planningsModel.plannings">
-      <td id="planningChecboxColumn">
+    <tr *ngFor="let planning of planningsModel.plannings; let i = index;">
+      <td id="planningCheckboxColumn">
         <div class="mat-checkbox">
           <input
-            id="deviceUserCheckbox{{ j }}_planning{{ i }}"
-            name="deviceUserCheckbox{{ j }}_planning{{ i }}"
+            id="planningCheckbox{{i}}"
+            name="planningCheckbox{{i}}"
             (click)="
-                checked($event, pairing.planningId, planningValue.deviceUserId)
+                onSinglePlanningCheckboxChanged($event, planning.id)
               "
-            [value]="planningValue.paired"
-            [checked]="planningValue.paired"
+            [value]="getCheckedPlanning(planning.id)"
+            [checked]="getCheckedPlanning(planning.id)"
             type="checkbox"
           />
           <label
-            id="deviceUserCheckboxLabel{{ j }}_planning{{ i }}"
-            for="deviceUserCheckbox{{ j }}_planning{{ i }}"
+            id="planningCheckbox{{i}}Label"
+            for="planningCheckbox{{i}}"
           ></label>
         </div>
       </td>
