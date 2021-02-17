@@ -29,7 +29,8 @@ import {
   ReportTableComponent,
   PlanningsBulkImportModalComponent,
   PlanningsHeaderComponent,
-  PlanningsTableComponent
+  PlanningsTableComponent,
+  PlanningMultipleDeleteComponent
 } from './components';
 import { RouterModule } from '@angular/router';
 import { ItemsPlanningPnRouting } from './items-planning-pn.routing.module';
@@ -89,7 +90,8 @@ import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/
     UploadedDataPdfComponent,
     UploadedDataDeleteComponent,
     PlanningsHeaderComponent,
-    PlanningsTableComponent
+    PlanningsTableComponent,
+    PlanningMultipleDeleteComponent
   ],
   providers: [
     ItemsPlanningPnSettingsService,

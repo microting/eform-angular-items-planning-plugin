@@ -6,7 +6,6 @@ export * from './planning-cases/planning-case-result-list.model';
 export * from './planning-assign-sites.model';
 export * from './uploaded-data.model';
 export * from './planning-headers.model';
-export * from './planning-unit-import.model';
 export * from './planning-results-settings.model';
 export * from './planning-cases';
 export * from './planning-eform.model';

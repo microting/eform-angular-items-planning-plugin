@@ -34,6 +34,16 @@
 </subheader-pn>
 
 <div class="container-fluid">
+  <button
+    mdbBtn
+    [disabled]="!selectedPlanningsCheckboxes || selectedPlanningsCheckboxes.length === 0"
+    id="deleteMultiplePluginsBtn"
+    class="btn-danger btn-small-height"
+    mdbTooltip="{{ 'Delete selected' | translate }}"
+    (click)="showDeleteMultiplePlanningsModal()"
+  >
+    {{ 'New planning' | translate }}
+  </button>
   <app-plannings-header
     [availableTags]="availableTags"
     [planningsRequestModel]="planningsRequestModel"
@@ -82,6 +92,10 @@
   #deletePlanningModal
   (planningDeleted)="getPlannings()"
 ></app-planning-delete>
+<app-planning-multiple-delete
+  #deleteMultiplePlanningsModal
+  (deleteMultiplePlannings)="deleteMultiplePlannings()"
+></app-planning-multiple-delete>
 <app-planning-assign-sites-modal
   [sitesDto]="sitesDto"
   (sitesAssigned)="getPlannings()"

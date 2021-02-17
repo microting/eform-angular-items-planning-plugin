@@ -35,6 +35,7 @@ import * as R from 'ramda';
 })
 export class PlanningsContainerComponent implements OnInit, OnDestroy {
   @ViewChild('deletePlanningModal', { static: false }) deletePlanningModal;
+  @ViewChild('deleteMultiplePlanningsModal', { static: false }) deleteMultiplePlanningsModal;
   @ViewChild('modalCasesColumns', { static: false }) modalCasesColumnsModal;
   @ViewChild('assignSitesModal', { static: false }) assignSitesModal;
   @ViewChild('modalPlanningsImport', { static: false }) modalPlanningsImport;
@@ -201,7 +202,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
       });
   }
 
-  deleteSelectedPlannings() {
+  deleteMultiplePlannings() {
     const planningsIds = this.selectedPlanningsCheckboxes.map((x) => {
       return x.planningId;
     });
@@ -331,5 +332,9 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   resetAllPlanningsCheckboxes() {
     this.allPlanningsCheckbox = false;
     this.selectedPlanningsCheckboxes = [];
+  }
+
+  showDeleteMultiplePlanningsModal() {
+    this.deleteMultiplePlanningsModal.show(this.selectedPlanningsCheckboxes.length);
   }
 }
