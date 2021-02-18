@@ -14,7 +14,6 @@ import {
 import { PageSettingsModel } from 'src/app/common/models';
 import { PluginClaimsHelper } from 'src/app/common/helpers';
 import { ItemsPlanningPnClaims } from '../../../../enums';
-import { PairingUpdateModel } from 'src/app/plugins/modules/items-planning-pn/models/pairings';
 
 @Component({
   selector: 'app-plannings-table',
@@ -86,6 +85,8 @@ export class PlanningsTableComponent implements OnInit {
   }
 
   getCheckedPlanning(id: number) {
-    return this.selectedColCheckboxes.findIndex(x => x.planningId === id) > -1;
+    return (
+      this.selectedColCheckboxes.findIndex((x) => x.planningId === id) > -1
+    );
   }
 }

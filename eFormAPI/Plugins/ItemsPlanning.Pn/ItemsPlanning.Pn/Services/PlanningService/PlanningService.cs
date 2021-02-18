@@ -93,7 +93,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 if (!string.IsNullOrEmpty(pnRequestModel.NameFilter))
                 {
                     planningsQuery = planningsQuery.Where(x =>
-                        x.NameTranslations.Any(y=> y.Name == pnRequestModel.NameFilter));
+                        x.NameTranslations.Any(y => y.Name == pnRequestModel.NameFilter));
                 }
 
                 if (!string.IsNullOrEmpty(pnRequestModel.DescriptionFilter))
@@ -169,10 +169,17 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             x.Id,
                         })
                         .FirstOrDefault(y => y.Name == planning.Folder.EFormSdkFolderName);
-                    if(folder!= null)
+                    if (folder != null)
                     {
                         planning.Folder.EFormSdkFolderId = folder.Id;
-                        planning.Folder.EFormSdkParentFolderName = folder.Parent.Name;
+                        if (folder.Parent != null)
+                        {
+                            planning.Folder.EFormSdkParentFolderName = folder.Parent.Name;
+                        }
+                        else
+                        {
+                            planning.Folder.EFormSdkFolderName = folder.Name;
+                        }
                     }
                 }
 
@@ -370,7 +377,14 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 if (folder != null)
                 {
                     planning.Folder.EFormSdkFolderId = folder.Id;
-                    planning.Folder.EFormSdkParentFolderName = folder.Parent.Name;
+                    if (folder.Parent != null)
+                    {
+                        planning.Folder.EFormSdkParentFolderName = folder.Parent.Name;
+                    }
+                    else
+                    {
+                        planning.Folder.EFormSdkFolderName = folder.Name;
+                    }
                 }
 
                 // get site names
@@ -465,7 +479,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         false,
                         _itemsPlanningLocalizationService.GetString("PlanningNotFound"));
                 }
-                
+
                 var translationsPlanning = _dbContext.PlanningNameTranslation
                     .Where(x => x.Planning.Id == planning.Id)
                     .ToList();
@@ -572,7 +586,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 }
 
                 var planningCases = await _dbContext.PlanningCases
-                    .Where(x => x.PlanningId== planning.Id)
+                    .Where(x => x.PlanningId == planning.Id)
                     .ToListAsync();
 
                 foreach (var planningCase in planningCases)
@@ -650,7 +664,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     RepeatType = x.RepeatType,
                     RepeatUntil = x.RepeatUntil,
                     DayOfWeek = x.DayOfWeek,
-                    DayOfMonth = (int) x.DayOfMonth,
+                    DayOfMonth = (int)x.DayOfMonth,
                     StartDate = x.StartDate,
                 },
                 BoundEform = new PlanningEformModel

@@ -4,8 +4,7 @@
       mdbBtn
       id="planningCreateSaveBtn"
       class="btn-success btn-small-height"
-      [disabled]="
-        saveButtonDisabled"
+      [disabled]="saveButtonDisabled"
       (click)="createPlanning()"
     >
       {{ 'Create' | translate }}
@@ -66,6 +65,21 @@
       <mdb-card>
         <mdb-card-body>
           <div class="row">
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input
+                  mdbInput
+                  [(ngModel)]="newPlanningModel.description"
+                  type="text"
+                  id="createPlanningItemDescription"
+                  name="createPlanningItemDescription"
+                  class="form-control"
+                />
+                <label for="createPlanningItemDescription">{{
+                  'Description' | translate
+                }}</label>
+              </div>
+            </div>
             <div
               class="col-md-3 col-sm-6 col-xs-6"
               *ngIf="foldersTreeDto.length > 0"

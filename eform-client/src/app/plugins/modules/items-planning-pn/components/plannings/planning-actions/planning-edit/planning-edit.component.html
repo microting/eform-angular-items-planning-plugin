@@ -4,9 +4,7 @@
       mdbBtn
       id="planningEditSaveBtn"
       class="btn-success btn-small-height"
-      [disabled]="
-        saveButtonDisabled
-      "
+      [disabled]="saveButtonDisabled"
       (click)="updatePlanning()"
     >
       {{ 'Save' | translate }}
@@ -42,9 +40,7 @@
                       mdbInput
                       type="text"
                       id="editPlanningNameTranslation_{{ translationIndex }}"
-                      name="editPlanningNameTranslation_{{
-                        translationIndex
-                      }}"
+                      name="editPlanningNameTranslation_{{ translationIndex }}"
                       formControlName="name"
                       class="form-control"
                     />
@@ -71,6 +67,21 @@
               class="col-md-3 col-sm-6 col-xs-6"
               *ngIf="foldersTreeDto.length > 0"
             >
+              <div class="col-md-3 col-sm-6 col-xs-6">
+                <div class="md-form">
+                  <input
+                    mdbInput
+                    [(ngModel)]="selectedPlanningModel.description"
+                    type="text"
+                    id="editPlanningItemDescription"
+                    name="editPlanningItemDescription"
+                    class="form-control"
+                  />
+                  <label for="editPlanningItemDescription">{{
+                    'Description' | translate
+                  }}</label>
+                </div>
+              </div>
               <div
                 class="md-form"
                 (click)="openFoldersModal()"
@@ -85,7 +96,9 @@
                   name="folderSelector"
                   class="form-control"
                 />
-                <label for="editFolderSelectorInput">{{ 'Folders' | translate }}</label>
+                <label for="editFolderSelectorInput">{{
+                  'Folders' | translate
+                }}</label>
               </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
@@ -100,12 +113,15 @@
               >
                 <ng-template ng-label-tmp let-item="item">
                   <fa-icon
-                    *ngIf="selectedPlanningModel.boundEform.isEformRemoved
-                    && selectedPlanningModel.boundEform.currentRelatedEformId == item.id"
+                    *ngIf="
+                      selectedPlanningModel.boundEform.isEformRemoved &&
+                      selectedPlanningModel.boundEform.currentRelatedEformId ==
+                        item.id
+                    "
                     icon="exclamation-triangle"
                     style="color: red"
                   ></fa-icon>
-                  {{item.label}}
+                  {{ item.label }}
                 </ng-template>
               </ng-select>
             </div>
@@ -155,7 +171,9 @@
               >
               </ng-select>
             </div>
-            <ng-template [ngIf]="selectedPlanningModel.reiteration.repeatType == 2">
+            <ng-template
+              [ngIf]="selectedPlanningModel.reiteration.repeatType == 2"
+            >
               <div class="col-md-3 col-sm-6 col-xs-6 ng-select-wrapper">
                 <ng-select
                   [items]="[
@@ -177,7 +195,9 @@
                 </ng-select>
               </div>
             </ng-template>
-            <ng-template [ngIf]="selectedPlanningModel.reiteration.repeatType == 3">
+            <ng-template
+              [ngIf]="selectedPlanningModel.reiteration.repeatType == 3"
+            >
               <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="md-form">
                   <input
@@ -196,14 +216,20 @@
             </ng-template>
             <div class="col-md-3 col-sm-6 col-xs-6">
               <div class="md-form" [owlDateTimeTrigger]="dt2">
-                <input mdbInput
-                       [owlDateTime]="dt2"
-                       [max]="selectedPlanningModel.reiteration.internalRepeatUntil"
-                       [(ngModel)]="selectedPlanningModel.reiteration.startDate"
-                       type="text" id="editStartFrom"
-                       name="editStartFrom" class="form-control">
+                <input
+                  mdbInput
+                  [owlDateTime]="dt2"
+                  [max]="selectedPlanningModel.reiteration.internalRepeatUntil"
+                  [(ngModel)]="selectedPlanningModel.reiteration.startDate"
+                  type="text"
+                  id="editStartFrom"
+                  name="editStartFrom"
+                  class="form-control"
+                />
                 <owl-date-time [pickerType]="'calendar'" #dt2></owl-date-time>
-                <label for="editStartFrom">{{'Start from' | translate}}</label>
+                <label for="editStartFrom">{{
+                  'Start from' | translate
+                }}</label>
               </div>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-6">
@@ -212,7 +238,9 @@
                   mdbInput
                   [min]="selectedPlanningModel.reiteration.startDate"
                   [owlDateTime]="dt1"
-                  [(ngModel)]="selectedPlanningModel.reiteration.internalRepeatUntil"
+                  [(ngModel)]="
+                    selectedPlanningModel.reiteration.internalRepeatUntil
+                  "
                   type="text"
                   id="editRepeatUntil"
                   name="editRepeatUntil"
