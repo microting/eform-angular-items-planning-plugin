@@ -25,16 +25,19 @@ SOFTWARE.
 namespace ItemsPlanning.Pn.Services.PlanningService
 {
     using System.Threading.Tasks;
-    using Infrastructure.Models;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+    using Infrastructure.Models.Planning;
 
     public interface IPlanningService
     {
         Task<OperationDataResult<PlanningsPnModel>> Index(PlanningsRequestModel requestModel);
-        Task<OperationResult> Create(PlanningPnModel model);
-        Task<OperationDataResult<PlanningPnModel>> Read(int itemListId);
-        Task<OperationResult> Update(PlanningPnModel updateModel);
+
+        Task<OperationResult> Create(PlanningCreateModel model);
+
+        Task<OperationDataResult<PlanningPnModel>> Read(int planningId);
+
+        Task<OperationResult> Update(PlanningUpdateModel updateModel);
+
         Task<OperationResult> Delete(int id);
-        Task<OperationResult> ImportUnit(UnitImportModel unitImportModel);
     }
 }

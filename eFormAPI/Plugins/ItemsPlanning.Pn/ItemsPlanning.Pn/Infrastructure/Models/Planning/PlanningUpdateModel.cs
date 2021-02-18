@@ -1,4 +1,4 @@
-﻿/*
+/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2021 Microting A/S
@@ -22,12 +22,36 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Infrastructure.Models
+using System.Collections.Generic;
+
+namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 {
-    public class PlanningAssignedSitesModel
+    public class PlanningUpdateModel
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public int SiteId { get; set; }
+
+        public string Description { get; set; }
+
+        public string PlanningNumber { get; set; }
+
+        public string LocationCode { get; set; }
+
+        public string BuildYear { get; set; }
+
+        public string Type { get; set; }
+
+        public PlanningFolderModel Folder { get; set; }
+
+        public PlanningReiterationModel Reiteration { get; set; }
+
+        public PlanningEformModel BoundEform { get; set; }
+
+        public PlanningFieldsModel EnabledFields { get; set; }
+
+        public List<PlanningNameTranslations> TranslationsName { get; set; }
+            = new List<PlanningNameTranslations>();
+
+        public List<int> TagsIds { get; set; }
+            = new List<int>();
     }
 }

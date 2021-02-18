@@ -1,4 +1,4 @@
-﻿/*
+/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2021 Microting A/S
@@ -22,14 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Infrastructure.Models.Pairing
+namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 {
-    public class PairingValueModel
+    public class PlanningTagModel
     {
-        public int DeviceUserId { get; set; }
-
-        public bool Paired { get; set; }
-
-        public int? LatestCaseStatus { get; set; }
+        public int? Id { get; set; }
+        public string Name { get; set; }
     }
 }

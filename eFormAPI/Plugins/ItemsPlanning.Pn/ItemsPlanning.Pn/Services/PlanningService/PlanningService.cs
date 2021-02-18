@@ -22,8 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using Microting.eForm.Infrastructure.Data.Entities;
-
 namespace ItemsPlanning.Pn.Services.PlanningService
 {
     using System;
@@ -31,8 +29,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
     using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
-    using Infrastructure.Helpers;
-    using Infrastructure.Models;
     using ItemsPlanningLocalizationService;
     using Microsoft.EntityFrameworkCore;
     using Microting.eForm.Infrastructure.Constants;
@@ -42,7 +38,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
     using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
     using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
-    using Newtonsoft.Json.Linq;
+    using Infrastructure.Models.Planning;
+    using Microting.eForm.Infrastructure.Data.Entities;
+
 
     public class PlanningService : IPlanningService
     {
@@ -95,25 +93,24 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 if (!string.IsNullOrEmpty(pnRequestModel.NameFilter))
                 {
                     planningsQuery = planningsQuery.Where(x =>
-                        x.Item.Name.Contains(pnRequestModel.NameFilter, StringComparison.CurrentCultureIgnoreCase));
+                        x.NameTranslations.Any(y=> y.Name == pnRequestModel.NameFilter));
                 }
 
                 if (!string.IsNullOrEmpty(pnRequestModel.DescriptionFilter))
                 {
                     planningsQuery = planningsQuery.Where(x =>
-                        x.Item.Description.Contains(pnRequestModel.DescriptionFilter,
+                        x.Description.Contains(pnRequestModel.DescriptionFilter,
                             StringComparison.CurrentCultureIgnoreCase));
                 }
 
                 if (pnRequestModel.TagIds.Any())
                 {
-                    foreach(var tagId in pnRequestModel.TagIds)
+                    foreach (var tagId in pnRequestModel.TagIds)
                     {
-                        planningsQuery = planningsQuery.Where(x => x.Item.Planning.PlanningsTags.Any(y =>
+                        planningsQuery = planningsQuery.Where(x => x.PlanningsTags.Any(y =>
                             y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
                     }
                 }
-
 
                 planningsQuery
                     = planningsQuery
@@ -129,68 +126,14 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 }
                 var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
                 var languageIemPlanning = _dbContext.Languages.Single(x => x.Id == language.Id);
-                List<int> checkListIds = await planningsQuery.Select(x => x.RelatedEFormId).ToListAsync();
-                List<KeyValuePair<int, string>> checkListWorkflowState = new List<KeyValuePair<int, string>>();
-                foreach (CheckList checkList in sdkDbContext.CheckLists.Where(x => checkListIds.Contains(x.Id)).ToList())
+                var checkListIds = await planningsQuery.Select(x => x.RelatedEFormId).ToListAsync();
+                var checkListWorkflowState = new List<KeyValuePair<int, string>>();
+                foreach (var checkList in sdkDbContext.CheckLists.Where(x => checkListIds.Contains(x.Id)).ToList())
                 {
-                    KeyValuePair<int, string>
-                        kvp = new KeyValuePair<int, string>(checkList.Id, checkList.WorkflowState);
+                    var kvp = new KeyValuePair<int, string>(checkList.Id, checkList.WorkflowState);
                     checkListWorkflowState.Add(kvp);
                 }
-                var plannings = await planningsQuery.Select(x => new PlanningPnModel()
-
-                {
-                    Id = x.Id,
-                    TranslationsName = x.NameTranslations.Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Select(y => new PlanningNameTranslations()
-                        {
-                            Id = y.Id,
-                            Language = y.Language.LanguageCode,
-                            Name = y.Name,
-                            LocaleName = y.Language.Name
-                        }).ToList(),
-                    TranslatedName = x.NameTranslations
-                        .Where(y=> y.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Where(y => y.Language.Id == languageIemPlanning.Id)
-                        .Select(y => y.Name)
-                        .FirstOrDefault(),
-                    Description = x.Description,
-                    RepeatEvery = x.RepeatEvery,
-                    RepeatType = x.RepeatType,
-                    RepeatUntil = x.RepeatUntil,
-                    DayOfWeek = x.DayOfWeek,
-                    DayOfMonth = x.DayOfMonth,
-                    RelatedEFormId = x.RelatedEFormId,
-                    RelatedEFormName = x.RelatedEFormName,
-                    SdkFolderName = x.SdkFolderName,
-                    StartDate = x.StartDate,
-                    AssignedSites = x.PlanningSites
-                        .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Select(y => new PlanningAssignedSitesModel
-                        {
-                            Id = y.Id,
-                            SiteId = y.SiteId,
-                        }).ToList(),
-                    Tags = x.PlanningsTags
-                        .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Select(y => new CommonDictionaryModel
-                        {
-                            Id = y.PlanningTagId,
-                            Name = y.PlanningTag.Name
-                        }).ToList(),
-                    Item = new PlanningItemModel
-                    {
-                        Id = x.Item.Id,
-                        BuildYear = x.Item.BuildYear,
-                        Description = x.Item.Description,
-                        ItemNumber = x.Item.ItemNumber,
-                        LocationCode = x.Item.LocationCode,
-                        Name = x.Item.Name,
-                        Type = x.Item.Type,
-                        eFormSdkFolderId = x.Item.eFormSdkFolderId,
-                        eFormSdkFolderName = x.SdkFolderName
-                    },
-                }).ToListAsync();
+                var plannings = await AddSelectToPlanningQuery(planningsQuery, languageIemPlanning).ToListAsync();
 
                 // get site names
 
@@ -213,9 +156,24 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         }
                     }
 
-                    planning.isEformRemoved =
-                        checkListWorkflowState.Single(x => x.Key == planning.RelatedEFormId).Value ==
+                    planning.BoundEform.IsEformRemoved =
+                        checkListWorkflowState.Single(x => x.Key == planning.BoundEform.RelatedEFormId).Value ==
                         Constants.WorkflowStates.Removed;
+
+                    var folder = sdkDbContext.Folders
+                        .Include(x => x.Parent)
+                        .Select(x => new
+                        {
+                            x.Name,
+                            x.Parent,
+                            x.Id,
+                        })
+                        .FirstOrDefault(y => y.Name == planning.Folder.EFormSdkFolderName);
+                    if(folder!= null)
+                    {
+                        planning.Folder.EFormSdkFolderId = folder.Id;
+                        planning.Folder.EFormSdkParentFolderName = folder.Parent.Name;
+                    }
                 }
 
                 planningsModel.Total = await _dbContext.Plannings.CountAsync(x =>
@@ -244,12 +202,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             }
         }
 
-        private string CheckWorkflowState(List<KeyValuePair<int, string>> keyValuePairs, int id)
-        {
-            return keyValuePairs.Single(y => y.Key == id).Value;
-        }
-
-        public async Task<OperationResult> Create(PlanningPnModel model)
+        public async Task<OperationResult> Create(PlanningCreateModel model)
         {
             //await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             var sdkCore =
@@ -258,83 +211,83 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             try
             {
                 var tagIds = new List<int>();
-                if (!string.IsNullOrEmpty(model.NewTags))
-                {
-                    var tagNames = model.NewTags.Replace(" ", "").Split(',');
-                    foreach(var tagName in tagNames)
-                    {
-                        var planningTag = new PlanningTag
-                        {
-                            Name = tagName,
-                            CreatedAt = DateTime.UtcNow,
-                            CreatedByUserId = _userService.UserId,
-                            UpdatedAt = DateTime.UtcNow,
-                            UpdatedByUserId = _userService.UserId,
-                            Version = 1,
-                        };
-                        await _dbContext.PlanningTags.AddAsync(planningTag);
-                        await _dbContext.SaveChangesAsync();
-                        tagIds.Add(planningTag.Id);
-                    }
-                }
 
                 tagIds.AddRange(model.TagsIds);
-
 
                 var localeString = await _userService.GetCurrentUserLocale();
                 if (string.IsNullOrEmpty(localeString))
                 {
                     return new OperationResult(
-                        true,
+                        false,
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
                 var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
-
-                var template = await _coreService.GetCore().Result.TemplateItemRead(model.RelatedEFormId, language);
-
+                if (model.BoundEform == null)
+                {
+                    return new OperationResult(
+                        false,
+                        _itemsPlanningLocalizationService.GetString("InfoAboutEformIsNull"));
+                }
+                var template = await _coreService.GetCore().Result.TemplateItemRead(model.BoundEform.RelatedEFormId, language);
+                if (template == null)
+                {
+                    return new OperationResult(
+                        false,
+                        _itemsPlanningLocalizationService.GetString("EformNotFound"));
+                }
+                if (model.Folder == null)
+                {
+                    return new OperationResult(
+                        false,
+                        _itemsPlanningLocalizationService.GetString("InfoAboutFolderIsNull"));
+                }
                 var sdkFolder = await sdkDbContext.Folders
                     .Include(x => x.Parent)
-                    .SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
+                    .FirstOrDefaultAsync(x => x.Id == model.Folder.EFormSdkFolderId);
 
-                // var sdkFolderName = await sdkDbContext.folders.SingleAsync(x => x.Id == model.Item.eFormSdkFolderId);
-
+                if (sdkFolder == null)
+                {
+                    return new OperationResult(
+                        false,
+                        _itemsPlanningLocalizationService.GetString("FolderNotFound"));
+                }
 
                 var planning = new Planning
                 {
-                    Description = model.Item.Description,
+                    Description = model.Description,
+                    BuildYear = model.BuildYear,
+                    Type = model.Type,
+                    LocationCode = model.LocationCode,
                     CreatedByUserId = _userService.UserId,
                     CreatedAt = DateTime.UtcNow,
-                    RepeatEvery = model.RepeatEvery,
-                    RepeatUntil = model.RepeatUntil,
-                    RepeatType = model.RepeatType,
-                    DayOfWeek = model.DayOfWeek,
-                    DayOfMonth = model.DayOfMonth,
+                    RepeatEvery = model.Reiteration.RepeatEvery,
+                    RepeatUntil = model.Reiteration.RepeatUntil,
+                    RepeatType = model.Reiteration.RepeatType,
+                    DayOfWeek = model.Reiteration.DayOfWeek,
+                    DayOfMonth = model.Reiteration.DayOfMonth,
                     Enabled = true,
-                    RelatedEFormId = model.RelatedEFormId,
-                    RelatedEFormName = template?.Label,
+                    RelatedEFormId = model.BoundEform.RelatedEFormId,
+                    RelatedEFormName = template.Label,
                     SdkFolderName = sdkFolder.Name,
                     PlanningsTags = new List<PlanningsTags>()
                 };
 
-                if (model.StartDate.HasValue)
+                if (model.Reiteration.StartDate.HasValue)
                 {
-                    planning.StartDate = model.StartDate.Value;
+                    planning.StartDate = model.Reiteration.StartDate.Value;
                 }
                 else
                 {
                     planning.StartDate = DateTime.UtcNow;
                 }
 
-                foreach(var tagId in tagIds)
+                foreach (var tagId in tagIds)
                 {
                     planning.PlanningsTags.Add(
                         new PlanningsTags
                         {
-                            CreatedAt = DateTime.UtcNow,
                             CreatedByUserId = _userService.UserId,
-                            UpdatedAt = DateTime.UtcNow,
                             UpdatedByUserId = _userService.UserId,
-                            Version = 1,
                             PlanningTagId = tagId
                         });
                 }
@@ -346,7 +299,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     var languageId = languages.Where(x => x.Name == translation.Language || x.LanguageCode == translation.LocaleName)
                         .Select(x => x.Id)
                         .FirstOrDefault();
-                    if (languageId < 1)
+                    if (languageId == default)
                     {
                         return new OperationResult(
                             true,
@@ -363,25 +316,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     };
                     await planningNameTranslations.Create(_dbContext);
                 }
-                var item = new Item()
-                {
-                    LocationCode = model.Item.LocationCode,
-                    ItemNumber = model.Item.ItemNumber,
-                    Description = model.Item.Description,
-                    Name = model.Item.Name,
-                    Version = 1,
-                    WorkflowState = Constants.WorkflowStates.Created,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow,
-                    Enabled = true,
-                    BuildYear = model.Item.BuildYear,
-                    Type = model.Item.Type,
-                    PlanningId = planning.Id,
-                    CreatedByUserId = _userService.UserId,
-                    eFormSdkFolderId = model.Item.eFormSdkFolderId
-                };
-                await item.Create(_dbContext);
-
 
                 //await transaction.CommitAsync();
                 return new OperationResult(
@@ -397,7 +331,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             }
         }
 
-        public async Task<OperationDataResult<PlanningPnModel>> Read(int listId)
+        public async Task<OperationDataResult<PlanningPnModel>> Read(int planningId)
         {
             try
             {
@@ -412,70 +346,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
                 var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
-                var planning = await _dbContext.Plannings
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == listId)
-                    .Select(x => new PlanningPnModel()
-                    {
-                        TranslationsName = x.NameTranslations.Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
-                            .Select(y => new PlanningNameTranslations()
-                            {
-                                Id = y.Id,
-                                Language = y.Language.Name,
-                                Name = y.Name,
-                                LocaleName = y.Language.LanguageCode
-                            }).ToList(),
-                        TranslatedName = x.NameTranslations
-                            .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
-                            .Where(y => y.LanguageId == language.Id)
-                            .Select(y => y.Name)
-                            .FirstOrDefault(),
-                        Id = x.Id,
-                        RepeatUntil = x.RepeatUntil,
-                        RepeatEvery = x.RepeatEvery,
-                        RepeatType = x.RepeatType,
-                        DayOfWeek = x.DayOfWeek,
-                        DayOfMonth = x.DayOfMonth,
-                        Description = x.Description,
-
-                        RelatedEFormId = x.RelatedEFormId,
-                        isEformRemoved = sdkCore.TemplateItemRead(x.RelatedEFormId, language).Result.WorkflowState == Constants.WorkflowStates.Removed,
-                        RelatedEFormName = x.RelatedEFormName,
-                        LabelEnabled = x.LabelEnabled,
-                        DeployedAtEnabled = x.DeployedAtEnabled,
-                        DescriptionEnabled = x.DescriptionEnabled,
-                        DoneAtEnabled = x.DoneAtEnabled,
-                        StartDate = x.StartDate,
-                        DoneByUserNameEnabled = x.DoneByUserNameEnabled,
-                        UploadedDataEnabled = x.UploadedDataEnabled,
-                        ItemNumberEnabled = x.ItemNumberEnabled,
-                        LocationCodeEnabled = x.LocationCodeEnabled,
-                        BuildYearEnabled = x.BuildYearEnabled,
-                        TypeEnabled = x.TypeEnabled,
-                        NumberOfImagesEnabled = x.NumberOfImagesEnabled,
-                        LastExecutedTime = x.LastExecutedTime,
-                        Item = new PlanningItemModel
-                        {
-                            Id = x.Item.Id,
-                            BuildYear = x.Item.BuildYear,
-                            Description = x.Item.Description,
-                            ItemNumber = x.Item.ItemNumber,
-                            LocationCode = x.Item.LocationCode,
-                            Name = x.Item.Name,
-                            Type = x.Item.Type,
-                            eFormSdkFolderId = x.Item.eFormSdkFolderId,
-                            eFormSdkFolderName = x.SdkFolderName
-                        },
-                        AssignedSites = x.PlanningSites
-                            .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
-                            .Select(y => new PlanningAssignedSitesModel
-                            {
-                                Id = y.Id,
-                                SiteId = y.SiteId,
-                            }).ToList(),
-                        TagsIds = x.PlanningsTags
-                            .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
-                            .Select(y => y.PlanningTagId).ToList(),
-                    }).FirstOrDefaultAsync();
+                var planningQuery = _dbContext.Plannings
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == planningId);
+                var planning = await AddSelectToPlanningQuery(planningQuery, language).FirstOrDefaultAsync();
 
                 if (planning == null)
                 {
@@ -484,14 +357,23 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         _itemsPlanningLocalizationService.GetString("ListNotFound"));
                 }
 
-                // get site names
-                planning.Item.eFormSdkFolderName = await sdkDbContext.Folders
-                    .AsNoTracking()
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                    .Where(x => x.Id == planning.Item.eFormSdkFolderId)
-                    .Select(x => x.Name)
-                    .FirstOrDefaultAsync();
+                // get folder
+                var folder = sdkDbContext.Folders
+                    .Include(x => x.Parent)
+                    .Select(x => new
+                    {
+                        x.Name,
+                        x.Parent,
+                        x.Id,
+                    })
+                    .FirstOrDefault(y => y.Name == planning.Folder.EFormSdkFolderName);
+                if (folder != null)
+                {
+                    planning.Folder.EFormSdkFolderId = folder.Id;
+                    planning.Folder.EFormSdkParentFolderName = folder.Parent.Name;
+                }
 
+                // get site names
                 var sites = await sdkDbContext.Sites
                     .AsNoTracking()
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
@@ -522,7 +404,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             }
         }
 
-        public async Task<OperationResult> Update(PlanningPnModel updateModel)
+        public async Task<OperationResult> Update(PlanningUpdateModel updateModel)
         {
             // await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             var sdkCore =
@@ -530,7 +412,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
             try
             {
-
                 var localeString = await _userService.GetCurrentUserLocale();
                 if (string.IsNullOrEmpty(localeString))
                 {
@@ -539,17 +420,52 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
                 var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
-                var template = await sdkCore.TemplateItemRead(updateModel.RelatedEFormId, language);
 
+                if (updateModel.BoundEform == null)
+                {
+                    return new OperationResult(
+                        false,
+                        _itemsPlanningLocalizationService.GetString("InfoAboutEformIsNull"));
+                }
+
+                var template = await sdkCore.TemplateItemRead(updateModel.BoundEform.RelatedEFormId, language);
+
+                if (template == null)
+                {
+                    return new OperationResult(
+                        false,
+                        _itemsPlanningLocalizationService.GetString("EformNotFound"));
+                }
+
+                if (updateModel.Folder == null)
+                {
+                    return new OperationResult(
+                        false,
+                        _itemsPlanningLocalizationService.GetString("InfoAboutFolderIsNull"));
+                }
 
                 var sdkFolder = await sdkDbContext.Folders
                     .Include(x => x.Parent)
-                    .SingleAsync(x => x.Id == updateModel.Item.eFormSdkFolderId);
+                    .FirstOrDefaultAsync(x => x.Id == updateModel.Folder.EFormSdkFolderId);
+
+                if (sdkFolder == null)
+                {
+                    return new OperationResult(
+                        false,
+                        _itemsPlanningLocalizationService.GetString("FolderNotFound"));
+                }
+
                 var planning = await _dbContext.Plannings
                                             .Include(x => x.PlanningsTags)
-                                            .SingleAsync(x => x.Id == updateModel.Id);
-                var folderName = sdkFolder.Name;
+                                            .FirstOrDefaultAsync(x => x.Id == updateModel.Id);
 
+                if (planning == null)
+                {
+                    return new OperationResult(
+                        false,
+                        _itemsPlanningLocalizationService.GetString("PlanningNotFound"));
+                }
+                
                 var translationsPlanning = _dbContext.PlanningNameTranslation
                     .Where(x => x.Planning.Id == planning.Id)
                     .ToList();
@@ -564,38 +480,32 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     }
                 }
 
-                planning.RepeatUntil = updateModel.RepeatUntil;
-                planning.RepeatEvery = updateModel.RepeatEvery;
-                planning.RepeatType = updateModel.RepeatType;
-                planning.DayOfWeek = updateModel.DayOfWeek;
-                planning.DayOfMonth = updateModel.DayOfMonth;
+                planning.DoneByUserNameEnabled = updateModel.EnabledFields.DoneByUserNameEnabled;
+                planning.NumberOfImagesEnabled = updateModel.EnabledFields.NumberOfImagesEnabled;
+                planning.PlanningNumberEnabled = updateModel.EnabledFields.PlanningNumberEnabled;
+                planning.UploadedDataEnabled = updateModel.EnabledFields.UploadedDataEnabled;
+                planning.LocationCodeEnabled = updateModel.EnabledFields.LocationCodeEnabled;
+                planning.DescriptionEnabled = updateModel.EnabledFields.DescriptionEnabled;
+                planning.StartDate = updateModel.Reiteration.StartDate ?? DateTime.UtcNow;
+                planning.DeployedAtEnabled = updateModel.EnabledFields.DeployedAtEnabled;
+                planning.BuildYearEnabled = updateModel.EnabledFields.BuildYearEnabled;
+                planning.DoneAtEnabled = updateModel.EnabledFields.DoneAtEnabled;
+                planning.RelatedEFormId = updateModel.BoundEform.RelatedEFormId;
+                planning.LabelEnabled = updateModel.EnabledFields.LabelEnabled;
+                planning.TypeEnabled = updateModel.EnabledFields.TypeEnabled;
+                planning.RepeatUntil = updateModel.Reiteration.RepeatUntil;
+                planning.RepeatEvery = updateModel.Reiteration.RepeatEvery;
+                planning.RepeatType = updateModel.Reiteration.RepeatType;
+                planning.DayOfMonth = updateModel.Reiteration.DayOfMonth;
+                planning.DayOfWeek = updateModel.Reiteration.DayOfWeek;
+                planning.LocationCode = updateModel.LocationCode;
                 planning.Description = updateModel.Description;
-                planning.UpdatedAt = DateTime.UtcNow;
                 planning.UpdatedByUserId = _userService.UserId;
-                planning.RelatedEFormId = updateModel.RelatedEFormId;
-                planning.RelatedEFormName = template?.Label;
-                planning.LabelEnabled = updateModel.LabelEnabled;
-                planning.DescriptionEnabled = updateModel.DescriptionEnabled;
-                planning.DeployedAtEnabled = updateModel.DeployedAtEnabled;
-                planning.DoneAtEnabled = updateModel.DoneAtEnabled;
-                planning.DoneByUserNameEnabled = updateModel.DoneByUserNameEnabled;
-                planning.UploadedDataEnabled = updateModel.UploadedDataEnabled;
-                planning.ItemNumberEnabled = updateModel.ItemNumberEnabled;
-                planning.LocationCodeEnabled = updateModel.LocationCodeEnabled;
-                planning.BuildYearEnabled = updateModel.BuildYearEnabled;
-                planning.TypeEnabled = updateModel.TypeEnabled;
-                planning.NumberOfImagesEnabled = updateModel.NumberOfImagesEnabled;
-                planning.LastExecutedTime = updateModel.LastExecutedTime;
+                planning.BuildYear = updateModel.BuildYear;
+                planning.RelatedEFormName = template.Label;
                 planning.SdkFolderName = sdkFolder.Name;
-
-                if (updateModel.StartDate.HasValue)
-                {
-                    planning.StartDate = updateModel.StartDate.Value;
-                }
-                else
-                {
-                    planning.StartDate = DateTime.UtcNow;
-                }
+                planning.UpdatedAt = DateTime.UtcNow;
+                planning.Type = updateModel.Type;
 
                 var tagIds = planning.PlanningsTags
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
@@ -616,65 +526,20 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     _dbContext.PlanningsTags.Remove(tag);
                 }
 
-                foreach(var tagId in tagsForCreate)
+                foreach (var tagId in tagsForCreate)
                 {
                     var planningsTags = new PlanningsTags
                     {
                         CreatedByUserId = _userService.UserId,
                         UpdatedByUserId = _userService.UserId,
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
                         PlanningId = planning.Id,
                         PlanningTagId = tagId,
-                        Version = 1,
                     };
 
                     await _dbContext.PlanningsTags.AddAsync(planningsTags);
                 }
 
-                planning.SdkFolderName = folderName;
-
-
                 await planning.Update(_dbContext);
-
-                var item = _dbContext.Items.FirstOrDefault(x => x.Id == updateModel.Item.Id);
-                if (item == null)
-                {
-                    var newItem = new Item()
-                    {
-                        LocationCode = updateModel.Item.LocationCode,
-                        ItemNumber = updateModel.Item.ItemNumber,
-                        Description = updateModel.Item.Description,
-                        Name = updateModel.Item.Name,
-                        Version = 1,
-                        WorkflowState = Constants.WorkflowStates.Created,
-                        CreatedAt = DateTime.UtcNow,
-                        CreatedByUserId = _userService.UserId,
-                        UpdatedAt = DateTime.UtcNow,
-                        Enabled = true,
-                        BuildYear = updateModel.Item.BuildYear,
-                        Type = updateModel.Item.Type,
-                        PlanningId = planning.Id,
-                        eFormSdkFolderId = updateModel.Item.eFormSdkFolderId
-                    };
-                    await newItem.Create(_dbContext);
-                }
-                else
-                {
-                    item.LocationCode = updateModel.Item.LocationCode;
-                    item.ItemNumber = updateModel.Item.ItemNumber;
-                    item.Description = updateModel.Item.Description;
-                    item.Name = updateModel.Item.Name;
-                    item.UpdatedByUserId = _userService.UserId;
-                    item.UpdatedAt = DateTime.UtcNow;
-                    item.Enabled = true;
-                    item.BuildYear = updateModel.Item.BuildYear;
-                    item.Type = updateModel.Item.Type;
-                    item.PlanningId = planning.Id;
-                    item.eFormSdkFolderId = updateModel.Item.eFormSdkFolderId;
-
-                    await item.Update(_dbContext);
-                }
 
                 // transaction.Commit();
                 return new OperationResult(
@@ -698,7 +563,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 var core = await _coreService.GetCore();
                 await using var sdkDbContext = core.DbContextHelper.GetDbContext();
                 var planning = await _dbContext.Plannings
-                    .Include(x => x.Item)
                     .SingleAsync(x => x.Id == id);
 
                 if (planning == null)
@@ -708,7 +572,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 }
 
                 var planningCases = await _dbContext.PlanningCases
-                    .Where(x => x.ItemId == planning.Item.Id)
+                    .Where(x => x.PlanningId== planning.Id)
                     .ToListAsync();
 
                 foreach (var planningCase in planningCases)
@@ -755,98 +619,81 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     false,
                     _itemsPlanningLocalizationService.GetString("ErrorWhileRemovingList"));
             }
+
         }
-
-
-
-        private Item FindItem(bool numberExists, int numberColumn, bool itemNameExists,
-            int itemNameColumn, JToken itemObj)
+        private IQueryable<PlanningPnModel> AddSelectToPlanningQuery(IQueryable<Planning> planningQueryable, Language languageIemPlanning)
         {
-            Item item = null;
-
-            if (numberExists)
+            return planningQueryable.Select(x => new PlanningPnModel
             {
-                var itemNo = itemObj[numberColumn].ToString();
-                item = _dbContext.Items.SingleOrDefault(x => x.ItemNumber == itemNo);
-            }
-
-            if (itemNameExists)
-            {
-                var itemName = itemObj[itemNameColumn].ToString();
-                item = _dbContext.Items.SingleOrDefault(x => x.Name == itemName);
-            }
-
-            return item;
-        }
-
-        public async Task<OperationResult> ImportUnit(UnitImportModel unitAsJson)
-        {
-            try
-            {
-                {
-                    var rawJson = JToken.Parse(unitAsJson.ImportList);
-                    var rawHeadersJson = JToken.Parse(unitAsJson.Headers);
-
-                    var headers = rawHeadersJson;
-                    var itemObjects = rawJson.Skip(1);
-
-                    foreach (var itemObj in itemObjects)
+                Id = x.Id,
+                Description = x.Description,
+                BuildYear = x.BuildYear,
+                Type = x.Type,
+                LocationCode = x.LocationCode,
+                PlanningNumber = x.PlanningNumber,
+                TranslationsName = x.NameTranslations.Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Select(y => new PlanningNameTranslations
                     {
-                        var numberExists = int.TryParse(headers[0]["headerValue"].ToString(), out var numberColumn);
-                        var itemNameExists = int.TryParse(headers[1]["headerValue"].ToString(),
-                            out var nameColumn);
-                        if (numberExists || itemNameExists)
-                        {
-                            var existingItem = FindItem(numberExists, numberColumn, itemNameExists,
-                                nameColumn, itemObj);
-                            if (existingItem == null)
-                            {
-                                var itemModel =
-                                    ItemsHelper.ComposeValues(new PlanningItemModel(), headers, itemObj);
-
-                                var newItem = new Item
-                                {
-                                    ItemNumber = itemModel.ItemNumber,
-                                    Name = itemModel.Name,
-                                    Description = itemModel.Description,
-                                    LocationCode = itemModel.LocationCode,
-
-
-                                };
-                               await newItem.Create(_dbContext);
-
-                            }
-                            else
-                            {
-                                if (existingItem.WorkflowState == Constants.WorkflowStates.Removed)
-                                {
-                                    var item = await _dbContext.Items.SingleOrDefaultAsync(x => x.Id == existingItem.Id);
-                                    if (item != null)
-                                    {
-                                        item.Name = existingItem.Name;
-                                        item.Description = existingItem.Description;
-                                        item.ItemNumber = existingItem.ItemNumber;
-                                        item.LocationCode = existingItem.LocationCode;
-                                        item.WorkflowState = Constants.WorkflowStates.Created;
-
-                                        await item.Update(_dbContext);
-                                    }
-                                }
-                            }
-                        }
-
-                    }
+                        Id = y.Id,
+                        Language = y.Language.LanguageCode,
+                        Name = y.Name,
+                        LocaleName = y.Language.Name
+                    }).ToList(),
+                TranslatedName = x.NameTranslations
+                    .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Where(y => y.Language.Id == languageIemPlanning.Id)
+                    .Select(y => y.Name)
+                    .FirstOrDefault(),
+                Reiteration = new PlanningReiterationModel
+                {
+                    RepeatEvery = x.RepeatEvery,
+                    RepeatType = x.RepeatType,
+                    RepeatUntil = x.RepeatUntil,
+                    DayOfWeek = x.DayOfWeek,
+                    DayOfMonth = (int) x.DayOfMonth,
+                    StartDate = x.StartDate,
+                },
+                BoundEform = new PlanningEformModel
+                {
+                    RelatedEFormId = x.RelatedEFormId,
+                    RelatedEFormName = x.RelatedEFormName,
+                },
+                Folder = new PlanningFolderModel
+                {
+                    EFormSdkFolderName = x.SdkFolderName,
+                },
+                AssignedSites = x.PlanningSites
+                    .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Select(y => new PlanningAssignedSitesModel
+                    {
+                        Id = y.Id,
+                        SiteId = y.SiteId,
+                    }).ToList(),
+                Tags = x.PlanningsTags
+                    .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Select(y => new CommonDictionaryModel
+                    {
+                        Id = y.PlanningTagId,
+                        Name = y.PlanningTag.Name
+                    }).ToList(),
+                TagsIds = x.PlanningsTags
+                    .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Select(y => y.PlanningTagId).ToList(),
+                EnabledFields = new PlanningFieldsModel
+                {
+                    PlanningNumberEnabled = x.PlanningNumberEnabled,
+                    BuildYearEnabled = x.BuildYearEnabled,
+                    DeployedAtEnabled = x.DeployedAtEnabled,
+                    DescriptionEnabled = x.DescriptionEnabled,
+                    DoneAtEnabled = x.DoneAtEnabled,
+                    DoneByUserNameEnabled = x.DoneByUserNameEnabled,
+                    LabelEnabled = x.LabelEnabled,
+                    LocationCodeEnabled = x.LocationCodeEnabled,
+                    NumberOfImagesEnabled = x.NumberOfImagesEnabled,
+                    TypeEnabled = x.TypeEnabled,
+                    UploadedDataEnabled = x.UploadedDataEnabled,
                 }
-                return new OperationResult(true,
-                    _itemsPlanningLocalizationService.GetString("ItemImportes"));
-            }
-            catch (Exception e)
-            {
-                Trace.TraceError(e.Message);
-                _coreService.LogException(e.Message);
-                return new OperationResult(false,
-                    _itemsPlanningLocalizationService.GetString("ErrorWhileImportingItems"));
-            }
+            });
         }
     }
 }

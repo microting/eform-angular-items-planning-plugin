@@ -1,4 +1,4 @@
-﻿/*
+/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2021 Microting A/S
@@ -21,15 +21,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-namespace ItemsPlanning.Pn.Infrastructure.Models
+
+using System;
+
+namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 {
-    using System.Collections.Generic;
-
-    public class PlanningAssignSitesModel
+    public class PlanningCasesPnRequestModel
     {
+        public string NameFilter { get; set; }
+        public string Sort { get; set; }
+        public int PageIndex { get; set; }
+        public int Offset { get; set; }
+        public bool IsSortDsc { get; set; }
+        public int PageSize { get; set; }
         public int PlanningId { get; set; }
-
-        public List<PlanningAssignmentSiteModel> Assignments { get; set; }
-            = new List<PlanningAssignmentSiteModel>();
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
     }
 }

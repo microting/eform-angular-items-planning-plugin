@@ -22,14 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Infrastructure.Models
-{
-    using System.Collections.Generic;
+using System.Collections.Generic;
 
-    public class PlanningCasesModel
+namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
+{
+    public class PlanningsPnModel
     {
         public int Total { get; set; }
-        public List<PlanningItemCaseModel> Items { get; set; }
-            = new List<PlanningItemCaseModel>();
+        public List<PlanningPnModel> Plannings { get; set; }
+
+        public PlanningsPnModel()
+        {
+            Plannings = new List<PlanningPnModel>();
+        }
     }
 }

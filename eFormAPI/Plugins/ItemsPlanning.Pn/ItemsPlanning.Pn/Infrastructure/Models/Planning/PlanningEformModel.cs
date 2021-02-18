@@ -22,13 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Collections.Generic;
-
-namespace ItemsPlanning.Pn.Infrastructure.Models
+namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 {
-  public class PairingRequestModel
-  {
-    public List<int> TagIds { get; set; }
-      = new List<int>();
-  }
+    public class PlanningEformModel
+    {
+        public int RelatedEFormId { get; set; }
+
+        public bool IsEformRemoved { get; set; }
+
+        public string RelatedEFormName { get; set; }
+    }
 }

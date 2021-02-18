@@ -22,12 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-
-namespace ItemsPlanning.Pn.Infrastructure.Models
+namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 {
-    using System;
     using System.Collections.Generic;
-    using Microting.ItemsPlanningBase.Infrastructure.Enums;
     using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
 
     public class PlanningPnModel
@@ -41,53 +38,21 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
 
         public string Description { get; set; }
 
-        public int RepeatEvery { get; set; }
+        public string PlanningNumber { get; set; }
 
-        public RepeatType RepeatType { get; set; }
+        public string LocationCode { get; set; }
 
-        public DateTime? RepeatUntil { get; set; }
+        public string BuildYear { get; set; }
 
-        public DayOfWeek? DayOfWeek { get; set; }
+        public string Type { get; set; }
 
-        public int? DayOfMonth { get; set; }
+        public PlanningFolderModel Folder { get; set; }
 
-        public DateTime? LastExecutedTime { get; set; }
-        public DateTime? StartDate { get; set; }
+        public PlanningReiterationModel Reiteration { get; set; }
 
-        public int RelatedEFormId { get; set; }
+        public PlanningEformModel BoundEform { get; set; }
 
-        public bool isEformRemoved { get; set; }
-
-        public string RelatedEFormName { get; set; }
-
-        public bool LabelEnabled { get; set; }
-
-        public bool DescriptionEnabled { get; set; }
-
-        public bool DeployedAtEnabled { get; set; }
-
-        public bool DoneAtEnabled { get; set; }
-
-        public bool DoneByUserNameEnabled { get; set; }
-
-        public bool UploadedDataEnabled { get; set; }
-
-        public bool ItemNumberEnabled { get; set; }
-
-        public bool LocationCodeEnabled { get; set; }
-
-        public bool BuildYearEnabled { get; set; }
-
-        public bool TypeEnabled { get; set; }
-
-        public bool NumberOfImagesEnabled { get; set; }
-
-        public string SdkFolderName { get; set; }
-
-        public int EformSdkFolderId { get; set; }
-
-        public PlanningItemModel Item { get; set; }
-            = new PlanningItemModel();
+        public PlanningFieldsModel EnabledFields { get; set; }
 
         public List<PlanningAssignedSitesModel> AssignedSites { get; set; }
             = new List<PlanningAssignedSitesModel>();
@@ -97,7 +62,5 @@ namespace ItemsPlanning.Pn.Infrastructure.Models
 
         public List<int> TagsIds { get; set; }
             = new List<int>();
-
-        public string NewTags { get; set; }
     }
 }

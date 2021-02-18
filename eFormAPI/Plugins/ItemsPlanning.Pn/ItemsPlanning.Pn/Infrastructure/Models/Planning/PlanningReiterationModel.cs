@@ -1,4 +1,4 @@
-/*
+﻿/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2021 Microting A/S
@@ -22,20 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Infrastructure.Models
+namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 {
     using System;
-
-    public class PlanningCasesPnRequestModel
+    using Microting.ItemsPlanningBase.Infrastructure.Enums;
+    public class PlanningReiterationModel
     {
-        public string NameFilter { get; set; }
-        public string Sort { get; set; }
-        public int PageIndex { get; set; }
-        public int Offset { get; set; }
-        public bool IsSortDsc { get; set; }
-        public int PageSize { get; set; }
-        public int PlanningId { get; set; }
-        public DateTime? DateFrom { get; set; }
-        public DateTime? DateTo { get; set; }
+        public int RepeatEvery { get; set; }
+
+        public RepeatType RepeatType { get; set; }
+
+        public DayOfWeek? DayOfWeek { get; set; }
+
+        public int DayOfMonth { get; set; }
+
+        public DateTime? RepeatUntil { get; set; }
+
+        public DateTime? StartDate { get; set; }
+
+        //public string InternalRepeatUntil { get; set; }
     }
 }

@@ -77,12 +77,11 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
             {
                 var result = new ExcelParseResult();
                 var core = await _coreService.GetCore();
-                await using MicrotingDbContext microtingDbContext = core.DbContextHelper.GetDbContext();
+                await using var microtingDbContext = core.DbContextHelper.GetDbContext();
 
                 var timeZone = await _userService.GetCurrentUserTimeZoneInfo();
-                var locale = await _userService.GetCurrentUserLocale();
-                await using MicrotingDbContext dbContext = core.DbContextHelper.GetDbContext();
-                Language theLanguage = await dbContext.Languages
+                await using var dbContext = core.DbContextHelper.GetDbContext();
+                var theLanguage = await dbContext.Languages
                     .SingleAsync(x => x.LanguageCode == "da");
                 var templatesDto = await core.TemplateItemReadAll(
                     false,
@@ -414,11 +413,11 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                         await planning.Create(_dbContext);
 
-                        int i = 1;
+                        var i = 1;
                         foreach (var translationText in excelModel.ItemName.Split("|"))
                         {
-                            Language language = await dbContext.Languages.SingleAsync(x => x.Id == i);
-                            PlanningNameTranslation planningNameTranslation = new PlanningNameTranslation()
+                            var language = await dbContext.Languages.SingleAsync(x => x.Id == i);
+                            var planningNameTranslation = new PlanningNameTranslation()
                             {
                                 Name = translationText,
                                 LanguageId = language.Id,
@@ -427,31 +426,6 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             await planningNameTranslation.Create(_dbContext);
                             i += 1;
                         }
-
-                        var item = new Item()
-                        {
-                            LocationCode = string.Empty,
-                            ItemNumber = string.Empty,
-                            Description = string.Empty,
-                            Name = excelModel.ItemName,
-                            Version = 1,
-                            WorkflowState = Constants.WorkflowStates.Created,
-                            CreatedAt = DateTime.UtcNow,
-                            UpdatedAt = DateTime.UtcNow,
-                            Enabled = true,
-                            BuildYear = string.Empty,
-                            Type = string.Empty,
-                            PlanningId = planning.Id,
-                            CreatedByUserId = _userService.UserId,
-                            UpdatedByUserId = _userService.UserId,
-                        };
-
-                        if (sdkFolder != null)
-                        {
-                            item.eFormSdkFolderId = (int) sdkFolder.Id;
-                        }
-
-                        await item.Create(_dbContext);
                     }
 
                     //await transaction.CommitAsync();

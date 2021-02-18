@@ -22,20 +22,38 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Collections.Generic;
-
-namespace ItemsPlanning.Pn.Infrastructure.Models
+namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 {
-    public class PlanningsRequestModel
+    using System;
+
+    public class PlanningCaseModel
     {
-        public string NameFilter { get; set; }
-        public string DescriptionFilter { get; set; }
-        public string Sort { get; set; }
-        public int PageIndex { get; set; }
-        public int Offset { get; set; }
-        public bool IsSortDsc { get; set; }
-        public int PageSize { get; set; }
-        public List<int> TagIds { get; set; }
-            = new List<int>();
+        public int Id { get; set; }
+
+        public DateTime Date { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public string PlanningNumber { get; set; }
+
+        public string LocationCode { get; set; }
+
+        public string BuildYear { get; set; }
+
+        public string Type { get; set; }
+
+        public string Location { get; set; }
+
+        public int Status { get; set; }
+
+        public string FieldStatus { get; set; }
+
+        public string Comment { get; set; }
+
+        public int NumberOfImages { get; set; }
+
+        public int SdkCaseId { get; set; }
+
+        public int SdkeFormId { get; set; }
     }
 }

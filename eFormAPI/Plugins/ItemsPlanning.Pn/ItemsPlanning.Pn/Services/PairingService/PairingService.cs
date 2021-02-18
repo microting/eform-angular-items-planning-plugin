@@ -30,7 +30,6 @@ namespace ItemsPlanning.Pn.Services.PairingService
     using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
-    using Infrastructure.Models;
     using Infrastructure.Models.Pairing;
     using ItemsPlanningLocalizationService;
     using Microsoft.EntityFrameworkCore;
@@ -40,6 +39,8 @@ namespace ItemsPlanning.Pn.Services.PairingService
     using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
     using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
+    using ItemsPlanning.Pn.Services.PlanningService;
+    using Infrastructure.Models.Planning;
 
     public class PairingService : IPairingService
     {
@@ -48,18 +49,21 @@ namespace ItemsPlanning.Pn.Services.PairingService
         private readonly IEFormCoreService _coreService;
         private readonly IUserService _userService;
         private readonly PairItemWichSiteHelper _pairItemWichSiteHelper;
+        private readonly IPlanningService _planningService;
 
         public PairingService(
             ItemsPlanningPnDbContext dbContext,
             IItemsPlanningLocalizationService itemsPlanningLocalizationService,
             IEFormCoreService coreService,
-            IUserService userService)
+            IUserService userService,
+            IPlanningService planningService)
         {
             _dbContext = dbContext;
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
             _coreService = coreService;
             _userService = userService;
             _pairItemWichSiteHelper = new PairItemWichSiteHelper(_dbContext, _coreService);
+            _planningService = planningService;
         }
         public async Task<OperationDataResult<PairingsModel>> GetAllPairings(PairingRequestModel pairingRequestModel)
         {
@@ -83,7 +87,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 {
                     foreach (var tagId in pairingRequestModel.TagIds)
                     {
-                        pairingQuery = pairingQuery.Where(x => x.Item.Planning.PlanningsTags.Any(y =>
+                        pairingQuery = pairingQuery.Where(x => x.PlanningsTags.Any(y =>
                             y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
                     }
                 }
@@ -235,8 +239,11 @@ namespace ItemsPlanning.Pn.Services.PairingService
 
                     await planningSite.Create(_dbContext);
 
-                    var item = await _dbContext.Items.SingleAsync(x => x.PlanningId == planning.Id);
-                    await _pairItemWichSiteHelper.Pair(item, assignmentSiteId, planning.RelatedEFormId);
+                    var dataResult = await _planningService.Read(planning.Id);
+                    if(dataResult.Success)
+                    {
+                        await _pairItemWichSiteHelper.Pair(dataResult.Model, assignmentSiteId, planning.RelatedEFormId);
+                    }
                 }
 
                 return new OperationResult(true,
@@ -280,7 +287,6 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 foreach (var pairing in pairingModel)
                 {
                     var planning = plannings.FirstOrDefault(x => x.PlanningId == pairing.PlanningId);
-                    var item = await _dbContext.Items.SingleAsync(x => x.PlanningId == planning.PlanningId);
 
                     if (planning != null)
                     {
@@ -298,7 +304,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         var planningCaseSites = await _dbContext.PlanningCaseSites
                             .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.WorkflowState != Constants.WorkflowStates.Retracted)
                             .Where(x => deviceUserIdsForRemove.Contains(x.MicrotingSdkSiteId))
-                            .Where(x => x.ItemId == item.Id)
+                            .Where(x => x.PlanningId == planning.PlanningId)
                             .ToListAsync();
 
                         foreach (var site in forRemove)
@@ -353,7 +359,11 @@ namespace ItemsPlanning.Pn.Services.PairingService
                             };
                             await newPlanningSite.Create(_dbContext);
 
-                            await _pairItemWichSiteHelper.Pair(item, assignmentSiteId, planning.RelatedEFormId);
+                            var dataResult = await _planningService.Read(planning.PlanningId);
+                            if (dataResult.Success)
+                            {
+                                await _pairItemWichSiteHelper.Pair(dataResult.Model, assignmentSiteId, planning.RelatedEFormId);
+                            }
                         }
                     }
                 }

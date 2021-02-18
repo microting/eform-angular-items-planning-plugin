@@ -22,32 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Infrastructure.Helpers
-{
-    using Models;
-    using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
-    public static class ItemsHelper
+namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
+{
+    public class PlanningCasesModel
     {
-        public static PlanningItemModel ComposeValues(PlanningItemModel item, JToken headers, JToken itemObj)
-        {
-            if (int.TryParse(headers[0]["headerValue"].ToString(), out var locationId))
-            {
-                item.ItemNumber = itemObj[locationId].ToString(); // Number
-            }
-            if (int.TryParse(headers[1]["headerValue"].ToString(), out locationId))
-            {
-                item.Name = itemObj[locationId].ToString(); //Name
-            }
-            if (int.TryParse(headers[2]["headerValue"].ToString(), out locationId))
-            {
-                item.LocationCode = itemObj[locationId].ToString(); //Location Code
-            }
-            if (int.TryParse(headers[3]["headerValue"].ToString(), out locationId))
-            {
-                item.Type = itemObj[locationId].ToString(); //Type
-            }
-            return item;
-        }
+        public int Total { get; set; }
+        public List<PlanningCaseModel> Items { get; set; }
+            = new List<PlanningCaseModel>();
     }
 }

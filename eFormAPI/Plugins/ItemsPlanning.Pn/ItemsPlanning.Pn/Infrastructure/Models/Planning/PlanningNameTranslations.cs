@@ -1,7 +1,7 @@
-/*
+﻿/*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2021 Microting A/S
+Copyright (c) 2007 - 2020 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,19 +21,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-namespace ItemsPlanning.Pn.Infrastructure.Models
+
+namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 {
-    public class PlanningItemModel
+    public class PlanningNameTranslations
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
-        public string ItemNumber { get; set; }
-        public string LocationCode { get; set; }
-        public string BuildYear { get; set; }
-        public string Type { get; set; }
-        public string eFormSdkFolderName { get; set; }
-        public int eFormSdkFolderId { get; set; }
-        public string eFormSdkParentFolderName { get; set; }
+        public string LocaleName { get; set; }
+        public string Language { get; set; }
     }
 }
