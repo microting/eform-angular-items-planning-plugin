@@ -28,10 +28,10 @@ namespace ItemsPlanning.Pn.Controllers
     using Infrastructure.Models;
     using Infrastructure.Models.Import;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Microting.ItemsPlanningBase.Infrastructure.Const;
+    using ItemsPlanning.Pn.Infrastructure.Models.Planning;
     using Services.PlanningImportService;
     using Services.PlanningService;
 
@@ -59,7 +59,7 @@ namespace ItemsPlanning.Pn.Controllers
         [HttpPost]
         [Route("api/items-planning-pn/plannings")]
         [Authorize(Policy = ItemsPlanningClaims.CreatePlannings)]
-        public async Task<OperationResult> Create([FromBody] PlanningPnModel createModel)
+        public async Task<OperationResult> Create([FromBody] PlanningCreateModel createModel)
         {
             return await _planningService.Create(createModel);
         }
@@ -73,7 +73,7 @@ namespace ItemsPlanning.Pn.Controllers
 
         [HttpPut]
         [Route("api/items-planning-pn/plannings")]
-        public async Task<OperationResult> Update([FromBody] PlanningPnModel updateModel)
+        public async Task<OperationResult> Update([FromBody] PlanningUpdateModel updateModel)
         {
             return await _planningService.Update(updateModel);
         }
@@ -83,13 +83,6 @@ namespace ItemsPlanning.Pn.Controllers
         public async Task<OperationResult> Delete(int id)
         {
             return await _planningService.Delete(id);
-        }
-
-        [HttpPost]
-        [Route("api/items-planning-pn/plannings/import-unit")]
-        public async Task<OperationResult> ImportUnit([FromBody] UnitImportModel unitImportModel)
-        {
-            return await _planningService.ImportUnit(unitImportModel);
         }
 
         [HttpPost]

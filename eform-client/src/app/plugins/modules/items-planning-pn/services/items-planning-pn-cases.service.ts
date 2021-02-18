@@ -4,10 +4,10 @@ import {ToastrService} from 'ngx-toastr';
 import {Observable} from 'rxjs';
 import {OperationDataResult} from '../../../../common/models';
 import {PlanningCaseResultListModel} from '../models/plannings';
-import {PlanningCasesModel, PlanningCaseModel} from '../models/plannings/planning-cases.model';
+import {PlanningCasesModel, PlanningCaseModel} from '../models/plannings/planning-cases/planning-cases.model';
 import {Router} from '@angular/router';
 import {Injectable} from '@angular/core';
-import {PlanningCasesRequestModel} from '../models/plannings/planning-cases-request.model';
+import {PlanningCasesRequestModel} from '../models/plannings/planning-cases/planning-cases-request.model';
 
 export let ItemsPlanningPnCasesMethods = {
   Cases: 'api/items-planning-pn/plannings-cases',

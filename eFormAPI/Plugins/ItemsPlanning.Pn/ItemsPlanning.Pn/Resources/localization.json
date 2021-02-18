@@ -510,5 +510,21 @@
       "en-US": "Position",
       "uk-UA": "Позиція"
     }
+  },
+  {
+    "Key": "InfoAboutFolderIsNull",
+    "LocalizedValue": {
+      "da": "Info om mappen er null",
+      "en-US": "Info about folder is null",
+      "uk-UA": "Інформація про папку порожня"
+    }
+  },
+  {
+    "Key": "InfoAboutEformIsNull",
+    "LocalizedValue": {
+      "da": "Info om eForm er null",
+      "en-US": "Info about eForm is null",
+      "uk-UA": "Інформація про еформу порожня"
+    }
   }
 ]

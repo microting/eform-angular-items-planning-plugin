@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using ItemsPlanning.Pn.Infrastructure.Models.Planning;
 
 namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
 {

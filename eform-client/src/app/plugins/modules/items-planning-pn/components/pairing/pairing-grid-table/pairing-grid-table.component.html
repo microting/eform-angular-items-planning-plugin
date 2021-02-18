@@ -1,7 +1,10 @@
 <div class="row p-1 mt-4 table-responsive no-gutters">
   <table
-    *ngIf=" pairingsModel.deviceUsers && pairingsModel.pairings &&
-      pairingsModel.deviceUsers.length > 0 && pairingsModel.pairings.length > 0
+    *ngIf="
+      pairingsModel.deviceUsers &&
+      pairingsModel.pairings &&
+      pairingsModel.deviceUsers.length > 0 &&
+      pairingsModel.pairings.length > 0
     "
     mdbTable
     striped="true"
@@ -40,7 +43,9 @@
       <tr *ngFor="let pairing of pairingsModel.pairings; let i = index">
         <td id="planningName">
           <div class="d-flex justify-content-between">
-            <div class="text-center">{{ pairing.planningId}} - {{ pairing.planningName }}</div>
+            <div class="text-center">
+              {{ pairing.planningId }} - {{ pairing.planningName }}
+            </div>
             <div>
               <div class="mat-checkbox" *ngIf="selectedRowCheckboxes[i]">
                 <input
@@ -51,7 +56,10 @@
                   [value]="selectedRowCheckboxes[i].checked"
                   [checked]="selectedRowCheckboxes[i].checked"
                 />
-                <label for="planningRowCheckbox{{ i }}" id="planningRowLabelCheckbox{{ i }}"></label>
+                <label
+                  for="planningRowCheckbox{{ i }}"
+                  id="planningRowLabelCheckbox{{ i }}"
+                ></label>
               </div>
             </div>
           </div>
@@ -73,6 +81,10 @@
               for="deviceUserCheckbox{{ j }}_planning{{ i }}"
             ></label>
           </div>
+          <status-bar
+            *ngIf="planningValue.latestCaseStatus"
+            [status]="planningValue.latestCaseStatus"
+          ></status-bar>
         </td>
       </tr>
     </tbody>

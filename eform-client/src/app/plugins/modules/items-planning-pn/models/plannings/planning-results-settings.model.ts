@@ -1,4 +1,4 @@
-import {PlanningCasesRequestModel} from './planning-cases-request.model';
+import {PlanningCasesRequestModel} from './planning-cases/planning-cases-request.model';
 
 export class PlanningResultsPageModel {
   name: string;

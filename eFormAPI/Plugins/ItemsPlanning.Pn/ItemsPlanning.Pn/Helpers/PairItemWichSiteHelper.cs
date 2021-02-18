@@ -1,4 +1,4 @@
-﻿/*
+/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2021 Microting A/S
@@ -32,6 +32,7 @@ namespace ItemsPlanning.Pn.Helpers
     using Microting.eFormApi.BasePn.Abstractions;
     using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
+    using ItemsPlanning.Pn.Infrastructure.Models.Planning;
 
     public class PairItemWichSiteHelper
     {
@@ -46,7 +47,7 @@ namespace ItemsPlanning.Pn.Helpers
             _coreService = coreService;
         }
 
-        public async Task Pair(Item item, int assignmentSiteId, int relatedEFormId)
+        public async Task Pair(PlanningPnModel planningPnModel, int assignmentSiteId, int relatedEFormId)
         {
             var sdkCore =
                 await _coreService.GetCore();
@@ -55,11 +56,11 @@ namespace ItemsPlanning.Pn.Helpers
             var language = await sdkDbContext.Languages.SingleAsync(x => x.Id == sdkSite.LanguageId);
             var mainElement = await sdkCore.ReadeForm(relatedEFormId, language);
 
-            var folderId = sdkDbContext.Folders.Single(x => x.Id == item.eFormSdkFolderId).MicrotingUid.ToString();
-
+            var folderId = sdkDbContext.Folders.Single(x => x.Id == planningPnModel.Folder.EFormSdkFolderId).MicrotingUid.ToString();
+            
             var planningCase = _dbContext.PlanningCases
                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                .Where(x => x.ItemId == item.Id)
+                .Where(x => x.PlanningId == planningPnModel.Id)
                 .Where(x => x.Status == 100)
                 .SingleOrDefault(x => x.MicrotingSdkeFormId == relatedEFormId);
 
@@ -67,14 +68,14 @@ namespace ItemsPlanning.Pn.Helpers
             {
                 planningCase = new PlanningCase()
                 {
-                    ItemId = item.Id,
+                    PlanningId = planningPnModel.Id,
                     Status = 66,
                     MicrotingSdkeFormId = relatedEFormId
                 };
                 await planningCase.Create(_dbContext);
 
                 var casesToDelete = await _dbContext.PlanningCaseSites
-                    .Where(x => x.ItemId == item.Id
+                    .Where(x => x.PlanningId == planningPnModel.Id
                                 && x.MicrotingSdkSiteId == assignmentSiteId
                                 && x.WorkflowState !=
                                 Constants.WorkflowStates.Retracted)
@@ -90,25 +91,25 @@ namespace ItemsPlanning.Pn.Helpers
                 }
 
                 var translation = _dbContext.PlanningNameTranslation
-                    .Single(x => x.LanguageId == language.Id && x.PlanningId == item.PlanningId).Name;
+                    .Single(x => x.LanguageId == language.Id && x.PlanningId == planningPnModel.Id).Name;
 
-                mainElement.Label = string.IsNullOrEmpty(item.ItemNumber) ? "" : item.ItemNumber;
+                mainElement.Label = string.IsNullOrEmpty(planningPnModel.PlanningNumber) ? "" : planningPnModel.PlanningNumber;
                 if (!string.IsNullOrEmpty(translation))
                 {
                     mainElement.Label +=
                         string.IsNullOrEmpty(mainElement.Label) ? $"{translation}" : $" - {translation}";
                 }
 
-                if (!string.IsNullOrEmpty(item.BuildYear))
+                if (!string.IsNullOrEmpty(planningPnModel.BuildYear))
                 {
                     mainElement.Label += string.IsNullOrEmpty(mainElement.Label)
-                        ? $"{item.BuildYear}"
-                        : $" - {item.BuildYear}";
+                        ? $"{planningPnModel.BuildYear}"
+                        : $" - {planningPnModel.BuildYear}";
                 }
 
-                if (!string.IsNullOrEmpty(item.Type))
+                if (!string.IsNullOrEmpty(planningPnModel.Type))
                 {
-                    mainElement.Label += string.IsNullOrEmpty(mainElement.Label) ? $"{item.Type}" : $" - {item.Type}";
+                    mainElement.Label += string.IsNullOrEmpty(mainElement.Label) ? $"{planningPnModel.Type}" : $" - {planningPnModel.Type}";
                 }
 
                 mainElement.ElementList[0].Label = mainElement.Label;
@@ -127,7 +128,7 @@ namespace ItemsPlanning.Pn.Helpers
                         MicrotingSdkSiteId = assignmentSiteId,
                         MicrotingSdkeFormId = relatedEFormId,
                         Status = 66,
-                        ItemId = item.Id,
+                        PlanningId = planningPnModel.Id,
                         PlanningCaseId = planningCase.Id
                     };
 

@@ -27,6 +27,9 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Pairing
     public class PairingValueModel
     {
         public int DeviceUserId { get; set; }
+
         public bool Paired { get; set; }
+
+        public int? LatestCaseStatus { get; set; }
     }
 }

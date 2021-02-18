@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using ItemsPlanning.Pn.Infrastructure.Models.Planning;
+
 namespace ItemsPlanning.Pn.Services.PairingService
 {
     using System.Collections.Generic;
