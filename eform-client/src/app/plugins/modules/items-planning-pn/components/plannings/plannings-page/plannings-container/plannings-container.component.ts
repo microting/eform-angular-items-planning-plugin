@@ -210,7 +210,8 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
       .deletePlannings(planningsIds)
       .subscribe((data) => {
         if (data && data.success) {
-          // close modal
+          this.deleteMultiplePlanningsModal.hide();
+          this.getPlannings();
         }
       });
   }
