@@ -24,14 +24,14 @@ SOFTWARE.
 
 namespace ItemsPlanning.Pn.Controllers
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Infrastructure.Models;
     using Infrastructure.Models.Import;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Microting.ItemsPlanningBase.Infrastructure.Const;
-    using ItemsPlanning.Pn.Infrastructure.Models.Planning;
+    using Infrastructure.Models.Planning;
     using Services.PlanningImportService;
     using Services.PlanningService;
 
@@ -90,6 +90,18 @@ namespace ItemsPlanning.Pn.Controllers
         public async Task<OperationResult> Import(PlanningExcelUploadModel uploadModel)
         {
             return await _planningImportService.ImportPlannings(uploadModel.File.OpenReadStream());
+        }
+
+        /// <summary>
+        /// multiple delete plannings
+        /// </summary>
+        /// <param name="planningIds">array witch planning ids</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("api/items-planning-pn/plannings/delete-multiple")]
+        public async Task<OperationResult> MultipleDelete([FromBody] List<int> planningIds)
+        {
+            return await _planningService.MultipleDeletePlannings(planningIds);
         }
     }
 }

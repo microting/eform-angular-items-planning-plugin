@@ -178,7 +178,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         }
                         else
                         {
-                            planning.Folder.EFormSdkFolderName = folder.Name;
+                            planning.Folder.EFormSdkFolderName = null;
                         }
                     }
                 }
@@ -383,7 +383,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     }
                     else
                     {
-                        planning.Folder.EFormSdkFolderName = folder.Name;
+                        planning.Folder.EFormSdkFolderName = null;
                     }
                 }
 
@@ -574,8 +574,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
         {
             try
             {
-                var core = await _coreService.GetCore();
-                await using var sdkDbContext = core.DbContextHelper.GetDbContext();
                 var planning = await _dbContext.Plannings
                     .SingleAsync(x => x.Id == id);
 
@@ -585,42 +583,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         _itemsPlanningLocalizationService.GetString("PlanningNotFound"));
                 }
 
-                var planningCases = await _dbContext.PlanningCases
-                    .Where(x => x.PlanningId == planning.Id)
-                    .ToListAsync();
-
-                foreach (var planningCase in planningCases)
-                {
-                    var planningCaseSites = await _dbContext.PlanningCaseSites
-                        .Where(x => x.PlanningCaseId == planningCase.Id).ToListAsync();
-                    foreach (var planningCaseSite in planningCaseSites.Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0))
-                    {
-                        var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
-                        if (result.MicrotingUid != null)
-                        {
-                            await core.CaseDelete((int)result.MicrotingUid);
-                        }
-                    }
-                    // Delete planning case
-                    await planningCase.Delete(_dbContext);
-                }
-
-                var planningSites = await _dbContext.PlanningSites.Where(x => x.PlanningId == planning.Id).ToListAsync();
-                foreach (var planningSite in planningSites)
-                {
-                    await planningSite.Delete(_dbContext);
-                }
-
-                var nameTranslationsPlaning =
-                    await _dbContext.PlanningNameTranslation.Where(x => x.Planning.Id == planning.Id).ToListAsync();
-
-                foreach (var translation in nameTranslationsPlaning)
-                {
-                    await translation.Delete(_dbContext);
-                }
-
-                // Delete planning
-                await planning.Delete(_dbContext);
+                await DeleteOnePlanning(planning);
 
                 return new OperationResult(
                     true,
@@ -635,7 +598,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             }
 
         }
-        private IQueryable<PlanningPnModel> AddSelectToPlanningQuery(IQueryable<Planning> planningQueryable, Language languageIemPlanning)
+        private static IQueryable<PlanningPnModel> AddSelectToPlanningQuery(IQueryable<Planning> planningQueryable, Language languageIemPlanning)
         {
             return planningQueryable.Select(x => new PlanningPnModel
             {
@@ -708,6 +671,78 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     UploadedDataEnabled = x.UploadedDataEnabled,
                 }
             });
+        }
+
+        public async Task<OperationResult> MultipleDeletePlannings(List<int> planningIds)
+        {
+            foreach (var planningId in planningIds)
+            {
+                try
+                {
+                    var planning = await _dbContext.Plannings
+                        .SingleAsync(x => x.Id == planningId);
+
+                    if (planning == null)
+                    {
+                        return new OperationResult(false,
+                            _itemsPlanningLocalizationService.GetString("PlanningNotFound"));
+                    }
+
+                    await DeleteOnePlanning(planning);
+                }
+                catch (Exception e)
+                {
+                    Trace.TraceError(e.Message);
+                    return new OperationResult(
+                        false,
+                        _itemsPlanningLocalizationService.GetString("ErrorWhileRemovingList"));
+                }
+            }
+            return new OperationResult(
+                true,
+                _itemsPlanningLocalizationService.GetString("ListDeletedSuccessfully"));
+        }
+
+        private async Task DeleteOnePlanning(Microting.ItemsPlanningBase.Infrastructure.Data.Entities.PnBase planning)
+        {
+            var core = await _coreService.GetCore();
+            await using var sdkDbContext = core.DbContextHelper.GetDbContext();
+            var planningCases = await _dbContext.PlanningCases
+                .Where(x => x.PlanningId == planning.Id)
+                .ToListAsync();
+
+            foreach (var planningCase in planningCases)
+            {
+                var planningCaseSites = await _dbContext.PlanningCaseSites
+                    .Where(x => x.PlanningCaseId == planningCase.Id).ToListAsync();
+                foreach (var planningCaseSite in planningCaseSites.Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0))
+                {
+                    var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
+                    if (result.MicrotingUid != null)
+                    {
+                        await core.CaseDelete((int)result.MicrotingUid);
+                    }
+                }
+                // Delete planning case
+                await planningCase.Delete(_dbContext);
+            }
+
+            var planningSites = await _dbContext.PlanningSites.Where(x => x.PlanningId == planning.Id).ToListAsync();
+            foreach (var planningSite in planningSites)
+            {
+                await planningSite.Delete(_dbContext);
+            }
+
+            var nameTranslationsPlaning =
+                await _dbContext.PlanningNameTranslation.Where(x => x.Planning.Id == planning.Id).ToListAsync();
+
+            foreach (var translation in nameTranslationsPlaning)
+            {
+                await translation.Delete(_dbContext);
+            }
+
+            // Delete planning
+            await planning.Delete(_dbContext);
         }
     }
 }
