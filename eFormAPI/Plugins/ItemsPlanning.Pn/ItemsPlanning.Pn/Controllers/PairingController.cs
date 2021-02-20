@@ -1,4 +1,4 @@
-﻿/*
+/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2021 Microting A/S
@@ -31,6 +31,7 @@ namespace ItemsPlanning.Pn.Controllers
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+    using ItemsPlanning.Pn.Infrastructure.Models.Planning;
     using Services.PairingService;
 
     [Authorize]

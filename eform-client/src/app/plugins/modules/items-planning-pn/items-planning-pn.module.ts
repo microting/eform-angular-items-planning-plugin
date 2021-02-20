@@ -17,7 +17,7 @@ import {
   PlanningDeleteComponent,
   PlanningEditComponent,
   PlanningFoldersModalComponent,
-  PlanningsPageComponent,
+  PlanningsContainerComponent,
   PlanningTagsComponent,
   UploadedDataDeleteComponent,
   UploadedDataPdfComponent,
@@ -26,7 +26,11 @@ import {
   ReportHeaderComponent,
   ReportImagesComponent,
   ReportPostsComponent,
-  ReportTableComponent, PlanningsBulkImportModalComponent,
+  ReportTableComponent,
+  PlanningsBulkImportModalComponent,
+  PlanningsHeaderComponent,
+  PlanningsTableComponent,
+  PlanningMultipleDeleteComponent
 } from './components';
 import { RouterModule } from '@angular/router';
 import { ItemsPlanningPnRouting } from './items-planning-pn.routing.module';
@@ -65,7 +69,7 @@ import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/
   ],
   declarations: [
     ItemsPlanningPnLayoutComponent,
-    PlanningsPageComponent,
+    PlanningsContainerComponent,
     PlanningCreateComponent,
     PlanningCasePageComponent,
     PlanningEditComponent,
@@ -85,6 +89,9 @@ import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/
     ReportImagesComponent,
     UploadedDataPdfComponent,
     UploadedDataDeleteComponent,
+    PlanningsHeaderComponent,
+    PlanningsTableComponent,
+    PlanningMultipleDeleteComponent
   ],
   providers: [
     ItemsPlanningPnSettingsService,

@@ -3,7 +3,7 @@ import {
   PageSettingsModel
 } from 'src/app/common/models/settings';
 import {PlanningResultsPageModel, PlanningResultsSettingsModel} from '../models/plannings';
-import {PlanningCasesRequestModel} from '../models/plannings/planning-cases-request.model';
+import {PlanningCasesRequestModel} from '../models/plannings/planning-cases/planning-cases-request.model';
 
 export const ItemsPlanningPnLocalSettings = [
   new ApplicationPageModel({

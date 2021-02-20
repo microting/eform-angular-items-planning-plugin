@@ -12,4 +12,5 @@ export class PairingModel {
 export class PairingValueModel {
   deviceUserId: number;
   paired: boolean;
+  latestCaseStatus: number | null;
 }

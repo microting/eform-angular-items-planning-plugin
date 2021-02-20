@@ -1,20 +1,19 @@
-import {PlanningItemModel} from './planning-item.model';
-import {Moment} from 'moment';
-import {CommonTranslationModel} from 'src/app/common/models';
+import { CommonTranslationModel } from 'src/app/common/models';
+import { PlanningFolderModel } from './planning-folder.model';
+import { PlanningReiterationModel } from './planning-reiteration.model';
+import { PlanningEformModel } from './planning-eform.model';
 
 export class PlanningCreateModel {
   translationsName: CommonTranslationModel[];
   description: string;
-  repeatEvery: number;
-  repeatType: number;
-  dayOfWeek: number;
-  dayOfMonth: number;
-  repeatUntil: string;
-  startDate: string;
-  internalRepeatUntil: Moment | null;
-  relatedEFormId: number;
-  item: PlanningItemModel = new PlanningItemModel();
-  eFormSdkFolderId: number;
-  eFormSdkFolderName: string;
   tagsIds: number[];
+
+  planningNumber: string;
+  locationCode: string;
+  buildYear: string;
+  type: string;
+
+  folder: PlanningFolderModel = new PlanningFolderModel();
+  reiteration: PlanningReiterationModel = new PlanningReiterationModel();
+  boundEform: PlanningEformModel = new PlanningEformModel();
 }

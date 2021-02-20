@@ -1,0 +1,114 @@
+<subheader-pn>
+  <div class="p-3">
+    <button
+      mdbBtn
+      class="btn-accent text-black-50 btn-icon"
+      id="importPlanningsBtn"
+      mdbTooltip="{{ 'Import plannings' | translate }}"
+      *ngIf="userRole === 'admin'"
+      (click)="openPlanningsImportModal()"
+    >
+      <fa-icon icon="file-import" [fixedWidth]="true" size="lg"></fa-icon>
+    </button>
+    <button
+      mdbBtn
+      class="btn-accent text-black-50 btn-icon"
+      id="planningManageTagsBtn"
+      (click)="openTagsModal()"
+      mdbTooltip="{{ 'Manage tags' | translate }}"
+      mdbWavesEffect
+    >
+      <fa-icon icon="tags" [fixedWidth]="true" size="lg"></fa-icon>
+    </button>
+    <button
+      mdbBtn
+      *ngIf="pluginClaimsHelper.check(itemsPlanningPnClaims.createPlannings)"
+      id="planningCreateBtn"
+      class="btn-success btn-small-height"
+      mdbTooltip="{{ 'Create Planning' | translate }}"
+      [routerLink]="['./create']"
+    >
+      {{ 'New planning' | translate }}
+    </button>
+  </div>
+</subheader-pn>
+
+<div class="container-fluid">
+  <app-plannings-header
+    [availableTags]="availableTags"
+    [planningsRequestModel]="planningsRequestModel"
+    (descriptionFilterChanged)="onDescriptionFilterChanged($event)"
+    (nameFilterChanged)="onNameFilterChanged($event)"
+    (savedTagRemoved)="removeSavedTag($event)"
+    (tagSaved)="saveTag($event)"
+  ></app-plannings-header>
+  <button
+    mdbBtn
+    [disabled]="
+      !selectedPlanningsCheckboxes || selectedPlanningsCheckboxes.length === 0
+    "
+    id="deleteMultiplePluginsBtn"
+    class="btn-danger btn-small-height"
+    mdbTooltip="{{ 'Delete selected' | translate }}"
+    (click)="showDeleteMultiplePlanningsModal()"
+  >
+    {{ 'Delete Planning' | translate }}
+  </button>
+  <app-plannings-table
+    [planningsRequestModel]="planningsRequestModel"
+    [localPageSettings]="localPageSettings"
+    [planningsModel]="planningsModel"
+    [selectedColCheckboxes]="selectedPlanningsCheckboxes"
+    [allPlanningCheckbox]="allPlanningsCheckbox"
+    (openAssignmentModal)="openAssignmentModal($event)"
+    (showDeletePlanningModal)="showDeletePlanningModal($event)"
+    (sortTable)="sortTable($event)"
+    (tagSelected)="tagSelected($event)"
+    (singlePlanningCheckboxChanged)="onSinglePlanningCheckboxChanged($event)"
+    (allPlanningCheckboxChanged)="onAllPlanningsCheckboxChanged($event)"
+  ></app-plannings-table>
+  <div class="row justify-content-between mr-2 ml-2">
+    <div class="col-md-1">
+      <page-size-pn
+        [pageSize]="localPageSettings.pageSize"
+        (onPageSizeChanged)="
+          localPageSettings.pageSize = $event;
+          planningsRequestModel.pageIndex = 1;
+          updateLocalPageSettings()
+        "
+      >
+      </page-size-pn>
+    </div>
+    <div class="col-md-4 ml-auto d-flex justify-content-end p-2">
+      <pagination-pn
+        *ngIf="planningsModel.total > planningsRequestModel.pageSize"
+        [limit]="planningsRequestModel.pageSize"
+        [size]="planningsModel.total"
+        [offset]="planningsRequestModel.offset"
+        (onPageChanged)="changePage($event)"
+      ></pagination-pn>
+    </div>
+  </div>
+</div>
+<app-planning-delete
+  #deletePlanningModal
+  (planningDeleted)="getPlannings()"
+></app-planning-delete>
+<app-planning-multiple-delete
+  #deleteMultiplePlanningsModal
+  (deleteMultiplePlannings)="deleteMultiplePlannings()"
+></app-planning-multiple-delete>
+<app-planning-assign-sites-modal
+  [sitesDto]="sitesDto"
+  (sitesAssigned)="getPlannings()"
+  #assignSitesModal
+></app-planning-assign-sites-modal>
+<app-planning-tags
+  #planningTagsModal
+  [availableTags]="availableTags"
+  (tagsChanged)="getTags()"
+></app-planning-tags>
+<app-plannings-bulk-import-modal
+  (importFinished)="getPlannings()"
+  #modalPlanningsImport
+></app-plannings-bulk-import-modal>

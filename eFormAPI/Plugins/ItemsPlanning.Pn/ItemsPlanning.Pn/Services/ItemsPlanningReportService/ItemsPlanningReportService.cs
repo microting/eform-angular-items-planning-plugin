@@ -86,22 +86,21 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 var toDate = new DateTime(model.DateTo.Value.Year, model.DateTo.Value.Month,
                     model.DateTo.Value.Day, 23, 59, 59);
 
-                var casesQuery = _dbContext.PlanningCases
-                    .Include(x => x.Item)
-                    .ThenInclude(x => x.Planning)
+                var planningCasesQuery = _dbContext.PlanningCases
+                    .Include(x => x.Planning)
                     .ThenInclude(x => x.PlanningsTags)
                     .Where(x => x.Status == 100)
                     .AsQueryable();
 
                 if (model.DateFrom != null)
                 {
-                    casesQuery = casesQuery.Where(x =>
+                    planningCasesQuery = planningCasesQuery.Where(x =>
                         x.MicrotingSdkCaseDoneAt >= fromDate);
                 }
 
                 if (model.DateTo != null)
                 {
-                    casesQuery = casesQuery.Where(x =>
+                    planningCasesQuery = planningCasesQuery.Where(x =>
                         x.MicrotingSdkCaseDoneAt <= toDate);
                 }
 
@@ -109,19 +108,19 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 {
                     foreach (var tagId in model.TagIds)
                     {
-                        casesQuery = casesQuery.Where(x =>
-                            x.Item.Planning.PlanningsTags.Any(y => y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
+                        planningCasesQuery = planningCasesQuery.Where(x =>
+                            x.Planning.PlanningsTags.Any(y => y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
                     }
                 }
-                var groupedCaseCheckListIds = casesQuery.GroupBy(x => x.MicrotingSdkeFormId).Select(x => x.Key).ToList();
+                var groupedCaseCheckListIds = planningCasesQuery.GroupBy(x => x.MicrotingSdkeFormId).Select(x => x.Key).ToList();
 
                 var checkLists = await sdkDbContext.CheckLists
                     .FromSqlRaw("SELECT * FROM CheckLists WHERE" +
                                 $" Id IN ({string.Join(",", groupedCaseCheckListIds)})" +
                                 "  ORDER BY ReportH1  * 1, ReportH2 * 1, ReportH3 * 1, ReportH4 * 1").ToListAsync();
 
-                var itemCases = await casesQuery
-                    .OrderBy(x => x.Item.Planning.RelatedEFormName)
+                var itemCases = await planningCasesQuery
+                    .OrderBy(x => x.Planning.RelatedEFormName)
                     .ToListAsync();
 
                 var groupedCases = itemCases
@@ -266,7 +265,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 
                                 var planningNameTranslation =
                                     await _dbContext.PlanningNameTranslation.SingleAsync(x =>
-                                        x.PlanningId == planningCase.Item.PlanningId && x.LanguageId == language.Id);
+                                        x.PlanningId == planningCase.PlanningId && x.LanguageId == language.Id);
                                 //var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {planningNameTranslation.Name}"; // Disabling date until we have correct date pr image.
                                 var label = $"{imageField.CaseId}; {planningNameTranslation.Name}";
                                 var geoTag = "";
@@ -321,7 +320,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         {
                             var planningNameTranslation =
                                 await _dbContext.PlanningNameTranslation.SingleAsync(x =>
-                                    x.PlanningId == planningCase.Item.PlanningId && x.LanguageId == language.Id);
+                                    x.PlanningId == planningCase.PlanningId && x.LanguageId == language.Id);
                             var item = new ReportEformItemModel
                             {
                                 Id = planningCase.Id,
@@ -330,7 +329,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                 eFormId = planningCase.MicrotingSdkeFormId,
                                 DoneBy = planningCase.DoneByUserName,
                                 ItemName = planningNameTranslation.Name,
-                                ItemDescription = planningCase.Item.Description,
+                                ItemDescription = planningCase.Planning.Description,
                             };
 
 

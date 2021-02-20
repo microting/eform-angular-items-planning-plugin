@@ -1,27 +1,22 @@
-import {PlanningItemModel} from './planning-item.model';
-import {Moment} from 'moment';
-import {CommonTranslationModel} from 'src/app/common/models';
+import { CommonTranslationModel } from 'src/app/common/models';
+import { PlanningEformModel } from './planning-eform.model';
+import { PlanningReiterationModel } from './planning-reiteration.model';
+import { PlanningFolderModel } from './planning-folder.model';
+import { PlanningFieldsModel } from './planning-fields.model';
 
 export class PlanningUpdateModel {
   id: number;
   translationsName: CommonTranslationModel[];
   description: string;
-  repeatEvery: number;
-  repeatType: number;
-  dayOfWeek: number;
-  dayOfMonth: number;
-  repeatUntil: string | null;
-  relatedEFormId: number;
-  deployedAtEnabled: boolean;
-  doneAtEnabled: boolean;
-  doneByUserNameEnabled: boolean;
-  uploadedDataEnabled: boolean;
-  labelEnabled: boolean;
-  descriptionEnabled: boolean;
-  itemNumberEnabled: boolean;
-  locationCodeEnabled: boolean;
-  buildYearEnabled: boolean;
-  typeEnabled: boolean;
-  numberOfImagesEnabled: boolean;
-  item: PlanningItemModel;
+
+  itemNumber: string;
+  locationCode: string;
+  buildYear: string;
+  type: string;
+  tagsIds: number[] = [];
+
+  folder: PlanningFolderModel = new PlanningFolderModel();
+  reiteration: PlanningReiterationModel = new PlanningReiterationModel();
+  boundEform: PlanningEformModel = new PlanningEformModel();
+  enabledFields: PlanningFieldsModel = new PlanningFieldsModel();
 }
