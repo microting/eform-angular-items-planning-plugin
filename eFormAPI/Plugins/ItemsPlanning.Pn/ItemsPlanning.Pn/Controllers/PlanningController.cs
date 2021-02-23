@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microsoft.AspNetCore.Http;
+
 namespace ItemsPlanning.Pn.Controllers
 {
     using System.Collections.Generic;
@@ -85,18 +87,23 @@ namespace ItemsPlanning.Pn.Controllers
             return await _planningService.Delete(id);
         }
 
+        /// <summary>
+        /// import plannings from xlsx file (excel)
+        /// </summary>
+        /// <param name="file">excel file</param>
+        /// <returns>operation result, true or false</returns>
         [HttpPost]
         [Route("api/items-planning-pn/plannings/import")]
-        public async Task<OperationResult> Import(PlanningExcelUploadModel uploadModel)
+        public async Task<OperationResult> Import(IFormFile file)
         {
-            return await _planningImportService.ImportPlannings(uploadModel.File.OpenReadStream());
+            return await _planningImportService.ImportPlannings(file.OpenReadStream());
         }
 
         /// <summary>
         /// multiple delete plannings
         /// </summary>
         /// <param name="planningIds">array witch planning ids</param>
-        /// <returns></returns>
+        /// <returns>operation result, true or false</returns>
         [HttpPost]
         [Route("api/items-planning-pn/plannings/delete-multiple")]
         public async Task<OperationResult> MultipleDelete([FromBody] List<int> planningIds)

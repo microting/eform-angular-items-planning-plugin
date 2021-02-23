@@ -73,4 +73,11 @@ export class ItemsPlanningPnPlanningsService extends BaseService {
       planningsIds
     );
   }
+
+  importPlanningsFromExcel(excelFile: File): Observable<OperationResult> {
+    return this.uploadFile(
+      ItemsPlanningPnPlanningsMethods.Plannings + '/import',
+      excelFile
+    );
+  }
 }

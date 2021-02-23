@@ -361,7 +361,6 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         {
                             var planningFromDb = await _dbContext.Plannings
                                 .Where(x => x.Id == planningName.PlanningId)
-                                .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                                 .FirstAsync();
                             if(excelModel.DayOfMonth != null && planningFromDb.DayOfMonth != excelModel.DayOfMonth)
                             {
@@ -385,6 +384,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             }
                             planningFromDb.UpdatedByUserId = _userService.UserId;
                             planningFromDb.StartDate = DateTime.Now;
+                            planningFromDb.WorkflowState = Constants.WorkflowStates.Created;
 
                             var tagsIdForAddToPlanningTags = planningFromDb.PlanningsTags
                                 .Where(x => tagIds.Any(y => x.PlanningTagId != y)).ToList();

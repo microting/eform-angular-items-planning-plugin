@@ -1,32 +1,51 @@
-import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import {FileUploader} from 'ng2-file-upload';
-import {ToastrService} from 'ngx-toastr';
-import {TranslateService} from '@ngx-translate/core';
-import {AuthService} from 'src/app/common/services';
-import {LoaderService} from 'src/app/common/services/loeader.service';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { FileUploader } from 'ng2-file-upload';
+import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from 'src/app/common/services';
+import { LoaderService } from 'src/app/common/services/loeader.service';
+import { ItemsPlanningPnPlanningsService } from 'src/app/plugins/modules/items-planning-pn/services';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { Subscription } from 'rxjs';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-plannings-bulk-import-modal',
   templateUrl: './plannings-bulk-import-modal.component.html',
-  styleUrls: ['./plannings-bulk-import-modal.component.scss']
+  styleUrls: ['./plannings-bulk-import-modal.component.scss'],
 })
-export class PlanningsBulkImportModalComponent implements OnInit {
-  @ViewChild('frame', {static: true}) frame;
-  @ViewChild('xlsxPlannings', { static: false })
+export class PlanningsBulkImportModalComponent implements OnInit, OnDestroy {
+  @ViewChild('frame', { static: true }) frame;
+  @ViewChild('xlsxPlannings', { static: false }) xlsxPlannings: ElementRef;
   @Output() importFinished = new EventEmitter<void>();
-  xlsxPlannings: ElementRef;
   xlsxPlanningsFileUploader: FileUploader = new FileUploader({
-    url: '/api/items-planning-pn/plannings/import', authToken: this.authService.bearerToken
+    url: '/api/items-planning-pn/plannings/import',
+    authToken: this.authService.bearerToken,
   });
-  errors: {row: number, col: number, message: string}[];
+  xlsxFile: File;
+  errors: { row: number; col: number; message: string }[];
+  importSubscription$: Subscription;
 
-  constructor(private toastrService: ToastrService,
-              private translateService: TranslateService,
-              private authService: AuthService,
-              private loaderService: LoaderService) {
-  }
+  constructor(
+    private toastrService: ToastrService,
+    private translateService: TranslateService,
+    private authService: AuthService,
+    private loaderService: LoaderService,
+    private planningService: ItemsPlanningPnPlanningsService
+  ) {}
+
+  ngOnDestroy(): void {}
 
   ngOnInit() {
+    // todo maybe deprecated
     this.xlsxPlanningsFileUploader.onSuccessItem = (item, response) => {
       const model = JSON.parse(response).model;
       if (model) {
@@ -46,6 +65,7 @@ export class PlanningsBulkImportModalComponent implements OnInit {
       }
       this.loaderService.isLoading.next(false);
       this.xlsxPlannings.nativeElement.value = '';
+      this.xlsxFile = null;
     };
     this.xlsxPlanningsFileUploader.onErrorItem = () => {
       this.xlsxPlanningsFileUploader.clearQueue();
@@ -60,21 +80,31 @@ export class PlanningsBulkImportModalComponent implements OnInit {
           this.xlsxPlanningsFileUploader.queue[0]
         );
       }
-      this.errors = [];
     };
   }
 
   show() {
+    this.errors = [];
+    this.xlsxFile = null;
     this.frame.show();
   }
 
-  uploadExcelPlanningsFile() {
-    this.xlsxPlanningsFileUploader.queue[0].upload();
-    this.loaderService.isLoading.next(true);
+  uploadExcelPlanningsFile(event) {
+    this.xlsxPlanningsFileUploader.progress = 100;
+    this.xlsxFile = event.target.files[0] as File;
+    this.importSubscription$ = this.planningService
+      .importPlanningsFromExcel(this.xlsxFile)
+      .subscribe((result) => {
+        if (result && result.success) {
+          this.importFinished.emit();
+          this.excelPlanningsModal();
+        }
+      });
   }
 
   excelPlanningsModal() {
-    this.xlsxPlanningsFileUploader.clearQueue();
     this.frame.hide();
+    this.xlsxPlanningsFileUploader.clearQueue();
+    this.xlsxFile = null;
   }
 }
