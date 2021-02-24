@@ -1,7 +1,7 @@
 import itemsPlanningModalPage from './ItemsPlanningModal.page';
-import {PageWithNavbarPage} from '../PageWithNavbar.page';
-import {generateRandmString} from '../../Helpers/helper-functions';
-import {format, parse} from 'date-fns';
+import { PageWithNavbarPage } from '../PageWithNavbar.page';
+import { generateRandmString } from '../../Helpers/helper-functions';
+import { format, parse } from 'date-fns';
 
 export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   constructor() {
@@ -15,80 +15,101 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
 
   public get planningDeleteDeleteBtn() {
     const el = itemsPlanningModalPage.planningDeleteDeleteBtn;
-    el.waitForDisplayed({timeout: 20000});
-    el.waitForClickable({timeout: 20000});
+    el.waitForDisplayed({ timeout: 20000 });
+    el.waitForClickable({ timeout: 20000 });
     return el;
   }
 
   public get planningDeleteCancelBtn() {
     const el = itemsPlanningModalPage.planningDeleteCancelBtn;
-    el.waitForDisplayed({timeout: 20000});
-    el.waitForClickable({timeout: 20000});
+    el.waitForDisplayed({ timeout: 20000 });
+    el.waitForClickable({ timeout: 20000 });
     return el;
   }
 
   public clickIdTableHeader() {
     $('#idTableHeader').click();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
   }
 
   public clickNameTableHeader() {
     $('#nameTableHeader').click();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
   }
 
   public clickDescriptionTableHeader() {
     $('#descriptionTableHeader').click();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
   }
-
-  // public getPlanningValue(selector: any, row: number) {
-  //   if (selector === 'planningId') {
-  //     return parseInt($('#tableBody').$(`tr:nth-child(${row})`).$('#' + selector).getText(), 10);
-  //   } else {
-  //     return $('#tableBody').$(`tr:nth-child(${row})`).$('#' + selector).getText();
-  //   }
-  // }
 
   public get itemPlanningButton() {
     const el = $('#items-planning-pn');
-    el.waitForDisplayed({timeout: 20000});
-    el.waitForClickable({timeout: 20000});
+    el.waitForDisplayed({ timeout: 20000 });
+    el.waitForClickable({ timeout: 20000 });
     return el;
   }
 
   public get planningCreateBtn() {
     const el = $('#planningCreateBtn');
-    el.waitForDisplayed({timeout: 20000});
-    el.waitForClickable({timeout: 20000});
+    el.waitForDisplayed({ timeout: 20000 });
+    el.waitForClickable({ timeout: 20000 });
     return el;
   }
 
   public get planningManageTagsBtn() {
     const el = $('#planningManageTagsBtn');
-    el.waitForDisplayed({timeout: 20000});
-    el.waitForClickable({timeout: 20000});
+    el.waitForDisplayed({ timeout: 20000 });
+    el.waitForClickable({ timeout: 20000 });
     return el;
   }
 
   public get planningsButton() {
     const el = $('#items-planning-pn-plannings');
-    el.waitForDisplayed({timeout: 20000});
-    el.waitForClickable({timeout: 20000});
+    el.waitForDisplayed({ timeout: 20000 });
+    el.waitForClickable({ timeout: 20000 });
     return el;
   }
 
   public get planningId() {
     const el = $('#planningId');
-    el.waitForDisplayed({timeout: 20000});
+    el.waitForDisplayed({ timeout: 20000 });
     return el;
+  }
+  public get deleteMultiplePluginsBtn() {
+    const ele = $('#deleteMultiplePluginsBtn');
+    ele.waitForDisplayed({ timeout: 20000 });
+    return ele;
+  }
+
+  public get planningsMultipleDeleteCancelBtn() {
+    const ele = $('#planningsMultipleDeleteCancelBtn');
+    ele.waitForDisplayed({ timeout: 20000 });
+    ele.waitForClickable({ timeout: 20000 });
+    return ele;
+  }
+
+  public get planningsMultipleDeleteDeleteBtn() {
+    const ele = $('#planningsMultipleDeleteDeleteBtn');
+    ele.waitForDisplayed({ timeout: 20000 });
+    return ele;
+  }
+
+  public get selectAllPlanningsCheckbox() {
+    const ele = $('#selectAllPlanningsCheckbox');
+    // ele.waitForDisplayed({ timeout: 20000 });
+    // ele.waitForClickable({ timeout: 20000 });
+    return ele;
+  }
+
+  public get selectAllPlanningsCheckboxForClick() {
+    return this.selectAllPlanningsCheckbox.$('..');
   }
 
   public goToPlanningsPage() {
     const spinnerAnimation = $('#spinner-animation');
     this.itemPlanningButton.click();
     this.planningsButton.click();
-    spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
+    spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
   }
 
   public getPlaningByName(namePlanning: string) {
@@ -101,17 +122,25 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     return null;
   }
 
-  public createDummyPlannings(template, folderName, createCount = 3): PlanningCreateUpdate[] {
+  public createDummyPlannings(
+    template,
+    folderName,
+    createCount = 3
+  ): PlanningCreateUpdate[] {
     const masResult = new Array<PlanningCreateUpdate>();
     for (let i = 0; i < createCount; i++) {
       const planningData: PlanningCreateUpdate = {
-        name: [generateRandmString(), generateRandmString(), generateRandmString()],
+        name: [
+          generateRandmString(),
+          generateRandmString(),
+          generateRandmString(),
+        ],
         eFormName: template,
         description: generateRandmString(),
         repeatEvery: '1',
         repeatType: 'Dag',
         repeatUntil: new Date('5/15/2020'),
-        folderName: folderName
+        folderName: folderName,
       };
       masResult.push(planningData);
       itemsPlanningModalPage.createPlanning(planningData);
@@ -139,6 +168,45 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     }
     return resultMas;
   }
+
+  openMultipleDelete() {
+    if (this.deleteMultiplePluginsBtn.isClickable()) {
+      this.deleteMultiplePluginsBtn.click();
+    }
+  }
+
+  closeMultipleDelete(clickCancel = false) {
+    if (clickCancel) {
+      this.planningsMultipleDeleteCancelBtn.click();
+    } else {
+      this.planningsMultipleDeleteDeleteBtn.click();
+      $('#spinner-animation').waitForDisplayed({
+        timeout: 90000,
+        reverse: true,
+      });
+    }
+    this.planningCreateBtn.waitForDisplayed({ timeout: 20000 });
+  }
+
+  multipleDelete(clickCancel = false) {
+    this.openMultipleDelete();
+    this.closeMultipleDelete(clickCancel);
+  }
+
+  selectAllPlanningsForDelete(valueCheckbox = true, pickOne = false) {
+    if (!pickOne) {
+      if (
+        this.selectAllPlanningsCheckbox.getValue() !== valueCheckbox.toString()
+      ) {
+        this.selectAllPlanningsCheckboxForClick.click();
+      }
+    } else {
+      const plannings = this.getAllPlannings();
+      for (let i = 0; i < plannings.length; i++) {
+        plannings[i].clickOnCheckboxForMultipleDelete();
+      }
+    }
+  }
 }
 
 const itemsPlanningPlanningPage = new ItemsPlanningPlanningPage();
@@ -150,53 +218,49 @@ export class PlanningRowObject {
     if (row) {
       try {
         this.id = +row.$('#planningId').getText();
-      } catch (e) {
-      }
+      } catch (e) {}
       try {
         this.name = row.$('#planningName').getText();
-      } catch (e) {
-      }
+      } catch (e) {}
       try {
         this.description = row.$('#planningDescription').getText();
-      } catch (e) {
-      }
+      } catch (e) {}
       try {
         this.folderName = row.$('#planningFolderName').getText();
-      } catch (e) {
-      }
+      } catch (e) {}
       try {
         this.eFormName = row.$('#planningRelatedEformName').getText();
-      } catch (e) {
-      }
+      } catch (e) {}
       try {
-        this.tags = row.$$('#planningTags').map(element => element.getText());
-      } catch (e) {
-      }
+        this.tags = row.$$('#planningTags').map((element) => element.getText());
+      } catch (e) {}
       try {
         this.repeatEvery = row.$('#planningRepeatEvery').getText();
-      } catch (e) {
-      }
+      } catch (e) {}
       try {
         this.repeatType = row.$('#planningRepeatType').getText();
-      } catch (e) {
-      }
+      } catch (e) {}
       try {
         const date = row.$('#planningRepeatUntil').getText();
         this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
-      } catch (e) {
-      }
+      } catch (e) {}
       try {
         this.pairingBtn = row.$('#planningAssignmentBtn');
-      } catch (e) {
-      }
+      } catch (e) {}
       try {
         this.updateBtn = row.$('#updatePlanningBtn');
-      } catch (e) {
-      }
+      } catch (e) {}
       try {
         this.deleteBtn = row.$('#deletePlanningBtn');
-      } catch (e) {
-      }
+      } catch (e) {}
+      try {
+        this.checkboxDelete = row.$(
+          `#planningCheckboxColumn planningCheckbox${rowNumber - 1}`
+        );
+      } catch (e) {}
+      try {
+        this.checkboxDeleteForClick = this.checkboxDelete.$('..');
+      } catch (e) {}
     }
   }
 
@@ -209,14 +273,19 @@ export class PlanningRowObject {
   public repeatEvery: string;
   public repeatType: string;
   public repeatUntil: Date;
-  public updateBtn;
-  public deleteBtn;
-  public pairingBtn;
+  public updateBtn: WebdriverIO.Element;
+  public deleteBtn: WebdriverIO.Element;
+  public pairingBtn: WebdriverIO.Element;
+  public checkboxDelete: WebdriverIO.Element;
+  public checkboxDeleteForClick: WebdriverIO.Element;
 
   public static closeEdit(clickCancel = false) {
     if (!clickCancel) {
       itemsPlanningModalPage.planningEditSaveBtn.click();
-      $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+      $('#spinner-animation').waitForDisplayed({
+        timeout: 90000,
+        reverse: true,
+      });
     } else {
       itemsPlanningModalPage.planningEditCancelBtn.click();
     }
@@ -226,7 +295,10 @@ export class PlanningRowObject {
   public static closeDelete(clickCancel = false) {
     if (!clickCancel) {
       itemsPlanningPlanningPage.planningDeleteDeleteBtn.click();
-      $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+      $('#spinner-animation').waitForDisplayed({
+        timeout: 90000,
+        reverse: true,
+      });
     } else {
       itemsPlanningPlanningPage.planningDeleteCancelBtn.click();
     }
@@ -234,81 +306,160 @@ export class PlanningRowObject {
   }
 
   public openDelete() {
-    this.deleteBtn.waitForClickable({timeout: 20000});
+    this.deleteBtn.waitForClickable({ timeout: 20000 });
     this.deleteBtn.click();
-    itemsPlanningPlanningPage.planningDeleteDeleteBtn.waitForDisplayed({timeout: 20000});
+    itemsPlanningPlanningPage.planningDeleteDeleteBtn.waitForDisplayed({
+      timeout: 20000,
+    });
   }
 
   public openEdit() {
     this.updateBtn.click();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-    itemsPlanningModalPage.planningEditSaveBtn.waitForDisplayed({timeout: 20000});
+    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+    itemsPlanningModalPage.planningEditSaveBtn.waitForDisplayed({
+      timeout: 20000,
+    });
   }
 
-  update(planning: PlanningCreateUpdate, clearTags = false, clickCancel = false) {
+  update(
+    planning: PlanningCreateUpdate,
+    clearTags = false,
+    clickCancel = false
+  ) {
     this.openEdit();
     const spinnerAnimation = $('#spinner-animation');
     const ngOption = $('.ng-option');
     if (planning.name && planning.name.length > 0) {
       for (let i = 0; i < planning.name.length; i++) {
-        if (itemsPlanningModalPage.editPlanningItemName(i).getValue() !== planning.name[i]) {
-          itemsPlanningModalPage.editPlanningItemName(i).setValue(planning.name[i]);
+        if (
+          itemsPlanningModalPage.editPlanningItemName(i).getValue() !==
+          planning.name[i]
+        ) {
+          itemsPlanningModalPage
+            .editPlanningItemName(i)
+            .setValue(planning.name[i]);
         }
       }
     }
-    if (planning.folderName && itemsPlanningModalPage.editFolderName.$('#editFolderSelectorInput').getValue() !== planning.folderName) {
+    if (
+      planning.folderName &&
+      itemsPlanningModalPage.editFolderName
+        .$('#editFolderSelectorInput')
+        .getValue() !== planning.folderName
+    ) {
       itemsPlanningModalPage.selectFolder(planning.folderName);
     }
-    if (planning.eFormName && itemsPlanningModalPage.editPlanningSelector.$('.ng-value').getText() !== planning.eFormName) {
-      itemsPlanningModalPage.editPlanningSelector.$('input').setValue(planning.eFormName);
-      spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
-      ngOption.waitForDisplayed({timeout: 20000});
-      itemsPlanningModalPage.editPlanningSelector.$('.ng-dropdown-panel').$(`.ng-option=${planning.eFormName}`).click();
-      spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
+    if (
+      planning.eFormName &&
+      itemsPlanningModalPage.editPlanningSelector.$('.ng-value').getText() !==
+        planning.eFormName
+    ) {
+      itemsPlanningModalPage.editPlanningSelector
+        .$('input')
+        .setValue(planning.eFormName);
+      spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
+      ngOption.waitForDisplayed({ timeout: 20000 });
+      itemsPlanningModalPage.editPlanningSelector
+        .$('.ng-dropdown-panel')
+        .$(`.ng-option=${planning.eFormName}`)
+        .click();
+      spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
     }
     if (clearTags) {
-      const clearButton = itemsPlanningModalPage.editPlanningTagsSelector.$('span.ng-clear');
+      const clearButton = itemsPlanningModalPage.editPlanningTagsSelector.$(
+        'span.ng-clear'
+      );
       if (clearButton.isExisting()) {
         clearButton.click();
       }
     }
     if (planning.tags && planning.tags.length > 0) {
       for (let i = 0; i < planning.tags.length; i++) {
-        itemsPlanningModalPage.editPlanningTagsSelector.addValue(planning.tags[i]);
+        itemsPlanningModalPage.editPlanningTagsSelector.addValue(
+          planning.tags[i]
+        );
         browser.keys(['Return']);
       }
     }
-    if (planning.repeatEvery && itemsPlanningModalPage.editRepeatEvery.getValue() !== planning.repeatEvery) {
+    if (
+      planning.repeatEvery &&
+      itemsPlanningModalPage.editRepeatEvery.getValue() !== planning.repeatEvery
+    ) {
       itemsPlanningModalPage.editRepeatEvery.setValue(planning.repeatEvery);
     }
-    if (planning.repeatType && itemsPlanningModalPage.editRepeatType.$('.ng-value-label').getText() !== planning.repeatType) {
-      itemsPlanningModalPage.editRepeatType.$('input').setValue(planning.repeatType);
-      spinnerAnimation.waitForDisplayed({timeout: 90000, reverse: true});
-      ngOption.waitForDisplayed({timeout: 20000});
-      itemsPlanningModalPage.editRepeatType.$('ng-dropdown-panel').$(`.ng-option=${planning.repeatType}`).click();
+    if (
+      planning.repeatType &&
+      itemsPlanningModalPage.editRepeatType.$('.ng-value-label').getText() !==
+        planning.repeatType
+    ) {
+      itemsPlanningModalPage.editRepeatType
+        .$('input')
+        .setValue(planning.repeatType);
+      spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
+      ngOption.waitForDisplayed({ timeout: 20000 });
+      itemsPlanningModalPage.editRepeatType
+        .$('ng-dropdown-panel')
+        .$(`.ng-option=${planning.repeatType}`)
+        .click();
     }
-    if (planning.startFrom &&
-      parse(itemsPlanningModalPage.editStartFrom.getValue(), 'M/d/yyyy', new Date()).toISOString() !== planning.startFrom.toISOString()) {
-      itemsPlanningModalPage.editStartFrom.setValue(format(planning.startFrom, 'M/d/yyyy'));
+    if (
+      planning.startFrom &&
+      parse(
+        itemsPlanningModalPage.editStartFrom.getValue(),
+        'M/d/yyyy',
+        new Date()
+      ).toISOString() !== planning.startFrom.toISOString()
+    ) {
+      itemsPlanningModalPage.editStartFrom.setValue(
+        format(planning.startFrom, 'M/d/yyyy')
+      );
     }
-    if (planning.repeatUntil &&
-      parse(itemsPlanningModalPage.editRepeatUntil.getValue(), 'M/d/yyyy', new Date())
-        .toISOString() !== planning.repeatUntil.toISOString()) {
-      itemsPlanningModalPage.editRepeatUntil.setValue(format(planning.repeatUntil, 'M/d/yyyy'));
+    if (
+      planning.repeatUntil &&
+      parse(
+        itemsPlanningModalPage.editRepeatUntil.getValue(),
+        'M/d/yyyy',
+        new Date()
+      ).toISOString() !== planning.repeatUntil.toISOString()
+    ) {
+      itemsPlanningModalPage.editRepeatUntil.setValue(
+        format(planning.repeatUntil, 'M/d/yyyy')
+      );
     }
-    if (planning.number && itemsPlanningModalPage.editItemNumber.getValue() !== planning.number) {
+    if (
+      planning.number &&
+      itemsPlanningModalPage.editItemNumber.getValue() !== planning.number
+    ) {
       itemsPlanningModalPage.editItemNumber.setValue(planning.number);
     }
-    if (planning.description && itemsPlanningModalPage.editPlanningDescription.getValue() !== planning.description) {
-      itemsPlanningModalPage.editPlanningDescription.setValue(planning.description);
+    if (
+      planning.description &&
+      itemsPlanningModalPage.editPlanningDescription.getValue() !==
+        planning.description
+    ) {
+      itemsPlanningModalPage.editPlanningDescription.setValue(
+        planning.description
+      );
     }
-    if (planning.locationCode && itemsPlanningModalPage.editItemLocationCode.getValue() !== planning.locationCode) {
-      itemsPlanningModalPage.editItemLocationCode.setValue(planning.locationCode);
+    if (
+      planning.locationCode &&
+      itemsPlanningModalPage.editItemLocationCode.getValue() !==
+        planning.locationCode
+    ) {
+      itemsPlanningModalPage.editItemLocationCode.setValue(
+        planning.locationCode
+      );
     }
-    if (planning.buildYear && itemsPlanningModalPage.editItemBuildYear.getValue() !== planning.buildYear) {
+    if (
+      planning.buildYear &&
+      itemsPlanningModalPage.editItemBuildYear.getValue() !== planning.buildYear
+    ) {
       itemsPlanningModalPage.editItemBuildYear.setValue(planning.buildYear);
     }
-    if (planning.type && itemsPlanningModalPage.editItemType.getValue() !== planning.type) {
+    if (
+      planning.type &&
+      itemsPlanningModalPage.editItemType.getValue() !== planning.type
+    ) {
       itemsPlanningModalPage.editItemType.setValue(planning.type);
     }
     PlanningRowObject.closeEdit(clickCancel);
@@ -317,6 +468,12 @@ export class PlanningRowObject {
   delete(clickCancel = false) {
     this.openDelete();
     PlanningRowObject.closeDelete(clickCancel);
+  }
+
+  clickOnCheckboxForMultipleDelete(valueCheckbox = true) {
+    if (this.checkboxDelete.getValue() !== valueCheckbox.toString()) {
+      this.checkboxDeleteForClick.click();
+    }
   }
 }
 

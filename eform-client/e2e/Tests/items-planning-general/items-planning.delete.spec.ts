@@ -1,7 +1,9 @@
 import loginPage from '../../Page objects/Login.page';
-import itemsPlanningPlanningPage, {PlanningCreateUpdate} from '../../Page objects/ItemsPlanning/ItemsPlanningPlanningPage';
+import itemsPlanningPlanningPage, {
+  PlanningCreateUpdate,
+} from '../../Page objects/ItemsPlanning/ItemsPlanningPlanningPage';
 import itemsPlanningModalPage from '../../Page objects/ItemsPlanning/ItemsPlanningModal.page';
-import {generateRandmString} from '../../Helpers/helper-functions';
+import { generateRandmString } from '../../Helpers/helper-functions';
 import myEformsPage from '../../Page objects/MyEforms.page';
 import foldersPage from '../../Page objects/Folders.page';
 
@@ -13,7 +15,7 @@ const planningData: PlanningCreateUpdate = {
   repeatEvery: '1',
   repeatType: 'Dag',
   repeatUntil: new Date('5/15/2020'),
-  folderName: generateRandmString()
+  folderName: generateRandmString(),
 };
 
 describe('Items planning actions - Delete', function () {
@@ -38,14 +40,22 @@ describe('Items planning actions - Delete', function () {
   });
   it('should not delete existing planning', function () {
     const numRowBeforeDelete = itemsPlanningPlanningPage.rowNum;
-    const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(planningData.name[1]);
+    const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
+      planningData.name[1]
+    );
     planningRowObject.delete(true);
-    expect(numRowBeforeDelete, 'Planning is deleted').eq(itemsPlanningPlanningPage.rowNum);
+    expect(numRowBeforeDelete, 'Planning is deleted').eq(
+      itemsPlanningPlanningPage.rowNum
+    );
   });
   it('should delete existing planning', function () {
     const numRowBeforeDelete = itemsPlanningPlanningPage.rowNum;
-    const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(planningData.name[1]);
+    const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
+      planningData.name[1]
+    );
     planningRowObject.delete();
-    expect(numRowBeforeDelete - 1, 'Planning is not deleted').eq(itemsPlanningPlanningPage.rowNum);
+    expect(numRowBeforeDelete - 1, 'Planning is not deleted').eq(
+      itemsPlanningPlanningPage.rowNum
+    );
   });
 });

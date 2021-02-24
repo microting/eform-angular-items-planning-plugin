@@ -22,16 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microsoft.AspNetCore.Http;
+
 namespace ItemsPlanning.Pn.Controllers
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Infrastructure.Models;
     using Infrastructure.Models.Import;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Microting.ItemsPlanningBase.Infrastructure.Const;
-    using ItemsPlanning.Pn.Infrastructure.Models.Planning;
+    using Infrastructure.Models.Planning;
     using Services.PlanningImportService;
     using Services.PlanningService;
 
@@ -85,11 +87,28 @@ namespace ItemsPlanning.Pn.Controllers
             return await _planningService.Delete(id);
         }
 
+        /// <summary>
+        /// import plannings from xlsx file (excel)
+        /// </summary>
+        /// <param name="file">excel file</param>
+        /// <returns>operation result, true or false</returns>
         [HttpPost]
         [Route("api/items-planning-pn/plannings/import")]
-        public async Task<OperationResult> Import(PlanningExcelUploadModel uploadModel)
+        public async Task<OperationResult> Import(IFormFile file)
         {
-            return await _planningImportService.ImportPlannings(uploadModel.File.OpenReadStream());
+            return await _planningImportService.ImportPlannings(file.OpenReadStream());
+        }
+
+        /// <summary>
+        /// multiple delete plannings
+        /// </summary>
+        /// <param name="planningIds">array witch planning ids</param>
+        /// <returns>operation result, true or false</returns>
+        [HttpPost]
+        [Route("api/items-planning-pn/plannings/delete-multiple")]
+        public async Task<OperationResult> MultipleDelete([FromBody] List<int> planningIds)
+        {
+            return await _planningService.MultipleDeletePlannings(planningIds);
         }
     }
 }

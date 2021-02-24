@@ -27,6 +27,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
     using System.Threading.Tasks;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Infrastructure.Models.Planning;
+    using System.Collections.Generic;
 
     public interface IPlanningService
     {
@@ -39,5 +40,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
         Task<OperationResult> Update(PlanningUpdateModel updateModel);
 
         Task<OperationResult> Delete(int id);
+
+        Task<OperationResult> MultipleDeletePlannings(List<int> planningIds);
     }
 }

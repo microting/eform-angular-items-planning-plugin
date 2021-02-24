@@ -1,21 +1,45 @@
-﻿using ItemsPlanning.Pn.Infrastructure.Models;
-using ItemsPlanning.Pn.Services.ItemsPlanningLocalizationService;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microting.eFormApi.BasePn.Abstractions;
-using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
-using Microting.ItemsPlanningBase.Infrastructure.Data;
-using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ItemsPlanning.Pn.Infrastructure.Models.Planning;
+﻿/*
+The MIT License (MIT)
+
+Copyright (c) 2007 - 2021 Microting A/S
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 
 namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
 {
+    using ItemsPlanningLocalizationService;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+    using Microting.eFormApi.BasePn.Abstractions;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
+    using Microting.ItemsPlanningBase.Infrastructure.Data;
+    using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Infrastructure.Models.Planning;
+    using Microting.eForm.Infrastructure.Constants;
+
     public class ItemsPlanningTagsService : IItemsPlanningTagsService
     {
         private readonly ILogger<ItemsPlanningTagsService> _logger;
@@ -41,6 +65,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
             try
             {
                 var itemsPlanningTags = await _dbContext.PlanningTags
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                                     .AsNoTracking()
                                     .Select(x => new CommonDictionaryModel
                                     {
@@ -69,15 +94,11 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
                 var itemsPlanningTag = new PlanningTag
                 {
                     Name = requestModel.Name,
-                    CreatedAt = DateTime.UtcNow,
                     CreatedByUserId = _userService.UserId,
                     UpdatedByUserId = _userService.UserId,
-                    UpdatedAt = DateTime.UtcNow,
-                    Version = 1
                 };
 
-                await _dbContext.PlanningTags.AddAsync(itemsPlanningTag);
-                await _dbContext.SaveChangesAsync();
+                await itemsPlanningTag.Create(_dbContext);
 
                 return new OperationResult(
                     true,
@@ -98,6 +119,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
             try
             {
                 var itemsPlanningTag = await _dbContext.PlanningTags
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                     .FirstOrDefaultAsync(x => x.Id == id);
 
                 if (itemsPlanningTag == null)
@@ -107,11 +129,14 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
                         _itemsPlanningLocalizationService.GetString("ItemsPlanningTagNotFound"));
                 }
 
-                var planningsTags = await _dbContext.PlanningsTags.Where(x => x.PlanningTagId == id).ToListAsync();
+                var planningsTags = await _dbContext.PlanningsTags
+                    .Where(x => x.PlanningTagId == id).ToListAsync();
 
-                _dbContext.RemoveRange(planningsTags);
-                _dbContext.PlanningTags.Remove(itemsPlanningTag);
-                await _dbContext.SaveChangesAsync();
+                foreach(var planningTag in planningsTags)
+                {
+                    await planningTag.Delete(_dbContext);
+                }
+                await itemsPlanningTag.Delete(_dbContext);
 
                 return new OperationResult(
                     true,
@@ -132,6 +157,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
             try
             {
                 var itemsPlanningTag = await _dbContext.PlanningTags
+                    .Where(x=> x.WorkflowState != Constants.WorkflowStates.Removed)
                     .FirstOrDefaultAsync(x => x.Id == requestModel.Id);
 
                 if (itemsPlanningTag == null)
@@ -142,11 +168,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
                 }
 
                 itemsPlanningTag.Name = requestModel.Name;
-                itemsPlanningTag.UpdatedAt = DateTime.UtcNow;
                 itemsPlanningTag.UpdatedByUserId = _userService.UserId;
 
-                _dbContext.PlanningTags.Update(itemsPlanningTag);
-                await _dbContext.SaveChangesAsync();
+                await itemsPlanningTag.Update(_dbContext);
 
                 return new OperationResult(true,
                     _itemsPlanningLocalizationService.GetString("ItemsPlanningTagUpdatedSuccessfully"));

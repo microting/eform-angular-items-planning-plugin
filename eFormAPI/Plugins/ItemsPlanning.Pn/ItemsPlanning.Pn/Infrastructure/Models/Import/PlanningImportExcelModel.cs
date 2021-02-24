@@ -32,7 +32,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Import
     {
         public int ExcelRow { get; set; }
 
-        public string ItemName { get; set; }
+        public string PlanningName { get; set; }
 
         public int? RepeatEvery { get; set; }
 

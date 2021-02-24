@@ -1,4 +1,4 @@
-﻿/*
+/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2021 Microting A/S
@@ -21,9 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-using Microting.eForm.Infrastructure;
-using Microting.eForm.Infrastructure.Data.Entities;
 
 namespace ItemsPlanning.Pn.Services.PlanningImportService
 {
@@ -121,7 +118,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         excelErrors.Add(error);
                     }
 
-                    if (string.IsNullOrEmpty(excelModel.ItemName))
+                    if (string.IsNullOrEmpty(excelModel.PlanningName))
                     {
                         var error = new ExcelParseErrorModel
                         {
@@ -146,32 +143,20 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         excelErrors.Add(error);
                     }
 
-                    // Find planning name
-                    var planningName = planningNames.FirstOrDefault(x =>
-                        string.Equals(
-                            x,
-                            excelModel.ItemName.Split("|").First(),
-                            StringComparison.CurrentCultureIgnoreCase));
 
-                    var firstFolder = excelModel.Folders.First();
+                    //if (!string.IsNullOrEmpty(planningName))
+                    //{
+                    //    var error = new ExcelParseErrorModel
+                    //    {
+                    //        Col = PlanningImportExcelConsts.PlanningItemNameCol,
+                    //        Row = excelModel.ExcelRow,
+                    //        Message = _itemsPlanningLocalizationService.GetString(
+                    //            "PlanningWithNameAlreadyExists",
+                    //            excelModel.PlanningName)
+                    //    };
 
-                    planningName = microtingDbContext.Folders
-                        .Any(x => x.Name == firstFolder.Label
-                                  && x.WorkflowState != Constants.WorkflowStates.Removed) ? planningName : "";
-
-                    if (!string.IsNullOrEmpty(planningName))
-                    {
-                        var error = new ExcelParseErrorModel
-                        {
-                            Col = PlanningImportExcelConsts.PlanningItemNameCol,
-                            Row = excelModel.ExcelRow,
-                            Message = _itemsPlanningLocalizationService.GetString(
-                                "PlanningWithNameAlreadyExists",
-                                excelModel.ItemName)
-                        };
-
-                        excelErrors.Add(error);
-                    }
+                    //    excelErrors.Add(error);
+                    //}
 
                     var templateByName = templatesDto
                         .FirstOrDefault(x => string.Equals(
@@ -250,14 +235,10 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             var planningTag = new PlanningTag
                             {
                                 Name = fileTag,
-                                CreatedAt = DateTime.UtcNow,
                                 CreatedByUserId = _userService.UserId,
-                                UpdatedAt = DateTime.UtcNow,
                                 UpdatedByUserId = _userService.UserId,
-                                Version = 1,
                             };
-                            await _dbContext.PlanningTags.AddAsync(planningTag);
-                            await _dbContext.SaveChangesAsync();
+                            await planningTag.Create(_dbContext);
                         }
                     }
 
@@ -363,69 +344,128 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             }
                         }
 
-                        var sdkFolder = excelModel.Folders.Last();
+                        var planningNameFromExcelModel = excelModel.PlanningName.Split("|").First();
+                        // Find planning name
+                        var planningName = _dbContext.PlanningNameTranslation.FirstOrDefault(x =>
+                            string.Equals(
+                                x.Name,
+                                planningNameFromExcelModel,
+                                StringComparison.CurrentCultureIgnoreCase));
 
-                        var planning = new Planning
+                        var firstFolder = excelModel.Folders.First();
+
+                        planningName = microtingDbContext.Folders
+                            .Any(x => x.Name == firstFolder.Label
+                                      && x.WorkflowState != Constants.WorkflowStates.Removed) ? planningName : null;
+                        if (planningName != null)
                         {
-                            CreatedByUserId = _userService.UserId,
-                            CreatedAt = DateTime.UtcNow,
-                            RepeatUntil = excelModel.RepeatUntil,
-                            DayOfWeek = excelModel.DayOfWeek,
-                            DayOfMonth = excelModel.DayOfMonth,
-                            Enabled = true,
-                            RelatedEFormId = (int) excelModel.EFormId,
-                            RelatedEFormName = excelModel.EFormName,
-                            PlanningsTags = new List<PlanningsTags>()
-                        };
-
-
-
-                        if (excelModel.RepeatEvery != null)
-                        {
-                            planning.RepeatEvery = (int) excelModel.RepeatEvery;
-                        }
-
-                        if (excelModel.RepeatType != null)
-                        {
-                            planning.RepeatType = (RepeatType) excelModel.RepeatType;
-                        }
-
-                        if (sdkFolder != null)
-                        {
-                            planning.SdkFolderName = sdkFolder.Label;
-                        }
-
-                        planning.StartDate = DateTime.UtcNow;
-
-                        foreach (var tagId in tagIds)
-                        {
-                            planning.PlanningsTags.Add(
-                                new PlanningsTags
-                                {
-                                    CreatedAt = DateTime.UtcNow,
-                                    CreatedByUserId = _userService.UserId,
-                                    UpdatedAt = DateTime.UtcNow,
-                                    UpdatedByUserId = _userService.UserId,
-                                    Version = 1,
-                                    PlanningTagId = tagId
-                                });
-                        }
-
-                        await planning.Create(_dbContext);
-
-                        var i = 1;
-                        foreach (var translationText in excelModel.ItemName.Split("|"))
-                        {
-                            var language = await dbContext.Languages.SingleAsync(x => x.Id == i);
-                            var planningNameTranslation = new PlanningNameTranslation()
+                            var planningFromDb = await _dbContext.Plannings
+                                .Where(x => x.Id == planningName.PlanningId)
+                                .FirstAsync();
+                            if(excelModel.DayOfMonth != null && planningFromDb.DayOfMonth != excelModel.DayOfMonth)
                             {
-                                Name = translationText,
-                                LanguageId = language.Id,
-                                PlanningId = planning.Id
-                            };
-                            await planningNameTranslation.Create(_dbContext);
-                            i += 1;
+                                planningFromDb.DayOfMonth = excelModel.DayOfMonth;
+                            }
+                            if (excelModel.DayOfWeek != null && planningFromDb.DayOfWeek != excelModel.DayOfWeek)
+                            {
+                                planningFromDb.DayOfWeek = excelModel.DayOfWeek;
+                            }
+                            if (excelModel.RepeatEvery != null && planningFromDb.RepeatEvery != excelModel.RepeatEvery)
+                            {
+                                planningFromDb.RepeatEvery = (int) excelModel.RepeatEvery;
+                            }
+                            if (excelModel.RepeatType != null && planningFromDb.RepeatType != excelModel.RepeatType)
+                            {
+                                planningFromDb.RepeatType = (RepeatType) excelModel.RepeatType;
+                            }
+                            if (excelModel.RepeatUntil != null && planningFromDb.RepeatUntil != excelModel.RepeatUntil)
+                            {
+                                planningFromDb.RepeatUntil = excelModel.RepeatUntil;
+                            }
+                            planningFromDb.UpdatedByUserId = _userService.UserId;
+                            planningFromDb.StartDate = DateTime.Now;
+                            planningFromDb.WorkflowState = Constants.WorkflowStates.Created;
+
+                            var tagsIdForAddToPlanningTags = planningFromDb.PlanningsTags
+                                .Where(x => tagIds.Any(y => x.PlanningTagId != y)).ToList();
+
+                            var tagsIdForRemoveInPlanningTags = tagIds
+                                .Where(x => planningFromDb.PlanningsTags.Any(y => x != y.PlanningTagId)).ToList();
+                            if (tagsIdForAddToPlanningTags.Any())
+                            {
+                                foreach (var tagsIdForAddToPlanningTag in tagsIdForAddToPlanningTags)
+                                {
+                                    planningFromDb.PlanningsTags.Add(
+                                        new PlanningsTags
+                                        {
+                                            CreatedByUserId = _userService.UserId,
+                                            UpdatedByUserId = _userService.UserId,
+                                            PlanningTagId = tagsIdForAddToPlanningTag.PlanningTagId
+                                        });
+                                }
+                            }
+                            if (tagsIdForRemoveInPlanningTags.Any())
+                            {
+                                foreach (var tagsIdForAddToPlanningTag in tagsIdForAddToPlanningTags)
+                                {
+                                    await planningFromDb.PlanningsTags
+                                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                                        .FirstOrDefault(x=> x.PlanningTagId == tagsIdForAddToPlanningTag.PlanningTagId)
+                                        .Delete(_dbContext);
+                                }
+                            }
+                            await planningFromDb.Update(_dbContext);
                         }
+                        else
+                        {
+                            var sdkFolder = excelModel.Folders.Last();
+                            var newPlanning = new Planning
+                            {
+                                CreatedByUserId = _userService.UserId,
+                                RepeatUntil = excelModel.RepeatUntil,
+                                DayOfWeek = excelModel.DayOfWeek,
+                                DayOfMonth = excelModel.DayOfMonth,
+                                Enabled = true,
+                                RelatedEFormId = (int)excelModel.EFormId,
+                                RelatedEFormName = excelModel.EFormName,
+                                PlanningsTags = new List<PlanningsTags>(),
+                                SdkFolderName = sdkFolder?.Label,
+                                StartDate = DateTime.UtcNow,
+                                RepeatEvery = excelModel.RepeatEvery ?? 1,
+                                RepeatType = excelModel.RepeatType ?? RepeatType.Month
+                            };
+
+                            foreach (var tagId in tagIds)
+                            {
+                                newPlanning.PlanningsTags.Add(
+                                    new PlanningsTags
+                                    {
+                                        CreatedAt = DateTime.UtcNow,
+                                        CreatedByUserId = _userService.UserId,
+                                        UpdatedAt = DateTime.UtcNow,
+                                        UpdatedByUserId = _userService.UserId,
+                                        Version = 1,
+                                        PlanningTagId = tagId
+                                    });
+                            }
+
+                            await newPlanning.Create(_dbContext);
+
+                            var i = 1;
+                            foreach (var translationText in excelModel.PlanningName.Split("|"))
+                            {
+                                var language = await dbContext.Languages.SingleAsync(x => x.Id == i);
+                                var planningNameTranslation = new PlanningNameTranslation()
+                                {
+                                    Name = translationText,
+                                    LanguageId = language.Id,
+                                    PlanningId = newPlanning.Id
+                                };
+                                await planningNameTranslation.Create(_dbContext);
+                                i += 1;
+                            }
+                        }
+
                     }
 
                     //await transaction.CommitAsync();

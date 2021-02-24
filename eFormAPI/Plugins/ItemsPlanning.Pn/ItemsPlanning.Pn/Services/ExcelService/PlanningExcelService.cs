@@ -226,7 +226,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                     item.Folders = folders;
 
                     // Planning info
-                    item.ItemName = row.Cell(PlanningImportExcelConsts.PlanningItemNameCol).Value.ToString();
+                    item.PlanningName = row.Cell(PlanningImportExcelConsts.PlanningItemNameCol).Value.ToString();
 
                     var repeatEveryString = row.Cell(PlanningImportExcelConsts.PlanningRepeatEveryCol).Value.ToString();
                     var repeatEveryParseResult = int.TryParse(repeatEveryString, out var repeatEvery);
