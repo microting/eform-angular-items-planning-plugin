@@ -52,7 +52,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   public get planningCreateBtn() {
     const el = $('#planningCreateBtn');
     el.waitForDisplayed({ timeout: 20000 });
-    el.waitForClickable({ timeout: 20000 });
+    el.waitForClickable({ timeout: 90000 });
     return el;
   }
 
@@ -105,11 +105,19 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     return this.selectAllPlanningsCheckbox.$('..');
   }
 
+  public get importPlanningsBtn() {
+    const ele = $('#importPlanningsBtn');
+    ele.waitForDisplayed({ timeout: 20000 });
+    ele.waitForClickable({ timeout: 20000 });
+    return ele;
+  }
+
   public goToPlanningsPage() {
     const spinnerAnimation = $('#spinner-animation');
     this.itemPlanningButton.click();
     this.planningsButton.click();
     spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
+    this.planningCreateBtn.waitForClickable({ timeout: 90000 });
   }
 
   public getPlaningByName(namePlanning: string) {
@@ -169,6 +177,10 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     return resultMas;
   }
 
+  getPlanningByIndex(i: number): PlanningRowObject {
+    return new PlanningRowObject(i);
+  }
+
   openMultipleDelete() {
     if (this.deleteMultiplePluginsBtn.isClickable()) {
       this.deleteMultiplePluginsBtn.click();
@@ -216,43 +228,19 @@ export class PlanningRowObject {
   constructor(rowNumber) {
     const row = $$('#tableBody tr')[rowNumber - 1];
     if (row) {
-      try {
-        this.id = +row.$('#planningId').getText();
-      } catch (e) {}
-      try {
-        this.name = row.$('#planningName').getText();
-      } catch (e) {}
-      try {
-        this.description = row.$('#planningDescription').getText();
-      } catch (e) {}
-      try {
-        this.folderName = row.$('#planningFolderName').getText();
-      } catch (e) {}
-      try {
-        this.eFormName = row.$('#planningRelatedEformName').getText();
-      } catch (e) {}
-      try {
-        this.tags = row.$$('#planningTags').map((element) => element.getText());
-      } catch (e) {}
-      try {
-        this.repeatEvery = row.$('#planningRepeatEvery').getText();
-      } catch (e) {}
-      try {
-        this.repeatType = row.$('#planningRepeatType').getText();
-      } catch (e) {}
-      try {
-        const date = row.$('#planningRepeatUntil').getText();
-        this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
-      } catch (e) {}
-      try {
-        this.pairingBtn = row.$('#planningAssignmentBtn');
-      } catch (e) {}
-      try {
-        this.updateBtn = row.$('#updatePlanningBtn');
-      } catch (e) {}
-      try {
-        this.deleteBtn = row.$('#deletePlanningBtn');
-      } catch (e) {}
+      this.id = +row.$('#planningId').getText();
+      this.name = row.$('#planningName').getText();
+      this.description = row.$('#planningDescription').getText();
+      this.folderName = row.$('#planningFolderName').getText();
+      this.eFormName = row.$('#planningRelatedEformName').getText();
+      this.tags = row.$$('#planningTags').map((element) => element.getText());
+      this.repeatEvery = +row.$('#planningRepeatEvery').getText();
+      this.repeatType = row.$('#planningRepeatType').getText();
+      const date = row.$('#planningRepeatUntil').getText();
+      this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
+      this.pairingBtn = row.$('#planningAssignmentBtn');
+      this.updateBtn = row.$('#updatePlanningBtn');
+      this.deleteBtn = row.$('#deletePlanningBtn');
       try {
         this.checkboxDelete = row.$(
           `#planningCheckboxColumn planningCheckbox${rowNumber - 1}`
@@ -270,7 +258,7 @@ export class PlanningRowObject {
   public folderName: string;
   public eFormName: string;
   public tags: string[];
-  public repeatEvery: string;
+  public repeatEvery: number;
   public repeatType: string;
   public repeatUntil: Date;
   public updateBtn: WebdriverIO.Element;

@@ -41,9 +41,9 @@ export class ItemsPlanningSettingsPage extends Page {
 
   public goToSettingsPage() {
     myEformsPage.Navbar.goToPluginsPage();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
     pluginPage.pluginSettingsLink.click();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
   }
 
   public saveSettings(data: any) {
@@ -53,11 +53,11 @@ export class ItemsPlanningSettingsPage extends Page {
     this.maxParallelism.setValue(data.maxParallelism);
     this.numberOfWorkers.setValue(data.numberOfWorkers);
     this.saveSettingsBtn.click();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
   }
 
   public getSettings() {
-      browser.pause(500);
+    browser.pause(500);
     return new ItemsPlanningSettings();
   }
 }

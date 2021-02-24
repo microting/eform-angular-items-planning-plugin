@@ -1,7 +1,6 @@
-import {PageWithNavbarPage} from '../PageWithNavbar.page';
-import {generateRandmString} from '../../Helpers/helper-functions';
+import { PageWithNavbarPage } from '../PageWithNavbar.page';
 import itemsPlanningPlanningPage from './ItemsPlanningPlanningPage';
-import {DeviceUsersRowObject} from '../DeviceUsers.page';
+import { DeviceUsersRowObject } from '../DeviceUsers.page';
 
 export class ItemsPlanningPairingPage extends PageWithNavbarPage {
   constructor() {
@@ -10,15 +9,15 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
 
   public get pairingBtn() {
     const ele = $('#items-planning-pn-pairing');
-    ele.waitForDisplayed({timeout: 20000});
-    ele.waitForClickable({timeout: 20000});
+    ele.waitForDisplayed({ timeout: 20000 });
+    ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
   public goToPairingPage() {
     itemsPlanningPlanningPage.itemPlanningButton.click();
     this.pairingBtn.click();
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
     this.savePairingGridBtn.waitForDisplayed();
   }
 
@@ -29,22 +28,22 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
 
   public get savePairingGridBtn() {
     const ele = $('#savePairingGridBtn');
-    ele.waitForDisplayed({timeout: 20000});
+    ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
   public get updatePairingsSaveBtn() {
     const ele = $('#updatePairingsSaveBtn');
-    ele.waitForDisplayed({timeout: 20000});
+    ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
   public get updatePairingsSaveCancelBtn() {
     const ele = $('#updatePairingsSaveCancelBtn');
-    ele.waitForDisplayed({timeout: 20000});
-    ele.waitForClickable({timeout: 20000});
+    ele.waitForDisplayed({ timeout: 20000 });
+    ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
@@ -54,7 +53,10 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
       this.updatePairingsSaveCancelBtn.click();
     } else {
       this.updatePairingsSaveBtn.click();
-      $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+      $('#spinner-animation').waitForDisplayed({
+        timeout: 90000,
+        reverse: true,
+      });
     }
     this.savePairingGridBtn.waitForDisplayed();
   }
@@ -114,8 +116,14 @@ export class PairingRowObject {
       this.pairRow = this.row.$(`#planningRowCheckbox${rowNumber - 1}`);
       this.pairRowForClick = this.pairRow.$('..');
       this.pairCheckboxes = [];
-      for (let i = 0; i < itemsPlanningPairingPage.countDeviceUserCol - 1; i++) {
-        this.pairCheckboxes.push($(`#deviceUserCheckbox${i}_planning${rowNumber - 1}`));
+      for (
+        let i = 0;
+        i < itemsPlanningPairingPage.countDeviceUserCol - 1;
+        i++
+      ) {
+        this.pairCheckboxes.push(
+          $(`#deviceUserCheckbox${i}_planning${rowNumber - 1}`)
+        );
       }
       this.pairCheckboxesForClick = [];
       for (let i = 0; i < this.pairCheckboxes.length; i++) {
@@ -133,7 +141,11 @@ export class PairingRowObject {
   public pairCheckboxesForClick: WebdriverIO.Element[];
   public row: WebdriverIO.Element;
 
-  public pairWhichAllDeviceUsers(pair: boolean, clickOnPairRow = false, clickCancel = false) {
+  public pairWhichAllDeviceUsers(
+    pair: boolean,
+    clickOnPairRow = false,
+    clickCancel = false
+  ) {
     if (clickOnPairRow) {
       this.pairRowForClick.click();
       if (this.pairRow.getValue() !== pair.toString()) {
@@ -149,16 +161,23 @@ export class PairingRowObject {
     itemsPlanningPairingPage.savePairing(clickCancel);
   }
 
-  public pairWithOneDeviceUser(pair: boolean, indexDeviceForPair: number, clickCancel = false) {
-    if (this.pairCheckboxes[indexDeviceForPair].getValue() !== pair.toString()) {
+  public pairWithOneDeviceUser(
+    pair: boolean,
+    indexDeviceForPair: number,
+    clickCancel = false
+  ) {
+    if (
+      this.pairCheckboxes[indexDeviceForPair].getValue() !== pair.toString()
+    ) {
       this.pairCheckboxesForClick[indexDeviceForPair].click();
     }
     itemsPlanningPairingPage.savePairing(clickCancel);
   }
 
   public isPair(deviceUser: DeviceUsersRowObject): boolean {
-    const index = itemsPlanningPairingPage
-      .indexColDeviceUserInTableByName(`${deviceUser.firstName} ${deviceUser.lastName}`);
+    const index = itemsPlanningPairingPage.indexColDeviceUserInTableByName(
+      `${deviceUser.firstName} ${deviceUser.lastName}`
+    );
     return Boolean(this.pairCheckboxes[index - 1].getValue()) as boolean;
   }
 }
@@ -166,7 +185,7 @@ export class PairingRowObject {
 export class PairingColObject {
   constructor(rowNumber) {
     const ele = $(`#deviceUserTableHeader${rowNumber - 1}`);
-    ele.waitForDisplayed({timeout: 20000});
+    ele.waitForDisplayed({ timeout: 20000 });
     if (ele.isExisting()) {
       this.deviceUserName = ele.getText();
       this.pairCol = $(`#deviceUserColumnCheckbox${rowNumber - 1}`);
@@ -174,7 +193,9 @@ export class PairingColObject {
       this.pairCheckboxesForClick = [];
       this.pairCheckboxes = [];
       for (let i = 0; i < itemsPlanningPairingPage.countPlanningRow; i++) {
-        this.pairCheckboxes.push($(`#deviceUserCheckbox${rowNumber - 1}_planning${i}`));
+        this.pairCheckboxes.push(
+          $(`#deviceUserCheckbox${rowNumber - 1}_planning${i}`)
+        );
       }
       for (let i = 0; i < this.pairCheckboxes.length; i++) {
         this.pairCheckboxesForClick.push(this.pairCheckboxes[i].$('..'));
@@ -188,7 +209,11 @@ export class PairingColObject {
   public pairCheckboxesForClick: WebdriverIO.Element[];
   public pairCheckboxes: WebdriverIO.Element[];
 
-  public pairWhichAllPlannings(pair: boolean, clickOnPairRow = false, clickCancel = false) {
+  public pairWhichAllPlannings(
+    pair: boolean,
+    clickOnPairRow = false,
+    clickCancel = false
+  ) {
     if (clickOnPairRow) {
       this.pairColForClick.click();
       if (this.pairCol.getValue() !== pair.toString()) {
@@ -203,5 +228,4 @@ export class PairingColObject {
     }
     itemsPlanningPairingPage.savePairing(clickCancel);
   }
-
 }
