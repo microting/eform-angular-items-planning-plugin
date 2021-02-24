@@ -183,8 +183,23 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     }
                 }
 
-                planningsModel.Total = await _dbContext.Plannings.CountAsync(x =>
-                    x.WorkflowState != Constants.WorkflowStates.Removed);
+                if (pnRequestModel.TagIds.Any())
+                {
+                    foreach (var tagId in pnRequestModel.TagIds)
+                    {
+                        planningsModel.Total = await _dbContext.Plannings.Where(x => x.PlanningsTags.Any(y =>
+                                y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed))
+                            .CountAsync(x =>
+                                x.WorkflowState != Constants.WorkflowStates.Removed);
+                    }
+                }
+                else
+                {
+                    planningsModel.Total = await _dbContext.Plannings.CountAsync(x =>
+                        x.WorkflowState != Constants.WorkflowStates.Removed);
+                }
+
+
                 planningsModel.Plannings = plannings;
 
                 if (pnRequestModel.Sort == "TranslatedName")
