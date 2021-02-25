@@ -242,9 +242,7 @@ export class PlanningRowObject {
       this.updateBtn = row.$('#updatePlanningBtn');
       this.deleteBtn = row.$('#deletePlanningBtn');
       try {
-        this.checkboxDelete = row.$(
-          `#planningCheckboxColumn planningCheckbox${rowNumber - 1}`
-        );
+        this.checkboxDelete = $(`#planningCheckbox${rowNumber - 1}`);
       } catch (e) {}
       try {
         this.checkboxDeleteForClick = this.checkboxDelete.$('..');

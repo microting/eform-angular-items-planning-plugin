@@ -62,7 +62,7 @@ describe('Items planning - Add', function () {
       'Saved description in table is incorrect'
     ).equal(planningData.description);
     expect(
-      planningRowObject.repeatEvery,
+      planningRowObject.repeatEvery.toString(),
       'Saved repeat every in table is incorrect'
     ).equal(planningData.repeatEvery);
     const repeatUntil = new Date(planningData.repeatUntil);
