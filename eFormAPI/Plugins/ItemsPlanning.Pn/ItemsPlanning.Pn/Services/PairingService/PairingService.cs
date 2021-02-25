@@ -39,7 +39,8 @@ namespace ItemsPlanning.Pn.Services.PairingService
     using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
     using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
-    using ItemsPlanning.Pn.Services.PlanningService;
+    using PlanningService;
+    using Microting.eForm.Infrastructure.Extensions;
     using Infrastructure.Models.Planning;
 
     public class PairingService : IPairingService
@@ -120,6 +121,21 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 // Add users who is not paired
                 foreach (var pairingModel in pairing)
                 {
+                    // get status last executed case for planning
+                    var planningCaseSite = await _dbContext.PlanningCaseSites
+                        .CustomOrderByDescending("UpdatedAt")
+                        .Where(z => z.PlanningId == pairingModel.PlanningId)
+                        .Where(z => z.WorkflowState != Constants.WorkflowStates.Removed)
+                        .FirstOrDefaultAsync();
+                    foreach (var pairingModelPairingValue in pairingModel.PairingValues)
+                    {
+                        if (pairingModelPairingValue.DeviceUserId == planningCaseSite.MicrotingSdkSiteId &&
+                            pairingModelPairingValue.Paired)
+                        {
+                            pairingModelPairingValue.LatestCaseStatus = planningCaseSite.Status;
+                        }
+                    }
+                    // Add users 
                     foreach (var deviceUser in deviceUsers)
                     {
                         if (deviceUser.Id != null && pairingModel.PairingValues.All(x => x.DeviceUserId != deviceUser.Id))
