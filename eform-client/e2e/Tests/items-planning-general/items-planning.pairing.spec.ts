@@ -1,12 +1,14 @@
 import loginPage from '../../Page objects/Login.page';
 import itemsPlanningPlanningPage, {
   PlanningCreateUpdate,
-  PlanningRowObject
+  PlanningRowObject,
 } from '../../Page objects/ItemsPlanning/ItemsPlanningPlanningPage';
 import myEformsPage from '../../Page objects/MyEforms.page';
 import foldersPage from '../../Page objects/Folders.page';
-import {generateRandmString} from '../../Helpers/helper-functions';
-import deviceUsersPage, {DeviceUsersRowObject} from '../../Page objects/DeviceUsers.page';
+import { generateRandmString } from '../../Helpers/helper-functions';
+import deviceUsersPage, {
+  DeviceUsersRowObject,
+} from '../../Page objects/DeviceUsers.page';
 import itemsPlanningPairingPage from '../../Page objects/ItemsPlanning/ItemsPlanningPairingPage';
 import itemsPlanningModalPage from '../../Page objects/ItemsPlanning/ItemsPlanningModal.page';
 
@@ -30,8 +32,12 @@ describe('Items planning plugin - Pairing', function () {
     }
 
     myEformsPage.Navbar.goToDeviceUsersPage();
-    while (deviceUsersPage.rowNum !== countDeviceUsers) { // create device users
-      deviceUsersPage.createNewDeviceUser(generateRandmString(), generateRandmString());
+    while (deviceUsersPage.rowNum !== countDeviceUsers) {
+      // create device users
+      deviceUsersPage.createNewDeviceUser(
+        generateRandmString(),
+        generateRandmString()
+      );
     }
     for (let i = 1; i < countDeviceUsers + 1; i++) {
       deviceUsers.push(deviceUsersPage.getDeviceUser(i));
@@ -47,13 +53,19 @@ describe('Items planning plugin - Pairing', function () {
     itemsPlanningPlanningPage.goToPlanningsPage();
     while (itemsPlanningPlanningPage.rowNum < countPlanning) {
       const planningData: PlanningCreateUpdate = {
-        name: [generateRandmString(), generateRandmString(), generateRandmString()],
+        name: [
+          generateRandmString(),
+          generateRandmString(),
+          generateRandmString(),
+        ],
         eFormName: template,
-        folderName: folderName
+        folderName: folderName,
       };
       itemsPlanningModalPage.createPlanning(planningData);
     }
-    planningRowObjects = [...itemsPlanningPlanningPage.getAllPlannings(countPlanning)];
+    planningRowObjects = [
+      ...itemsPlanningPlanningPage.getAllPlannings(countPlanning),
+    ];
 
     itemsPlanningPairingPage.goToPairingPage();
   });
@@ -94,14 +106,18 @@ describe('Items planning plugin - Pairing', function () {
     const indexDeviceForPair = 1;
     const pairingRowObject = itemsPlanningPairingPage.getPlanningByIndex(1);
     pairingRowObject.pairWithOneDeviceUser(pair, indexDeviceForPair);
-    expect(pairingRowObject.pairCheckboxes[indexDeviceForPair].getValue()).eq(pair.toString());
+    expect(pairingRowObject.pairCheckboxes[indexDeviceForPair].getValue()).eq(
+      pair.toString()
+    );
   });
   it('should unpair one planning which one device user', function () {
     const pair = false;
     const indexDeviceForPair = 1;
     const pairingRowObject = itemsPlanningPairingPage.getPlanningByIndex(1);
     pairingRowObject.pairWithOneDeviceUser(pair, indexDeviceForPair);
-    expect(pairingRowObject.pairCheckboxes[indexDeviceForPair].getValue()).eq(pair.toString());
+    expect(pairingRowObject.pairCheckboxes[indexDeviceForPair].getValue()).eq(
+      pair.toString()
+    );
   });
   after('delete all created for this test', function () {
     itemsPlanningPlanningPage.goToPlanningsPage();
