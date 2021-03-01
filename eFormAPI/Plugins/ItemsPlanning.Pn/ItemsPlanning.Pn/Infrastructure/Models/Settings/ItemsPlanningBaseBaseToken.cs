@@ -1,4 +1,4 @@
-﻿/*
+/*
 The MIT License (MIT)
 
 Copyright (c) 2007 - 2021 Microting A/S
@@ -22,22 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
+namespace ItemsPlanning.Pn.Infrastructure.Models.Settings
 {
-    using Infrastructure.Models.Planning;
-    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-    using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-
-    public interface IItemsPlanningTagsService
+    public class ItemsPlanningBaseBaseToken
     {
-        Task<OperationDataResult<List<CommonDictionaryModel>>> GetItemsPlanningTags();
-
-        Task<OperationResult> UpdateItemsPlanningTag(PlanningTagModel requestModel);
-
-        Task<OperationResult> DeleteItemsPlanningTag(int id);
-
-        Task<OperationResult> CreateItemsPlanningTag(PlanningTagModel requestModel);
+        public string Token { get; set; }
     }
 }

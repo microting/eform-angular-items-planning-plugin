@@ -24,20 +24,17 @@ SOFTWARE.
 
 namespace ItemsPlanning.Pn.Services.ItemsPlanningPnSettingsService
 {
-    using System;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Security.Claims;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
     using Infrastructure.Models.Settings;
     using ItemsPlanningLocalizationService;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
     using Microting.eFormApi.BasePn.Infrastructure.Helpers.PluginDbOptions;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Microting.ItemsPlanningBase.Infrastructure.Data;
+    using System;
+    using System.Diagnostics;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
 
     public class ItemsPlanningPnSettingsService : IItemsPlanningPnSettingsService
     {
@@ -60,7 +57,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningPnSettingsService
             _httpContextAccessor = httpContextAccessor;
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
         }
-
 
         public async Task<OperationDataResult<ItemsPlanningBaseSettings>> GetSettings()
         {

@@ -22,19 +22,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Collections.Generic;
-
 namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 {
+    using System.Collections.Generic;
     public class PlanningsRequestModel
     {
         public string NameFilter { get; set; }
+
         public string DescriptionFilter { get; set; }
+
         public string Sort { get; set; }
+
         public int PageIndex { get; set; }
+
         public int Offset { get; set; }
+
         public bool IsSortDsc { get; set; }
+
         public int PageSize { get; set; }
+
         public List<int> TagIds { get; set; }
             = new List<int>();
     }

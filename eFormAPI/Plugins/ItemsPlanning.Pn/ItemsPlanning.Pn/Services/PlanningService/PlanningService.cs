@@ -65,12 +65,13 @@ namespace ItemsPlanning.Pn.Services.PlanningService
         {
             try
             {
-                var planningsModel = new PlanningsPnModel();
                 var sdkCore =
                     await _coreService.GetCore();
                 await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
 
-                var planningsQuery = _dbContext.Plannings.AsQueryable();
+                var planningsQuery = _dbContext.Plannings
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .AsQueryable();
                 if (!string.IsNullOrEmpty(pnRequestModel.Sort) && pnRequestModel.Sort != "TranslatedName")
                 {
                     if (pnRequestModel.IsSortDsc)
@@ -112,9 +113,11 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     }
                 }
 
+                // calculate total before pagination
+                var total = await planningsQuery.CountAsync();
+
                 planningsQuery
                     = planningsQuery
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Skip(pnRequestModel.Offset)
                         .Take(pnRequestModel.PageSize);
 
@@ -133,6 +136,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     var kvp = new KeyValuePair<int, string>(checkList.Id, checkList.WorkflowState);
                     checkListWorkflowState.Add(kvp);
                 }
+
+                // add select and take objects from db
                 var plannings = await AddSelectToPlanningQuery(planningsQuery, languageIemPlanning).ToListAsync();
 
                 // get site names
@@ -183,25 +188,13 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     }
                 }
 
-                if (pnRequestModel.TagIds.Any())
+                var planningsModel = new PlanningsPnModel
                 {
-                    foreach (var tagId in pnRequestModel.TagIds)
-                    {
-                        planningsModel.Total = await _dbContext.Plannings.Where(x => x.PlanningsTags.Any(y =>
-                                y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed))
-                            .CountAsync(x =>
-                                x.WorkflowState != Constants.WorkflowStates.Removed);
-                    }
-                }
-                else
-                {
-                    planningsModel.Total = await _dbContext.Plannings.CountAsync(x =>
-                        x.WorkflowState != Constants.WorkflowStates.Removed);
-                }
+                    Total = total,
+                    Plannings = plannings
+                };
 
-
-                planningsModel.Plannings = plannings;
-
+                // sort by translated name
                 if (pnRequestModel.Sort == "TranslatedName")
                 {
                     if (pnRequestModel.IsSortDsc)
