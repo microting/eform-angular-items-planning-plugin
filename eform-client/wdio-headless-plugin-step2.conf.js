@@ -20,6 +20,7 @@ exports.config = {
       'e2e/Tests/items-planning-general/items-planning.multiple-delete.spec.ts',
       'e2e/Tests/items-planning-general/items-planning.tags.spec.ts',
       'e2e/Tests/items-planning-general/items-planning.pairing.spec.ts',
+      'e2e/Tests/items-planning-general/items-planning.import.spec.ts'
     ],
     suites: {
         settings: [
@@ -159,7 +160,7 @@ exports.config = {
     mochaOpts: {
         ui: 'bdd',
         compilers: ['tsconfig-paths/register'],
-        timeout: 120000
+        timeout: 1200000
     },
     //
     // =====

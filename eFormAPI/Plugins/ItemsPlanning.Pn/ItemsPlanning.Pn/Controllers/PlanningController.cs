@@ -22,8 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using Microsoft.AspNetCore.Http;
-
 namespace ItemsPlanning.Pn.Controllers
 {
     using System.Collections.Generic;
@@ -90,13 +88,13 @@ namespace ItemsPlanning.Pn.Controllers
         /// <summary>
         /// import plannings from xlsx file (excel)
         /// </summary>
-        /// <param name="file">excel file</param>
+        /// <param name="uploadModel">excel file</param>
         /// <returns>operation result, true or false</returns>
         [HttpPost]
         [Route("api/items-planning-pn/plannings/import")]
-        public async Task<OperationResult> Import(IFormFile file)
+        public async Task<OperationResult> Import(PlanningExcelUploadModel uploadModel)
         {
-            return await _planningImportService.ImportPlannings(file.OpenReadStream());
+            return await _planningImportService.ImportPlannings(uploadModel.File.OpenReadStream());
         }
 
         /// <summary>

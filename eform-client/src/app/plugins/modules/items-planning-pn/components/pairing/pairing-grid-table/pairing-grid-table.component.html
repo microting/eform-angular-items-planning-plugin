@@ -65,7 +65,10 @@
           </div>
         </td>
         <td *ngFor="let planningValue of pairing.pairingValues; let j = index">
-          <div class="mat-checkbox">
+          <div
+            class="mat-checkbox"
+            [style.margin-bottom]="planningValue.latestCaseStatus ? '15px' : 0"
+          >
             <input
               id="deviceUserCheckbox{{ j }}_planning{{ i }}"
               name="deviceUserCheckbox{{ j }}_planning{{ i }}"

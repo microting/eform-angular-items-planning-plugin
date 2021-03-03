@@ -2,7 +2,7 @@ import loginPage from '../../Page objects/Login.page';
 import itemsPlanningPlanningPage from '../../Page objects/ItemsPlanning/ItemsPlanningPlanningPage';
 import myEformsPage from '../../Page objects/MyEforms.page';
 import foldersPage from '../../Page objects/Folders.page';
-import {generateRandmString} from '../../Helpers/helper-functions';
+import { generateRandmString } from '../../Helpers/helper-functions';
 
 const expect = require('chai').expect;
 let template = generateRandmString();
@@ -29,7 +29,7 @@ describe('Items planning plannings - Sorting', function () {
   });
   it('should be able to sort by ID', function () {
     browser.pause(1000);
-    const planningBefore = $$('#planningId').map(item => {
+    const planningBefore = $$('#planningId').map((item) => {
       return item.getText();
     });
 
@@ -37,7 +37,7 @@ describe('Items planning plannings - Sorting', function () {
     for (let i = 0; i < 2; i++) {
       itemsPlanningPlanningPage.clickIdTableHeader();
 
-      const planningAfter = $$('#planningId').map(item => {
+      const planningAfter = $$('#planningId').map((item) => {
         return item.getText();
       });
 
@@ -53,10 +53,10 @@ describe('Items planning plannings - Sorting', function () {
       }
       expect(sorted, 'Sort by ID incorrect').deep.equal(planningAfter);
     }
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
   });
   it('should be able to sort by Name', function () {
-    const planningBefore = $$('#planningName').map(item => {
+    const planningBefore = $$('#planningName').map((item) => {
       return item.getText();
     });
 
@@ -64,7 +64,7 @@ describe('Items planning plannings - Sorting', function () {
     for (let i = 0; i < 2; i++) {
       itemsPlanningPlanningPage.clickNameTableHeader();
 
-      const planningAfter = $$('#planningName').map(item => {
+      const planningAfter = $$('#planningName').map((item) => {
         return item.getText();
       });
 
@@ -79,13 +79,16 @@ describe('Items planning plannings - Sorting', function () {
         sorted = planningBefore;
       }
 
-      $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+      $('#spinner-animation').waitForDisplayed({
+        timeout: 90000,
+        reverse: true,
+      });
       expect(sorted, 'Sort by Name incorrect').deep.equal(planningAfter);
     }
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
   });
   it('should be able to sort by Description', function () {
-    const planningBefore = $$('#planningDescription').map(item => {
+    const planningBefore = $$('#planningDescription').map((item) => {
       return item.getText();
     });
 
@@ -93,7 +96,7 @@ describe('Items planning plannings - Sorting', function () {
     for (let i = 0; i < 2; i++) {
       itemsPlanningPlanningPage.clickDescriptionTableHeader();
 
-      const planningAfter = $$('#planningDescription').map(item => {
+      const planningAfter = $$('#planningDescription').map((item) => {
         return item.getText();
       });
 
@@ -110,7 +113,7 @@ describe('Items planning plannings - Sorting', function () {
 
       expect(sorted, 'Sort by Description incorrect').deep.equal(planningAfter);
     }
-    $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
+    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
   });
   it('should clear table', function () {
     itemsPlanningPlanningPage.clearTable();

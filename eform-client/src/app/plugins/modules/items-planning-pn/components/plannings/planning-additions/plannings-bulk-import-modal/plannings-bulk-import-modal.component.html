@@ -23,7 +23,7 @@
               <button
                 mdbBtn
                 class="btn-primary btn-small-height"
-                *ngIf="!xlsxFile"
+                *ngIf="xlsxPlanningsFileUploader?.queue?.length == 0"
                 (click)="xlsxPlannings.click()"
               >
                 {{ 'Upload' | translate }}
@@ -31,17 +31,19 @@
               <button
                 mdbBtn
                 class="btn-warning btn-small-height"
-                *ngIf="xlsxFile"
+                *ngIf="xlsxPlanningsFileUploader?.queue?.length > 0"
                 (click)="xlsxPlannings.click()"
               >
                 {{ 'Pending' | translate }}
               </button>
               <input
-                class="form-control"
+                class="input-invisible"
                 type="file"
-                (change)="uploadExcelPlanningsFile($event)"
+                ng2FileSelect
+                [uploader]="xlsxPlanningsFileUploader"
+                (onFileSelected)="uploadExcelPlanningsFile()"
                 #xlsxPlannings
-                id="zipInput"
+                id="xlsxImportPlanningsInput"
                 style="display: none"
               />
             </div>

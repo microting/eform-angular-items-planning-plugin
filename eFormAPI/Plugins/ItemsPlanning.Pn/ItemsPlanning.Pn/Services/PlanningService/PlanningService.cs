@@ -748,13 +748,13 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 await planningSite.Delete(_dbContext);
             }
 
-            var nameTranslationsPlaning =
-                await _dbContext.PlanningNameTranslation.Where(x => x.Planning.Id == planning.Id).ToListAsync();
+            //var nameTranslationsPlaning =
+            //    await _dbContext.PlanningNameTranslation.Where(x => x.Planning.Id == planning.Id).ToListAsync();
 
-            foreach (var translation in nameTranslationsPlaning)
-            {
-                await translation.Delete(_dbContext);
-            }
+            //foreach (var translation in nameTranslationsPlaning)
+            //{
+            //    await translation.Delete(_dbContext);
+            //}
 
             // Delete planning
             await planning.Delete(_dbContext);
