@@ -168,7 +168,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             x.Parent,
                             x.Id,
                         })
-                        .FirstOrDefault(y => y.Name == planning.Folder.EFormSdkFolderName);
+                        .FirstOrDefault(y => y.Id == planning.Folder.EFormSdkFolderId);
                     if (folder != null)
                     {
                         planning.Folder.EFormSdkFolderId = folder.Id;
@@ -291,6 +291,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     RelatedEFormId = model.BoundEform.RelatedEFormId,
                     RelatedEFormName = template.Label,
                     SdkFolderName = sdkFolder.Name,
+                    SdkFolderId = model.Folder.EFormSdkFolderId,
                     PlanningsTags = new List<PlanningsTags>()
                 };
 
@@ -388,7 +389,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         x.Parent,
                         x.Id,
                     })
-                    .FirstOrDefault(y => y.Name == planning.Folder.EFormSdkFolderName);
+                    .FirstOrDefault(y => y.Id == planning.Folder.EFormSdkFolderId);
                 if (folder != null)
                 {
                     planning.Folder.EFormSdkFolderId = folder.Id;
@@ -533,6 +534,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.BuildYear = updateModel.BuildYear;
                 planning.RelatedEFormName = template.Label;
                 planning.SdkFolderName = sdkFolder.Name;
+                planning.SdkFolderId = updateModel.Folder.EFormSdkFolderId;
                 planning.UpdatedAt = DateTime.UtcNow;
                 planning.Type = updateModel.Type;
 
@@ -653,6 +655,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 Folder = new PlanningFolderModel
                 {
                     EFormSdkFolderName = x.SdkFolderName,
+                    EFormSdkFolderId = x.SdkFolderId
                 },
                 AssignedSites = x.PlanningSites
                     .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
