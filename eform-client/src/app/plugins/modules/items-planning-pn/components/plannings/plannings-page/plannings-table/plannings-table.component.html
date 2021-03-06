@@ -364,11 +364,11 @@
             <button
               id="planningAssignmentBtn"
               [ngClass]="
-                planning?.assignedSites?.length > 0 ? 'btn-success' : ''
+                planning?.assignedSites?.length > 0 ? 'btn-success' : 'btn btn-icon mb-2 btn-accent text-black-50'
               "
               mdbBtn
               type="button"
-              class="btn-icon"
+              class="btn btn-icon mb-2"
               (click)="onOpenAssignmentModal(planning)"
               mdbTooltip="{{
                 'Click to edit pairing with user(s)' | translate
