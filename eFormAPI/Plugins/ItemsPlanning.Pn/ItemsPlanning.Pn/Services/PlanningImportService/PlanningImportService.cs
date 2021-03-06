@@ -430,7 +430,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                 RelatedEFormName = excelModel.EFormName,
                                 PlanningsTags = new List<PlanningsTags>(),
                                 SdkFolderName = sdkFolder?.Label,
-                                SdkFolderId = sdkFolder.Id,
+                                SdkFolderId = sdkFolder?.Id,
                                 StartDate = DateTime.UtcNow,
                                 RepeatEvery = excelModel.RepeatEvery ?? 1,
                                 RepeatType = excelModel.RepeatType ?? RepeatType.Month
