@@ -1,6 +1,7 @@
 # eform-angular-items-planning-plugin
-![.NET Core](https://github.com/microting/eform-angular-items-planning-plugin/workflows/.NET%20Core/badge.svg)
-
+[![.NET Core](https://github.com/microting/eform-angular-items-planning-plugin/actions/workflows/dotnet-core-master.yml/badge.svg)](https://github.com/microting/eform-angular-items-planning-plugin/actions/workflows/dotnet-core-master.yml)
+[![Maintainability](https://api.codeclimate.com/v1/badges/9a182dc9d6d428fc543d/maintainability)](https://codeclimate.com/github/microting/eform-angular-items-planning-plugin/maintainability)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2ca75d313099452faab5b102744487c5)](https://www.codacy.com/gh/microting/eform-angular-items-planning-plugin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=microting/eform-angular-items-planning-plugin&amp;utm_campaign=Badge_Grade)
 ## NOTICE! this is not a standalone project and needs to be used with eForm Angular Frontend.
 
 ## Translating eform-angular-itemsplanning-plugin

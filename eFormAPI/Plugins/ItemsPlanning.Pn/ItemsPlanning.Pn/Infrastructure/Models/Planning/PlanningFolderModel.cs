@@ -26,7 +26,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 {
     public class PlanningFolderModel
     {
-        public int EFormSdkFolderId { get; set; }
+        public int? EFormSdkFolderId { get; set; }
 
         public string EFormSdkFolderName { get; set; }
 

@@ -165,6 +165,22 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         checkListWorkflowState.Single(x => x.Key == planning.BoundEform.RelatedEFormId).Value ==
                         Constants.WorkflowStates.Removed;
 
+                    // This is done to update existing Plannings to using EFormSdkFolderId instead of EFormSdkFolderName
+                    if ((planning.Folder.EFormSdkFolderId == 0 || planning.Folder.EFormSdkFolderId == null) && planning.Folder.EFormSdkFolderName != null)
+                    {
+                        var locateFolder = await sdkDbContext.Folders.FirstOrDefaultAsync(x =>
+                            x.Name == planning.Folder.EFormSdkFolderName &&
+                            x.WorkflowState != Constants.WorkflowStates.Removed);
+
+                        if (locateFolder != null)
+                        {
+                            var thePlanning = await _dbContext.Plannings.SingleAsync(x => x.Id == planning.Id);
+                            thePlanning.SdkFolderId = locateFolder.Id;
+                            await thePlanning.Update(_dbContext);
+                            planning.Folder.EFormSdkFolderId = locateFolder.Id;
+                        }
+                    }
+
                     var folder = sdkDbContext.Folders
                         .Include(x => x.Parent)
                         .Select(x => new
@@ -173,7 +189,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                             x.Parent,
                             x.Id,
                         })
-                        .FirstOrDefault(y => y.Name == planning.Folder.EFormSdkFolderName);
+                        .FirstOrDefault(y => y.Id == planning.Folder.EFormSdkFolderId);
                     if (folder != null)
                     {
                         planning.Folder.EFormSdkFolderId = folder.Id;
@@ -284,6 +300,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     RelatedEFormId = model.BoundEform.RelatedEFormId,
                     RelatedEFormName = template.Label,
                     SdkFolderName = sdkFolder.Name,
+                    SdkFolderId = model.Folder.EFormSdkFolderId,
                     PlanningsTags = new List<PlanningsTags>()
                 };
 
@@ -381,7 +398,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         x.Parent,
                         x.Id,
                     })
-                    .FirstOrDefault(y => y.Name == planning.Folder.EFormSdkFolderName);
+                    .FirstOrDefault(y => y.Id == planning.Folder.EFormSdkFolderId);
                 if (folder != null)
                 {
                     planning.Folder.EFormSdkFolderId = folder.Id;
@@ -526,6 +543,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.BuildYear = updateModel.BuildYear;
                 planning.RelatedEFormName = template.Label;
                 planning.SdkFolderName = sdkFolder.Name;
+                planning.SdkFolderId = updateModel.Folder.EFormSdkFolderId;
                 planning.UpdatedAt = DateTime.UtcNow;
                 planning.Type = updateModel.Type;
 
@@ -646,6 +664,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 Folder = new PlanningFolderModel
                 {
                     EFormSdkFolderName = x.SdkFolderName,
+                    EFormSdkFolderId = x.SdkFolderId
                 },
                 AssignedSites = x.PlanningSites
                     .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
