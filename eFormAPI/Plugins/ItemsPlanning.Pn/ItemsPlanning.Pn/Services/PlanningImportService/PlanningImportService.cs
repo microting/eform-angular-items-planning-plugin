@@ -362,7 +362,44 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             var planningFromDb = await _dbContext.Plannings
                                 .Where(x => x.Id == planningName.PlanningId)
                                 .FirstAsync();
-                            if(excelModel.DayOfMonth != null && planningFromDb.DayOfMonth != excelModel.DayOfMonth)
+
+                            var planningTranslations = _dbContext.PlanningNameTranslation
+                                .Where(x => x.PlanningId == planningFromDb.Id)
+                                .ToList();
+
+                            // create or update name tranlations planning
+                            var i = 1;
+                            foreach (var translationText in excelModel.PlanningName.Split("|"))
+                            {
+                                var language = await dbContext.Languages.SingleAsync(x => x.Id == i);
+                                var planningNameTranslation =
+                                    planningTranslations
+                                        .Where(x => x.PlanningId == planningFromDb.Id)
+                                        .FirstOrDefault(x => x.LanguageId == i);
+                                if (planningNameTranslation == null)
+                                {
+                                    planningNameTranslation = new PlanningNameTranslation
+                                    {
+                                        Name = translationText,
+                                        LanguageId = language.Id,
+                                        PlanningId = planningFromDb.Id,
+                                        CreatedByUserId = _userService.UserId,
+                                        UpdatedByUserId = _userService.UserId,
+                                    };
+                                    await planningNameTranslation.Create(_dbContext);
+                                }
+                                else
+                                {
+                                    planningNameTranslation.UpdatedByUserId = _userService.UserId;
+                                    planningNameTranslation.WorkflowState = Constants.WorkflowStates.Created;
+
+                                    await planningNameTranslation.Update(_dbContext);
+                                }
+
+                                i++;
+                            }
+
+                            if (excelModel.DayOfMonth != null && planningFromDb.DayOfMonth != excelModel.DayOfMonth)
                             {
                                 planningFromDb.DayOfMonth = excelModel.DayOfMonth;
                             }
@@ -471,6 +508,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                     //await transaction.CommitAsync();
                 }
+                // ReSharper disable once RedundantCatchClause
                 catch
                 {
                     //await transaction.RollbackAsync();
