@@ -56,8 +56,9 @@ namespace ItemsPlanning.Pn.Helpers
             var language = await sdkDbContext.Languages.SingleAsync(x => x.Id == sdkSite.LanguageId);
             var mainElement = await sdkCore.ReadeForm(relatedEFormId, language);
 
-            var folderId = sdkDbContext.Folders.Single(x => x.Id == planningPnModel.Folder.EFormSdkFolderId).MicrotingUid.ToString();
-            
+            var folder = await sdkDbContext.Folders.SingleAsync(x => x.Id == planningPnModel.Folder.EFormSdkFolderId);
+            var folderId = folder.MicrotingUid.ToString();
+
             var planningCase = _dbContext.PlanningCases
                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 .Where(x => x.PlanningId == planningPnModel.Id)
@@ -116,6 +117,14 @@ namespace ItemsPlanning.Pn.Helpers
                 mainElement.CheckListFolderName = folderId;
                 mainElement.StartDate = DateTime.Now.ToUniversalTime();
                 mainElement.EndDate = DateTime.Now.AddYears(10).ToUniversalTime();
+                mainElement.PushMessageBody = mainElement.Label;
+                mainElement.PushMessageTitle = folder.Name;
+                if (folder.ParentId != null)
+                {
+                    var parentFolder = await sdkDbContext.Folders.SingleAsync(x => x.Id == folder.ParentId);
+                    mainElement.PushMessageTitle = parentFolder.Name;
+                    mainElement.PushMessageBody = $"{folder.Name}\n{mainElement.Label}";
+                }
 
                 var planningCaseSite =
                     await _dbContext.PlanningCaseSites.SingleOrDefaultAsync(x =>
