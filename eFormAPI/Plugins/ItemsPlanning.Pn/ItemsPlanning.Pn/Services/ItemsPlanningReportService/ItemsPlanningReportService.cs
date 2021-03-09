@@ -90,6 +90,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     .Include(x => x.Planning)
                     .ThenInclude(x => x.PlanningsTags)
                     .Where(x => x.Status == 100)
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                     .AsQueryable();
 
                 if (model.DateFrom != null)
