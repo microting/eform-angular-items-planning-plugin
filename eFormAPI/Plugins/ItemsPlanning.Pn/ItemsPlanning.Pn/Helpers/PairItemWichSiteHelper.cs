@@ -77,21 +77,21 @@ namespace ItemsPlanning.Pn.Helpers
                 await planningCase.Create(_dbContext);
             }
 
-            // var casesToDelete = await _dbContext.PlanningCaseSites
-            //     .Where(x => x.PlanningId == planningPnModel.Id
-            //                 && x.MicrotingSdkSiteId == assignmentSiteId
-            //                 && x.WorkflowState !=
-            //                 Constants.WorkflowStates.Retracted)
-            //     .ToListAsync();
-            //
-            // foreach (var caseToDelete in casesToDelete)
-            // {
-            //     var caseDto = await sdkCore.CaseLookupCaseId(caseToDelete.MicrotingSdkCaseId);
-            //     if (caseDto.MicrotingUId != null)
-            //         await sdkCore.CaseDelete((int)caseDto.MicrotingUId);
-            //     caseToDelete.WorkflowState = Constants.WorkflowStates.Retracted;
-            //     await caseToDelete.Update(_dbContext);
-            // }
+            var casesToDelete = await _dbContext.PlanningCaseSites
+                .Where(x => x.PlanningId == planningPnModel.Id
+                            && x.MicrotingSdkSiteId == assignmentSiteId
+                            && x.WorkflowState !=
+                            Constants.WorkflowStates.Retracted)
+                .ToListAsync();
+
+            foreach (var caseToDelete in casesToDelete)
+            {
+                var caseDto = await sdkCore.CaseLookupCaseId(caseToDelete.MicrotingSdkCaseId);
+                if (caseDto.MicrotingUId != null)
+                    await sdkCore.CaseDelete((int)caseDto.MicrotingUId);
+                caseToDelete.WorkflowState = Constants.WorkflowStates.Retracted;
+                await caseToDelete.Update(_dbContext);
+            }
 
             var translation = _dbContext.PlanningNameTranslation
                 .Single(x => x.LanguageId == language.Id && x.PlanningId == planningPnModel.Id).Name;
@@ -130,7 +130,10 @@ namespace ItemsPlanning.Pn.Helpers
 
             var planningCaseSite =
                 await _dbContext.PlanningCaseSites.SingleOrDefaultAsync(x =>
-                    x.PlanningCaseId == planningCase.Id && x.MicrotingSdkSiteId == assignmentSiteId);
+                    x.PlanningCaseId == planningCase.Id
+                    && x.MicrotingSdkSiteId == assignmentSiteId
+                    && x.WorkflowState != Constants.WorkflowStates.Retracted
+                    && x.WorkflowState != Constants.WorkflowStates.Removed);
 
             if (planningCaseSite == null)
             {

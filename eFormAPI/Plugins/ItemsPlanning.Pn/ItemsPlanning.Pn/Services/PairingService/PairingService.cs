@@ -320,14 +320,15 @@ namespace ItemsPlanning.Pn.Services.PairingService
                             .ToList();
 
                         var planningCaseSites = await _dbContext.PlanningCaseSites
-                            .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.WorkflowState != Constants.WorkflowStates.Retracted)
+                            .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed
+                                        && x.WorkflowState != Constants.WorkflowStates.Retracted)
                             .Where(x => deviceUserIdsForRemove.Contains(x.MicrotingSdkSiteId))
                             .Where(x => x.PlanningId == planning.PlanningId)
                             .ToListAsync();
 
-                        foreach (var site in forRemove)
+                        foreach (var siteplanningSite in forRemove)
                         {
-                            await site.Delete(_dbContext);
+                            await siteplanningSite.Delete(_dbContext);
                         }
 
                         foreach (var planningCaseSite in planningCaseSites)
@@ -339,6 +340,8 @@ namespace ItemsPlanning.Pn.Services.PairingService
                                 {
                                     await sdkCore.CaseDelete((int)result.MicrotingUid);
                                 }
+
+                                await planningCaseSite.Delete(_dbContext);
                             }
                         }
 
