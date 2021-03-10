@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microting.eForm.Infrastructure.Data.Entities;
+
 namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 {
     using System;
@@ -115,10 +117,16 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 }
                 var groupedCaseCheckListIds = planningCasesQuery.GroupBy(x => x.MicrotingSdkeFormId).Select(x => x.Key).ToList();
 
-                var checkLists = await sdkDbContext.CheckLists
-                    .FromSqlRaw("SELECT * FROM CheckLists WHERE" +
-                                $" Id IN ({string.Join(",", groupedCaseCheckListIds)})" +
-                                "  ORDER BY ReportH1  * 1, ReportH2 * 1, ReportH3 * 1, ReportH4 * 1").ToListAsync();
+                List<CheckList> checkLists = new List<CheckList>();
+
+                if (groupedCaseCheckListIds.Count > 0)
+                {
+                    checkLists = await sdkDbContext.CheckLists
+                        .FromSqlRaw("SELECT * FROM CheckLists WHERE" +
+                                    $" Id IN ({string.Join(",", groupedCaseCheckListIds)})" +
+                                    "  ORDER BY ReportH1  * 1, ReportH2 * 1, ReportH3 * 1, ReportH4 * 1").ToListAsync();
+
+                }
 
                 var itemCases = await planningCasesQuery
                     .OrderBy(x => x.Planning.RelatedEFormName)
@@ -383,7 +391,13 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     }
                 }
 
-                return new OperationDataResult<List<ReportEformModel>>(true, result);
+                if (result.Count > 0)
+                {
+                    return new OperationDataResult<List<ReportEformModel>>(true, result);
+                }
+
+                return new OperationDataResult<List<ReportEformModel>>(false, _itemsPlanningLocalizationService.GetString("NoDataInSelectedPeriod"));
+
             }
             catch (Exception e)
             {
