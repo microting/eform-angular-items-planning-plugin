@@ -40,6 +40,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
     using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
     using Infrastructure.Models.Planning;
     using Microting.eForm.Infrastructure.Data.Entities;
+    using PnBase = Microting.ItemsPlanningBase.Infrastructure.Data.Entities.PnBase;
 
 
     public class PlanningService : IPlanningService
@@ -65,12 +66,12 @@ namespace ItemsPlanning.Pn.Services.PlanningService
         {
             try
             {
-                var planningsModel = new PlanningsPnModel();
                 var sdkCore =
                     await _coreService.GetCore();
                 await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
 
-                var planningsQuery = _dbContext.Plannings.AsQueryable();
+                var planningsQuery = _dbContext.Plannings
+                    .AsQueryable();
                 if (!string.IsNullOrEmpty(pnRequestModel.Sort) && pnRequestModel.Sort != "TranslatedName")
                 {
                     if (pnRequestModel.IsSortDsc)
@@ -93,7 +94,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 if (!string.IsNullOrEmpty(pnRequestModel.NameFilter))
                 {
                     planningsQuery = planningsQuery.Where(x =>
-                        x.NameTranslations.Any(y => y.Name == pnRequestModel.NameFilter));
+                        x.NameTranslations.Any(y => y.Name.Contains(pnRequestModel.NameFilter, StringComparison.CurrentCultureIgnoreCase)));
                 }
 
                 if (!string.IsNullOrEmpty(pnRequestModel.DescriptionFilter))
@@ -112,9 +113,14 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     }
                 }
 
+                planningsQuery = planningsQuery
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed);
+
+                // calculate total before pagination
+                var total = await planningsQuery.CountAsync();
+
                 planningsQuery
                     = planningsQuery
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Skip(pnRequestModel.Offset)
                         .Take(pnRequestModel.PageSize);
 
@@ -133,6 +139,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     var kvp = new KeyValuePair<int, string>(checkList.Id, checkList.WorkflowState);
                     checkListWorkflowState.Add(kvp);
                 }
+
+                // add select and take objects from db
                 var plannings = await AddSelectToPlanningQuery(planningsQuery, languageIemPlanning).ToListAsync();
 
                 // get site names
@@ -199,25 +207,13 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     }
                 }
 
-                if (pnRequestModel.TagIds.Any())
+                var planningsModel = new PlanningsPnModel
                 {
-                    foreach (var tagId in pnRequestModel.TagIds)
-                    {
-                        planningsModel.Total = await _dbContext.Plannings.Where(x => x.PlanningsTags.Any(y =>
-                                y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed))
-                            .CountAsync(x =>
-                                x.WorkflowState != Constants.WorkflowStates.Removed);
-                    }
-                }
-                else
-                {
-                    planningsModel.Total = await _dbContext.Plannings.CountAsync(x =>
-                        x.WorkflowState != Constants.WorkflowStates.Removed);
-                }
+                    Total = total,
+                    Plannings = plannings
+                };
 
-
-                planningsModel.Plannings = plannings;
-
+                // sort by translated name
                 if (pnRequestModel.Sort == "TranslatedName")
                 {
                     if (pnRequestModel.IsSortDsc)
@@ -737,11 +733,12 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 _itemsPlanningLocalizationService.GetString("ListDeletedSuccessfully"));
         }
 
-        private async Task DeleteOnePlanning(Microting.ItemsPlanningBase.Infrastructure.Data.Entities.PnBase planning)
+        private async Task DeleteOnePlanning(PnBase planning)
         {
             var core = await _coreService.GetCore();
             await using var sdkDbContext = core.DbContextHelper.GetDbContext();
             var planningCases = await _dbContext.PlanningCases
+                .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 .Where(x => x.PlanningId == planning.Id)
                 .ToListAsync();
 
@@ -749,7 +746,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             {
                 var planningCaseSites = await _dbContext.PlanningCaseSites
                     .Where(x => x.PlanningCaseId == planningCase.Id).ToListAsync();
-                foreach (var planningCaseSite in planningCaseSites.Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0))
+                foreach (var planningCaseSite in planningCaseSites
+                    .Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0)
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed))
                 {
                     var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
                     if (result.MicrotingUid != null)
@@ -761,19 +760,25 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 await planningCase.Delete(_dbContext);
             }
 
-            var planningSites = await _dbContext.PlanningSites.Where(x => x.PlanningId == planning.Id).ToListAsync();
+            var planningSites = await _dbContext.PlanningSites
+                .Where(x => x.PlanningId == planning.Id)
+                .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                .ToListAsync();
             foreach (var planningSite in planningSites)
             {
                 await planningSite.Delete(_dbContext);
             }
 
-            //var nameTranslationsPlaning =
-            //    await _dbContext.PlanningNameTranslation.Where(x => x.Planning.Id == planning.Id).ToListAsync();
+            var nameTranslationsPlanning =
+                await _dbContext.PlanningNameTranslation
+                    .Where(x => x.Planning.Id == planning.Id)
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .ToListAsync();
 
-            //foreach (var translation in nameTranslationsPlaning)
-            //{
-            //    await translation.Delete(_dbContext);
-            //}
+            foreach (var translation in nameTranslationsPlanning)
+            {
+                await translation.Delete(_dbContext);
+            }
 
             // Delete planning
             await planning.Delete(_dbContext);

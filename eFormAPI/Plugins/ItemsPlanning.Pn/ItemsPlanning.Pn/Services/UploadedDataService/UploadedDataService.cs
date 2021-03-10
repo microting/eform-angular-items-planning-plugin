@@ -171,24 +171,24 @@ namespace ItemsPlanning.Pn.Services.UploadedDataService
 
                 Directory.CreateDirectory(saveFolder);
 
-                string fileName = $"ItemCase_{pdfUploadModel.ItemCaseId}_{DateTime.Now.Ticks}.pdf";
+                var fileName = $"ItemCase_{pdfUploadModel.ItemCaseId}_{DateTime.Now.Ticks}.pdf";
 
                 if (pdfUploadModel.File.Length > 0)
                 {
-                    using (var stream = new FileStream(Path.Combine(saveFolder, fileName), FileMode.Create))
-                    {
-                        await pdfUploadModel.File.CopyToAsync(stream);
-                    }
+                    await using var stream = new FileStream(Path.Combine(saveFolder, fileName), FileMode.Create);
+                    await pdfUploadModel.File.CopyToAsync(stream);
                 }
                 if (core.Result.GetSdkSetting(Settings.swiftEnabled).ToString().ToLower() == "true")
                 {
                    await core.Result.PutFileToStorageSystem(Path.Combine(saveFolder, fileName), fileName);
                 }
 
-                UploadedData uploadedData = new UploadedData();
-                uploadedData.FileLocation = saveFolder;
-                uploadedData.FileName = fileName;
-                uploadedData.PlanningCaseId = pdfUploadModel.ItemCaseId;
+                var uploadedData = new UploadedData
+                {
+                    FileLocation = saveFolder,
+                    FileName = fileName,
+                    PlanningCaseId = pdfUploadModel.ItemCaseId
+                };
 
                 await uploadedData.Create(_dbContext);
 
@@ -208,7 +208,7 @@ namespace ItemsPlanning.Pn.Services.UploadedDataService
         {
             var core = _core.GetCore();
             var filePath = Path.Combine(core.Result.GetSdkSetting(Settings.fileLocationPdf) + "pdfFiles/", fileName);
-            string fileType = "application/pdf";
+            const string fileType = "application/pdf";
 
             if (core.Result.GetSdkSetting(Settings.swiftEnabled).ToString().ToLower() == "true")
             {
