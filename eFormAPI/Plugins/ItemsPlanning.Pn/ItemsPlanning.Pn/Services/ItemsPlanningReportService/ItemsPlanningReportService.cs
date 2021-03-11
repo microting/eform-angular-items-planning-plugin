@@ -269,28 +269,31 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             if (imageField.UploadedDataId != null)
                             {
                                 var planningCase = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
-                                //var doneAt = (DateTime)planningCase.MicrotingSdkCaseDoneAt;
-                                //doneAt = TimeZoneInfo.ConvertTimeFromUtc(doneAt, timeZoneInfo);
-
-                                var planningNameTranslation =
-                                    await _dbContext.PlanningNameTranslation.SingleAsync(x =>
-                                        x.PlanningId == planningCase.PlanningId && x.LanguageId == language.Id);
-                                //var label = $"{imageField.CaseId} - {doneAt:yyyy-MM-dd HH:mm:ss}; {planningNameTranslation.Name}"; // Disabling date until we have correct date pr image.
-                                var label = $"{imageField.CaseId}; {planningNameTranslation.Name}";
-                                var geoTag = "";
-                                if (!string.IsNullOrEmpty((imageField.Latitude)))
+                                if (planningCase.PlanningId != 0)
                                 {
-                                    geoTag =
-                                        $"https://www.google.com/maps/place/{imageField.Latitude},{imageField.Longitude}";
-                                }
+                                    var planningNameTranslation =
+                                        await _dbContext.PlanningNameTranslation.SingleOrDefaultAsync(x =>
+                                            x.PlanningId == planningCase.PlanningId && x.LanguageId == language.Id);
 
-                                var keyList = new List<string> {imageField.CaseId.ToString(), label};
-                                var list = new List<string>();
-                                var uploadedData =
-                                    await sdkDbContext.UploadedDatas.SingleAsync(x => x.Id == imageField.UploadedDataId);
-                                list.Add(uploadedData.FileName);
-                                list.Add(geoTag);
-                                reportModel.ImageNames.Add(new KeyValuePair<List<string>, List<string>>(keyList, list));
+                                    if (planningNameTranslation != null)
+                                    {
+                                        var label = $"{imageField.CaseId}; {planningNameTranslation.Name}";
+                                        var geoTag = "";
+                                        if (!string.IsNullOrEmpty((imageField.Latitude)))
+                                        {
+                                            geoTag =
+                                                $"https://www.google.com/maps/place/{imageField.Latitude},{imageField.Longitude}";
+                                        }
+
+                                        var keyList = new List<string> {imageField.CaseId.ToString(), label};
+                                        var list = new List<string>();
+                                        var uploadedData =
+                                            await sdkDbContext.UploadedDatas.SingleAsync(x => x.Id == imageField.UploadedDataId);
+                                        list.Add(uploadedData.FileName);
+                                        list.Add(geoTag);
+                                        reportModel.ImageNames.Add(new KeyValuePair<List<string>, List<string>>(keyList, list));
+                                    }
+                                }
                             }
                         }
 
@@ -328,9 +331,11 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         foreach (var planningCase in groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt))
                         {
                             var planningNameTranslation =
-                                await _dbContext.PlanningNameTranslation.SingleAsync(x =>
+                                await _dbContext.PlanningNameTranslation.SingleOrDefaultAsync(x =>
                                     x.PlanningId == planningCase.PlanningId && x.LanguageId == language.Id);
-                            var item = new ReportEformItemModel
+                            if (planningNameTranslation != null)
+                            {
+var item = new ReportEformItemModel
                             {
                                 Id = planningCase.Id,
                                 MicrotingSdkCaseId = planningCase.MicrotingSdkCaseId,
@@ -385,6 +390,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                 .Count();
 
                             reportModel.Items.Add(item);
+                            }
                         }
 
                         result.Add(reportModel);
