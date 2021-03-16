@@ -3,6 +3,7 @@
     "Key": "ItemsPlanning",
     "LocalizedValue": {
       "da": "Egenkontrol",
+      "de": "Selbstkontrolle",
       "en-US": "Items planning",
       "uk-UA": "Планування елементів"
     }
@@ -11,6 +12,7 @@
     "Key": "Lists",
     "LocalizedValue": {
       "da": "Lister",
+      "de": "Listen",
       "en-US": "Lists",
       "uk-UA": "Списки"
     }
@@ -19,6 +21,7 @@
     "Key": "Settings",
     "LocalizedValue": {
       "da": "Indstillinger",
+      "de": "die Einstellungen",
       "en-US": "Settings",
       "uk-UA": "Налаштування"
     }
@@ -27,6 +30,7 @@
     "Key": "ListCreatedSuccessfully",
     "LocalizedValue": {
       "da": "Liste oprettet succesfuldt",
+      "de": "Liste erfolgreich erstellt",
       "en-US": "List created successfully",
       "uk-UA": "Список успішно створений"
     }
@@ -35,6 +39,7 @@
     "Key": "ErrorWhileCreatingList",
     "LocalizedValue": {
       "da": "Fejl under oprettelse af liste",
+      "de": "Fehler beim Erstellen der Liste",
       "en-US": "Error while creating list",
       "uk-UA": "Помилка при створенні списку"
     }
@@ -43,6 +48,7 @@
     "Key": "ErrorWhileUpdatingList",
     "LocalizedValue": {
       "da": "Fejl under opdatering af liste",
+      "de": "Fehler beim Aktualisieren der Liste",
       "en-US": "Error while updating list",
       "uk-UA": "Помилка при оновленні списку"
     }
@@ -51,6 +57,7 @@
     "Key": "ListUpdatedSuccessfully",
     "LocalizedValue": {
       "da": "Liste opdateret med succes",
+      "de": "Liste erfolgreich aktualisiert",
       "en-US": "List updated successfully",
       "uk-UA": "Список успішно оновлено"
     }
@@ -59,6 +66,7 @@
     "Key": "ListDeletedSuccessfully",
     "LocalizedValue": {
       "da": "Liste slettet korrekt",
+      "de": "Liste erfolgreich gelöscht",
       "en-US": "List deleted successfully",
       "uk-UA": "Список успішно видалено"
     }
@@ -67,6 +75,7 @@
     "Key": "ErrorWhileRemovingList",
     "LocalizedValue": {
       "da": "Fejl under fjernelse af liste",
+      "de": "Fehler beim Entfernen der Liste",
       "en-US": "Error while removing list",
       "uk-UA": "Помилка при видаленні списку"
     }
@@ -75,6 +84,7 @@
     "Key": "ListNotFound",
     "LocalizedValue": {
       "da": "Liste ikke fundet",
+      "de": "Liste nicht gefunden",
       "en-US": "List not found",
       "uk-UA": "Список не знайдено"
     }
@@ -83,14 +93,25 @@
     "Key": "ErrorWhileObtainingList",
     "LocalizedValue": {
       "da": "Kunne ikke hente listen",
+      "de": "Fehler beim Abrufen der Liste",
       "en-US": "Error while obtaining list",
       "uk-UA": "Помилка при отриманні списку"
+    }
+  },
+  {
+    "Key": "NoDataInSelectedPeriod",
+    "LocalizedValue": {
+      "da": "Ingen data i den valgte periode",
+      "de": "Keine Daten im ausgewählten Zeitraum",
+      "en-US": "No data in the selected period",
+      "uk-UA": "Немає даних за вибраний період"
     }
   },
   {
     "Key": "Yes",
     "LocalizedValue": {
       "da": "Ja",
+      "de": "Ja",
       "en-US": "Yes",
       "uk-UA": "Так"
     }
@@ -99,6 +120,7 @@
     "Key": "No",
     "LocalizedValue": {
       "da": "Nej",
+      "de": "Nein",
       "en-US": "No",
       "uk-UA": "Ні"
     }
@@ -107,6 +129,7 @@
     "Key": "Deployed at",
     "LocalizedValue": {
       "da": "Udsendt d.",
+      "de": "Bereitgestellt bei",
       "en-US": "Deployed at",
       "uk-UA": "Розгорнуто в"
     }
@@ -115,6 +138,7 @@
     "Key": "Date of doing",
     "LocalizedValue": {
       "da": "Udførelsesdato",
+      "de": "Datum der Ausführung",
       "en-US": "Date of doing",
       "uk-UA": "Дата виконання"
     }
@@ -123,6 +147,7 @@
     "Key": "Done by",
     "LocalizedValue": {
       "da": "Udført af",
+      "de": "Gemacht von",
       "en-US": "Done by",
       "uk-UA": "Зроблено"
     }
@@ -131,6 +156,7 @@
     "Key": "Name",
     "LocalizedValue": {
       "da": "Navn",
+      "de": "Name",
       "en-US": "Name",
       "uk-UA": "Ім'я"
     }
@@ -139,6 +165,7 @@
     "Key": "Description",
     "LocalizedValue": {
       "da": "Beskrivelse",
+      "de": "Beschreibung",
       "en-US": "Description",
       "uk-UA": "Опис"
     }
@@ -147,6 +174,7 @@
     "Key": "Item number",
     "LocalizedValue": {
       "da": "Enhedsid",
+      "de": "Artikelnummer",
       "en-US": "Item number",
       "uk-UA": "Номер елементу"
     }
@@ -155,6 +183,7 @@
     "Key": "ItemName",
     "LocalizedValue": {
       "da": "Område",
+      "de": "Artikelname",
       "en-US": "Item name",
       "uk-UA": "Назва елементу"
     }
@@ -163,6 +192,7 @@
     "Key": "Location code",
     "LocalizedValue": {
       "da": "Placering",
+      "de": "Standortcode",
       "en-US": "Location code",
       "uk-UA": "Код локації"
     }
@@ -171,6 +201,7 @@
     "Key": "Build year",
     "LocalizedValue": {
       "da": "Årgang",
+      "de": "Baujahr",
       "en-US": "Build year",
       "uk-UA": "Рік побудови"
     }
@@ -179,6 +210,7 @@
     "Key": "Type",
     "LocalizedValue": {
       "da": "Type",
+      "de": "Art",
       "en-US": "Type",
       "uk-UA": "Тип"
     }
@@ -187,6 +219,7 @@
     "Key": "Number of images",
     "LocalizedValue": {
       "da": "Antal billeder",
+      "de": "Anzahl der Bilder",
       "en-US": "Number of images",
       "uk-UA": "Кількість зображень"
     }
@@ -195,6 +228,7 @@
     "Key": "DateFrom",
     "LocalizedValue": {
       "da": "Dato fra",
+      "de": "Datum von",
       "en-US": "Date from",
       "uk-UA": "Дата від"
     }
@@ -203,6 +237,7 @@
     "Key": "DateTo",
     "LocalizedValue": {
       "da": "Dato til",
+      "de": "Datum bis",
       "en-US": "Date to",
       "uk-UA": "Дата до"
     }
@@ -211,6 +246,7 @@
     "Key": "Plannings",
     "LocalizedValue": {
       "da": "Planlægninger",
+      "de": "Planungen",
       "en-US": "Plannings",
       "uk-UA": "Планування"
     }
@@ -219,6 +255,7 @@
     "Key": "PlanningNotFound",
     "LocalizedValue": {
       "da": "Planlægning ikke fundet",
+      "de": "Planung nicht gefunden",
       "en-US": "Planning not found",
       "uk-UA": "Планування не знайдено"
     }
@@ -227,6 +264,7 @@
     "Key": "SitesAssignedSuccessfully",
     "LocalizedValue": {
       "da": "Lokationer tildelt med succes",
+      "de": "Standorte erfolgreich zugewiesen",
       "en-US": "Sites assigned successfully",
       "uk-UA": "Місця призначено успішно"
     }
@@ -235,6 +273,7 @@
     "Key": "Id",
     "LocalizedValue": {
       "da": "Id",
+      "de": "Id",
       "en-US": "Id",
       "uk-UA": "Id"
     }
@@ -243,6 +282,7 @@
     "Key": "CaseId",
     "LocalizedValue": {
       "da": "Sagsnummer",
+      "de": "Fallnummer",
       "en-US": "Case id",
       "uk-UA": "Кейс id"
     }
@@ -251,6 +291,7 @@
     "Key": "CreatedAt",
     "LocalizedValue": {
       "da": "Dato",
+      "de": "Hergestellt in",
       "en-US": "Created At",
       "uk-UA": "Створено в"
     }
@@ -259,6 +300,7 @@
     "Key": "DoneBy",
     "LocalizedValue": {
       "da": "Udført af",
+      "de": "Gemacht von",
       "en-US": "Done By",
       "uk-UA": "Зроблено"
     }
@@ -267,6 +309,7 @@
     "Key": "Picture",
     "LocalizedValue": {
       "da": "Billede",
+      "de": "Bild",
       "en-US": "Picture",
       "uk-UA": "Зображення"
     }
@@ -275,6 +318,7 @@
     "Key": "Pictures",
     "LocalizedValue": {
       "da": "Billeder",
+      "de": "Bilder",
       "en-US": "Pictures",
       "uk-UA": "Картинки"
     }
@@ -283,6 +327,7 @@
     "Key": "Posts",
     "LocalizedValue": {
       "da": "Indlæg",
+      "de": "Beiträge",
       "en-US": "Posts",
       "uk-UA": "Повідомлення"
     }
@@ -291,6 +336,7 @@
     "Key": "posts",
     "LocalizedValue": {
       "da": "indlæg",
+      "de": "beiträge",
       "en-US": "posts",
       "uk-UA": "повідомлення"
     }
@@ -299,6 +345,7 @@
     "Key": "SentTo",
     "LocalizedValue": {
       "da": "Sendt til",
+      "de": "Gesendet an",
       "en-US": "Sent To",
       "uk-UA": "Відправлено в"
     }
@@ -307,6 +354,7 @@
     "Key": "PostDate",
     "LocalizedValue": {
       "da": "Sendt d.",
+      "de": "Gesendet an",
       "en-US": "Sent at",
       "uk-UA": "Відправлено за адресою"
     }
@@ -315,6 +363,7 @@
     "Key": "Comment",
     "LocalizedValue": {
       "da": "Kommentar",
+      "de": "Kommentar",
       "en-US": "Comment",
       "uk-UA": "Коментар"
     }
@@ -323,6 +372,7 @@
     "key": "Reports",
     "LocalizedValue": {
       "da": "Rapporter",
+      "de": "Berichte",
       "en-US": "Reports",
       "uk-UA": "Звіти"
     }
@@ -331,6 +381,7 @@
     "Key": "ReportPeriod",
     "LocalizedValue": {
       "da": "Rapport periode",
+      "de": "Berichtszeitraum",
       "en-US": "Report period",
       "uk-UA": "Звітний період"
     }
@@ -339,6 +390,7 @@
     "Key": "ErrorWhileObtainingItemsPlanningTags",
     "LocalizedValue": {
       "da": "Fejl under modtagelse af emner, der planlægger tags",
+      "de": "Fehler beim Abrufen von Artikelplanungs-Tags",
       "en-US": "Error while obtaining items planning tags",
       "uk-UA": "Помилка При отриманні тегів планування елементів"
     }
@@ -347,6 +399,7 @@
     "Key": "ItemsPlanningTagCreatedSuccessfully",
     "LocalizedValue": {
       "da": "Varer, der planlægger mærke oprettet med succes",
+      "de": "Das Planungs-Tag für Elemente wurde erfolgreich erstellt",
       "en-US": "Items planning tag created successfully",
       "uk-UA": "Успішно створено тег планування елементів"
     }
@@ -355,6 +408,7 @@
     "Key": "ErrorWhileCreatingItemsPlanningTag",
     "LocalizedValue": {
       "da": "Fejl under oprettelse af planlægningsmærke",
+      "de": "Fehler beim Erstellen des Artikelplanungs-Tags",
       "en-US": "Error while creating items planning tag",
       "uk-UA": "Помилка при створенні тега планування елементів"
     }
@@ -363,6 +417,7 @@
     "Key": "ItemsPlanningTagNotFound",
     "LocalizedValue": {
       "da": "Varer, der planlægger mærke ikke fundet",
+      "de": "Artikelplanungs-Tag nicht gefunden",
       "en-US": "Items planning tag not found",
       "uk-UA": "Тег планування елементів не знайдено"
     }
@@ -371,6 +426,7 @@
     "Key": "ItemsPlanningTagRemovedSuccessfully",
     "LocalizedValue": {
       "da": "Elementer, der planlægger tag, blev fjernet med succes",
+      "de": "Das Planungs-Tag für Elemente wurde erfolgreich entfernt",
       "en-US": "Items planning tag removed successfully",
       "uk-UA": "Тег планування елементів успішно видалено"
     }
@@ -379,6 +435,7 @@
     "Key": "ErrorWhileRemovingItemsPlanningTag",
     "LocalizedValue": {
       "da": "Fejl under fjernelse af planlægningsmærke",
+      "de": "Fehler beim Entfernen des Elementplanungs-Tags",
       "en-US": "Error while removing items planning tag",
       "uk-UA": "Помилка при видаленні тега планування елементів"
     }
@@ -387,6 +444,7 @@
     "Key": "ItemsPlanningTagUpdatedSuccessfully",
     "LocalizedValue": {
       "da": "Varer, der planlægger tag, opdateres",
+      "de": "Das Planungs-Tag für Elemente wurde erfolgreich aktualisiert",
       "en-US": "Items planning tag updated successfully",
       "uk-UA": "Тег планування елементів успішно оновлено"
     }
@@ -395,6 +453,7 @@
     "Key": "ErrorWhileUpdatingItemsPlanningTag",
     "LocalizedValue": {
       "da": "Fejl under opdatering af elementplanlægningskode",
+      "de": "Fehler beim Aktualisieren des Artikelplanungs-Tags",
       "en-US": "Error while updating items planning tag",
       "uk-UA": "Помилка при оновленні тега планування елементів"
     }
@@ -403,6 +462,7 @@
     "Key": "ErrorWhileObtainingPlanningPairings",
     "LocalizedValue": {
       "da": "Fejl under opnåelse af parring af planlægning",
+      "de": "Fehler beim Abrufen von Planungspaarungen",
       "en-US": "Error while obtaining planning pairings",
       "uk-UA": "Помилка при отриманні планувальних зв'язків"
     }
@@ -411,6 +471,7 @@
     "Key": "ErrorWhileUpdatingItemsPlanning",
     "LocalizedValue": {
       "da": "Fejl under opdatering af vareplanlægning",
+      "de": "Fehler beim Aktualisieren der Artikelplanung",
       "en-US": "Error while updating items planning",
       "uk-UA": "Помилка при оновленні елементу планування"
     }
@@ -419,6 +480,7 @@
     "Key": "PairingsUpdatedSuccessfully",
     "LocalizedValue": {
       "da": "Parring blev opdateret",
+      "de": "Paarungen erfolgreich aktualisiert",
       "en-US": "Pairings updated successfully",
       "uk-UA": "Зв'язки успішно оновлені"
     }
@@ -427,6 +489,7 @@
     "Key": "PairingUpdatedSuccessfully",
     "LocalizedValue": {
       "da": "Parring opdateret",
+      "de": "Paarung erfolgreich aktualisiert",
       "en-US": "Pairing updated successfully",
       "uk-UA": "Зв'язок успішно оновлений"
     }
@@ -435,6 +498,7 @@
     "Key": "ImportCompletedSuccessfully",
     "LocalizedValue": {
       "da": "Importen blev gennemført",
+      "de": "Import erfolgreich abgeschlossen",
       "en-US": "Import completed successfully",
       "uk-UA": "Імпорт успішно завершено"
     }
@@ -443,6 +507,7 @@
     "Key": "ErrorWhileImportingExcelFile",
     "LocalizedValue": {
       "da": "Fejl under import af Excel-fil",
+      "de": "Fehler beim Importieren der Excel-Datei",
       "en-US": "Error while importing Excel file",
       "uk-UA": "Помилка при імпорті файлу Excel"
     }
@@ -451,6 +516,7 @@
     "Key": "EformNameIsEmpty",
     "LocalizedValue": {
       "da": "Eform-navnet er tomt",
+      "de": "Der Eform-Name ist leer",
       "en-US": "Eform name is empty",
       "uk-UA": "Ім'я ЕФорми порожнє"
     }
@@ -459,6 +525,7 @@
     "Key": "ItemNameIsEmpty",
     "LocalizedValue": {
       "da": "Varenavn er tomt",
+      "de": "Der Artikelname ist leer",
       "en-US": "Item name is empty",
       "uk-UA": "Ім'я елемента порожнє"
     }
@@ -467,6 +534,7 @@
     "Key": "FolderNotFound",
     "LocalizedValue": {
       "da": "Mappen blev ikke fundet",
+      "de": "Ordner nicht gefunden",
       "en-US": "Folder not found",
       "uk-UA": "Папка не знайдена"
     }
@@ -475,6 +543,7 @@
     "Key": "EformNotFound",
     "LocalizedValue": {
       "da": "Eform ikke fundet",
+      "de": "Eform nicht gefunden",
       "en-US": "Eform not found",
       "uk-UA": "ЕФорма не знайдена"
     }
@@ -483,6 +552,7 @@
     "Key": "PlanningWithNameAlreadyExists",
     "LocalizedValue": {
       "da": "Planlægning med navnet {0} findes allerede",
+      "de": "Planung mit dem Namen {0} existiert bereits",
       "en-US": "Planning with name {0} already exists",
       "uk-UA": "Планування з ім'ям {0} вже існує"
     }
@@ -491,6 +561,7 @@
     "Key": "LocaleDoesNotExist",
     "LocalizedValue": {
       "da": "Locale findes ikke",
+      "de": "Gebietsschema existiert nicht",
       "en-US": "Locale does not exist",
       "uk-UA": "Така локаль не існує"
     }
@@ -499,6 +570,7 @@
     "Key": "Table",
     "LocalizedValue": {
       "da": "Tabel",
+      "de": "Tabelle",
       "en-US": "Table",
       "uk-UA": "Таблиця"
     }
@@ -507,6 +579,7 @@
     "Key": "Position",
     "LocalizedValue": {
       "da": "Position",
+      "de": "Position",
       "en-US": "Position",
       "uk-UA": "Позиція"
     }
@@ -515,6 +588,7 @@
     "Key": "InfoAboutFolderIsNull",
     "LocalizedValue": {
       "da": "Info om mappen er null",
+      "de": "Informationen zum Ordner sind null",
       "en-US": "Info about folder is null",
       "uk-UA": "Інформація про папку порожня"
     }
@@ -523,6 +597,7 @@
     "Key": "InfoAboutEformIsNull",
     "LocalizedValue": {
       "da": "Info om eForm er null",
+      "de": "Informationen zu eForm sind null",
       "en-US": "Info about eForm is null",
       "uk-UA": "Інформація про еформу порожня"
     }

@@ -1,6 +1,5 @@
 export const planningsImportTestData: PlanningImportTest[] = [
   {
-    id: 1,
     translatedName: '01.01.1 Gennemgang Miljøledelse (år)',
     description: '',
     folder:
@@ -15,7 +14,6 @@ export const planningsImportTestData: PlanningImportTest[] = [
     ],
   },
   {
-    id: 2,
     translatedName: '01.01.2 Evaluering Miljøledelse (år)',
     description: '',
     folder:
@@ -30,7 +28,6 @@ export const planningsImportTestData: PlanningImportTest[] = [
     ],
   },
   {
-    id: 3,
     translatedName: '01.02.1 Vandforbrug (måned)',
     description: '',
     folder:
@@ -45,7 +42,6 @@ export const planningsImportTestData: PlanningImportTest[] = [
     ],
   },
   {
-    id: 4,
     translatedName: '01.05 Elforbrug (måned)',
     description: '',
     folder:
@@ -60,7 +56,6 @@ export const planningsImportTestData: PlanningImportTest[] = [
     ],
   },
   {
-    id: 5,
     translatedName: '02.01 Gennemgang af beredskabsplan (år)',
     description: '',
     folder:
@@ -75,7 +70,6 @@ export const planningsImportTestData: PlanningImportTest[] = [
     ],
   },
   {
-    id: 6,
     translatedName: '02.02 Opdatering af beredskabsplan (år)',
     description: '',
     folder:
@@ -90,7 +84,6 @@ export const planningsImportTestData: PlanningImportTest[] = [
     ],
   },
   {
-    id: 7,
     translatedName: '03.01.1 Beholder 1: Kontrol flydelag (måned)',
     description: '',
     folder:
@@ -105,7 +98,6 @@ export const planningsImportTestData: PlanningImportTest[] = [
     ],
   },
   {
-    id: 8,
     translatedName: '03.01.2 Beholder 1: Kontrol alarm (måned)',
     description: '',
     folder:
@@ -120,7 +112,6 @@ export const planningsImportTestData: PlanningImportTest[] = [
     ],
   },
   {
-    id: 9,
     translatedName: '03.01.3 Beholder 1: Kontrol konstruktion (år)',
     description: '',
     folder:
@@ -135,7 +126,6 @@ export const planningsImportTestData: PlanningImportTest[] = [
     ],
   },
   {
-    id: 10,
     translatedName: '03.01.4 Beholder 1: Anmodning beholderkontrol (10 år)',
     description: '',
     folder:
@@ -152,7 +142,6 @@ export const planningsImportTestData: PlanningImportTest[] = [
 ];
 
 export class PlanningImportTest {
-  public id: number;
   public translatedName: string;
   public description: string;
   public folder: string;

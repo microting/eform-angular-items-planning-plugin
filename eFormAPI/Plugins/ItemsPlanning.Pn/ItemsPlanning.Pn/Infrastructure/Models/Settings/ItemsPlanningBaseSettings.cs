@@ -37,9 +37,4 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Settings
         public string ReportImageName { get; set; }
 
     }
-
-    public class ItemsPlanningBaseBaseToken
-    {
-        public string Token { get; set; }
-    }
 }

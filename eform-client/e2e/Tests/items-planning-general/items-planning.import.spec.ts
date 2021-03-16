@@ -44,7 +44,6 @@ describe('Items planning - Import', function () {
     for (let i = 0; i < planningsImportTestData.length; i++) {
       const planning = itemsPlanningPlanningPage.getPlanningByIndex(i + 1);
       const testPlanning = planningsImportTestData[i];
-      expect(planning.id, `Planning[${i}] id is incorrect`).eq(testPlanning.id);
       expect(planning.name, `Planning[${i}] name is incorrect`).eq(
         testPlanning.translatedName
       );
