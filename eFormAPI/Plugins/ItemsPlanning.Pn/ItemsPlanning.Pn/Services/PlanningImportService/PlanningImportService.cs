@@ -345,18 +345,27 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         }
 
                         var planningNameFromExcelModel = excelModel.PlanningName.Split("|").First();
+
+                        var sdkFolder = excelModel.Folders.Last();
                         // Find planning name
-                        var planningName = _dbContext.PlanningNameTranslation.FirstOrDefault(x =>
-                            string.Equals(
-                                x.Name,
-                                planningNameFromExcelModel,
-                                StringComparison.CurrentCultureIgnoreCase));
+                        var planningName = _dbContext.PlanningNameTranslation
+                            .Join(_dbContext.Plannings,
+                                planningNameTranslation => planningNameTranslation.PlanningId,
+                                plannings => plannings.Id,
+                                (planningNameTranslation, planning) => new
+                                {
+                                    planning.SdkFolderId,
+                                    planningNameTranslation.Name,
+                                    planningNameTranslation.PlanningId,
+                                    planning.WorkflowState
+                                }).FirstOrDefault(x =>
+                                string.Equals(
+                                    x.Name,
+                                    planningNameFromExcelModel,
+                                    StringComparison.CurrentCultureIgnoreCase)
+                                && x.SdkFolderId == sdkFolder.Id
+                                && x.WorkflowState != Constants.WorkflowStates.Removed);
 
-                        var firstFolder = excelModel.Folders.First();
-
-                        planningName = microtingDbContext.Folders
-                            .Any(x => x.Name == firstFolder.Label
-                                      && x.WorkflowState != Constants.WorkflowStates.Removed) ? planningName : null;
                         if (planningName != null)
                         {
                             var planningFromDb = await _dbContext.Plannings
@@ -455,7 +464,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         }
                         else
                         {
-                            var sdkFolder = excelModel.Folders.Last();
+                            sdkFolder = excelModel.Folders.Last();
                             var newPlanning = new Planning
                             {
                                 CreatedByUserId = _userService.UserId,
@@ -505,16 +514,13 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         }
 
                     }
-
-                    //await transaction.CommitAsync();
                 }
-                // ReSharper disable once RedundantCatchClause
-                catch
+                catch (Exception ex)
                 {
-                    //await transaction.RollbackAsync();
-                    throw;
+                    Console.WriteLine(ex.Message);
+                    // ReSharper disable once PossibleIntendedRethrow
+                    throw ex;
                 }
-                //}
 
                 result.Message = _itemsPlanningLocalizationService.GetString("ImportCompletedSuccessfully");
 
