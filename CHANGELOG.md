@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.0.76](https://github.com/microting/eform-angular-items-planning-plugin/tree/v2.0.76) (2021-03-18)
+
+[Full Changelog](https://github.com/microting/eform-angular-items-planning-plugin/compare/v2.0.75...v2.0.76)
+
+**Implemented enhancements:**
+
+- Bump Microting.ItemsPlanningBase from 2.2.12 to 2.2.13 [\#109](https://github.com/microting/eform-angular-items-planning-plugin/issues/109)
+- Bump Microting.eFormApi.BasePn from 2.0.104 to 2.0.106 [\#108](https://github.com/microting/eform-angular-items-planning-plugin/issues/108)
+- Bump Microting.eForm from 4.4.9 to 4.4.11 [\#107](https://github.com/microting/eform-angular-items-planning-plugin/issues/107)
+
 ## [v2.0.75](https://github.com/microting/eform-angular-items-planning-plugin/tree/v2.0.75) (2021-03-17)
 
 [Full Changelog](https://github.com/microting/eform-angular-items-planning-plugin/compare/v2.0.74...v2.0.75)
@@ -9,7 +19,6 @@
 - Bump Microting.ItemsPlanningBase from 2.2.11 to 2.2.12 [\#106](https://github.com/microting/eform-angular-items-planning-plugin/issues/106)
 - Bump Microting.eFormApi.BasePn from 2.0.103 to 2.0.104 [\#105](https://github.com/microting/eform-angular-items-planning-plugin/issues/105)
 - Bump Microting.eForm from 4.4.8 to 4.4.9 [\#104](https://github.com/microting/eform-angular-items-planning-plugin/issues/104)
-- Bump Microting.ItemsPlanningBase from 2.2.7 to 2.2.8 [\#99](https://github.com/microting/eform-angular-items-planning-plugin/issues/99)
 
 ## [v2.0.74](https://github.com/microting/eform-angular-items-planning-plugin/tree/v2.0.74) (2021-03-16)
 
@@ -29,6 +38,7 @@
 
 **Implemented enhancements:**
 
+- Bump Microting.ItemsPlanningBase from 2.2.7 to 2.2.8 [\#99](https://github.com/microting/eform-angular-items-planning-plugin/issues/99)
 - Bump Microting.eFormApi.BasePn from 2.0.100 to 2.0.101 [\#98](https://github.com/microting/eform-angular-items-planning-plugin/issues/98)
 - Bump Microting.eForm from 4.4.4 to 4.4.6 [\#97](https://github.com/microting/eform-angular-items-planning-plugin/issues/97)
 
