@@ -240,14 +240,14 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             if (fieldDto.FieldType == Constants.FieldTypes.None)
                             {
                                 var fieldTranslation =
-                                    await sdkDbContext.FieldTranslations.SingleAsync(x =>
+                                    await sdkDbContext.FieldTranslations.FirstAsync(x =>
                                         x.FieldId == fieldDto.Id && x.LanguageId == language.Id);
                                 reportModel.DescriptionBlocks.Add(fieldTranslation.Description);
                             }
                             if (!excludedFieldTypes.Contains(fieldDto.FieldType))
                             {
                                 var fieldTranslation =
-                                    await sdkDbContext.FieldTranslations.SingleAsync(x =>
+                                    await sdkDbContext.FieldTranslations.FirstAsync(x =>
                                         x.FieldId == fieldDto.Id && x.LanguageId == language.Id);
                                 var kvp = new KeyValuePair<int, string>(fieldDto.Id, fieldTranslation.Text);
 
@@ -335,61 +335,61 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                     x.PlanningId == planningCase.PlanningId && x.LanguageId == language.Id);
                             if (planningNameTranslation != null)
                             {
-var item = new ReportEformItemModel
-                            {
-                                Id = planningCase.Id,
-                                MicrotingSdkCaseId = planningCase.MicrotingSdkCaseId,
-                                MicrotingSdkCaseDoneAt = TimeZoneInfo.ConvertTimeFromUtc((DateTime)planningCase.MicrotingSdkCaseDoneAt, timeZoneInfo),
-                                eFormId = planningCase.MicrotingSdkeFormId,
-                                DoneBy = planningCase.DoneByUserName,
-                                ItemName = planningNameTranslation.Name,
-                                ItemDescription = planningCase.Planning.Description,
-                            };
-
-
-                            var caseFields = await core.Advanced_FieldValueReadList(
-                                new List<int>()
+                                var item = new ReportEformItemModel
                                 {
-                                planningCase.MicrotingSdkCaseId
-                                }, language);
+                                    Id = planningCase.Id,
+                                    MicrotingSdkCaseId = planningCase.MicrotingSdkCaseId,
+                                    MicrotingSdkCaseDoneAt = TimeZoneInfo.ConvertTimeFromUtc((DateTime)planningCase.MicrotingSdkCaseDoneAt, timeZoneInfo),
+                                    eFormId = planningCase.MicrotingSdkeFormId,
+                                    DoneBy = planningCase.DoneByUserName,
+                                    ItemName = planningNameTranslation.Name,
+                                    ItemDescription = planningCase.Planning.Description,
+                                };
 
-                            foreach (var itemHeader in reportModel.ItemHeaders)
-                            {
-                                var caseField = caseFields
-                                    .FirstOrDefault(x => x.FieldId == itemHeader.Key);
 
-                                if (caseField != null)
-                                {
-                                    switch (caseField.FieldType)
+                                var caseFields = await core.Advanced_FieldValueReadList(
+                                    new List<int>()
                                     {
-                                        case Constants.FieldTypes.MultiSelect:
-                                            item.CaseFields.Add(caseField.ValueReadable.Replace("|", "<br>"));
-                                            break;
-                                        case Constants.FieldTypes.EntitySearch:
-                                        case Constants.FieldTypes.EntitySelect:
-                                        case Constants.FieldTypes.SingleSelect:
-                                            item.CaseFields.Add(caseField.ValueReadable);
-                                            break;
-                                        default:
-                                            item.CaseFields.Add(caseField.Value);
-                                            break;
+                                        planningCase.MicrotingSdkCaseId
+                                    }, language);
+
+                                foreach (var itemHeader in reportModel.ItemHeaders)
+                                {
+                                    var caseField = caseFields
+                                        .FirstOrDefault(x => x.FieldId == itemHeader.Key);
+
+                                    if (caseField != null)
+                                    {
+                                        switch (caseField.FieldType)
+                                        {
+                                            case Constants.FieldTypes.MultiSelect:
+                                                item.CaseFields.Add(caseField.ValueReadable.Replace("|", "<br>"));
+                                                break;
+                                            case Constants.FieldTypes.EntitySearch:
+                                            case Constants.FieldTypes.EntitySelect:
+                                            case Constants.FieldTypes.SingleSelect:
+                                                item.CaseFields.Add(caseField.ValueReadable);
+                                                break;
+                                            default:
+                                                item.CaseFields.Add(caseField.Value);
+                                                break;
+                                        }
                                     }
                                 }
-                            }
 
-                            item.ImagesCount = await sdkDbContext.FieldValues
-                                .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                                .Where(x => x.Field.FieldTypeId == 5)
-                                .Where(x => x.CaseId == planningCase.MicrotingSdkCaseId)
-                                .Select(x => x.Id)
-                                .CountAsync();
+                                item.ImagesCount = await sdkDbContext.FieldValues
+                                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                                    .Where(x => x.Field.FieldTypeId == 5)
+                                    .Where(x => x.CaseId == planningCase.MicrotingSdkCaseId)
+                                    .Select(x => x.Id)
+                                    .CountAsync();
 
-                            item.PostsCount = casePostListResult.Model.Entities
-                                .Where(x => x.CaseId == planningCase.MicrotingSdkCaseId)
-                                .Select(x => x.PostId)
-                                .Count();
+                                item.PostsCount = casePostListResult.Model.Entities
+                                    .Where(x => x.CaseId == planningCase.MicrotingSdkCaseId)
+                                    .Select(x => x.PostId)
+                                    .Count();
 
-                            reportModel.Items.Add(item);
+                                reportModel.Items.Add(item);
                             }
                         }
 
