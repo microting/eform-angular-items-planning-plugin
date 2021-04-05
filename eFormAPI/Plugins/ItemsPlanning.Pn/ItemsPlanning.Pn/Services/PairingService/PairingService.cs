@@ -194,7 +194,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
 
                 if (planning == null)
                 {
-                    return new OperationDataResult<PlanningsPnModel>(false,
+                    return new OperationResult(false,
                         _itemsPlanningLocalizationService.GetString("PlanningNotFound"));
                 }
 
@@ -270,7 +270,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
             catch (Exception e)
             {
                 Trace.TraceError(e.Message);
-                return new OperationDataResult<PlanningsPnModel>(false,
+                return new OperationResult(false,
                     _itemsPlanningLocalizationService.GetString("ErrorWhileUpdatingItemsPlanning"));
             }
         }

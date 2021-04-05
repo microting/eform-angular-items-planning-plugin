@@ -11,7 +11,7 @@ import {
 import { BaseService } from 'src/app/common/services/base.service';
 
 import { PlanningAssignSitesModel } from '../models/plannings/planning-assign-sites.model';
-import {PairingsModel, PairingUpdateModel} from '../models/pairings';
+import { PairingsModel, PairingUpdateModel } from '../models/pairings';
 
 export let ItemsPlanningPnPairingMethods = {
   Pairings: 'api/items-planning-pn/pairings',
@@ -30,7 +30,9 @@ export class ItemsPlanningPnPairingService extends BaseService {
     super(_http, router, toastrService);
   }
 
-  getAllPairings(model: {tagIds: number[]}): Observable<OperationDataResult<PairingsModel>> {
+  getAllPairings(model: {
+    tagIds: number[];
+  }): Observable<OperationDataResult<PairingsModel>> {
     return this.post(ItemsPlanningPnPairingMethods.Pairings, model);
   }
 

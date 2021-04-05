@@ -1,25 +1,31 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {CommonDictionaryModel} from 'src/app/common/models';
-import {PlanningsRequestModel} from '../../../../models/plannings';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { CommonDictionaryModel } from 'src/app/common/models';
+import { PlanningsStateService } from 'src/app/plugins/modules/items-planning-pn/components/plannings/state/plannings-state-service';
 
 @Component({
   selector: 'app-plannings-header',
   templateUrl: './plannings-header.component.html',
   styleUrls: ['./plannings-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanningsHeaderComponent implements OnInit {
   @Input() availableTags: CommonDictionaryModel[] = [];
-  @Input() planningsRequestModel: PlanningsRequestModel = new PlanningsRequestModel();
   @Output() tagSaved: EventEmitter<any> = new EventEmitter<any>();
   @Output() savedTagRemoved: EventEmitter<any> = new EventEmitter<any>();
   @Output() nameFilterChanged: EventEmitter<any> = new EventEmitter<any>();
-  @Output() descriptionFilterChanged: EventEmitter<any> = new EventEmitter<any>();
+  @Output()
+  descriptionFilterChanged: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor() { }
+  constructor(public planningsStateService: PlanningsStateService) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   saveTag(e: any) {
     this.tagSaved.emit(e);

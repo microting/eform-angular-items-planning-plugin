@@ -67,7 +67,7 @@
               class="col-md-3 col-sm-6 col-xs-6"
               *ngIf="foldersTreeDto.length > 0"
             >
-              <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
                 <div class="md-form">
                   <input
                     mdbInput
@@ -151,7 +151,7 @@
                   class="form-control"
                 />
                 <label for="editRepeatEvery">{{
-                  'Repeat every' | translate
+                  'RepeatEvery' | translate
                 }}</label>
               </div>
             </div>
@@ -163,7 +163,7 @@
                   { id: 3, name: 'Month' | translate }
                 ]"
                 bindLabel="name"
-                [placeholder]="'Repeat type' | translate"
+                [placeholder]="'RepeatType' | translate"
                 bindValue="id"
                 [typeahead]="typeahead"
                 [(ngModel)]="selectedPlanningModel.reiteration.repeatType"
@@ -248,7 +248,7 @@
                 />
                 <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
                 <label for="editRepeatUntil">{{
-                  'Repeat until' | translate
+                  'RepeatUntil' | translate
                 }}</label>
               </div>
             </div>

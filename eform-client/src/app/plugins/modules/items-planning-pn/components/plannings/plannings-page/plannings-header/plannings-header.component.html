@@ -5,7 +5,7 @@
       dropdownPosition="'bottom'"
       [placeholder]="'Tags' | translate"
       [items]="availableTags"
-      [(ngModel)]="planningsRequestModel.tagIds"
+      [ngModel]="planningsStateService.getTagIds() | async"
       (add)="saveTag($event)"
       (remove)="removeSavedTag($event)"
       [clearable]="false"
@@ -20,7 +20,8 @@
       <input
         mdbInput
         type="text"
-        (input)="onNameFilterChanged($event.target.value)"
+        [ngModel]="planningsStateService.getNameFilter() | async"
+        (ngModelChange)="onNameFilterChanged($event)"
         class="form-control input-sm"
         id="nameFilterInput"
       />
@@ -32,7 +33,8 @@
       <input
         mdbInput
         type="text"
-        (input)="onDescriptionFilterChanged($event.target.value)"
+        [ngModel]="planningsStateService.getDescriptionFilter() | async"
+        (ngModelChange)="onDescriptionFilterChanged($event)"
         class="form-control input-sm"
         id="descriptionFilterInput"
       />

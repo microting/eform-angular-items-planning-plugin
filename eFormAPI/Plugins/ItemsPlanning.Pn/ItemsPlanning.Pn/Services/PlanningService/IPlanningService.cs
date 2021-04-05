@@ -28,10 +28,11 @@ namespace ItemsPlanning.Pn.Services.PlanningService
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Infrastructure.Models.Planning;
     using System.Collections.Generic;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
 
     public interface IPlanningService
     {
-        Task<OperationDataResult<PlanningsPnModel>> Index(PlanningsRequestModel requestModel);
+        Task<OperationDataResult<Paged<PlanningPnModel>>> Index(PlanningsRequestModel requestModel);
 
         Task<OperationResult> Create(PlanningCreateModel model);
 

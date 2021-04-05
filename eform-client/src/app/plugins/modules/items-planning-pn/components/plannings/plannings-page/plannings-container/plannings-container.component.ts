@@ -1,12 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { PageSettingsModel } from 'src/app/common/models/settings';
-
-import { SharedPnService } from 'src/app/plugins/modules/shared/services';
-import {
-  PlanningModel,
-  PlanningsModel,
-  PlanningsRequestModel,
-} from '../../../../models/plannings';
+import { PlanningModel } from '../../../../models/plannings';
 import {
   ItemsPlanningPnPlanningsService,
   ItemsPlanningPnTagsService,
@@ -20,12 +14,14 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import {
   CommonDictionaryModel,
   FolderDto,
+  Paged,
   SiteNameDto,
 } from 'src/app/common/models';
 import { FoldersService, SitesService } from 'src/app/common/services/advanced';
 import { composeFolderName } from 'src/app/common/helpers/folder-name.helper';
 import { AuthService } from 'src/app/common/services';
 import * as R from 'ramda';
+import { PlanningsStateService } from 'src/app/plugins/modules/items-planning-pn/components/plannings/state/plannings-state-service';
 
 @AutoUnsubscribe()
 @Component({
@@ -35,7 +31,8 @@ import * as R from 'ramda';
 })
 export class PlanningsContainerComponent implements OnInit, OnDestroy {
   @ViewChild('deletePlanningModal', { static: false }) deletePlanningModal;
-  @ViewChild('deleteMultiplePlanningsModal', { static: false }) deleteMultiplePlanningsModal;
+  @ViewChild('deleteMultiplePlanningsModal', { static: false })
+  deleteMultiplePlanningsModal;
   @ViewChild('modalCasesColumns', { static: false }) modalCasesColumnsModal;
   @ViewChild('assignSitesModal', { static: false }) assignSitesModal;
   @ViewChild('modalPlanningsImport', { static: false }) modalPlanningsImport;
@@ -44,8 +41,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   descriptionSearchSubject = new Subject();
   nameSearchSubject = new Subject();
   localPageSettings: PageSettingsModel = new PageSettingsModel();
-  planningsModel: PlanningsModel = new PlanningsModel();
-  planningsRequestModel: PlanningsRequestModel = new PlanningsRequestModel();
+  planningsModel: Paged<PlanningModel> = new Paged<PlanningModel>();
   availableTags: CommonDictionaryModel[] = [];
   foldersListDto: FolderDto[] = [];
   sitesDto: SiteNameDto[] = [];
@@ -62,19 +58,19 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   allPlanningsCheckbox = false;
 
   constructor(
-    private sharedPnService: SharedPnService,
     private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
     private tagsService: ItemsPlanningPnTagsService,
     private foldersService: FoldersService,
     private sitesService: SitesService,
-    private authService: AuthService
+    private authService: AuthService,
+    public planningsStateService: PlanningsStateService
   ) {
     this.nameSearchSubject.pipe(debounceTime(500)).subscribe((val) => {
-      this.planningsRequestModel.nameFilter = val.toString();
+      this.planningsStateService.updateNameFilter(val.toString());
       this.getPlannings();
     });
     this.descriptionSearchSubject.pipe(debounceTime(500)).subscribe((val) => {
-      this.planningsRequestModel.descriptionFilter = val.toString();
+      this.planningsStateService.updateDescriptionFilter(val.toString());
       this.getPlannings();
     });
   }
@@ -92,45 +88,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getLocalPageSettings();
     this.getAllInitialData();
-  }
-
-  getLocalPageSettings() {
-    this.localPageSettings = this.sharedPnService.getLocalPageSettings(
-      'itemsPlanningPnSettings',
-      'Plannings'
-    ).settings;
-    this.localPageSettings.additional.forEach((value) => {
-      if (value.key === 'tagIds') {
-        this.planningsRequestModel.tagIds = JSON.parse(value.value);
-      }
-    });
-  }
-
-  updateLocalPageSettings() {
-    const index = this.localPageSettings.additional.findIndex(
-      (item) => item.key === 'tagIds'
-    );
-    if (index !== -1) {
-      this.localPageSettings.additional[index].value = JSON.stringify(
-        this.planningsRequestModel.tagIds
-      );
-    } else {
-      this.localPageSettings.additional = [
-        ...this.localPageSettings.additional,
-        {
-          key: 'tagIds',
-          value: JSON.stringify(this.planningsRequestModel.tagIds),
-        },
-      ];
-    }
-    this.sharedPnService.updateLocalPageSettings(
-      'itemsPlanningPnSettings',
-      this.localPageSettings,
-      'Plannings'
-    );
-    this.getPlannings();
   }
 
   getAllInitialData() {
@@ -150,18 +108,15 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   }
 
   getPlannings() {
-    this.planningsRequestModel.isSortDsc = this.localPageSettings.isSortDsc;
-    this.planningsRequestModel.sort = this.localPageSettings.sort;
-    this.planningsRequestModel.pageSize = this.localPageSettings.pageSize;
-    this.getPlanningsSub$ = this.itemsPlanningPnPlanningsService
-      .getAllPlannings(this.planningsRequestModel)
+    this.getPlanningsSub$ = this.planningsStateService
+      .getAllPlannings()
       .subscribe((data) => {
         if (data && data.success) {
           // map folder names to items
           if (data.model.total > 0) {
             this.planningsModel = {
               ...data.model,
-              plannings: data.model.plannings.map((x) => {
+              entities: data.model.entities.map((x) => {
                 return {
                   ...x,
                   folder: {
@@ -225,27 +180,13 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   }
 
   sortTable(sort: string) {
-    if (this.localPageSettings.sort === sort) {
-      this.localPageSettings.isSortDsc = !this.localPageSettings.isSortDsc;
-    } else {
-      this.localPageSettings.isSortDsc = false;
-      this.localPageSettings.sort = sort;
-    }
-    this.updateLocalPageSettings();
+    this.planningsStateService.onSortTable(sort);
+    this.getPlannings();
   }
 
-  changePage(e: any) {
-    if (e || e === 0) {
-      this.planningsRequestModel.offset = e;
-      if (e === 0) {
-        this.planningsRequestModel.pageIndex = 0;
-      } else {
-        this.planningsRequestModel.pageIndex = Math.floor(
-          e / this.planningsRequestModel.pageSize
-        );
-      }
-      this.getPlannings();
-    }
+  changePage(newPage: any) {
+    this.planningsStateService.changePage(newPage);
+    this.getPlannings();
   }
 
   openAssignmentModal(planning: PlanningModel) {
@@ -265,27 +206,18 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   }
 
   saveTag(e: any) {
-    if (!this.planningsRequestModel.tagIds.find((x) => x === e.id)) {
-      this.planningsRequestModel.tagIds.push(e.id);
-    }
-    this.updateLocalPageSettings();
+    this.planningsStateService.addTagId(e.id);
+    this.getPlannings();
   }
 
   removeSavedTag(e: any) {
-    this.planningsRequestModel.tagIds = this.planningsRequestModel.tagIds.filter(
-      (x) => x !== e.id
-    );
-    this.updateLocalPageSettings();
+    this.planningsStateService.removeTagId(e.value.id);
+    this.getPlannings();
   }
 
   tagSelected(id: number) {
-    if (!this.planningsRequestModel.tagIds.find((x) => x === id)) {
-      this.planningsRequestModel.tagIds = [
-        ...this.planningsRequestModel.tagIds,
-        id,
-      ];
-      this.updateLocalPageSettings();
-    }
+    this.planningsStateService.addTagId(id);
+    this.getPlannings();
   }
 
   ngOnDestroy(): void {}
@@ -321,7 +253,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
     this.allPlanningsCheckbox = isChecked;
     this.selectedPlanningsCheckboxes = [];
     if (isChecked) {
-      this.planningsModel.plannings.map((x) => {
+      this.planningsModel.entities.map((x) => {
         this.selectedPlanningsCheckboxes = [
           ...this.selectedPlanningsCheckboxes,
           { planningId: x.id, checked: true },
@@ -336,6 +268,18 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   }
 
   showDeleteMultiplePlanningsModal() {
-    this.deleteMultiplePlanningsModal.show(this.selectedPlanningsCheckboxes.length);
+    this.deleteMultiplePlanningsModal.show(
+      this.selectedPlanningsCheckboxes.length
+    );
+  }
+
+  onPageSizeChanged(newPageSize: number) {
+    this.planningsStateService.updatePageSize(newPageSize);
+    this.getPlannings();
+  }
+
+  planningDeleted() {
+    this.planningsStateService.onDelete();
+    this.getPlannings();
   }
 }

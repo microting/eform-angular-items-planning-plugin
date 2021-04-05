@@ -5,6 +5,7 @@ import {PageSettingsModel} from '../../../../../../../common/models/settings';
 import {PlanningCasesModel, PlanningCaseModel} from '../../../../models/plannings/planning-cases/planning-cases.model';
 import {ItemsPlanningPnCasesService} from '../../../../services/items-planning-pn-cases.service';
 import {PlanningCasesRequestModel} from '../../../../models/plannings/planning-cases/planning-cases-request.model';
+import {TableHeaderElementModel} from 'src/app/common/models';
 
 @Component({
   selector: 'app-planning-case-page',
@@ -18,6 +19,20 @@ export class PlanningCasePageComponent implements OnInit {
   planningCaseRequestModel: PlanningCasesRequestModel = new PlanningCasesRequestModel();
   casesModel: PlanningCasesModel = new PlanningCasesModel();
   id: number;
+  tableHeaders: TableHeaderElementModel[] = [
+    { name: 'Id', elementId: 'idTableHeader', sortable: true },
+    { name: 'CreatedAt', elementId: 'dateTableHeader', sortable: true, visibleName: 'Date' },
+    { name: 'ItemNumber', elementId: 'numberTableHeader', sortable: true, visibleName: 'Number' },
+    { name: 'BuildYear', elementId: 'buildYearTableHeader', sortable: true, visibleName: 'Build Year' },
+    { name: 'Description', elementId: 'descriptionTableHeader', sortable: true },
+    { name: 'Type', elementId: 'typeTableHeader', sortable: true },
+    { name: 'Location', elementId: 'locationTypeTableHeader', sortable: true },
+    { name: 'FieldStatus', elementId: 'statusTypeTableHeader', sortable: true, visibleName: 'Status' },
+    { name: 'Comment', elementId: 'commentTypeTableHeader', sortable: true },
+    { name: 'NumberOfImages', elementId: 'numberOfPicturesTableHeader', sortable: true, visibleName: 'Number of pictures' },
+    { name: 'PDF', elementId: '', sortable: false },
+    { name: 'Actions', elementId: '', sortable: false },
+    ];
 
   constructor(private activateRoute: ActivatedRoute,
               private sharedPnService: SharedPnService,

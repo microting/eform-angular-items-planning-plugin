@@ -62,7 +62,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             _userService = userService;
         }
 
-        public async Task<OperationDataResult<PlanningsPnModel>> Index(PlanningsRequestModel pnRequestModel)
+        public async Task<OperationDataResult<Paged<PlanningPnModel>>> Index(PlanningsRequestModel pnRequestModel)
         {
             try
             {
@@ -72,6 +72,21 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 var planningsQuery = _dbContext.Plannings
                     .AsQueryable();
+
+                if (!string.IsNullOrEmpty(pnRequestModel.NameFilter))
+                {
+                    planningsQuery = planningsQuery.Where(x =>
+                        x.NameTranslations.Any(y => y.Name.Contains(pnRequestModel.NameFilter, StringComparison.CurrentCultureIgnoreCase)));
+                }
+
+                if (!string.IsNullOrEmpty(pnRequestModel.DescriptionFilter))
+                {
+                    planningsQuery = planningsQuery.Where(x =>
+                        x.Description.Contains(pnRequestModel.DescriptionFilter,
+                            StringComparison.CurrentCultureIgnoreCase));
+                }
+
+                // sort
                 if (!string.IsNullOrEmpty(pnRequestModel.Sort) && pnRequestModel.Sort != "TranslatedName")
                 {
                     if (pnRequestModel.IsSortDsc)
@@ -87,25 +102,13 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 }
                 else
                 {
-                    planningsQuery = _dbContext.Plannings
+                    planningsQuery = planningsQuery
                         .OrderBy(x => x.Id);
-                }
-
-                if (!string.IsNullOrEmpty(pnRequestModel.NameFilter))
-                {
-                    planningsQuery = planningsQuery.Where(x =>
-                        x.NameTranslations.Any(y => y.Name.Contains(pnRequestModel.NameFilter, StringComparison.CurrentCultureIgnoreCase)));
-                }
-
-                if (!string.IsNullOrEmpty(pnRequestModel.DescriptionFilter))
-                {
-                    planningsQuery = planningsQuery.Where(x =>
-                        x.Description.Contains(pnRequestModel.DescriptionFilter,
-                            StringComparison.CurrentCultureIgnoreCase));
                 }
 
                 if (pnRequestModel.TagIds.Any())
                 {
+                    // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
                     foreach (var tagId in pnRequestModel.TagIds)
                     {
                         planningsQuery = planningsQuery.Where(x => x.PlanningsTags.Any(y =>
@@ -119,35 +122,46 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 // calculate total before pagination
                 var total = await planningsQuery.CountAsync();
 
+                // add select
+                var localeString = await _userService.GetCurrentUserLocale();
+                if (string.IsNullOrEmpty(localeString))
+                {
+                    return new OperationDataResult<Paged<PlanningPnModel>>(false,
+                        _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
+                }
+                var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+                var languageIemPlanning = _dbContext.Languages.Single(x => x.Id == language.Id);
+                var planningQueryWithSelect = AddSelectToPlanningQuery(planningsQuery, languageIemPlanning);
+
+
+                if (pnRequestModel.Sort == "TranslatedName")
+                {
+                    planningQueryWithSelect = pnRequestModel.IsSortDsc
+                        ? planningQueryWithSelect.OrderByDescending(x => x.TranslatedName)
+                        : planningQueryWithSelect.OrderBy(x => x.TranslatedName);
+                }
+
                 planningsQuery
                     = planningsQuery
                         .Skip(pnRequestModel.Offset)
                         .Take(pnRequestModel.PageSize);
 
-                var localeString = await _userService.GetCurrentUserLocale();
-                if (string.IsNullOrEmpty(localeString))
-                {
-                    return new OperationDataResult<PlanningsPnModel>(false,
-                        _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
-                }
-                var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
-                var languageIemPlanning = _dbContext.Languages.Single(x => x.Id == language.Id);
                 var checkListIds = await planningsQuery.Select(x => x.RelatedEFormId).ToListAsync();
-                var checkListWorkflowState = new List<KeyValuePair<int, string>>();
-                foreach (var checkList in sdkDbContext.CheckLists.Where(x => checkListIds.Contains(x.Id)).ToList())
-                {
-                    var kvp = new KeyValuePair<int, string>(checkList.Id, checkList.WorkflowState);
-                    checkListWorkflowState.Add(kvp);
-                }
+                var checkListWorkflowState = sdkDbContext.CheckLists.Where(x => checkListIds.Contains(x.Id))
+                    .Select(checkList => new KeyValuePair<int, string>(checkList.Id, checkList.WorkflowState))
+                    .ToList();
 
                 // add select and take objects from db
-                var plannings = await AddSelectToPlanningQuery(planningsQuery, languageIemPlanning).ToListAsync();
+                var plannings = await planningQueryWithSelect.ToListAsync();
 
                 // get site names
+
+                var assignedSitesFromPlanning = plannings.SelectMany(y => y.AssignedSites).ToList();
 
                 var sites = await sdkDbContext.Sites
                     .AsNoTracking()
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Where(x => assignedSitesFromPlanning.Select(y => y.SiteId).Contains(x.Id))
                     .Select(x => new CommonDictionaryModel
                     {
                         Id = x.Id,
@@ -156,7 +170,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 foreach (var planning in plannings)
                 {
-                    foreach (var assignedSite in planning.AssignedSites)
+                    foreach (var assignedSite in assignedSitesFromPlanning)
                     {
                         foreach (var site in sites.Where(site => site.Id == assignedSite.SiteId))
                         {
@@ -171,9 +185,10 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     // This is done to update existing Plannings to using EFormSdkFolderId instead of EFormSdkFolderName
                     if ((planning.Folder.EFormSdkFolderId == 0 || planning.Folder.EFormSdkFolderId == null) && planning.Folder.EFormSdkFolderName != null)
                     {
-                        var locateFolder = await sdkDbContext.Folders.FirstOrDefaultAsync(x =>
-                            x.Name == planning.Folder.EFormSdkFolderName &&
-                            x.WorkflowState != Constants.WorkflowStates.Removed);
+                        var locateFolder = await sdkDbContext.Folders
+                            .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Where(x => x.Name == planning.Folder.EFormSdkFolderName)
+                            .FirstOrDefaultAsync();
 
                         if (locateFolder != null)
                         {
@@ -184,15 +199,17 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         }
                     }
 
-                    var folder = sdkDbContext.Folders
+                    var folder = await sdkDbContext.Folders
                         .Include(x => x.Parent)
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Where(y => y.Id == planning.Folder.EFormSdkFolderId)
                         .Select(x => new
                         {
                             x.Name,
                             x.Parent,
                             x.Id,
                         })
-                        .FirstOrDefault(y => y.Id == planning.Folder.EFormSdkFolderId);
+                        .FirstOrDefaultAsync();
                     if (folder != null)
                     {
                         planning.Folder.EFormSdkFolderId = folder.Id;
@@ -207,31 +224,18 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     }
                 }
 
-                var planningsModel = new PlanningsPnModel
+                var planningsModel = new Paged<PlanningPnModel>
                 {
                     Total = total,
-                    Plannings = plannings
+                    Entities = plannings
                 };
 
-                // sort by translated name
-                if (pnRequestModel.Sort == "TranslatedName")
-                {
-                    if (pnRequestModel.IsSortDsc)
-                    {
-                        planningsModel.Plannings = planningsModel.Plannings.OrderByDescending(x => x.TranslatedName).ToList();
-                    }
-                    else
-                    {
-                        planningsModel.Plannings = planningsModel.Plannings.OrderBy(x => x.TranslatedName).ToList();
-                    }
-                }
-
-                return new OperationDataResult<PlanningsPnModel>(true, planningsModel);
+                return new OperationDataResult<Paged<PlanningPnModel>>(true, planningsModel);
             }
             catch (Exception e)
             {
                 Trace.TraceError(e.Message);
-                return new OperationDataResult<PlanningsPnModel>(false,
+                return new OperationDataResult<Paged<PlanningPnModel>>(false,
                     _itemsPlanningLocalizationService.GetString("ErrorObtainingLists"));
             }
         }
@@ -627,6 +631,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             }
 
         }
+
         private static IQueryable<PlanningPnModel> AddSelectToPlanningQuery(IQueryable<Planning> planningQueryable, Language languageIemPlanning)
         {
             return planningQueryable.Select(x => new PlanningPnModel

@@ -21,7 +21,7 @@
         dropdownPosition="'bottom'"
         [placeholder]="'Tags' | translate"
         [items]="availableTags"
-        [(ngModel)]="pairingsRequestModal.tagIds"
+        [ngModel]="pairingStateService.getTagIds() | async"
         (add)="saveTag($event)"
         (remove)="removeSavedTag($event)"
         [clearable]="false"

@@ -1,19 +1,20 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   ItemsPlanningPnPairingService,
-  ItemsPlanningPnPlanningsService, ItemsPlanningPnTagsService,
+  ItemsPlanningPnPlanningsService,
+  ItemsPlanningPnTagsService,
 } from '../../../services';
 import { SitesService } from 'src/app/common/services/advanced';
 import { Subscription } from 'rxjs';
-import {CommonDictionaryModel, PageSettingsModel, SiteNameDto} from 'src/app/common/models';
+import { CommonDictionaryModel, SiteNameDto } from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import {
   PairingUpdateModel,
   PairingsModel,
 } from 'src/app/plugins/modules/items-planning-pn/models/pairings';
 import * as R from 'ramda';
-import {PairingGridUpdateComponent} from '../pairing-grid-update/pairing-grid-update.component';
-import {SharedPnService} from 'src/app/plugins/modules/shared/services';
+import { PairingGridUpdateComponent } from '../pairing-grid-update/pairing-grid-update.component';
+import { PairingStateService } from 'src/app/plugins/modules/items-planning-pn/components/pairing/state/pairing-state-service';
 
 @AutoUnsubscribe()
 @Component({
@@ -22,18 +23,17 @@ import {SharedPnService} from 'src/app/plugins/modules/shared/services';
   styleUrls: ['./pairing-grid-page.component.scss'],
 })
 export class PairingGridPageComponent implements OnInit, OnDestroy {
-  @ViewChild('updatePairingsModal') updatePairingsModal: PairingGridUpdateComponent;
+  @ViewChild('updatePairingsModal')
+  updatePairingsModal: PairingGridUpdateComponent;
   getAllSites$: Subscription;
   getAllPairings$: Subscription;
   getTagsSub$: Subscription;
   updatePairings$: Subscription;
-  localPageSettings: PageSettingsModel = new PageSettingsModel();
   sitesDto: SiteNameDto[] = [];
   pairings: PairingsModel = new PairingsModel();
   availableTags: CommonDictionaryModel[] = [];
-  pairingsRequestModal: {tagIds: number[]} = {tagIds: []};
-  selectedColCheckboxes = new Array<{ colNumber: number, checked: boolean }>();
-  selectedRowCheckboxes = new Array<{ rowNumber: number, checked: boolean }>();
+  selectedColCheckboxes = new Array<{ colNumber: number; checked: boolean }>();
+  selectedRowCheckboxes = new Array<{ rowNumber: number; checked: boolean }>();
 
   pairingsForUpdate: PairingUpdateModel[] = [];
 
@@ -42,11 +42,10 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
     private planningService: ItemsPlanningPnPlanningsService,
     private sitesService: SitesService,
     private tagsService: ItemsPlanningPnTagsService,
-    private sharedPnService: SharedPnService
+    public pairingStateService: PairingStateService
   ) {}
 
   ngOnInit(): void {
-    this.getLocalPageSettings();
     this.getAllInitialData();
   }
 
@@ -54,33 +53,6 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
     this.getAllSites();
     this.getAllPairings();
     this.getTags();
-  }
-
-  getLocalPageSettings() {
-    this.localPageSettings = this.sharedPnService.getLocalPageSettings(
-      'itemsPlanningPnSettings',
-      'Pairing'
-    ).settings;
-    this.localPageSettings.additional.forEach(value => {
-      if (value.key === 'tagIds') {
-        this.pairingsRequestModal.tagIds = JSON.parse(value.value);
-      }
-    });
-  }
-
-  updateLocalPageSettings() {
-    const index = this.localPageSettings.additional.findIndex(item => item.key === 'tagIds');
-    if (index !== -1) {
-      this.localPageSettings.additional[index].value = JSON.stringify(this.pairingsRequestModal.tagIds);
-    } else {
-      this.localPageSettings.additional = [...this.localPageSettings.additional,
-        {key: 'tagIds', value: JSON.stringify(this.pairingsRequestModal.tagIds)}];
-    }
-    this.sharedPnService.updateLocalPageSettings(
-      'itemsPlanningPnSettings',
-      this.localPageSettings,
-      'Pairing'
-    );
   }
 
   getAllSites() {
@@ -102,8 +74,8 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
   }
 
   getAllPairings() {
-    this.getAllPairings$ = this.pairingService
-      .getAllPairings(this.pairingsRequestModal)
+    this.getAllPairings$ = this.pairingStateService
+      .getAllPairings()
       .subscribe((operation) => {
         if (operation && operation.success) {
           this.pairings = operation.model;
@@ -126,18 +98,12 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
   }
 
   saveTag(e: any) {
-    if (!this.pairingsRequestModal.tagIds.find((x) => x === e.id)) {
-      this.pairingsRequestModal.tagIds.push(e.id);
-    }
-    this.updateLocalPageSettings();
+    this.pairingStateService.addOrRemoveTagId(e.id);
     this.getAllPairings();
   }
 
   removeSavedTag(e: any) {
-    this.pairingsRequestModal.tagIds = this.pairingsRequestModal.tagIds.filter(
-      (x) => x !== e.id
-    );
-    this.updateLocalPageSettings();
+    this.pairingStateService.addOrRemoveTagId(e.id);
     this.getAllPairings();
   }
 
@@ -153,21 +119,30 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
     if (foundObject > -1) {
       // Value does not need to be deleted if the pairing property is equal.
       if (this.pairingsForUpdate[foundObject].paired !== model.paired) {
-        this.pairingsForUpdate = R.remove(foundObject, 1, this.pairingsForUpdate);
+        this.pairingsForUpdate = R.remove(
+          foundObject,
+          1,
+          this.pairingsForUpdate
+        );
       }
     } else {
       // Check whether we need to add an update to the array, because the object may not need to be updated if the same object was passed
-      const i = this.pairings.pairings.findIndex((x) =>
-        x.planningId === model.planningId && x.pairingValues.findIndex((y) =>
-        y.deviceUserId === model.deviceUserId && y.paired !== model.paired) !== -1);
+      const i = this.pairings.pairings.findIndex(
+        (x) =>
+          x.planningId === model.planningId &&
+          x.pairingValues.findIndex(
+            (y) =>
+              y.deviceUserId === model.deviceUserId && y.paired !== model.paired
+          ) !== -1
+      );
       if (i > -1) {
         this.pairingsForUpdate = [...this.pairingsForUpdate, model];
       }
     }
     // Set the checkboxes to true or false, so when you select a row or column, these values will not change automatically
-    this.pairings.pairings.forEach(pairing => {
+    this.pairings.pairings.forEach((pairing) => {
       if (pairing.planningId === model.planningId) {
-        pairing.pairingValues.forEach(pairingValue => {
+        pairing.pairingValues.forEach((pairingValue) => {
           if (pairingValue.deviceUserId === model.deviceUserId) {
             pairingValue.paired = model.paired;
           }
@@ -181,16 +156,26 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
   }
 
   setSelectedColCheckboxes() {
-    this.selectedColCheckboxes.splice(0, this.selectedColCheckboxes.length || 0);
-    for (let i = 0; i < this.pairings.pairings[0].pairingValues.length; i++) {
-      this.selectedColCheckboxes.push({checked: false, colNumber: i});
+    this.selectedColCheckboxes.splice(
+      0,
+      this.selectedColCheckboxes.length || 0
+    );
+    if (this.pairings.pairings[0]) {
+      for (let i = 0; i < this.pairings.pairings[0].pairingValues.length; i++) {
+        this.selectedColCheckboxes.push({ checked: false, colNumber: i });
+      }
     }
   }
 
   setSelectedRowCheckboxes() {
-    this.selectedRowCheckboxes.splice(0, this.selectedRowCheckboxes.length || 0);
-    for (let i = 0; i < this.pairings.pairings.length; i++) {
-      this.selectedRowCheckboxes.push({checked: false, rowNumber: i});
+    this.selectedRowCheckboxes.splice(
+      0,
+      this.selectedRowCheckboxes.length || 0
+    );
+    if (this.pairings.pairings) {
+      for (let i = 0; i < this.pairings.pairings.length; i++) {
+        this.selectedRowCheckboxes.push({ checked: false, rowNumber: i });
+      }
     }
   }
 }

@@ -26,12 +26,14 @@ namespace ItemsPlanning.Pn.Controllers
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using DocumentFormat.OpenXml.Spreadsheet;
     using Infrastructure.Models.Import;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Microting.ItemsPlanningBase.Infrastructure.Const;
     using Infrastructure.Models.Planning;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
     using Services.PlanningImportService;
     using Services.PlanningService;
 
@@ -51,7 +53,7 @@ namespace ItemsPlanning.Pn.Controllers
 
         [HttpPost]
         [Route("api/items-planning-pn/plannings/index")]
-        public async Task<OperationDataResult<PlanningsPnModel>> Index([FromBody] PlanningsRequestModel requestModel)
+        public async Task<OperationDataResult<Paged<PlanningPnModel>>> Index([FromBody] PlanningsRequestModel requestModel)
         {
             return await _planningService.Index(requestModel);
         }
