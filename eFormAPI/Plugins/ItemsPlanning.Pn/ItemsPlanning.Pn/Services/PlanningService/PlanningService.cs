@@ -141,8 +141,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         : planningQueryWithSelect.OrderBy(x => x.TranslatedName);
                 }
 
-                planningsQuery
-                    = planningsQuery
+                planningQueryWithSelect
+                    = planningQueryWithSelect
                         .Skip(pnRequestModel.Offset)
                         .Take(pnRequestModel.PageSize);
 
@@ -178,9 +178,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         }
                     }
 
-                    planning.BoundEform.IsEformRemoved =
-                        checkListWorkflowState.Single(x => x.Key == planning.BoundEform.RelatedEFormId).Value ==
-                        Constants.WorkflowStates.Removed;
+                    var (_, value) = checkListWorkflowState.SingleOrDefault(x => x.Key == planning.BoundEform.RelatedEFormId);
+                    planning.BoundEform.IsEformRemoved = value == Constants.WorkflowStates.Removed;
 
                     // This is done to update existing Plannings to using EFormSdkFolderId instead of EFormSdkFolderName
                     if ((planning.Folder.EFormSdkFolderId == 0 || planning.Folder.EFormSdkFolderId == null) && planning.Folder.EFormSdkFolderName != null)

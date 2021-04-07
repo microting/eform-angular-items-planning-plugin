@@ -3,7 +3,6 @@ import myEformsPage from '../../Page objects/MyEforms.page';
 import pluginPage from '../../Page objects/Plugin.page';
 
 import { expect } from 'chai';
-import pluginsPage from './application-settings.plugins.page';
 
 describe('Application settings page - site header section', function () {
   before(function () {
@@ -13,31 +12,23 @@ describe('Application settings page - site header section', function () {
     loginPage.login();
     myEformsPage.Navbar.goToPluginsPage();
     $('#plugin-name').waitForDisplayed({ timeout: 50000 });
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
 
-    const plugin = pluginsPage.getFirstPluginRowObj();
+    const plugin = pluginPage.getFirstPluginRowObj();
     expect(plugin.id).equal(1);
     expect(plugin.name).equal('Microting Items Planning Plugin');
     expect(plugin.version).equal('1.0.0.0');
+    expect(plugin.status, 'status is not equal').eq(false);
   });
 
   it('should activate the plugin', function () {
-    pluginPage.pluginSettingsBtn.click();
-    $('#pluginOKBtn').waitForDisplayed({ timeout: 40000 });
-    pluginPage.pluginOKBtn.click();
-    browser.pause(50000); // We need to wait 50 seconds for the plugin to create db etc.
-    loginPage.open('/');
-
-    loginPage.login();
-    myEformsPage.Navbar.goToPluginsPage();
-    $('#plugin-name').waitForDisplayed({ timeout: 50000 });
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+    let plugin = pluginPage.getFirstPluginRowObj();
+    plugin.enableOrDisablePlugin();
 
     // $('Microting Items Planning Plugin').waitForDisplayed({timeout: 10000});
-    const plugin = pluginsPage.getFirstPluginRowObj();
+    plugin = pluginPage.getFirstPluginRowObj();
     expect(plugin.id).equal(1);
     expect(plugin.name).equal('Microting Items Planning Plugin');
     expect(plugin.version).equal('1.0.0.0');
-    plugin.settingsBtn.waitForDisplayed({ timeout: 20000 });
+    expect(plugin.status, 'status is not equal').eq(true);
   });
 });
