@@ -13,11 +13,10 @@ import { BaseService } from 'src/app/common/services/base.service';
 import {
   PlanningCreateModel,
   PlanningModel,
-  PlanningsModel,
   PlanningsRequestModel,
   PlanningUpdateModel,
 } from '../models/plannings';
-import { PlanningAssignSitesModel } from '../models/plannings/planning-assign-sites.model';
+import { Paged } from 'src/app/common/models';
 
 export let ItemsPlanningPnPlanningsMethods = {
   Plannings: 'api/items-planning-pn/plannings',
@@ -38,7 +37,7 @@ export class ItemsPlanningPnPlanningsService extends BaseService {
 
   getAllPlannings(
     model: PlanningsRequestModel
-  ): Observable<OperationDataResult<PlanningsModel>> {
+  ): Observable<OperationDataResult<Paged<PlanningModel>>> {
     return this.post(
       ItemsPlanningPnPlanningsMethods.Plannings + '/index',
       model

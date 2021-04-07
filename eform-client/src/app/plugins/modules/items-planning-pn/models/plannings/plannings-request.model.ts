@@ -1,19 +1,12 @@
-export class PlanningsRequestModel {
-  pageSize: number;
-  sort: string;
-  pageIndex: number;
-  isSortDsc: boolean;
-  offset: number;
+import { PagedEntityRequest } from 'src/app/common/models';
+
+export class PlanningsRequestModel extends PagedEntityRequest {
   nameFilter: string;
   descriptionFilter: string;
   tagIds: number[];
 
   constructor() {
-    this.sort = 'Id';
-    this.isSortDsc = true;
-    this.pageSize = 10;
-    this.pageIndex = 1;
-    this.offset = 0;
+    super();
     this.nameFilter = '';
     this.descriptionFilter = '';
     this.tagIds = [];

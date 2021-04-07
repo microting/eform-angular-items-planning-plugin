@@ -8,12 +8,16 @@ import {
 } from '@angular/core';
 import {
   PlanningModel,
-  PlanningsModel,
   PlanningsRequestModel,
 } from '../../../../models/plannings';
-import { PageSettingsModel } from 'src/app/common/models';
+import {
+  Paged,
+  PageSettingsModel,
+  TableHeaderElementModel,
+} from 'src/app/common/models';
 import { PluginClaimsHelper } from 'src/app/common/helpers';
 import { ItemsPlanningPnClaims } from '../../../../enums';
+import { PlanningsStateService } from 'src/app/plugins/modules/items-planning-pn/components/plannings/state/plannings-state-service';
 
 @Component({
   selector: 'app-plannings-table',
@@ -22,10 +26,7 @@ import { ItemsPlanningPnClaims } from '../../../../enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanningsTableComponent implements OnInit {
-  @Input() localPageSettings: PageSettingsModel = new PageSettingsModel();
-  @Input()
-  planningsRequestModel: PlanningsRequestModel = new PlanningsRequestModel();
-  @Input() planningsModel: PlanningsModel = new PlanningsModel();
+  @Input() planningsModel: Paged<PlanningModel> = new Paged<PlanningModel>();
   @Input() selectedColCheckboxes = new Array<{
     planningId: number;
     checked: boolean;
@@ -45,6 +46,39 @@ export class PlanningsTableComponent implements OnInit {
   @Output()
   allPlanningCheckboxChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  tableHeaders: TableHeaderElementModel[] = [
+    { name: 'Id', elementId: 'idTableHeader', sortable: true },
+    { name: 'TranslatedName', elementId: 'nameTableHeader', sortable: true },
+    {
+      name: 'Description',
+      elementId: 'descriptionTableHeader',
+      sortable: true,
+    },
+    {
+      name: 'SdkFolderName',
+      elementId: 'sdkFolderNameTableHeader',
+      sortable: true,
+    },
+    {
+      name: 'RelatedEFormName',
+      elementId: 'relatedEFormNameTableHeader',
+      sortable: true,
+    },
+    { name: 'Tags', elementId: 'tagsTableHeader', sortable: false },
+    {
+      name: 'RepeatEvery',
+      elementId: 'repeatEveryTableHeader',
+      sortable: true,
+    },
+    { name: 'RepeatType', elementId: 'repeatTypeTableHeader', sortable: true },
+    {
+      name: 'RepeatUntil',
+      elementId: 'repeatUntilTableHeader',
+      sortable: true,
+    },
+    { name: 'Actions', elementId: '', sortable: false },
+  ];
+
   get pluginClaimsHelper() {
     return PluginClaimsHelper;
   }
@@ -53,7 +87,7 @@ export class PlanningsTableComponent implements OnInit {
     return ItemsPlanningPnClaims;
   }
 
-  constructor() {}
+  constructor(public planningsStateService: PlanningsStateService) {}
 
   ngOnInit(): void {}
 

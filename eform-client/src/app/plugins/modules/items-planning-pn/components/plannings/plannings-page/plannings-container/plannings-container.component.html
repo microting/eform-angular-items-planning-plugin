@@ -36,7 +36,6 @@
 <div class="container-fluid">
   <app-plannings-header
     [availableTags]="availableTags"
-    [planningsRequestModel]="planningsRequestModel"
     (descriptionFilterChanged)="onDescriptionFilterChanged($event)"
     (nameFilterChanged)="onNameFilterChanged($event)"
     (savedTagRemoved)="removeSavedTag($event)"
@@ -55,8 +54,6 @@
     {{ 'Delete Planning' | translate }}
   </button>
   <app-plannings-table
-    [planningsRequestModel]="planningsRequestModel"
-    [localPageSettings]="localPageSettings"
     [planningsModel]="planningsModel"
     [selectedColCheckboxes]="selectedPlanningsCheckboxes"
     [allPlanningCheckbox]="allPlanningsCheckbox"
@@ -70,21 +67,16 @@
   <div class="row justify-content-between mr-2 ml-2">
     <div class="col-md-1">
       <page-size-pn
-        [pageSize]="localPageSettings.pageSize"
-        (onPageSizeChanged)="
-          localPageSettings.pageSize = $event;
-          planningsRequestModel.pageIndex = 1;
-          updateLocalPageSettings()
-        "
+        [pageSize]="planningsStateService.getPageSize() | async"
+        (onPageSizeChanged)="onPageSizeChanged($event)"
       >
       </page-size-pn>
     </div>
     <div class="col-md-4 ml-auto d-flex justify-content-end p-2">
       <pagination-pn
-        *ngIf="planningsModel.total > planningsRequestModel.pageSize"
-        [limit]="planningsRequestModel.pageSize"
+        [limit]="planningsStateService.getPageSize() | async"
         [size]="planningsModel.total"
-        [offset]="planningsRequestModel.offset"
+        [offset]="planningsStateService.getOffset() | async"
         (onPageChanged)="changePage($event)"
       ></pagination-pn>
     </div>
@@ -92,7 +84,7 @@
 </div>
 <app-planning-delete
   #deletePlanningModal
-  (planningDeleted)="getPlannings()"
+  (planningDeleted)="planningDeleted()"
 ></app-planning-delete>
 <app-planning-multiple-delete
   #deleteMultiplePlanningsModal

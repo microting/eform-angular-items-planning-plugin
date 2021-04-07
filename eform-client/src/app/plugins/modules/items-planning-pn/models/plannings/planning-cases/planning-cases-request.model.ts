@@ -1,20 +1,13 @@
-export class PlanningCasesRequestModel {
-  pageSize: number;
-  sort: string;
-  pageIndex: number;
-  isSortDsc: boolean;
-  offset: number;
+import { PagedEntityRequest } from 'src/app/common/models';
+
+export class PlanningCasesRequestModel extends PagedEntityRequest {
   nameFilter: string;
   planningId: number;
   dateTo: string;
   dateFrom: string;
 
   constructor() {
-    this.sort = 'Id';
-    this.isSortDsc = true;
-    this.pageSize = 10;
-    this.pageIndex = 1;
-    this.offset = 0;
+    super();
     this.nameFilter = '';
   }
 }
