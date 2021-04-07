@@ -1,5 +1,18 @@
 # Changelog
 
+## [v2.0.80](https://github.com/microting/eform-angular-items-planning-plugin/tree/v2.0.80) (2021-04-07)
+
+[Full Changelog](https://github.com/microting/eform-angular-items-planning-plugin/compare/v2.0.79...v2.0.80)
+
+**Implemented enhancements:**
+
+- Bump Microting.eFormApi.BasePn from 2.0.112 to 2.0.113 [\#148](https://github.com/microting/eform-angular-items-planning-plugin/issues/148)
+- Bump Microting.eForm from 4.4.20 to 4.4.21 [\#147](https://github.com/microting/eform-angular-items-planning-plugin/issues/147)
+
+**Merged pull requests:**
+
+- Bump Microsoft.NET.Test.Sdk from 16.9.1 to 16.9.4 in /eFormAPI/Plugins/ItemsPlanning.Pn [\#120](https://github.com/microting/eform-angular-items-planning-plugin/pull/120) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+
 ## [v2.0.79](https://github.com/microting/eform-angular-items-planning-plugin/tree/v2.0.79) (2021-04-07)
 
 [Full Changelog](https://github.com/microting/eform-angular-items-planning-plugin/compare/v2.0.78...v2.0.79)
@@ -323,7 +336,6 @@
 - Added warning if eform is removed [\#33](https://github.com/microting/eform-angular-items-planning-plugin/pull/33) ([Gid733](https://github.com/Gid733))
 - Updates [\#32](https://github.com/microting/eform-angular-items-planning-plugin/pull/32) ([Gid733](https://github.com/Gid733))
 - Changed subheader to use title from router [\#31](https://github.com/microting/eform-angular-items-planning-plugin/pull/31) ([Gid733](https://github.com/Gid733))
-- Fixed folder append [\#30](https://github.com/microting/eform-angular-items-planning-plugin/pull/30) ([Gid733](https://github.com/Gid733))
 - Added bulk import [\#29](https://github.com/microting/eform-angular-items-planning-plugin/pull/29) ([Gid733](https://github.com/Gid733))
 - updates [\#28](https://github.com/microting/eform-angular-items-planning-plugin/pull/28) ([Gid733](https://github.com/Gid733))
 
@@ -333,6 +345,7 @@
 
 **Merged pull requests:**
 
+- Fixed folder append [\#30](https://github.com/microting/eform-angular-items-planning-plugin/pull/30) ([Gid733](https://github.com/Gid733))
 - Restored day of week of month [\#27](https://github.com/microting/eform-angular-items-planning-plugin/pull/27) ([Gid733](https://github.com/Gid733))
 
 ## [v2.0.30](https://github.com/microting/eform-angular-items-planning-plugin/tree/v2.0.30) (2020-11-02)
