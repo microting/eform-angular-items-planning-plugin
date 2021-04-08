@@ -103,6 +103,13 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                 // Validation
                 var excelErrors = new List<ExcelParseErrorModel>();
 
+                List<string> languageCodes = new List<string>()
+                {
+                    "da",
+                    "en-US",
+                    "de-DE"
+                };
+
                 foreach (var excelModel in fileResult)
                 {
                     if (string.IsNullOrEmpty(excelModel.EFormName))
@@ -282,9 +289,23 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                                 if (mainFolder == null)
                                 {
+                                    int j = 0;
+                                    List<KeyValuePair<string, string>> names = new List<KeyValuePair<string, string>>();
+                                    foreach (string s in folderModel.Label.Split("|"))
+                                    {
+                                        names.Add(new KeyValuePair<string, string>(languageCodes[j], s));
+                                        j++;
+                                    }
+
+                                    List<KeyValuePair<string, string>> descriptions = new List<KeyValuePair<string, string>>();
+                                    foreach (string s in folderModel.Description.Split("|"))
+                                    {
+                                        descriptions.Add(new KeyValuePair<string, string>(languageCodes[j], s));
+                                        j++;
+                                    }
                                     folderModel.Id = await core.FolderCreate(
-                                        folderModel.Label,
-                                        folderModel.Description,
+                                        names,
+                                        descriptions,
                                         null);
                                 }
                                 else
@@ -310,9 +331,23 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                                 if (sdkFolder == null)
                                 {
+                                    int j = 0;
+                                    List<KeyValuePair<string, string>> names = new List<KeyValuePair<string, string>>();
+                                    foreach (string s in folderModel.Label.Split("|"))
+                                    {
+                                        names.Add(new KeyValuePair<string, string>(languageCodes[j], s));
+                                        j++;
+                                    }
+
+                                    List<KeyValuePair<string, string>> descriptions = new List<KeyValuePair<string, string>>();
+                                    foreach (string s in folderModel.Description.Split("|"))
+                                    {
+                                        descriptions.Add(new KeyValuePair<string, string>(languageCodes[j], s));
+                                        j++;
+                                    }
                                     folderModel.Id = await core.FolderCreate(
-                                        folderModel.Label,
-                                        folderModel.Description,
+                                        names,
+                                        descriptions,
                                         parentId);
                                 }
                                 else
