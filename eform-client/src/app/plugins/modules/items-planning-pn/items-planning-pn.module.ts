@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SharedPnModule } from '../shared/shared-pn.module';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -52,7 +51,6 @@ import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/
 @NgModule({
   imports: [
     CommonModule,
-    SharedPnModule,
     MDBBootstrapModule,
     TranslateModule,
     FormsModule,

@@ -1,4 +1,4 @@
-<subheader-pn [title]="'Edit Planning' | translate">
+<eform-subheader [title]="'Edit Planning' | translate">
   <div class="p-3">
     <button
       mdbBtn
@@ -18,7 +18,7 @@
       {{ 'Cancel' | translate }}
     </button>
   </div>
-</subheader-pn>
+</eform-subheader>
 
 <div class="container-fluid">
   <div class="row mt-4">
@@ -47,7 +47,7 @@
                     <label
                       for="editPlanningNameTranslation_{{ translationIndex }}"
                     >
-                      {{ translationControls.get('language').value }}
+                      {{ translationControls.get('localeName').value }}
                     </label>
                   </div>
                 </div>
@@ -63,25 +63,25 @@
       <mdb-card>
         <mdb-card-body>
           <div class="row">
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <div class="md-form">
+                <input
+                  mdbInput
+                  [(ngModel)]="selectedPlanningModel.description"
+                  type="text"
+                  id="editPlanningItemDescription"
+                  name="editPlanningItemDescription"
+                  class="form-control"
+                />
+                <label for="editPlanningItemDescription">{{
+                  'Description' | translate
+                }}</label>
+              </div>
+            </div>
             <div
               class="col-md-3 col-sm-6 col-xs-6"
               *ngIf="foldersTreeDto.length > 0"
             >
-              <div class="md-form">
-                <div class="md-form">
-                  <input
-                    mdbInput
-                    [(ngModel)]="selectedPlanningModel.description"
-                    type="text"
-                    id="editPlanningItemDescription"
-                    name="editPlanningItemDescription"
-                    class="form-control"
-                  />
-                  <label for="editPlanningItemDescription">{{
-                    'Description' | translate
-                  }}</label>
-                </div>
-              </div>
               <div
                 class="md-form"
                 (click)="openFoldersModal()"

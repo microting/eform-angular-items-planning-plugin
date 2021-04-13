@@ -1,6 +1,6 @@
 import loginPage from '../../Page objects/Login.page';
 import itemsPlanningPlanningPage from '../../Page objects/ItemsPlanning/ItemsPlanningPlanningPage';
-import tagsModalPage, {TagRowObject} from '../../Page objects/TagsModal.page';
+import tagsModalPage, { TagRowObject } from '../../Page objects/TagsModal.page';
 
 const expect = require('chai').expect;
 
@@ -19,37 +19,55 @@ describe('Items planning - Tags', function () {
     tagsModalPage.createTag(tagName);
     const tagsRowsAfterCreate = tagsModalPage.rowNum;
     const tagRowObject = new TagRowObject(tagsRowsAfterCreate);
-    expect(tagsRowsAfterCreate, 'Number of rows hasn\'t changed after creating tag').equal(tagsRowsBeforeCreate + 1);
+    expect(
+      tagsRowsAfterCreate,
+      "Number of rows hasn't changed after creating tag"
+    ).equal(tagsRowsBeforeCreate + 1);
     expect(tagRowObject.name, 'Saved Name is incorrect').equal(tagName);
   });
   it('should not create tag', function () {
     const tagsRowsBeforeCreate = tagsModalPage.rowNum;
     tagsModalPage.cancelCreateTag(tagName);
     const tagsRowsAfterCreate = tagsModalPage.rowNum;
-    expect(tagsRowsAfterCreate, 'Number of rows changed after not creatings tag').equal(tagsRowsBeforeCreate);
+    expect(
+      tagsRowsAfterCreate,
+      'Number of rows changed after not creatings tag'
+    ).equal(tagsRowsBeforeCreate);
   });
   it('should update tag', function () {
     const rowNum = tagsModalPage.rowNum;
     tagsModalPage.editTag(rowNum, updatedTagName);
     const tagRowObjectAfterEdit = new TagRowObject(rowNum);
-    expect(tagRowObjectAfterEdit.name, 'Updated tag name is incorrect').equal(updatedTagName);
+    expect(tagRowObjectAfterEdit.name, 'Updated tag name is incorrect').equal(
+      updatedTagName
+    );
   });
   it('should not update tag', function () {
     const rowNum = tagsModalPage.rowNum;
     tagsModalPage.cancelEditTag(rowNum, updatedTagName);
     const tagRowObjectAfterCancelEdit = new TagRowObject(rowNum);
-    expect(tagRowObjectAfterCancelEdit.name, 'Updated tag name is incorrect').equal(updatedTagName);
+    expect(
+      tagRowObjectAfterCancelEdit.name,
+      'Updated tag name is incorrect'
+    ).equal(updatedTagName);
   });
   it('should not delete tag', function () {
     const tagsRowsBeforeDelete = tagsModalPage.rowNum;
     tagsModalPage.cancelDeleteTag(tagsRowsBeforeDelete);
     const tagsRowsAfterCancelDelete = tagsModalPage.rowNum;
-    expect(tagsRowsAfterCancelDelete, 'Number of rows changed after cancel delete tag').equal(tagsRowsBeforeDelete);
+    expect(
+      tagsRowsAfterCancelDelete,
+      'Number of rows changed after cancel delete tag'
+    ).equal(tagsRowsBeforeDelete);
   });
   it('should delete tag', function () {
     const tagsRowsBeforeDelete = tagsModalPage.rowNum;
     tagsModalPage.deleteTag(tagsRowsBeforeDelete);
+    browser.pause(500);
     const tagsRowsAfterDelete = tagsModalPage.rowNum;
-    expect(tagsRowsAfterDelete, 'Number of rows hasn\'t changed after delete tag').equal(tagsRowsBeforeDelete - 1);
+    expect(
+      tagsRowsAfterDelete,
+      "Number of rows hasn't changed after delete tag"
+    ).equal(tagsRowsBeforeDelete - 1);
   });
 });

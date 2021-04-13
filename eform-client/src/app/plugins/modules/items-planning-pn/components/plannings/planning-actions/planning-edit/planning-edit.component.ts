@@ -126,14 +126,12 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
             ...data.model,
             reiteration: {
               ...data.model.reiteration,
-              internalRepeatUntil: data.model.reiteration.repeatUntil
+              internalRepeatUntil: data.model.reiteration.repeatUntil,
             },
             boundEform: {
               ...data.model.boundEform,
               currentRelatedEformId: data.model.boundEform.relatedEFormId,
-            }
-
-
+            },
           };
           this.selectedPlanningModel.reiteration.internalRepeatUntil = this.selectedPlanningModel.reiteration.repeatUntil;
           this.loadFoldersTree();

@@ -1,4 +1,4 @@
-<subheader-pn>
+<eform-subheader>
   <div class="p-3">
     <button
       mdbBtn
@@ -31,7 +31,7 @@
       {{ 'New planning' | translate }}
     </button>
   </div>
-</subheader-pn>
+</eform-subheader>
 
 <div class="container-fluid">
   <app-plannings-header
@@ -66,19 +66,19 @@
   ></app-plannings-table>
   <div class="row justify-content-between mr-2 ml-2">
     <div class="col-md-1">
-      <page-size-pn
+      <eform-page-size
         [pageSize]="planningsStateService.getPageSize() | async"
         (onPageSizeChanged)="onPageSizeChanged($event)"
       >
-      </page-size-pn>
+      </eform-page-size>
     </div>
     <div class="col-md-4 ml-auto d-flex justify-content-end p-2">
-      <pagination-pn
+      <eform-pagination
         [limit]="planningsStateService.getPageSize() | async"
         [size]="planningsModel.total"
         [offset]="planningsStateService.getOffset() | async"
         (onPageChanged)="changePage($event)"
-      ></pagination-pn>
+      ></eform-pagination>
     </div>
   </div>
 </div>
