@@ -41,7 +41,7 @@ describe('Items planning actions - Delete', function () {
   it('should not delete existing planning', function () {
     const numRowBeforeDelete = itemsPlanningPlanningPage.rowNum;
     const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
-      planningData.name[1]
+      planningData.name[0]
     );
     planningRowObject.delete(true);
     expect(numRowBeforeDelete, 'Planning is deleted').eq(
@@ -51,7 +51,7 @@ describe('Items planning actions - Delete', function () {
   it('should delete existing planning', function () {
     const numRowBeforeDelete = itemsPlanningPlanningPage.rowNum;
     const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
-      planningData.name[1]
+      planningData.name[0]
     );
     planningRowObject.delete();
     expect(numRowBeforeDelete - 1, 'Planning is not deleted').eq(

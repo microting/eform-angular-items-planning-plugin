@@ -48,10 +48,10 @@ describe('Items planning - Add', function () {
   it('check all fields planning', function () {
     // Check that planning is created in table
     const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
-      planningData.name[1]
+      planningData.name[0]
     );
     expect(planningRowObject.name, 'Saved name in table is incorrect').equal(
-      planningData.name[1]
+      planningData.name[0]
     );
     expect(
       planningRowObject.eFormName,
@@ -143,7 +143,7 @@ describe('Items planning - Add', function () {
   after('delete all created in this test', function () {
     // Delete
     const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
-      planningData.name[1]
+      planningData.name[0]
     );
     planningRowObject.delete();
 

@@ -63,7 +63,7 @@ describe('Items planning actions - Edit', function () {
   });
   it('should change all fields after edit', function () {
     let planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
-      planningData.name[1]
+      planningData.name[0]
     );
     const tempForSwapFolderName = planningData.folderName;
     const tempForSwapEFormFormName = planningData.eFormName;
@@ -91,7 +91,7 @@ describe('Items planning actions - Edit', function () {
 
     // Check that list is edited successfully in table
     planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
-      planningData.name[1]
+      planningData.name[0]
     );
     planningRowObject.openEdit();
     browser.pause(1000);
@@ -162,7 +162,7 @@ describe('Items planning actions - Edit', function () {
   after(function () {
     // Delete
     const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
-      planningData.name[1]
+      planningData.name[0]
     );
     planningRowObject.delete();
 
