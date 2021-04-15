@@ -124,18 +124,19 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 foreach (var pairingModel in pairing)
                 {
                     // get status last executed case for planning
-                    var planningCaseSite = await _dbContext.PlanningCaseSites
-                        .CustomOrderByDescending("UpdatedAt")
-                        .Where(z => z.PlanningId == pairingModel.PlanningId)
-                        .Where(z => z.WorkflowState != Constants.WorkflowStates.Removed)
-                        .FirstOrDefaultAsync();
                     foreach (var pairingModelPairingValue in pairingModel.PairingValues)
                     {
-                        if (pairingModelPairingValue.DeviceUserId == planningCaseSite.MicrotingSdkSiteId &&
-                            pairingModelPairingValue.Paired)
-                        {
+                        var planningCaseSite = await _dbContext.PlanningCaseSites
+                            .CustomOrderByDescending("UpdatedAt")
+                            .Where(z => z.PlanningId == pairingModel.PlanningId)
+                            .Where(z => z.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Where(z => z.MicrotingSdkSiteId == pairingModelPairingValue.DeviceUserId)
+                            .FirstOrDefaultAsync();
+                        //if (pairingModelPairingValue.DeviceUserId == planningCaseSite.MicrotingSdkSiteId &&
+                        //    pairingModelPairingValue.Paired)
+                        //{
                             pairingModelPairingValue.LatestCaseStatus = planningCaseSite.Status;
-                        }
+                        //}
                     }
                     // Add users
                     foreach (var deviceUser in deviceUsers)
