@@ -223,7 +223,8 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 {
                     var planningCaseSites = await _dbContext.PlanningCaseSites
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Where(x => x.PlanningCaseId == planningCase.Id).ToListAsync();
+                        .Where(x => x.PlanningCaseId == planningCase.Id)
+                        .ToListAsync();
                     foreach (var planningCaseSite in planningCaseSites.Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0))
                     {
                         var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);

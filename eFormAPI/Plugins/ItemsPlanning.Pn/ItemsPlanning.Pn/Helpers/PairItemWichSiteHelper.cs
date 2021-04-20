@@ -32,7 +32,7 @@ namespace ItemsPlanning.Pn.Helpers
     using Microting.eFormApi.BasePn.Abstractions;
     using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
-    using ItemsPlanning.Pn.Infrastructure.Models.Planning;
+    using Infrastructure.Models.Planning;
 
     public class PairItemWichSiteHelper
     {
@@ -59,6 +59,7 @@ namespace ItemsPlanning.Pn.Helpers
             var folder = await sdkDbContext.Folders.SingleAsync(x => x.Id == planningPnModel.Folder.EFormSdkFolderId);
             var folderId = folder.MicrotingUid.ToString();
 
+            // get planning cases
             var planningCase = _dbContext.PlanningCases
                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Retracted)
