@@ -259,9 +259,24 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         }).ToListAsync();
 
                     // Folders
+                    var danishLanguage = await dbContext.Languages.SingleOrDefaultAsync(x => x.LanguageCode == "da");
                     var folders = await dbContext.Folders
+                        .Join(dbContext.FolderTranslations,
+                            folder => folder.Id,
+                            translation => translation.FolderId,
+                            (folder, translation) => new
+                            {
+                                folderWorkflowState = folder.WorkflowState,
+                                translationWorkflowState = translation.WorkflowState,
+                                folder.Id,
+                                translation.Name,
+                                translation.Description,
+                                folder.ParentId,
+                                translation.LanguageId
+                            })
                         .AsNoTracking()
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Where(x => x.LanguageId == danishLanguage.Id)
+                        .Where(x => x.folderWorkflowState != Constants.WorkflowStates.Removed)
                         .Select(x => new PlanningImportFolderModel
                         {
                             Id = x.Id,
@@ -283,25 +298,52 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                 var mainFolder = folders.FirstOrDefault(x =>
                                     string.Equals(
                                         x.Label,
-                                        folderModel.Label,
+                                        folderModel.Label.Split("|")[0],
                                         StringComparison.CurrentCultureIgnoreCase)
                                     && x.ParentId == null);
 
                                 if (mainFolder == null)
                                 {
-                                    int j = 0;
                                     List<KeyValuePair<string, string>> names = new List<KeyValuePair<string, string>>();
-                                    foreach (string s in folderModel.Label.Split("|"))
+                                    List<KeyValuePair<string, string>> descriptions = new List<KeyValuePair<string, string>>();
+
+                                    var sourceNames = folderModel.Label.Split("|");
+                                    var sourceDescriptions = folderModel.Description.Split("|");
+                                    names.Add(new KeyValuePair<string, string>("da", sourceNames[0]));
+                                    descriptions.Add(new KeyValuePair<string, string>("da", sourceDescriptions[0]));
+                                    if (sourceNames.Length > 1)
                                     {
-                                        names.Add(new KeyValuePair<string, string>(languageCodes[j], s));
-                                        j++;
+                                        names.Add(new KeyValuePair<string, string>("en-US", sourceNames[1]));
+                                    }
+                                    else
+                                    {
+                                        names.Add(new KeyValuePair<string, string>("en-US", ""));
+                                    }
+                                    if (sourceNames.Length > 2)
+                                    {
+                                        names.Add(new KeyValuePair<string, string>("de-DE", sourceNames[2]));
+                                    }
+                                    else
+                                    {
+                                        names.Add(new KeyValuePair<string, string>("de-DE", ""));
                                     }
 
-                                    List<KeyValuePair<string, string>> descriptions = new List<KeyValuePair<string, string>>();
-                                    foreach (string s in folderModel.Description.Split("|"))
+
+                                    if (sourceDescriptions.Length > 1)
                                     {
-                                        descriptions.Add(new KeyValuePair<string, string>(languageCodes[j], s));
-                                        j++;
+                                        descriptions.Add(new KeyValuePair<string, string>("en-US", sourceDescriptions[1]));
+                                    }
+                                    else
+                                    {
+                                        descriptions.Add(new KeyValuePair<string, string>("en-US", ""));
+                                    }
+                                    if (sourceNames.Length > 2)
+                                    {
+                                        descriptions.Add(new KeyValuePair<string, string>("de-DE", sourceDescriptions[2]));
+                                    }
+                                    else
+                                    {
+                                        descriptions.Add(new KeyValuePair<string, string>("de-DE", ""));
                                     }
                                     folderModel.Id = await core.FolderCreate(
                                         names,
@@ -314,6 +356,8 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                                 }
 
+                                folderModel.Description = folderModel.Description.Split("|")[0];
+                                folderModel.Label = folderModel.Label.Split("|")[0];
                                 folders.Add(folderModel);
                             }
 
@@ -324,27 +368,55 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                 var sdkFolder = folders.FirstOrDefault(x =>
                                     string.Equals(
                                         x.Label,
-                                        folderModel.Label,
+                                        folderModel.Label.Split("|")[0],
                                         StringComparison.CurrentCultureIgnoreCase)
                                     && x.ParentId == parentId);
 
 
                                 if (sdkFolder == null)
                                 {
-                                    int j = 0;
                                     List<KeyValuePair<string, string>> names = new List<KeyValuePair<string, string>>();
-                                    foreach (string s in folderModel.Label.Split("|"))
+                                    List<KeyValuePair<string, string>> descriptions = new List<KeyValuePair<string, string>>();
+
+                                    var sourceNames = folderModel.Label.Split("|");
+                                    var sourceDescriptions = folderModel.Description.Split("|");
+                                    names.Add(new KeyValuePair<string, string>("da", sourceNames[0]));
+                                    descriptions.Add(new KeyValuePair<string, string>("da", sourceDescriptions[0]));
+                                    if (sourceNames.Length > 1)
                                     {
-                                        names.Add(new KeyValuePair<string, string>(languageCodes[j], s));
-                                        j++;
+                                        names.Add(new KeyValuePair<string, string>("en-US", sourceNames[1]));
+                                    }
+                                    else
+                                    {
+                                        names.Add(new KeyValuePair<string, string>("en-US", ""));
+                                    }
+                                    if (sourceNames.Length > 2)
+                                    {
+                                        names.Add(new KeyValuePair<string, string>("de-DE", sourceNames[2]));
+                                    }
+                                    else
+                                    {
+                                        names.Add(new KeyValuePair<string, string>("de-DE", ""));
                                     }
 
-                                    List<KeyValuePair<string, string>> descriptions = new List<KeyValuePair<string, string>>();
-                                    foreach (string s in folderModel.Description.Split("|"))
+
+                                    if (sourceDescriptions.Length > 1)
                                     {
-                                        descriptions.Add(new KeyValuePair<string, string>(languageCodes[j], s));
-                                        j++;
+                                        descriptions.Add(new KeyValuePair<string, string>("en-US", sourceDescriptions[1]));
                                     }
+                                    else
+                                    {
+                                        descriptions.Add(new KeyValuePair<string, string>("en-US", ""));
+                                    }
+                                    if (sourceNames.Length > 2)
+                                    {
+                                        descriptions.Add(new KeyValuePair<string, string>("de-DE", sourceDescriptions[2]));
+                                    }
+                                    else
+                                    {
+                                        descriptions.Add(new KeyValuePair<string, string>("de-DE", ""));
+                                    }
+
                                     folderModel.Id = await core.FolderCreate(
                                         names,
                                         descriptions,
@@ -356,6 +428,9 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                 }
 
                                 folderModel.ParentId = parentId;
+
+                                folderModel.Description = folderModel.Description.Split("|")[0];
+                                folderModel.Label = folderModel.Label.Split("|")[0];
 
                                 folders.Add(folderModel);
                             }

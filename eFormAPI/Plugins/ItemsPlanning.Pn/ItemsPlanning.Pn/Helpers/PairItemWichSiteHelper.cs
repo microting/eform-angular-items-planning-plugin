@@ -63,7 +63,6 @@ namespace ItemsPlanning.Pn.Helpers
                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Retracted)
                 .Where(x => x.PlanningId == planningPnModel.Id)
-                .Where(x => x.Status == 66)
                 .SingleOrDefault(x => x.MicrotingSdkeFormId == relatedEFormId);
 
             if (planningCase == null)
@@ -82,92 +81,127 @@ namespace ItemsPlanning.Pn.Helpers
                             && x.MicrotingSdkSiteId == assignmentSiteId
                             && x.WorkflowState !=
                             Constants.WorkflowStates.Retracted)
+                .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 .ToListAsync();
 
             foreach (var caseToDelete in casesToDelete)
             {
                 var caseDto = await sdkCore.CaseLookupCaseId(caseToDelete.MicrotingSdkCaseId);
                 if (caseDto.MicrotingUId != null)
-                    await sdkCore.CaseDelete((int)caseDto.MicrotingUId);
+                    await sdkCore.CaseDelete((int) caseDto.MicrotingUId);
                 caseToDelete.WorkflowState = Constants.WorkflowStates.Retracted;
                 await caseToDelete.Update(_dbContext);
             }
 
-            var translation = _dbContext.PlanningNameTranslation
-                .Single(x => x.LanguageId == language.Id && x.PlanningId == planningPnModel.Id).Name;
-
-            mainElement.Label = string.IsNullOrEmpty(planningPnModel.PlanningNumber) ? "" : planningPnModel.PlanningNumber;
-            if (!string.IsNullOrEmpty(translation))
+            if (planningCase.Status == 100)
             {
-                mainElement.Label +=
-                    string.IsNullOrEmpty(mainElement.Label) ? $"{translation}" : $" - {translation}";
-            }
+                var planningCaseSite =
+                    await _dbContext.PlanningCaseSites.SingleOrDefaultAsync(x =>
+                        x.PlanningCaseId == planningCase.Id
+                        && x.MicrotingSdkSiteId == assignmentSiteId
+                        && x.WorkflowState != Constants.WorkflowStates.Removed);
 
-            if (!string.IsNullOrEmpty(planningPnModel.BuildYear))
-            {
-                mainElement.Label += string.IsNullOrEmpty(mainElement.Label)
-                    ? $"{planningPnModel.BuildYear}"
-                    : $" - {planningPnModel.BuildYear}";
-            }
-
-            if (!string.IsNullOrEmpty(planningPnModel.Type))
-            {
-                mainElement.Label += string.IsNullOrEmpty(mainElement.Label) ? $"{planningPnModel.Type}" : $" - {planningPnModel.Type}";
-            }
-
-            mainElement.ElementList[0].Label = mainElement.Label;
-            mainElement.CheckListFolderName = folderId;
-            mainElement.StartDate = DateTime.Now.ToUniversalTime();
-            mainElement.EndDate = DateTime.Now.AddYears(10).ToUniversalTime();
-            // mainElement.PushMessageBody = mainElement.Label;
-            // mainElement.PushMessageTitle = folder.Name;
-            // if (folder.ParentId != null)
-            // {
-            //     var parentFolder = await sdkDbContext.Folders.SingleAsync(x => x.Id == folder.ParentId);
-            //     mainElement.PushMessageTitle = parentFolder.Name;
-            //     mainElement.PushMessageBody = $"{folder.Name}\n{mainElement.Label}";
-            // }
-
-            var planningCaseSite =
-                await _dbContext.PlanningCaseSites.SingleOrDefaultAsync(x =>
-                    x.PlanningCaseId == planningCase.Id
-                    && x.MicrotingSdkSiteId == assignmentSiteId
-                    && x.WorkflowState != Constants.WorkflowStates.Retracted
-                    && x.WorkflowState != Constants.WorkflowStates.Removed);
-
-            if (planningCaseSite == null)
-            {
-                planningCaseSite = new PlanningCaseSite()
+                if (planningCaseSite == null)
                 {
-                    MicrotingSdkSiteId = assignmentSiteId,
-                    MicrotingSdkeFormId = relatedEFormId,
-                    Status = 66,
-                    PlanningId = planningPnModel.Id,
-                    PlanningCaseId = planningCase.Id
-                };
+                    planningCaseSite = new PlanningCaseSite()
+                    {
+                        MicrotingSdkSiteId = assignmentSiteId,
+                        MicrotingSdkeFormId = relatedEFormId,
+                        Status = 2,
+                        PlanningId = planningPnModel.Id,
+                        PlanningCaseId = planningCase.Id
+                    };
 
-                await planningCaseSite.Create(_dbContext);
+                    await planningCaseSite.Create(_dbContext);
+                }
+
+                planningCaseSite.Status = planningCaseSite.Status == 100 ? planningCaseSite.Status : 2;
+                planningCaseSite.WorkflowState = Constants.WorkflowStates.Retracted;
+                await planningCaseSite.Update(_dbContext);
             }
 
-            if (planningCaseSite.MicrotingSdkCaseDoneAt.HasValue)
+            if (planningCase.Status != 100)
             {
-                var unixTimestamp = (long)(planningCaseSite.MicrotingSdkCaseDoneAt.Value
-                        .Subtract(new DateTime(1970, 1, 1)))
-                    .TotalSeconds;
+                var translation = _dbContext.PlanningNameTranslation
+                    .Single(x => x.LanguageId == language.Id && x.PlanningId == planningPnModel.Id).Name;
 
-                mainElement.ElementList[0].Description.InderValue = unixTimestamp.ToString();
-            }
-
-            if (planningCaseSite.MicrotingSdkCaseId < 1)
-            {
-                // ReSharper disable once PossibleInvalidOperationException
-                var caseId = await sdkCore.CaseCreate(mainElement, "", (int)sdkSite.MicrotingUid, null);
-                if (caseId != null)
+                mainElement.Label = string.IsNullOrEmpty(planningPnModel.PlanningNumber)
+                    ? ""
+                    : planningPnModel.PlanningNumber;
+                if (!string.IsNullOrEmpty(translation))
                 {
-                    var caseDto = await sdkCore.CaseLookupMUId((int)caseId);
-                    if (caseDto?.CaseId != null)
-                        planningCaseSite.MicrotingSdkCaseId = (int)caseDto.CaseId;
-                    await planningCaseSite.Update(_dbContext);
+                    mainElement.Label +=
+                        string.IsNullOrEmpty(mainElement.Label) ? $"{translation}" : $" - {translation}";
+                }
+
+                if (!string.IsNullOrEmpty(planningPnModel.BuildYear))
+                {
+                    mainElement.Label += string.IsNullOrEmpty(mainElement.Label)
+                        ? $"{planningPnModel.BuildYear}"
+                        : $" - {planningPnModel.BuildYear}";
+                }
+
+                if (!string.IsNullOrEmpty(planningPnModel.Type))
+                {
+                    mainElement.Label += string.IsNullOrEmpty(mainElement.Label)
+                        ? $"{planningPnModel.Type}"
+                        : $" - {planningPnModel.Type}";
+                }
+
+                mainElement.ElementList[0].Label = mainElement.Label;
+                mainElement.CheckListFolderName = folderId;
+                mainElement.StartDate = DateTime.Now.ToUniversalTime();
+                mainElement.EndDate = DateTime.Now.AddYears(10).ToUniversalTime();
+                // mainElement.PushMessageBody = mainElement.Label;
+                // mainElement.PushMessageTitle = folder.Name;
+                // if (folder.ParentId != null)
+                // {
+                //     var parentFolder = await sdkDbContext.Folders.SingleAsync(x => x.Id == folder.ParentId);
+                //     mainElement.PushMessageTitle = parentFolder.Name;
+                //     mainElement.PushMessageBody = $"{folder.Name}\n{mainElement.Label}";
+                // }
+
+                var planningCaseSite =
+                    await _dbContext.PlanningCaseSites.SingleOrDefaultAsync(x =>
+                        x.PlanningCaseId == planningCase.Id
+                        && x.MicrotingSdkSiteId == assignmentSiteId
+                        && x.WorkflowState != Constants.WorkflowStates.Retracted
+                        && x.WorkflowState != Constants.WorkflowStates.Removed);
+
+                if (planningCaseSite == null)
+                {
+                    planningCaseSite = new PlanningCaseSite()
+                    {
+                        MicrotingSdkSiteId = assignmentSiteId,
+                        MicrotingSdkeFormId = relatedEFormId,
+                        Status = 66,
+                        PlanningId = planningPnModel.Id,
+                        PlanningCaseId = planningCase.Id
+                    };
+
+                    await planningCaseSite.Create(_dbContext);
+                }
+
+                if (planningCaseSite.MicrotingSdkCaseDoneAt.HasValue)
+                {
+                    var unixTimestamp = (long) (planningCaseSite.MicrotingSdkCaseDoneAt.Value
+                            .Subtract(new DateTime(1970, 1, 1)))
+                        .TotalSeconds;
+
+                    mainElement.ElementList[0].Description.InderValue = unixTimestamp.ToString();
+                }
+
+                if (planningCaseSite.MicrotingSdkCaseId < 1)
+                {
+                    // ReSharper disable once PossibleInvalidOperationException
+                    var caseId = await sdkCore.CaseCreate(mainElement, "", (int) sdkSite.MicrotingUid, null);
+                    if (caseId != null)
+                    {
+                        var caseDto = await sdkCore.CaseLookupMUId((int) caseId);
+                        if (caseDto?.CaseId != null)
+                            planningCaseSite.MicrotingSdkCaseId = (int) caseDto.CaseId;
+                        await planningCaseSite.Update(_dbContext);
+                    }
                 }
             }
         }
