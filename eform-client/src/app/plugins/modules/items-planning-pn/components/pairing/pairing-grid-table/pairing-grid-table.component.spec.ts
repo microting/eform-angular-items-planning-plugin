@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { PairingGridTableComponent } from './pairing-grid-table.component';
+import {PairingGridTableComponent} from './pairing-grid-table.component';
 
 describe('PairingGridTableComponent', () => {
   let component: PairingGridTableComponent;

@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { LocaleService } from 'src/app/common/services/auth';
-import { format } from 'date-fns';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ReportPnGenerateModel } from '../../../models/report';
-import { DateTimeAdapter } from 'ng-pick-datetime-ex';
-import { SharedTagModel } from 'src/app/common/models';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {LocaleService} from 'src/app/common/services/auth';
+import {format} from 'date-fns';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ReportPnGenerateModel} from '../../../models/report';
+import {DateTimeAdapter} from 'ng-pick-datetime-ex';
+import {SharedTagModel} from 'src/app/common/models';
+import {AuthStateService} from 'src/app/common/store';
 
 @Component({
   selector: 'app-items-planning-pn-report-header',
@@ -12,12 +13,10 @@ import { SharedTagModel } from 'src/app/common/models';
   styleUrls: ['./report-header.component.scss'],
 })
 export class ReportHeaderComponent implements OnInit {
-  @Output() generateReport: EventEmitter<
-    ReportPnGenerateModel
-  > = new EventEmitter();
-  @Output() downloadReport: EventEmitter<
-    ReportPnGenerateModel
-  > = new EventEmitter();
+  @Output()
+  generateReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
+  @Output()
+  downloadReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
   @Input() range: Date[];
   @Input() availableTags: SharedTagModel[] = [];
   generateForm: FormGroup;
@@ -25,9 +24,10 @@ export class ReportHeaderComponent implements OnInit {
   constructor(
     dateTimeAdapter: DateTimeAdapter<any>,
     private localeService: LocaleService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    authStateService: AuthStateService
   ) {
-    dateTimeAdapter.setLocale(this.localeService.getCurrentUserLocale());
+    dateTimeAdapter.setLocale(authStateService.currentUserLocale);
   }
 
   ngOnInit() {

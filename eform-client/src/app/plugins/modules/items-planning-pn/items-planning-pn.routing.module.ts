@@ -1,16 +1,17 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AdminGuard, AuthGuard, PermissionGuard } from 'src/app/common/guards';
-import { ItemsPlanningPnLayoutComponent } from './layouts';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {AdminGuard, AuthGuard, PermissionGuard} from 'src/app/common/guards';
+import {ItemsPlanningPnLayoutComponent} from './layouts';
 import {
-  PlanningsContainerComponent,
   ItemsPlanningSettingsComponent,
-  ReportContainerComponent,
+  PairingGridPageComponent,
   PlanningCasePageComponent,
+  PlanningCreateComponent,
   PlanningEditComponent,
-  PlanningCreateComponent, PairingGridPageComponent,
+  PlanningsContainerComponent,
+  ReportContainerComponent,
 } from './components';
-import { ItemsPlanningPnClaims } from './enums';
+import {ItemsPlanningPnClaims} from './enums';
 
 export const routes: Routes = [
   {

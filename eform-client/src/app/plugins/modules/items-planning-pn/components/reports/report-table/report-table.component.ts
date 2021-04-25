@@ -1,35 +1,32 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit,} from '@angular/core';
 import {ReportEformItemModel} from '../../../models/report';
-import {CasePostNewComponent} from 'src/app/modules/cases/components';
-import {Subscription} from 'rxjs';
-import {AuthService, EmailRecipientsService} from 'src/app/common/services';
-import {CasePostsListModel, CommonDictionaryModel, EmailRecipientTagCommonModel} from 'src/app/common/models';
-import {ActivatedRoute} from '@angular/router';
+import {AuthStateService} from 'src/app/common/store';
 
 @Component({
   selector: 'app-report-table',
   templateUrl: './report-table.component.html',
   styleUrls: ['./report-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReportTableComponent implements OnInit {
   @Input() items: ReportEformItemModel[] = [];
   @Input() dateFrom: any;
   @Input() dateTo: any;
-  @Input() itemHeaders: {key: string, value: string}[] = [];
+  @Input() itemHeaders: { key: string; value: string }[] = [];
   @Input() newPostModal: any;
 
-  constructor(
-    private authService: AuthService) { }
+  constructor(private authStateService: AuthStateService) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-
-  openCreateModal(caseId: number, eformId: number, pdfReportAvailable: boolean) {
+  openCreateModal(
+    caseId: number,
+    eformId: number,
+    pdfReportAvailable: boolean
+  ) {
     this.newPostModal.caseId = caseId;
     this.newPostModal.efmroId = eformId;
-    this.newPostModal.currentUserFullName = this.authService.currentUserFullName;
+    this.newPostModal.currentUserFullName = this.authStateService.currentUserFullName;
     this.newPostModal.pdfReportAvailable = pdfReportAvailable;
     this.newPostModal.show();
   }

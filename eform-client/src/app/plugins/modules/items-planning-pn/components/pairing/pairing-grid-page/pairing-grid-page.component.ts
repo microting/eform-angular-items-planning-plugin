@@ -1,20 +1,13 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import {
-  ItemsPlanningPnPairingService,
-  ItemsPlanningPnPlanningsService,
-  ItemsPlanningPnTagsService,
-} from '../../../services';
-import { SitesService } from 'src/app/common/services/advanced';
-import { Subscription } from 'rxjs';
-import { CommonDictionaryModel, SiteNameDto } from 'src/app/common/models';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import {
-  PairingUpdateModel,
-  PairingsModel,
-} from 'src/app/plugins/modules/items-planning-pn/models/pairings';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ItemsPlanningPnPairingService, ItemsPlanningPnPlanningsService, ItemsPlanningPnTagsService,} from '../../../services';
+import {SitesService} from 'src/app/common/services/advanced';
+import {Subscription} from 'rxjs';
+import {CommonDictionaryModel, SiteNameDto} from 'src/app/common/models';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
+import {PairingsModel, PairingUpdateModel,} from 'src/app/plugins/modules/items-planning-pn/models/pairings';
 import * as R from 'ramda';
-import { PairingGridUpdateComponent } from '../pairing-grid-update/pairing-grid-update.component';
-import { PairingStateService } from 'src/app/plugins/modules/items-planning-pn/components/pairing/state/pairing-state-service';
+import {PairingGridUpdateComponent} from '../pairing-grid-update/pairing-grid-update.component';
+import {PairingStateService} from 'src/app/plugins/modules/items-planning-pn/components/pairing/store/pairing-state-service';
 
 @AutoUnsubscribe()
 @Component({

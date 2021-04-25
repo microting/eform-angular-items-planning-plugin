@@ -1,14 +1,10 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
 
 import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
 import {
   OperationDataResult,
   OperationResult,
 } from 'src/app/common/models/operation.models';
-import { BaseService } from 'src/app/common/services/base.service';
 
 import {
   PlanningCreateModel,
@@ -17,6 +13,7 @@ import {
   PlanningUpdateModel,
 } from '../models/plannings';
 import { Paged } from 'src/app/common/models';
+import {ApiBaseService} from 'src/app/common/services';
 
 export let ItemsPlanningPnPlanningsMethods = {
   Plannings: 'api/items-planning-pn/plannings',
@@ -26,19 +23,13 @@ export let ItemsPlanningPnPlanningsMethods = {
 @Injectable({
   providedIn: 'root',
 })
-export class ItemsPlanningPnPlanningsService extends BaseService {
-  constructor(
-    private _http: HttpClient,
-    router: Router,
-    toastrService: ToastrService
-  ) {
-    super(_http, router, toastrService);
-  }
+export class ItemsPlanningPnPlanningsService {
+  constructor(private apiBaseService: ApiBaseService) {}
 
   getAllPlannings(
     model: PlanningsRequestModel
   ): Observable<OperationDataResult<Paged<PlanningModel>>> {
-    return this.post(
+    return this.apiBaseService.post(
       ItemsPlanningPnPlanningsMethods.Plannings + '/index',
       model
     );
@@ -47,34 +38,40 @@ export class ItemsPlanningPnPlanningsService extends BaseService {
   getSinglePlanning(
     planningId: number
   ): Observable<OperationDataResult<PlanningModel>> {
-    return this.get(
+    return this.apiBaseService.get(
       ItemsPlanningPnPlanningsMethods.Plannings + '/' + planningId
     );
   }
 
   updatePlanning(model: PlanningUpdateModel): Observable<OperationResult> {
-    return this.put(ItemsPlanningPnPlanningsMethods.Plannings, model);
+    return this.apiBaseService.put(
+      ItemsPlanningPnPlanningsMethods.Plannings,
+      model
+    );
   }
 
   createPlanning(model: PlanningCreateModel): Observable<OperationResult> {
-    return this.post(ItemsPlanningPnPlanningsMethods.Plannings, model);
+    return this.apiBaseService.post(
+      ItemsPlanningPnPlanningsMethods.Plannings,
+      model
+    );
   }
 
   deletePlanning(fractionId: number): Observable<OperationResult> {
-    return this.delete(
+    return this.apiBaseService.delete(
       ItemsPlanningPnPlanningsMethods.Plannings + '/' + fractionId
     );
   }
 
   deletePlannings(planningsIds: number[]): Observable<OperationResult> {
-    return this.post(
+    return this.apiBaseService.post(
       ItemsPlanningPnPlanningsMethods.Plannings + '/delete-multiple',
       planningsIds
     );
   }
 
   importPlanningsFromExcel(excelFile: File): Observable<OperationResult> {
-    return this.uploadFile(
+    return this.apiBaseService.uploadFile(
       ItemsPlanningPnPlanningsMethods.Plannings + '/import',
       excelFile
     );

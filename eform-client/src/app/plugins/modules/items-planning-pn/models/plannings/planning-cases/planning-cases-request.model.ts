@@ -1,4 +1,4 @@
-import { PagedEntityRequest } from 'src/app/common/models';
+import {PagedEntityRequest} from 'src/app/common/models';
 
 export class PlanningCasesRequestModel extends PagedEntityRequest {
   nameFilter: string;

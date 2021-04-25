@@ -1,27 +1,29 @@
 import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs';
-import {OperationDataResult, OperationResult} from '../../../../common/models';
-import {BaseService} from '../../../../common/services/base.service';
-import {HttpClient} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {ToastrService} from 'ngx-toastr';
-import {ItemsPlanningBaseSettingsModel} from '../models/items-planning-base-settings.model';
+import { Observable } from 'rxjs';
+import { OperationDataResult, OperationResult } from 'src/app/common/models';
+import { ItemsPlanningBaseSettingsModel } from '../models/items-planning-base-settings.model';
+import { ApiBaseService } from 'src/app/common/services';
 
 export let ItemsPlanningSettingsMethods = {
-  ItemsPlanningSettings: 'api/items-planning-pn/settings'
-
+  ItemsPlanningSettings: 'api/items-planning-pn/settings',
 };
 @Injectable()
-export class ItemsPlanningPnSettingsService extends BaseService {
+export class ItemsPlanningPnSettingsService {
+  constructor(private apiBaseService: ApiBaseService) {}
 
-  constructor(private _http: HttpClient, router: Router, toastrService: ToastrService) {
-    super(_http, router, toastrService);
+  getAllSettings(): Observable<
+    OperationDataResult<ItemsPlanningBaseSettingsModel>
+  > {
+    return this.apiBaseService.get(
+      ItemsPlanningSettingsMethods.ItemsPlanningSettings
+    );
   }
-
-  getAllSettings(): Observable<OperationDataResult<ItemsPlanningBaseSettingsModel>> {
-    return this.get(ItemsPlanningSettingsMethods.ItemsPlanningSettings);
-  }
-  updateSettings(model: ItemsPlanningBaseSettingsModel): Observable<OperationResult> {
-    return this.post(ItemsPlanningSettingsMethods.ItemsPlanningSettings, model);
+  updateSettings(
+    model: ItemsPlanningBaseSettingsModel
+  ): Observable<OperationResult> {
+    return this.apiBaseService.post(
+      ItemsPlanningSettingsMethods.ItemsPlanningSettings,
+      model
+    );
   }
 }

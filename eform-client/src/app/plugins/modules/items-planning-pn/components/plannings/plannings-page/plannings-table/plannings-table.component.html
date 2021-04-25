@@ -132,7 +132,7 @@
             <button
               id="updatePlanningBtn"
               *ngIf="
-                pluginClaimsHelper.check(itemsPlanningPnClaims.editPlanning)
+                authStateService.checkClaim(itemsPlanningPnClaims.editPlanning)
               "
               class="btn btn-accent text-black-50 btn-icon mb-2"
               mdbTooltip="{{ 'Edit Planning' | translate }}"
