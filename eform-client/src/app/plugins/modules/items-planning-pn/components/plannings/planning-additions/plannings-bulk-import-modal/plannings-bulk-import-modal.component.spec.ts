@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { PlanningsBulkImportModalComponent } from './plannings-bulk-import-modal.component';
+import {PlanningsBulkImportModalComponent} from './plannings-bulk-import-modal.component';
 
 describe('PlanningsBulkImportModalComponent', () => {
   let component: PlanningsBulkImportModalComponent;

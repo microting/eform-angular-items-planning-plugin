@@ -52,5 +52,8 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Report
             = new List<ReportEformPostModel>();
         
         public ReportEformTextHeaderModel TextHeaders { get; set; }
+
+        public List<string> NameTagsInEndPage { get; set; }
+            = new List<string>();
     }
 }

@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 import { PlanningModel } from 'src/app/plugins/modules/items-planning-pn/models/plannings';
 import { PlanningsQuery } from './plannings-query';
 import { ItemsPlanningPnPlanningsService } from 'src/app/plugins/modules/items-planning-pn/services';
-import { arrayAdd, arrayRemove } from '@datorama/akita';
+import { arrayToggle } from '@datorama/akita';
 
 @Injectable({ providedIn: 'root' })
 export class PlanningsStateService {
@@ -23,13 +23,13 @@ export class PlanningsStateService {
   getAllPlannings(): Observable<OperationDataResult<Paged<PlanningModel>>> {
     return this.service
       .getAllPlannings({
-        isSortDsc: this.query.pageSetting.isSortDsc,
-        offset: this.query.pageSetting.offset,
-        pageSize: this.query.pageSetting.pageSize,
-        sort: this.query.pageSetting.sort,
-        descriptionFilter: this.query.pageSetting.descriptionFilter,
-        tagIds: this.query.pageSetting.tagIds,
-        nameFilter: this.query.pageSetting.nameFilter,
+        isSortDsc: this.query.pageSetting.pagination.isSortDsc,
+        offset: this.query.pageSetting.pagination.offset,
+        pageSize: this.query.pageSetting.pagination.pageSize,
+        sort: this.query.pageSetting.pagination.sort,
+        descriptionFilter: this.query.pageSetting.pagination.descriptionFilter,
+        tagIds: this.query.pageSetting.pagination.tagIds,
+        nameFilter: this.query.pageSetting.pagination.nameFilter,
         pageIndex: 0,
       })
       .pipe(
@@ -43,11 +43,22 @@ export class PlanningsStateService {
   }
 
   updateNameFilter(nameFilter: string) {
-    this.store.update({ nameFilter: nameFilter, offset: 0 });
+    this.store.update((state) => ({
+      pagination: {
+        ...state.pagination,
+        nameFilter: nameFilter,
+        offset: 0,
+      },
+    }));
   }
 
   updatePageSize(pageSize: number) {
-    this.store.update({ pageSize: pageSize });
+    this.store.update((state) => ({
+      pagination: {
+        ...state.pagination,
+        pageSize: pageSize,
+      },
+    }));
     this.checkOffset();
   }
 
@@ -79,22 +90,22 @@ export class PlanningsStateService {
     return this.query.selectTagIds$;
   }
 
-  addTagId(id: number) {
-    this.store.update(({ tagIds }) => ({
-      tagIds: arrayAdd(tagIds, id),
-    }));
-  }
-
-  removeTagId(id: number) {
-    this.store.update(({ tagIds }) => ({
-      tagIds: arrayRemove(tagIds, id),
+  addOrRemoveTagIds(id: number) {
+    this.store.update((state) => ({
+      pagination: {
+        ...state.pagination,
+        tagIds: arrayToggle(state.pagination.tagIds, id),
+      },
     }));
   }
 
   changePage(offset: number) {
-    this.store.update({
-      offset: offset,
-    });
+    this.store.update((state) => ({
+      pagination: {
+        ...state.pagination,
+        offset: offset,
+      },
+    }));
   }
 
   onDelete() {
@@ -105,29 +116,40 @@ export class PlanningsStateService {
   onSortTable(sort: string) {
     const localPageSettings = updateTableSort(
       sort,
-      this.query.pageSetting.sort,
-      this.query.pageSetting.isSortDsc
+      this.query.pageSetting.pagination.sort,
+      this.query.pageSetting.pagination.isSortDsc
     );
-    this.store.update({
-      isSortDsc: localPageSettings.isSortDsc,
-      sort: localPageSettings.sort,
-    });
+    this.store.update((state) => ({
+      pagination: {
+        ...state.pagination,
+        isSortDsc: localPageSettings.isSortDsc,
+        sort: localPageSettings.sort,
+      },
+    }));
   }
 
   checkOffset() {
     const newOffset = getOffset(
-      this.query.pageSetting.pageSize,
-      this.query.pageSetting.offset,
+      this.query.pageSetting.pagination.pageSize,
+      this.query.pageSetting.pagination.offset,
       this.total
     );
-    if (newOffset !== this.query.pageSetting.offset) {
-      this.store.update({
-        offset: newOffset,
-      });
+    if (newOffset !== this.query.pageSetting.pagination.offset) {
+      this.store.update((state) => ({
+        pagination: {
+          ...state.pagination,
+          offset: newOffset,
+        },
+      }));
     }
   }
 
   updateDescriptionFilter(newDescriptionFilter: string) {
-    this.store.update({ descriptionFilter: newDescriptionFilter });
+    this.store.update((state) => ({
+      pagination: {
+        ...state.pagination,
+        descriptionFilter: newDescriptionFilter,
+      },
+    }));
   }
 }

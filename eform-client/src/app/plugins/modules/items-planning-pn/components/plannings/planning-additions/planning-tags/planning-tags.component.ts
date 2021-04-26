@@ -1,21 +1,9 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
-import { SharedTagsComponent } from 'src/app/common/modules/eform-shared-tags/components';
-import {
-  CommonDictionaryModel,
-  SharedTagCreateModel,
-  SharedTagModel,
-} from 'src/app/common/models';
-import { Subscription } from 'rxjs';
-import { ItemsPlanningPnTagsService } from 'src/app/plugins/modules/items-planning-pn/services';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild,} from '@angular/core';
+import {SharedTagsComponent} from 'src/app/common/modules/eform-shared-tags/components';
+import {CommonDictionaryModel, SharedTagCreateModel, SharedTagModel,} from 'src/app/common/models';
+import {Subscription} from 'rxjs';
+import {ItemsPlanningPnTagsService} from 'src/app/plugins/modules/items-planning-pn/services';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 
 @AutoUnsubscribe()
 @Component({

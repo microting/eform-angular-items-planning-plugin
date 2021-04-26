@@ -29,31 +29,32 @@ namespace ItemsPlanning.Pn.Infrastructure.Data.Seed.Data
 
     public class ItemsPlanningConfigurationSeedData : IPluginConfigurationSeedData
     {
+        private const string TagItemsPlanningBaseSettingsName = "ItemsPlanningBaseSettings";
         public PluginConfigurationValue[] Data => new[]
         {
             new PluginConfigurationValue()
             {
-                Name = "ItemsPlanningBaseSettings:ReportSubHeaderName",
+                Name = $"{TagItemsPlanningBaseSettingsName}:ReportSubHeaderName",
                 Value = ""
             },
             new PluginConfigurationValue()
             {
-                Name = "ItemsPlanningBaseSettings:ReportHeaderName",
+                Name = $"{TagItemsPlanningBaseSettingsName}:ReportHeaderName",
                 Value = ""
             },
             new PluginConfigurationValue()
             {
-                Name = "ItemsPlanningBaseSettings:StartTime",
+                Name = $"{TagItemsPlanningBaseSettingsName}:StartTime",
                 Value = "1"
             },
             new PluginConfigurationValue()
             {
-                Name = "ItemsPlanningBaseSettings:EndTime",
+                Name = $"{TagItemsPlanningBaseSettingsName}:EndTime",
                 Value = "4"
             },
             new PluginConfigurationValue()
             {
-                Name = "ItemsPlanningBaseSettings:ReportImageName",
+                Name = $"{TagItemsPlanningBaseSettingsName}:ReportImageName",
                 Value = ""
             }
         };

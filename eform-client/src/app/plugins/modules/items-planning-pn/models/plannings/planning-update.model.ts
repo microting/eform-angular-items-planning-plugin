@@ -1,8 +1,8 @@
-import { CommonTranslationModel } from 'src/app/common/models';
-import { PlanningEformModel } from './planning-eform.model';
-import { PlanningReiterationModel } from './planning-reiteration.model';
-import { PlanningFolderModel } from './planning-folder.model';
-import { PlanningFieldsModel } from './planning-fields.model';
+import {CommonTranslationModel} from 'src/app/common/models';
+import {PlanningEformModel} from './planning-eform.model';
+import {PlanningReiterationModel} from './planning-reiteration.model';
+import {PlanningFolderModel} from './planning-folder.model';
+import {PlanningFieldsModel} from './planning-fields.model';
 
 export class PlanningUpdateModel {
   id: number;

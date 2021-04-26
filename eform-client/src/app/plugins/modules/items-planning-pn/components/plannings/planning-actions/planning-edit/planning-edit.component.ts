@@ -1,41 +1,20 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
-import {
-  ItemsPlanningPnPlanningsService,
-  ItemsPlanningPnTagsService,
-} from 'src/app/plugins/modules/items-planning-pn/services';
-import {
-  PlanningModel,
-  PlanningUpdateModel,
-} from '../../../../models/plannings';
-import {
-  TemplateListModel,
-  TemplateRequestModel,
-} from '../../../../../../../common/models/eforms';
-import { debounceTime, switchMap } from 'rxjs/operators';
-import { EFormService } from 'src/app/common/services/eform';
+import {ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild,} from '@angular/core';
+import {ItemsPlanningPnPlanningsService, ItemsPlanningPnTagsService,} from 'src/app/plugins/modules/items-planning-pn/services';
+import {PlanningModel, PlanningUpdateModel,} from '../../../../models/plannings';
+import {TemplateListModel, TemplateRequestModel,} from '../../../../../../../common/models/eforms';
+import {debounceTime, switchMap} from 'rxjs/operators';
+import {EFormService} from 'src/app/common/services/eform';
 import * as moment from 'moment';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
-import { FolderDto } from 'src/app/common/models/dto/folder.dto';
-import { FoldersService } from 'src/app/common/services/advanced/folders.service';
-import { PlanningFoldersModalComponent } from '../../planning-additions/planning-folders-modal/planning-folders-modal.component';
-import {
-  CommonDictionaryModel,
-  CommonTranslationModel,
-} from 'src/app/common/models';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Subscription } from 'rxjs';
-import { composeFolderName } from 'src/app/common/helpers/folder-name.helper';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { applicationLanguages } from 'src/app/common/const/application-languages.const';
+import {ActivatedRoute} from '@angular/router';
+import {Location} from '@angular/common';
+import {FolderDto} from 'src/app/common/models/dto/folder.dto';
+import {FoldersService} from 'src/app/common/services/advanced/folders.service';
+import {PlanningFoldersModalComponent} from '../../planning-additions/planning-folders-modal/planning-folders-modal.component';
+import {CommonDictionaryModel, CommonTranslationModel,} from 'src/app/common/models';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
+import {Subscription} from 'rxjs';
+import {composeFolderName} from 'src/app/common/helpers/folder-name.helper';
+import {FormArray, FormControl, FormGroup} from '@angular/forms';
 
 @AutoUnsubscribe()
 @Component({

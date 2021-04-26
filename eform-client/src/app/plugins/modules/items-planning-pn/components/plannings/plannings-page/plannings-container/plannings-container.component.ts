@@ -19,9 +19,9 @@ import {
 } from 'src/app/common/models';
 import { FoldersService, SitesService } from 'src/app/common/services/advanced';
 import { composeFolderName } from 'src/app/common/helpers/folder-name.helper';
-import { AuthService } from 'src/app/common/services';
 import * as R from 'ramda';
-import { PlanningsStateService } from 'src/app/plugins/modules/items-planning-pn/components/plannings/state/plannings-state-service';
+import { PlanningsStateService } from '../../store/plannings-state-service';
+import { AuthStateService } from 'src/app/common/store';
 
 @AutoUnsubscribe()
 @Component({
@@ -62,8 +62,8 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
     private tagsService: ItemsPlanningPnTagsService,
     private foldersService: FoldersService,
     private sitesService: SitesService,
-    private authService: AuthService,
-    public planningsStateService: PlanningsStateService
+    public planningsStateService: PlanningsStateService,
+    public authStateService: AuthStateService
   ) {
     this.nameSearchSubject.pipe(debounceTime(500)).subscribe((val) => {
       this.planningsStateService.updateNameFilter(val.toString());
@@ -80,7 +80,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   }
 
   get userRole() {
-    return this.authService.currentRole;
+    return this.authStateService.currentRole;
   }
 
   get itemsPlanningPnClaims() {
@@ -206,17 +206,17 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   }
 
   saveTag(e: any) {
-    this.planningsStateService.addTagId(e.id);
+    this.planningsStateService.addOrRemoveTagIds(e.id);
     this.getPlannings();
   }
 
   removeSavedTag(e: any) {
-    this.planningsStateService.removeTagId(e.value.id);
+    this.planningsStateService.addOrRemoveTagIds(e.value.id);
     this.getPlannings();
   }
 
   tagSelected(id: number) {
-    this.planningsStateService.addTagId(id);
+    this.planningsStateService.addOrRemoveTagIds(id);
     this.getPlannings();
   }
 

@@ -238,6 +238,12 @@ namespace ItemsPlanning.Pn.Services.WordService
                     // itemsHtml += @"</table>";
                 }
 
+                // add tag names in end document
+                foreach(var nameTage in reportModel.Last().NameTagsInEndPage)
+                {
+                    itemsHtml += $@"<p style='font-size:24px;text-align:center;'>{nameTage}</p>";
+                }
+
                 itemsHtml += @"</div>";
                 itemsHtml += "</body>";
 

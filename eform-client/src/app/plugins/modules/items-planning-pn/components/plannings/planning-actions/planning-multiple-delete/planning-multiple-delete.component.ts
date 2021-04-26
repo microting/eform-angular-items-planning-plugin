@@ -1,12 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
-import { PlanningModel } from '../../../../models/plannings';
+import {ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, ViewChild,} from '@angular/core';
+import {PlanningModel} from '../../../../models/plannings';
 
 @Component({
   selector: 'app-planning-multiple-delete',

@@ -23,7 +23,6 @@ SOFTWARE.
 */
 
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microting.eForm.Infrastructure.Data.Entities;
 
 namespace ItemsPlanning.Pn.Infrastructure.Data.Seed
