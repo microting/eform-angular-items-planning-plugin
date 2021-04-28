@@ -6,8 +6,8 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { CommonDictionaryModel } from 'src/app/common/models';
-import { PlanningsStateService } from 'src/app/plugins/modules/items-planning-pn/components/plannings/store/plannings-state-service';
+import { CommonDictionaryModel, SiteNameDto } from 'src/app/common/models';
+import { PlanningsStateService } from '../../store';
 
 @Component({
   selector: 'app-plannings-header',
@@ -17,8 +17,11 @@ import { PlanningsStateService } from 'src/app/plugins/modules/items-planning-pn
 })
 export class PlanningsHeaderComponent implements OnInit {
   @Input() availableTags: CommonDictionaryModel[] = [];
+  @Input() sites: SiteNameDto[] = [];
   @Output() tagSaved: EventEmitter<any> = new EventEmitter<any>();
   @Output() savedTagRemoved: EventEmitter<any> = new EventEmitter<any>();
+  @Output() siteSaved: EventEmitter<any> = new EventEmitter<any>();
+  @Output() savedSiteRemoved: EventEmitter<any> = new EventEmitter<any>();
   @Output() nameFilterChanged: EventEmitter<any> = new EventEmitter<any>();
   @Output()
   descriptionFilterChanged: EventEmitter<any> = new EventEmitter<any>();
@@ -33,6 +36,14 @@ export class PlanningsHeaderComponent implements OnInit {
 
   removeSavedTag(e: any) {
     this.savedTagRemoved.emit(e);
+  }
+
+  saveSite(e: any) {
+    this.siteSaved.emit(e);
+  }
+
+  removeSavedSite(e: any) {
+    this.savedSiteRemoved.emit(e);
   }
 
   onNameFilterChanged(value: any) {

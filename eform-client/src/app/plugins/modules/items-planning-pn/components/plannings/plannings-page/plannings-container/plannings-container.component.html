@@ -36,8 +36,11 @@
 <div class="container-fluid">
   <app-plannings-header
     [availableTags]="availableTags"
+    [sites]="sitesDto"
     (descriptionFilterChanged)="onDescriptionFilterChanged($event)"
     (nameFilterChanged)="onNameFilterChanged($event)"
+    (savedSiteRemoved)="removeSavedDeviceUser($event)"
+    (siteSaved)="saveDeviceUser($event)"
     (savedTagRemoved)="removeSavedTag($event)"
     (tagSaved)="saveTag($event)"
   ></app-plannings-header>
@@ -65,7 +68,7 @@
     (allPlanningCheckboxChanged)="onAllPlanningsCheckboxChanged($event)"
   ></app-plannings-table>
   <div class="row justify-content-between mr-2 ml-2">
-    <div class="col-md-1">
+    <div class="col-md-1 col-sm-3">
       <eform-page-size
         [pageSize]="planningsStateService.getPageSize() | async"
         (onPageSizeChanged)="onPageSizeChanged($event)"

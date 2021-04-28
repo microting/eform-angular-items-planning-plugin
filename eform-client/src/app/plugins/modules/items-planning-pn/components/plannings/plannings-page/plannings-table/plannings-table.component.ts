@@ -9,7 +9,7 @@ import {
 import { PlanningModel } from '../../../../models/plannings';
 import { Paged, TableHeaderElementModel } from 'src/app/common/models';
 import { ItemsPlanningPnClaims } from '../../../../enums';
-import { PlanningsStateService } from '../../store/plannings-state-service';
+import { PlanningsStateService } from '../../store/';
 import { AuthStateService } from 'src/app/common/store';
 
 @Component({
