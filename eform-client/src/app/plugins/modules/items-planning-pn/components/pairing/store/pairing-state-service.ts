@@ -1,11 +1,11 @@
-import {Injectable} from '@angular/core';
-import {PairingStore} from './pairing-store';
-import {Observable} from 'rxjs';
-import {OperationDataResult} from 'src/app/common/models';
-import {PairingQuery} from './pairing-query';
-import {arrayToggle} from '@datorama/akita';
-import {PairingsModel} from '../../..//models/pairings';
-import {ItemsPlanningPnPairingService} from '../../../services';
+import { Injectable } from '@angular/core';
+import { PairingStore } from './pairing-store';
+import { Observable } from 'rxjs';
+import { OperationDataResult } from 'src/app/common/models';
+import { PairingQuery } from './pairing-query';
+import { arrayToggle } from '@datorama/akita';
+import { PairingsModel } from '../../..//models/pairings';
+import { ItemsPlanningPnPairingService } from '../../../services';
 
 @Injectable({ providedIn: 'root' })
 export class PairingStateService {
@@ -17,7 +17,7 @@ export class PairingStateService {
 
   getAllPairings(): Observable<OperationDataResult<PairingsModel>> {
     return this.service.getAllPairings({
-      tagIds: this.query.pageSetting.pagination.tagIds,
+      tagIds: this.query.pageSetting.filtration.tagIds,
     });
   }
 
@@ -27,9 +27,9 @@ export class PairingStateService {
 
   addOrRemoveTagId(id: number) {
     this.store.update((state) => ({
-      pagination: {
-        ...state.pagination,
-        tagIds: arrayToggle(state.pagination.tagIds, id),
+      filtration: {
+        ...state.filtration,
+        tagIds: arrayToggle(state.filtration.tagIds, id),
       },
     }));
   }

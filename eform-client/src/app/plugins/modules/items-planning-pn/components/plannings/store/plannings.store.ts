@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { persistState, Store, StoreConfig } from '@datorama/akita';
 import { CommonPaginationState } from 'src/app/common/models/common-pagination-state';
+import { FiltrationStateModel } from 'src/app/common/models';
 
 export interface PlanningsState {
-  pagination: PlanningsPaginationState;
+  pagination: CommonPaginationState;
+  filtration: PlanningsFiltrationState;
+  totalPlannings: number;
 }
 
-export class PlanningsPaginationState extends CommonPaginationState {
+export class PlanningsFiltrationState extends FiltrationStateModel {
   deviceUserIds: number[];
+  descriptionFilter: string;
 }
 
 function createInitialState(): PlanningsState {
@@ -16,27 +20,31 @@ function createInitialState(): PlanningsState {
       pageSize: 10,
       sort: 'Id',
       isSortDsc: false,
-      nameFilter: '',
       offset: 0,
-      descriptionFilter: '',
-      tagIds: [],
-      deviceUserIds: []
     },
+    filtration: {
+      descriptionFilter: '',
+      deviceUserIds: [],
+      nameFilter: '',
+      tagIds: [],
+    },
+    totalPlannings: 0,
   };
 }
 
-export const planningsPersistStorage = persistState({
-  include: ['itemsPlanningPnPlannings'],
-  key: 'pluginsStore',
+const planningsPersistStorage = persistState({
+  include: ['plannings'],
+  key: 'itemsPlanningPn',
   preStoreUpdate(storeName, state) {
     return {
       pagination: state.pagination,
+      filtration: state.filtration,
     };
-  }
+  },
 });
 
 @Injectable({ providedIn: 'root' })
-@StoreConfig({ name: 'itemsPlanningPnPlannings', resettable: true })
+@StoreConfig({ name: 'plannings', resettable: true })
 export class PlanningsStore extends Store<PlanningsState> {
   constructor() {
     super(createInitialState());

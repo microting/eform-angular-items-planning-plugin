@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import { PlanningsStore } from './plannings.store';
 import { Observable } from 'rxjs';
-import { OperationDataResult, Paged } from 'src/app/common/models';
+import {
+  OperationDataResult,
+  Paged,
+  PaginationModel,
+  SortModel,
+} from 'src/app/common/models';
 import { updateTableSort } from 'src/app/common/helpers';
 import { getOffset } from 'src/app/common/helpers/pagination.helper';
 import { map } from 'rxjs/operators';
-import { PlanningModel } from 'src/app/plugins/modules/items-planning-pn/models/plannings';
+import { PlanningModel } from '../../../models';
 import { PlanningsQuery } from './plannings.query';
-import { ItemsPlanningPnPlanningsService } from 'src/app/plugins/modules/items-planning-pn/services';
+import { ItemsPlanningPnPlanningsService } from '../../../services';
 import { arrayToggle } from '@datorama/akita';
 
 @Injectable({ providedIn: 'root' })
@@ -18,23 +23,25 @@ export class PlanningsStateService {
     private query: PlanningsQuery
   ) {}
 
-  private total: number;
-
-  getOffset(): Observable<number> {
-    return this.query.selectOffset$;
-  }
+  // getOffset(): Observable<number> {
+  //   return this.query.selectOffset$;
+  // }
 
   getPageSize(): Observable<number> {
     return this.query.selectPageSize$;
   }
 
-  getSort(): Observable<string> {
+  getSort(): Observable<SortModel> {
     return this.query.selectSort$;
   }
 
-  getIsSortDsc(): Observable<boolean> {
-    return this.query.selectIsSortDsc$;
-  }
+  // getSort(): Observable<string> {
+  //   return this.query.selectSort$;
+  // }
+  //
+  // getIsSortDsc(): Observable<boolean> {
+  //   return this.query.selectIsSortDsc$;
+  // }
 
   getNameFilter(): Observable<string> {
     return this.query.selectNameFilter$;
@@ -56,12 +63,15 @@ export class PlanningsStateService {
     return this.service
       .getAllPlannings({
         ...this.query.pageSetting.pagination,
+        ...this.query.pageSetting.filtration,
         pageIndex: 0,
       })
       .pipe(
         map((response) => {
           if (response && response.success && response.model) {
-            this.total = response.model.total;
+            this.store.update(() => ({
+              totalPlannings: response.model.total,
+            }));
           }
           return response;
         })
@@ -70,9 +80,12 @@ export class PlanningsStateService {
 
   updateNameFilter(nameFilter: string) {
     this.store.update((state) => ({
+      filtration: {
+        ...state.filtration,
+        nameFilter: nameFilter,
+      },
       pagination: {
         ...state.pagination,
-        nameFilter: nameFilter,
         offset: 0,
       },
     }));
@@ -90,18 +103,18 @@ export class PlanningsStateService {
 
   addOrRemoveTagIds(id: number) {
     this.store.update((state) => ({
-      pagination: {
-        ...state.pagination,
-        tagIds: arrayToggle(state.pagination.tagIds, id),
+      filtration: {
+        ...state.filtration,
+        tagIds: arrayToggle(state.filtration.tagIds, id),
       },
     }));
   }
 
   addOrRemoveDeviceUserIds(id: number) {
     this.store.update((state) => ({
-      pagination: {
-        ...state.pagination,
-        deviceUserIds: arrayToggle(state.pagination.deviceUserIds, id),
+      filtration: {
+        ...state.filtration,
+        deviceUserIds: arrayToggle(state.filtration.deviceUserIds, id),
       },
     }));
   }
@@ -116,7 +129,9 @@ export class PlanningsStateService {
   }
 
   onDelete() {
-    this.total -= 1;
+    this.store.update((state) => ({
+      totalPlannings: state.totalPlannings - 1,
+    }));
     this.checkOffset();
   }
 
@@ -139,7 +154,7 @@ export class PlanningsStateService {
     const newOffset = getOffset(
       this.query.pageSetting.pagination.pageSize,
       this.query.pageSetting.pagination.offset,
-      this.total
+      this.query.pageSetting.totalPlannings
     );
     if (newOffset !== this.query.pageSetting.pagination.offset) {
       this.store.update((state) => ({
@@ -153,10 +168,14 @@ export class PlanningsStateService {
 
   updateDescriptionFilter(newDescriptionFilter: string) {
     this.store.update((state) => ({
-      pagination: {
-        ...state.pagination,
+      filtration: {
+        ...state.filtration,
         descriptionFilter: newDescriptionFilter,
       },
     }));
+  }
+
+  getPagination(): Observable<PaginationModel> {
+    return this.query.selectPagination$;
   }
 }

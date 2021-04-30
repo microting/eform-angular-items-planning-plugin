@@ -9,9 +9,8 @@
     <thead
       table-headers
       [tableHeaders]="tableHeaders"
-      [currentSortName]="planningsStateService.getSort() | async"
+      [sortModel]="planningsStateService.getSort() | async"
       (sortChanged)="onSortTable($event)"
-      [isSortDsc]="planningsStateService.getIsSortDsc() | async"
       [customCell]="selectAllPlanningsCheckbox"
     >
       <ng-template #selectAllPlanningsCheckbox>

@@ -23,7 +23,7 @@
         [items]="availableTags"
         [ngModel]="pairingStateService.getTagIds() | async"
         (add)="saveTag($event)"
-        (remove)="removeSavedTag($event)"
+        (remove)="removeSavedTag($event.value)"
         [clearable]="false"
         [bindLabel]="'name'"
         [bindValue]="'id'"

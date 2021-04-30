@@ -1,15 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { PageSettingsModel } from 'src/app/common/models/settings';
 import { PlanningModel } from '../../../../models/plannings';
 import {
   ItemsPlanningPnPlanningsService,
   ItemsPlanningPnTagsService,
 } from '../../../../services';
-import { PluginClaimsHelper } from 'src/app/common/helpers';
 import { ItemsPlanningPnClaims } from '../../../../enums';
 import { debounceTime } from 'rxjs/operators';
 import { Subject, Subscription } from 'rxjs';
-import { PlanningTagsComponent } from '../../planning-additions/planning-tags/planning-tags.component';
+import { PlanningTagsComponent } from '../../planning-additions';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import {
   CommonDictionaryModel,
@@ -40,7 +38,6 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
 
   descriptionSearchSubject = new Subject();
   nameSearchSubject = new Subject();
-  localPageSettings: PageSettingsModel = new PageSettingsModel();
   planningsModel: Paged<PlanningModel> = new Paged<PlanningModel>();
   availableTags: CommonDictionaryModel[] = [];
   foldersListDto: FolderDto[] = [];
@@ -73,14 +70,6 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
       this.planningsStateService.updateDescriptionFilter(val.toString());
       this.getPlannings();
     });
-  }
-
-  get pluginClaimsHelper() {
-    return PluginClaimsHelper;
-  }
-
-  get userRole() {
-    return this.authStateService.currentRole;
   }
 
   get itemsPlanningPnClaims() {
