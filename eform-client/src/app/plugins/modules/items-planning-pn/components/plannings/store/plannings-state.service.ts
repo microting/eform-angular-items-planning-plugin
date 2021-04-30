@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PlanningsStore } from './plannings.store';
+import { PlanningsStore, PlanningsQuery } from './';
 import { Observable } from 'rxjs';
 import {
   OperationDataResult,
@@ -11,7 +11,6 @@ import { updateTableSort } from 'src/app/common/helpers';
 import { getOffset } from 'src/app/common/helpers/pagination.helper';
 import { map } from 'rxjs/operators';
 import { PlanningModel } from '../../../models';
-import { PlanningsQuery } from './plannings.query';
 import { ItemsPlanningPnPlanningsService } from '../../../services';
 import { arrayToggle } from '@datorama/akita';
 
@@ -63,7 +62,7 @@ export class PlanningsStateService {
     return this.service
       .getAllPlannings({
         ...this.query.pageSetting.pagination,
-        ...this.query.pageSetting.filtration,
+        ...this.query.pageSetting.filters,
         pageIndex: 0,
       })
       .pipe(
@@ -80,8 +79,8 @@ export class PlanningsStateService {
 
   updateNameFilter(nameFilter: string) {
     this.store.update((state) => ({
-      filtration: {
-        ...state.filtration,
+      filters: {
+        ...state.filters,
         nameFilter: nameFilter,
       },
       pagination: {
@@ -103,18 +102,18 @@ export class PlanningsStateService {
 
   addOrRemoveTagIds(id: number) {
     this.store.update((state) => ({
-      filtration: {
-        ...state.filtration,
-        tagIds: arrayToggle(state.filtration.tagIds, id),
+      filters: {
+        ...state.filters,
+        tagIds: arrayToggle(state.filters.tagIds, id),
       },
     }));
   }
 
   addOrRemoveDeviceUserIds(id: number) {
     this.store.update((state) => ({
-      filtration: {
-        ...state.filtration,
-        deviceUserIds: arrayToggle(state.filtration.deviceUserIds, id),
+      filters: {
+        ...state.filters,
+        deviceUserIds: arrayToggle(state.filters.deviceUserIds, id),
       },
     }));
   }
@@ -168,8 +167,8 @@ export class PlanningsStateService {
 
   updateDescriptionFilter(newDescriptionFilter: string) {
     this.store.update((state) => ({
-      filtration: {
-        ...state.filtration,
+      filters: {
+        ...state.filters,
         descriptionFilter: newDescriptionFilter,
       },
     }));

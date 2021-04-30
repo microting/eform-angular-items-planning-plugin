@@ -3,12 +3,12 @@ import { persistState, Store, StoreConfig } from '@datorama/akita';
 import { FiltrationStateModel } from 'src/app/common/models';
 
 export interface PairingState {
-  filtration: FiltrationStateModel;
+  filters: FiltrationStateModel;
 }
 
 export function createInitialState(): PairingState {
   return <PairingState>{
-    filtration: {
+    filters: {
       tagIds: [],
     },
   };
@@ -19,7 +19,7 @@ const pairingPersistStorage = persistState({
   key: 'itemsPlanningPn',
   preStoreUpdate(storeName, state) {
     return {
-      filtration: state.filtration,
+      filters: state.filters,
     };
   },
 });

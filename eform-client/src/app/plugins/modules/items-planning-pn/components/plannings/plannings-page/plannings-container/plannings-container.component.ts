@@ -18,7 +18,7 @@ import {
 import { FoldersService, SitesService } from 'src/app/common/services/advanced';
 import { composeFolderName } from 'src/app/common/helpers';
 import * as R from 'ramda';
-import { PlanningsStateService } from '../../store/plannings-state.service';
+import { PlanningsStateService } from '../../store';
 import { AuthStateService } from 'src/app/common/store';
 
 @AutoUnsubscribe()

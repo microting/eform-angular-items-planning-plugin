@@ -13,12 +13,12 @@ export class PlanningsQuery extends Query<PlanningsState> {
     return this.getValue();
   }
 
-  selectTagIds$ = this.select((state) => state.filtration.tagIds);
-  selectDeviceUsers$ = this.select((state) => state.filtration.deviceUserIds);
+  selectTagIds$ = this.select((state) => state.filters.tagIds);
+  selectDeviceUsers$ = this.select((state) => state.filters.deviceUserIds);
   selectDescriptionFilter$ = this.select(
-    (state) => state.filtration.descriptionFilter
+    (state) => state.filters.descriptionFilter
   );
-  selectNameFilter$ = this.select((state) => state.filtration.nameFilter);
+  selectNameFilter$ = this.select((state) => state.filters.nameFilter);
   selectPageSize$ = this.select((state) => state.pagination.pageSize);
   // selectIsSortDsc$ = this.select((state) => state.pagination.isSortDsc);
   // selectSort$ = this.select((state) => state.pagination.sort);

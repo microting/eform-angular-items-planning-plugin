@@ -9,7 +9,7 @@
     <thead
       table-headers
       [tableHeaders]="tableHeaders"
-      [sortModel]="planningsStateService.getSort() | async"
+      [sort]="planningsStateService.getSort() | async"
       (sortChanged)="onSortTable($event)"
       [customCell]="selectAllPlanningsCheckbox"
     >

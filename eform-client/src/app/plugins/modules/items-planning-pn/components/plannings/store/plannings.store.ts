@@ -5,7 +5,7 @@ import { FiltrationStateModel } from 'src/app/common/models';
 
 export interface PlanningsState {
   pagination: CommonPaginationState;
-  filtration: PlanningsFiltrationState;
+  filters: PlanningsFiltrationState;
   totalPlannings: number;
 }
 
@@ -22,7 +22,7 @@ function createInitialState(): PlanningsState {
       isSortDsc: false,
       offset: 0,
     },
-    filtration: {
+    filters: {
       descriptionFilter: '',
       deviceUserIds: [],
       nameFilter: '',
@@ -35,10 +35,10 @@ function createInitialState(): PlanningsState {
 const planningsPersistStorage = persistState({
   include: ['plannings'],
   key: 'itemsPlanningPn',
-  preStoreUpdate(storeName, state) {
+  preStoreUpdate(storeName, state: PlanningsState) {
     return {
       pagination: state.pagination,
-      filtration: state.filtration,
+      filters: state.filters,
     };
   },
 });

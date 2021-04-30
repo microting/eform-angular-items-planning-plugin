@@ -8,13 +8,10 @@ import { SitesService } from 'src/app/common/services/advanced';
 import { Subscription } from 'rxjs';
 import { CommonDictionaryModel, SiteNameDto } from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import {
-  PairingsModel,
-  PairingUpdateModel,
-} from 'src/app/plugins/modules/items-planning-pn/models/pairings';
+import { PairingsModel, PairingUpdateModel } from '../../../models/pairings';
 import * as R from 'ramda';
-import { PairingGridUpdateComponent } from '../pairing-grid-update/pairing-grid-update.component';
-import { PairingStateService } from 'src/app/plugins/modules/items-planning-pn/components/pairing/store/pairing-state-service';
+import { PairingGridUpdateComponent } from '../../pairing';
+import { PairingStateService } from '../store';
 
 @AutoUnsubscribe()
 @Component({
