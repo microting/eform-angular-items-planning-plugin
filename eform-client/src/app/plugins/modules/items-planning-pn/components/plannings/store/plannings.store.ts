@@ -35,7 +35,7 @@ function createInitialState(): PlanningsState {
 const planningsPersistStorage = persistState({
   include: ['plannings'],
   key: 'itemsPlanningPn',
-  preStoreUpdate(storeName, state: PlanningsState) {
+  preStorageUpdate(storeName, state: PlanningsState) {
     return {
       pagination: state.pagination,
       filters: state.filters,

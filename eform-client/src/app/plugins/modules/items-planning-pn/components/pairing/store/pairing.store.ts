@@ -17,7 +17,7 @@ export function createInitialState(): PairingState {
 const pairingPersistStorage = persistState({
   include: ['pairing'],
   key: 'itemsPlanningPn',
-  preStoreUpdate(storeName, state) {
+  preStorageUpdate(storeName, state) {
     return {
       filters: state.filters,
     };
