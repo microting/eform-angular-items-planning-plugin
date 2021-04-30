@@ -106,14 +106,18 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         .OrderBy(x => x.Id);
                 }
 
-                if (pnRequestModel.TagIds.Any())
+                // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+                foreach (var tagId in pnRequestModel.TagIds)
                 {
-                    // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-                    foreach (var tagId in pnRequestModel.TagIds)
-                    {
-                        planningsQuery = planningsQuery.Where(x => x.PlanningsTags.Any(y =>
-                            y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
-                    }
+                    planningsQuery = planningsQuery.Where(x => x.PlanningsTags.Any(y =>
+                        y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
+                }
+
+                // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+                foreach (var deviceUserId in pnRequestModel.DeviceUserIds)
+                {
+                    planningsQuery = planningsQuery.Where(x => x.PlanningSites.Any(y =>
+                        y.SiteId == deviceUserId && y.WorkflowState != Constants.WorkflowStates.Removed));
                 }
 
                 planningsQuery = planningsQuery
