@@ -156,7 +156,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     Constants.FieldTypes.SaveButton
                 };
                 var localeString = await _userService.GetCurrentUserLocale();
-                var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+                var language = sdkDbContext.Languages.Single(x => x.LanguageCode == localeString);
                 //foreach (var groupedCase in groupedCases)
                 foreach (var checkList in checkLists)
                 {
