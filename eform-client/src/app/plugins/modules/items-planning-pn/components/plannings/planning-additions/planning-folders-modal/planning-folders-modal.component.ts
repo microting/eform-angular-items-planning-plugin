@@ -1,43 +1,38 @@
 import {
   Component,
-  EventEmitter, Input,
+  EventEmitter,
+  Input,
   OnDestroy,
   OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
 import { FolderDto, SiteNameDto } from 'src/app/common/models';
-import { FoldersService } from 'src/app/common/services/advanced';
-import { AuthService } from 'src/app/common/services';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { PlanningModel } from '../../../../models/plannings';
-import { Subscription } from 'rxjs';
+import { AuthStateService } from 'src/app/common/store';
 
 @AutoUnsubscribe()
 @Component({
   selector: 'app-planning-folders-modal',
   templateUrl: './planning-folders-modal.component.html',
-  styleUrls: ['./planning-folders-modal.component.scss']
+  styleUrls: ['./planning-folders-modal.component.scss'],
 })
 export class PlanningFoldersModalComponent implements OnInit, OnDestroy {
-  @ViewChild('frame', {static: true}) frame;
-  @Output() folderSelected: EventEmitter<FolderDto> = new EventEmitter<FolderDto>();
+  @ViewChild('frame', { static: true }) frame;
+  @Output()
+  folderSelected: EventEmitter<FolderDto> = new EventEmitter<FolderDto>();
   selectedPlanning: PlanningModel = new PlanningModel();
   sitesDto: Array<SiteNameDto> = [];
   @Input() folders: FolderDto[] = [];
-  getAllFolders$: Subscription;
 
   get userClaims() {
-    return this.authService.userClaims;
+    return this.authStateService.currentUserClaims;
   }
 
-  constructor(private folderService: FoldersService,
-              private authService: AuthService) {
-  }
+  constructor(private authStateService: AuthStateService) {}
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   show(planningModel?: PlanningModel) {
     this.selectedPlanning = planningModel;
@@ -49,7 +44,5 @@ export class PlanningFoldersModalComponent implements OnInit, OnDestroy {
     this.frame.hide();
   }
 
-
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 }

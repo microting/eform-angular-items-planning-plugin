@@ -395,9 +395,17 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 
                         result.Add(reportModel);
                     }
+
                 }
 
-                if (result.Count > 0)
+                var reportEformModel = new ReportEformModel();
+                reportEformModel.NameTagsInEndPage.AddRange(_dbContext.PlanningTags
+                .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                .Where(x => model.TagIds.Any(y => y == x.Id))
+                .Select(x => x.Name));
+                result.Add(reportEformModel);
+
+                if (result.Any())
                 {
                     return new OperationDataResult<List<ReportEformModel>>(true, result);
                 }

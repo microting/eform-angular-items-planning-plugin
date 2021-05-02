@@ -7,6 +7,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ItemsPlanningPnLayoutComponent } from './layouts';
 import {
+  ItemsPlanningSettingsComponent,
   PairingGridPageComponent,
   PairingGridTableComponent,
   PairingGridUpdateComponent,
@@ -16,37 +17,37 @@ import {
   PlanningDeleteComponent,
   PlanningEditComponent,
   PlanningFoldersModalComponent,
+  PlanningMultipleDeleteComponent,
+  PlanningsBulkImportModalComponent,
   PlanningsContainerComponent,
+  PlanningsHeaderComponent,
+  PlanningsTableComponent,
   PlanningTagsComponent,
-  UploadedDataDeleteComponent,
-  UploadedDataPdfComponent,
-  ItemsPlanningSettingsComponent,
   ReportContainerComponent,
   ReportHeaderComponent,
   ReportImagesComponent,
   ReportPostsComponent,
   ReportTableComponent,
-  PlanningsBulkImportModalComponent,
-  PlanningsHeaderComponent,
-  PlanningsTableComponent,
-  PlanningMultipleDeleteComponent,
+  UploadedDataDeleteComponent,
+  UploadedDataPdfComponent,
 } from './components';
 import { RouterModule } from '@angular/router';
 import { ItemsPlanningPnRouting } from './items-planning-pn.routing.module';
 import {
   ItemsPlanningPnCasesService,
+  ItemsPlanningPnPairingService,
   ItemsPlanningPnPlanningsService,
   ItemsPlanningPnReportsService,
   ItemsPlanningPnSettingsService,
   ItemsPlanningPnTagsService,
   ItemsPlanningPnUploadedDataService,
-  ItemsPlanningPnPairingService,
 } from './services';
 import { FileUploadModule } from 'ng2-file-upload';
 import { OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { EformSharedModule } from 'src/app/common/modules/eform-shared/eform-shared.module';
 import { CasesModule } from 'src/app/modules';
 import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/eform-shared-tags.module';
+import { planningsStoreProviders } from './store-providers.config';
 
 @NgModule({
   imports: [
@@ -99,6 +100,7 @@ import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/
     ItemsPlanningPnUploadedDataService,
     ItemsPlanningPnTagsService,
     ItemsPlanningPnPairingService,
+    ...planningsStoreProviders,
   ],
 })
 export class ItemsPlanningPnModule {}

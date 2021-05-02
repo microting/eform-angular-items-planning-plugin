@@ -4,7 +4,6 @@ import {
   EventEmitter,
   OnDestroy,
   OnInit,
-  Output,
   ViewChild,
 } from '@angular/core';
 import { debounceTime, switchMap } from 'rxjs/operators';
@@ -14,23 +13,25 @@ import {
 } from '../../../../services';
 import { EFormService } from 'src/app/common/services/eform';
 import { SitesService } from 'src/app/common/services/advanced';
-import { AuthService } from 'src/app/common/services';
+import { AuthService } from 'src/app/common/services/auth/auth.service';
 import { PlanningCreateModel } from '../../../../models/plannings';
 import {
   TemplateListModel,
   TemplateRequestModel,
 } from 'src/app/common/models/eforms';
 import { Location } from '@angular/common';
-import moment = require('moment');
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
 import { FoldersService } from 'src/app/common/services/advanced/folders.service';
 import { FolderDto } from 'src/app/common/models/dto/folder.dto';
 import { PlanningFoldersModalComponent } from '../../planning-additions/planning-folders-modal/planning-folders-modal.component';
 import { CommonDictionaryModel } from 'src/app/common/models';
-import {composeFolderName} from 'src/app/common/helpers/folder-name.helper';
-import {FormArray, FormControl, FormGroup} from '@angular/forms';
-import {applicationLanguages} from 'src/app/common/const/application-languages.const';
+import { composeFolderName } from 'src/app/common/helpers/folder-name.helper';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { applicationLanguages } from 'src/app/common/const/application-languages.const';
+import moment = require('moment');
+import { SecurityGroupEformsPermissionsService } from 'src/app/common/services';
+import { AuthStateService } from 'src/app/common/store';
 
 @AutoUnsubscribe()
 @Component({
@@ -58,18 +59,18 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   selectedFolderName: string;
 
   get userClaims() {
-    return this.authService.userClaims;
+    return this.authStateService.currentUserClaims;
   }
 
   constructor(
     private foldersService: FoldersService,
     private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
     private sitesService: SitesService,
-    private authService: AuthService,
     private eFormService: EFormService,
     private tagsService: ItemsPlanningPnTagsService,
     private cd: ChangeDetectorRef,
-    private location: Location
+    private location: Location,
+    private authStateService: AuthStateService
   ) {
     this.typeahead
       .pipe(
@@ -138,7 +139,10 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
     }
 
     this.createSub$ = this.itemsPlanningPnPlanningsService
-      .createPlanning({...this.newPlanningModel, translationsName: this.translationsArray.getRawValue()})
+      .createPlanning({
+        ...this.newPlanningModel,
+        translationsName: this.translationsArray.getRawValue(),
+      })
       .subscribe((data) => {
         if (data && data.success) {
           this.location.back();
@@ -179,8 +183,8 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
       this.foldersListDto
     );
     this.newPlanningModel.folder.eFormSdkFullFolderName = folderDto.parent
-        ? `${folderDto.name} - ${folderDto.parent.name}`
-        : folderDto.name;
+      ? `${folderDto.name} - ${folderDto.parent.name}`
+      : folderDto.name;
     this.updateSaveButtonDisabled();
   }
 }

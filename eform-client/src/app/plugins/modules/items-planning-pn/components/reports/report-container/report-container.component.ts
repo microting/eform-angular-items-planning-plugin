@@ -1,12 +1,12 @@
-import {AfterContentInit, AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
-import {ReportEformItemModel, ReportEformPnModel, ReportEformPostModel, ReportPnGenerateModel} from '../../../models/report';
+import {ReportEformPnModel, ReportPnGenerateModel} from '../../../models/report';
 import {ItemsPlanningPnReportsService, ItemsPlanningPnTagsService} from '../../../services';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
-import { parseISO } from 'date-fns';
+import {parseISO} from 'date-fns';
 import {CasePostNewComponent} from 'src/app/modules/cases/components';
 import {CasePostsListModel, CommonDictionaryModel, EmailRecipientTagCommonModel, SharedTagModel} from 'src/app/common/models';
 import {EmailRecipientsService} from 'src/app/common/services';

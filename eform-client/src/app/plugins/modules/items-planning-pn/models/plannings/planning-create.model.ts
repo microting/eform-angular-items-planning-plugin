@@ -1,7 +1,7 @@
-import { CommonTranslationModel } from 'src/app/common/models';
-import { PlanningFolderModel } from './planning-folder.model';
-import { PlanningReiterationModel } from './planning-reiteration.model';
-import { PlanningEformModel } from './planning-eform.model';
+import {CommonTranslationModel} from 'src/app/common/models';
+import {PlanningFolderModel} from './planning-folder.model';
+import {PlanningReiterationModel} from './planning-reiteration.model';
+import {PlanningEformModel} from './planning-eform.model';
 
 export class PlanningCreateModel {
   translationsName: CommonTranslationModel[];

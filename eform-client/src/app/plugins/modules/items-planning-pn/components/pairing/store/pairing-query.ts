@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Query } from '@datorama/akita';
-import { PairingStore, PairingState } from './pairing-store';
+import {Injectable} from '@angular/core';
+import {Query} from '@datorama/akita';
+import {PairingState, PairingStore} from './pairing-store';
 
 @Injectable({ providedIn: 'root' })
 export class PairingQuery extends Query<PairingState> {
@@ -12,5 +12,5 @@ export class PairingQuery extends Query<PairingState> {
     return this.getValue();
   }
 
-  selectTagIds$ = this.select('tagIds');
+  selectTagIds$ = this.select((state) => state.pagination.tagIds);
 }

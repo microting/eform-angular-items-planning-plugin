@@ -7,7 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { CommonDictionaryModel } from 'src/app/common/models';
-import { PlanningsStateService } from 'src/app/plugins/modules/items-planning-pn/components/plannings/state/plannings-state-service';
+import { PlanningsStateService } from 'src/app/plugins/modules/items-planning-pn/components/plannings/store/plannings-state-service';
 
 @Component({
   selector: 'app-plannings-header',

@@ -1,12 +1,5 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
-import { PairingUpdateModel } from '../../../models/pairings';
+import {Component, EventEmitter, OnInit, Output, ViewChild,} from '@angular/core';
+import {PairingUpdateModel} from '../../../models/pairings';
 
 @Component({
   selector: 'app-pairing-grid-update',

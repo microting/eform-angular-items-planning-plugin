@@ -6,18 +6,11 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import {
-  PlanningModel,
-  PlanningsRequestModel,
-} from '../../../../models/plannings';
-import {
-  Paged,
-  PageSettingsModel,
-  TableHeaderElementModel,
-} from 'src/app/common/models';
-import { PluginClaimsHelper } from 'src/app/common/helpers';
+import { PlanningModel } from '../../../../models/plannings';
+import { Paged, TableHeaderElementModel } from 'src/app/common/models';
 import { ItemsPlanningPnClaims } from '../../../../enums';
-import { PlanningsStateService } from 'src/app/plugins/modules/items-planning-pn/components/plannings/state/plannings-state-service';
+import { PlanningsStateService } from '../../store/plannings-state-service';
+import { AuthStateService } from 'src/app/common/store';
 
 @Component({
   selector: 'app-plannings-table',
@@ -79,15 +72,14 @@ export class PlanningsTableComponent implements OnInit {
     { name: 'Actions', elementId: '', sortable: false },
   ];
 
-  get pluginClaimsHelper() {
-    return PluginClaimsHelper;
-  }
-
   get itemsPlanningPnClaims() {
     return ItemsPlanningPnClaims;
   }
 
-  constructor(public planningsStateService: PlanningsStateService) {}
+  constructor(
+    public planningsStateService: PlanningsStateService,
+    public authStateService: AuthStateService
+  ) {}
 
   ngOnInit(): void {}
 

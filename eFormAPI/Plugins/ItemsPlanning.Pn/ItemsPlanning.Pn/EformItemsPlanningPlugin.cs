@@ -31,7 +31,7 @@ namespace ItemsPlanning.Pn
     using Infrastructure.Data.Seed.Data;
     using Infrastructure.Models.Settings;
     using Services.ItemsPlanningTagsService;
-    using Messages;
+    //using Messages;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -46,7 +46,7 @@ namespace ItemsPlanning.Pn
     using Microting.ItemsPlanningBase.Infrastructure.Const;
     using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.ItemsPlanningBase.Infrastructure.Data.Factories;
-    using Rebus.Bus;
+    //using Rebus.Bus;
     using Services.ExcelService;
     using Services.ItemsPlanningLocalizationService;
     using Services.ItemsPlanningPnSettingsService;
@@ -66,7 +66,7 @@ namespace ItemsPlanning.Pn
         public string PluginBaseUrl => "items-planning-pn";
 
         private string _connectionString;
-        private IBus _bus;
+        //private IBus _bus;
 
         public Assembly PluginAssembly()
         {
@@ -134,7 +134,7 @@ namespace ItemsPlanning.Pn
             IRebusService rebusService = serviceProvider.GetService<IRebusService>();
             rebusService.Start(_connectionString);
 
-            _bus = rebusService.GetBus();
+            //_bus = rebusService.GetBus();
         }
 
         public List<PluginMenuItemModel> GetNavigationMenu(IServiceProvider serviceProvider)
@@ -437,11 +437,9 @@ namespace ItemsPlanning.Pn
         {
             // Get DbContext
             var contextFactory = new ItemsPlanningPnContextFactory();
-            using (var context = contextFactory.CreateDbContext(new []{connectionString}))
-            {
-                // Seed configuration
-                ItemsPlanningPluginSeed.SeedData(context);
-            }
+            using var context = contextFactory.CreateDbContext(new[] { connectionString });
+            // Seed configuration
+            ItemsPlanningPluginSeed.SeedData(context);
         }
 
         public PluginPermissionsManager GetPermissionsManager(string connectionString)
@@ -452,9 +450,9 @@ namespace ItemsPlanning.Pn
             return new PluginPermissionsManager(context);
         }
 
-        private void UpdateRelatedCase(int caseId)
-        {
-            _bus.SendLocal(new eFormCaseUpdated(caseId));
-        }
+        //private void UpdateRelatedCase(int caseId)
+        //{
+        //    _bus.SendLocal(new eFormCaseUpdated(caseId));
+        //}
     }
 }

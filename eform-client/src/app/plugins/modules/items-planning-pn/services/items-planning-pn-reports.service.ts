@@ -1,29 +1,30 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {ToastrService} from 'ngx-toastr';
-
-import {Observable} from 'rxjs';
-import {Router} from '@angular/router';
-import {OperationDataResult} from 'src/app/common/models/operation.models';
-import {BaseService} from 'src/app/common/services/base.service';
-import {ReportEformPnModel, ReportPnGenerateModel} from '../models/report';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { OperationDataResult } from 'src/app/common/models/operation.models';
+import { ReportEformPnModel, ReportPnGenerateModel } from '../models/report';
+import { ApiBaseService } from 'src/app/common/services';
 
 export let ItemsPlanningPnReportsMethods = {
   Reports: 'api/items-planning-pn/reports',
 };
 
 @Injectable()
-export class ItemsPlanningPnReportsService extends BaseService {
-  constructor(private _http: HttpClient, router: Router, toastrService: ToastrService) {
-    super(_http, router, toastrService);
-  }
+export class ItemsPlanningPnReportsService {
+  constructor(private apiBaseService: ApiBaseService) {}
 
-  generateReport(model: ReportPnGenerateModel): Observable<OperationDataResult<ReportEformPnModel[]>> {
-    return this.post(ItemsPlanningPnReportsMethods.Reports, model);
+  generateReport(
+    model: ReportPnGenerateModel
+  ): Observable<OperationDataResult<ReportEformPnModel[]>> {
+    return this.apiBaseService.post(
+      ItemsPlanningPnReportsMethods.Reports,
+      model
+    );
   }
 
   downloadReport(model: ReportPnGenerateModel): Observable<any> {
-    return this.getBlobData(ItemsPlanningPnReportsMethods.Reports + '/word', model);
+    return this.apiBaseService.getBlobData(
+      ItemsPlanningPnReportsMethods.Reports + '/word',
+      model
+    );
   }
-
 }
