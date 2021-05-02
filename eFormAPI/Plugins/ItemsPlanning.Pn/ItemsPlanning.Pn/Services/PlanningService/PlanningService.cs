@@ -152,7 +152,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     .ToList();
 
                 // add select and take objects from db
-                var plannings = await planningQueryWithSelect.ToListAsync();
+                var sql = planningQueryWithSelect.ToQueryString();
+                List<PlanningPnModel> plannings = await planningQueryWithSelect.ToListAsync();
 
                 // get site names
 
