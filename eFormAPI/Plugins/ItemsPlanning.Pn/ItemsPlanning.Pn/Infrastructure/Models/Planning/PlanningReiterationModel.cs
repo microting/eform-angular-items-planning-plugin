@@ -34,7 +34,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 
         public DayOfWeek? DayOfWeek { get; set; }
 
-        public int DayOfMonth { get; set; }
+        public int? DayOfMonth { get; set; }
 
         public DateTime? RepeatUntil { get; set; }
 

@@ -133,7 +133,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     return new OperationDataResult<Paged<PlanningPnModel>>(false,
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
-                var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+                var language = sdkDbContext.Languages.Single(x => x.LanguageCode == localeString);
                 var languageIemPlanning = _dbContext.Languages.Single(x => x.Id == language.Id);
                 var planningQueryWithSelect = AddSelectToPlanningQuery(planningsQuery, languageIemPlanning);
 
@@ -156,7 +156,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     .ToList();
 
                 // add select and take objects from db
-                var plannings = await planningQueryWithSelect.ToListAsync();
+                var sql = planningQueryWithSelect.ToQueryString();
+                List<PlanningPnModel> plannings = await planningQueryWithSelect.ToListAsync();
 
                 // get site names
 
@@ -262,7 +263,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         false,
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
-                var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+                var language = sdkDbContext.Languages.Single(x => x.LanguageCode == localeString);
                 if (model.BoundEform == null)
                 {
                     return new OperationResult(
@@ -387,7 +388,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         false,
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
-                var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+                var language = sdkDbContext.Languages.Single(x => x.LanguageCode == localeString);
                 var planningQuery = _dbContext.Plannings
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == planningId);
                 var planning = await AddSelectToPlanningQuery(planningQuery, language).FirstOrDefaultAsync();
@@ -468,7 +469,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         false,
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
-                var language = sdkDbContext.Languages.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+                var language = sdkDbContext.Languages.Single(x => x.LanguageCode == localeString);
 
                 if (updateModel.BoundEform == null)
                 {

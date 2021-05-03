@@ -43,7 +43,7 @@ import {
   ItemsPlanningPnUploadedDataService,
 } from './services';
 import { FileUploadModule } from 'ng2-file-upload';
-import { OwlDateTimeModule } from 'ng-pick-datetime-ex';
+import { OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { EformSharedModule } from 'src/app/common/modules/eform-shared/eform-shared.module';
 import { CasesModule } from 'src/app/modules';
 import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/eform-shared-tags.module';

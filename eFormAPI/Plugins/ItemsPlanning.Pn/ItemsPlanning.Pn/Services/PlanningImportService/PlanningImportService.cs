@@ -166,10 +166,9 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                     //}
 
                     var templateByName = templatesDto
-                        .FirstOrDefault(x => string.Equals(
-                            x.Label,
-                            excelModel.EFormName,
-                            StringComparison.CurrentCultureIgnoreCase));
+                        .FirstOrDefault(x =>
+                            x.Label ==
+                            excelModel.EFormName);
 
                     if (templateByName == null)
                     {
@@ -232,10 +231,8 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                     foreach (var fileTag in fileTags)
                     {
                         var planningTagExist = tags.FirstOrDefault(x =>
-                            string.Equals(
-                                x.Name,
-                                fileTag,
-                                StringComparison.CurrentCultureIgnoreCase));
+                                x.Name ==
+                                fileTag);
 
                         if (planningTagExist == null)
                         {
@@ -296,10 +293,8 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             if (level == 1)
                             {
                                 var mainFolder = folders.FirstOrDefault(x =>
-                                    string.Equals(
-                                        x.Label,
-                                        folderModel.Label.Split("|")[0],
-                                        StringComparison.CurrentCultureIgnoreCase)
+                                    x.Label ==
+                                        folderModel.Label.Split("|")[0]
                                     && x.ParentId == null);
 
                                 if (mainFolder == null)
@@ -366,10 +361,8 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                 var parentId = excelModel.Folders[i - 1].Id;
 
                                 var sdkFolder = folders.FirstOrDefault(x =>
-                                    string.Equals(
-                                        x.Label,
-                                        folderModel.Label.Split("|")[0],
-                                        StringComparison.CurrentCultureIgnoreCase)
+                                    x.Label ==
+                                        folderModel.Label.Split("|")[0]
                                     && x.ParentId == parentId);
 
 
@@ -469,10 +462,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                     planningNameTranslation.PlanningId,
                                     planning.WorkflowState
                                 }).FirstOrDefault(x =>
-                                string.Equals(
-                                    x.Name,
-                                    planningNameFromExcelModel,
-                                    StringComparison.CurrentCultureIgnoreCase)
+                                x.Name == planningNameFromExcelModel
                                 && x.SdkFolderId == sdkFolder.Id
                                 && x.WorkflowState != Constants.WorkflowStates.Removed);
 

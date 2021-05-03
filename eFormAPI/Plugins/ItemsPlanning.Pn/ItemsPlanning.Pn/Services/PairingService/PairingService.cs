@@ -101,7 +101,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                     return new OperationDataResult<PairingsModel>(false,
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
-                var language = languageQuery.Single(x => string.Equals(x.LanguageCode, localeString, StringComparison.CurrentCultureIgnoreCase));
+                var language = languageQuery.Single(x => x.LanguageCode == localeString);
                 var pairing = await pairingQuery.Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                   .Select(x => new PairingModel
                   {

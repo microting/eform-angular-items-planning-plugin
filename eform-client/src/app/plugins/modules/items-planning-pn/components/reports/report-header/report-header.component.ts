@@ -3,7 +3,7 @@ import {LocaleService} from 'src/app/common/services/auth';
 import {format} from 'date-fns';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ReportPnGenerateModel} from '../../../models/report';
-import {DateTimeAdapter} from 'ng-pick-datetime-ex';
+import {DateTimeAdapter} from '@danielmoncada/angular-datetime-picker';
 import {SharedTagModel} from 'src/app/common/models';
 import {AuthStateService} from 'src/app/common/store';
 

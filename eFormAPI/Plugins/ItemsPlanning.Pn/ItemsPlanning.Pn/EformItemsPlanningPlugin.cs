@@ -112,16 +112,13 @@ namespace ItemsPlanning.Pn
         public void ConfigureDbContext(IServiceCollection services, string connectionString)
         {
             _connectionString = connectionString;
-            if (connectionString.ToLower().Contains("convert zero datetime"))
-            {
-                services.AddDbContext<ItemsPlanningPnDbContext>(o => o.UseMySql(connectionString,
-                    b => b.MigrationsAssembly(PluginAssembly().FullName).EnableRetryOnFailure()));
-            }
-            else
-            {
-                services.AddDbContext<ItemsPlanningPnDbContext>(o => o.UseSqlServer(connectionString,
-                    b => b.MigrationsAssembly(PluginAssembly().FullName)));
-            }
+            services.AddDbContext<ItemsPlanningPnDbContext>(o =>
+                o.UseMySql(connectionString, new MariaDbServerVersion(
+                    new Version(10, 4, 0)), mySqlOptionsAction: builder =>
+                {
+                    builder.EnableRetryOnFailure();
+                    builder.MigrationsAssembly(PluginAssembly().FullName);
+                }));
 
             ItemsPlanningPnContextFactory contextFactory = new ItemsPlanningPnContextFactory();
             var context = contextFactory.CreateDbContext(new[] {connectionString});
