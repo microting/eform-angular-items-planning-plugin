@@ -1,15 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { PageSettingsModel } from 'src/app/common/models/settings';
 import { PlanningModel } from '../../../../models/plannings';
 import {
   ItemsPlanningPnPlanningsService,
   ItemsPlanningPnTagsService,
 } from '../../../../services';
-import { PluginClaimsHelper } from 'src/app/common/helpers';
 import { ItemsPlanningPnClaims } from '../../../../enums';
 import { debounceTime } from 'rxjs/operators';
 import { Subject, Subscription } from 'rxjs';
-import { PlanningTagsComponent } from '../../planning-additions/planning-tags/planning-tags.component';
+import { PlanningTagsComponent } from '../../planning-additions';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import {
   CommonDictionaryModel,
@@ -18,9 +16,9 @@ import {
   SiteNameDto,
 } from 'src/app/common/models';
 import { FoldersService, SitesService } from 'src/app/common/services/advanced';
-import { composeFolderName } from 'src/app/common/helpers/folder-name.helper';
+import { composeFolderName } from 'src/app/common/helpers';
 import * as R from 'ramda';
-import { PlanningsStateService } from '../../store/plannings-state-service';
+import { PlanningsStateService } from '../../store';
 import { AuthStateService } from 'src/app/common/store';
 
 @AutoUnsubscribe()
@@ -40,7 +38,6 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
 
   descriptionSearchSubject = new Subject();
   nameSearchSubject = new Subject();
-  localPageSettings: PageSettingsModel = new PageSettingsModel();
   planningsModel: Paged<PlanningModel> = new Paged<PlanningModel>();
   availableTags: CommonDictionaryModel[] = [];
   foldersListDto: FolderDto[] = [];
@@ -73,14 +70,6 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
       this.planningsStateService.updateDescriptionFilter(val.toString());
       this.getPlannings();
     });
-  }
-
-  get pluginClaimsHelper() {
-    return PluginClaimsHelper;
-  }
-
-  get userRole() {
-    return this.authStateService.currentRole;
   }
 
   get itemsPlanningPnClaims() {
@@ -203,6 +192,21 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
 
   openTagsModal() {
     this.planningTagsModal.show();
+  }
+
+  saveDeviceUser(e: any) {
+    this.planningsStateService.addOrRemoveDeviceUserIds(e.id);
+    this.getPlannings();
+  }
+
+  removeSavedDeviceUser(e: any) {
+    this.planningsStateService.addOrRemoveDeviceUserIds(e.value.id);
+    this.getPlannings();
+  }
+
+  deviceUserSelected(id: number) {
+    this.planningsStateService.addOrRemoveDeviceUserIds(id);
+    this.getPlannings();
   }
 
   saveTag(e: any) {

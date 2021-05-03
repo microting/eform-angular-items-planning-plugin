@@ -43,5 +43,8 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 
         public List<int> TagIds { get; set; }
             = new List<int>();
+
+        public List<int> DeviceUserIds { get; set; }
+            = new List<int>();
     }
 }

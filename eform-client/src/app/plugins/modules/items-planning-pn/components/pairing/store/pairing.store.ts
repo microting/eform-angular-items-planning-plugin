@@ -1,26 +1,31 @@
 import { Injectable } from '@angular/core';
 import { persistState, Store, StoreConfig } from '@datorama/akita';
-import { CommonPaginationState } from 'src/app/common/models/common-pagination-state';
+import { FiltrationStateModel } from 'src/app/common/models';
 
 export interface PairingState {
-  pagination: CommonPaginationState;
+  filters: FiltrationStateModel;
 }
 
 export function createInitialState(): PairingState {
   return <PairingState>{
-    pagination: {
+    filters: {
       tagIds: [],
     },
   };
 }
 
-export const pairingPersistStorage = persistState({
-  include: ['itemsPlanningPnPairing'],
-  key: 'pluginsStore',
+const pairingPersistStorage = persistState({
+  include: ['pairing'],
+  key: 'itemsPlanningPn',
+  preStorageUpdate(storeName, state) {
+    return {
+      filters: state.filters,
+    };
+  },
 });
 
 @Injectable({ providedIn: 'root' })
-@StoreConfig({ name: 'itemsPlanningPnPairing' })
+@StoreConfig({ name: 'pairing' })
 export class PairingStore extends Store<PairingState> {
   constructor() {
     super(createInitialState());

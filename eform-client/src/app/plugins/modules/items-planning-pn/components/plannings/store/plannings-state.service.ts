@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
-import { PlanningsStore } from './plannings-store';
+import { PlanningsStore, PlanningsQuery } from './';
 import { Observable } from 'rxjs';
-import { OperationDataResult, Paged } from 'src/app/common/models';
+import {
+  OperationDataResult,
+  Paged,
+  PaginationModel,
+  SortModel,
+} from 'src/app/common/models';
 import { updateTableSort } from 'src/app/common/helpers';
 import { getOffset } from 'src/app/common/helpers/pagination.helper';
 import { map } from 'rxjs/operators';
-import { PlanningModel } from 'src/app/plugins/modules/items-planning-pn/models/plannings';
-import { PlanningsQuery } from './plannings-query';
-import { ItemsPlanningPnPlanningsService } from 'src/app/plugins/modules/items-planning-pn/services';
+import { PlanningModel } from '../../../models';
+import { ItemsPlanningPnPlanningsService } from '../../../services';
 import { arrayToggle } from '@datorama/akita';
 
 @Injectable({ providedIn: 'root' })
@@ -18,24 +22,55 @@ export class PlanningsStateService {
     private query: PlanningsQuery
   ) {}
 
-  private total: number;
+  // getOffset(): Observable<number> {
+  //   return this.query.selectOffset$;
+  // }
+
+  getPageSize(): Observable<number> {
+    return this.query.selectPageSize$;
+  }
+
+  getSort(): Observable<SortModel> {
+    return this.query.selectSort$;
+  }
+
+  // getSort(): Observable<string> {
+  //   return this.query.selectSort$;
+  // }
+  //
+  // getIsSortDsc(): Observable<boolean> {
+  //   return this.query.selectIsSortDsc$;
+  // }
+
+  getNameFilter(): Observable<string> {
+    return this.query.selectNameFilter$;
+  }
+
+  getDescriptionFilter(): Observable<string> {
+    return this.query.selectDescriptionFilter$;
+  }
+
+  getTagIds(): Observable<number[]> {
+    return this.query.selectTagIds$;
+  }
+
+  getDeviceUserIds(): Observable<number[]> {
+    return this.query.selectDeviceUsers$;
+  }
 
   getAllPlannings(): Observable<OperationDataResult<Paged<PlanningModel>>> {
     return this.service
       .getAllPlannings({
-        isSortDsc: this.query.pageSetting.pagination.isSortDsc,
-        offset: this.query.pageSetting.pagination.offset,
-        pageSize: this.query.pageSetting.pagination.pageSize,
-        sort: this.query.pageSetting.pagination.sort,
-        descriptionFilter: this.query.pageSetting.pagination.descriptionFilter,
-        tagIds: this.query.pageSetting.pagination.tagIds,
-        nameFilter: this.query.pageSetting.pagination.nameFilter,
+        ...this.query.pageSetting.pagination,
+        ...this.query.pageSetting.filters,
         pageIndex: 0,
       })
       .pipe(
         map((response) => {
           if (response && response.success && response.model) {
-            this.total = response.model.total;
+            this.store.update(() => ({
+              totalPlannings: response.model.total,
+            }));
           }
           return response;
         })
@@ -44,9 +79,12 @@ export class PlanningsStateService {
 
   updateNameFilter(nameFilter: string) {
     this.store.update((state) => ({
+      filters: {
+        ...state.filters,
+        nameFilter: nameFilter,
+      },
       pagination: {
         ...state.pagination,
-        nameFilter: nameFilter,
         offset: 0,
       },
     }));
@@ -62,39 +100,20 @@ export class PlanningsStateService {
     this.checkOffset();
   }
 
-  getOffset(): Observable<number> {
-    return this.query.selectOffset$;
-  }
-
-  getPageSize(): Observable<number> {
-    return this.query.selectPageSize$;
-  }
-
-  getSort(): Observable<string> {
-    return this.query.selectSort$;
-  }
-
-  getIsSortDsc(): Observable<boolean> {
-    return this.query.selectIsSortDsc$;
-  }
-
-  getNameFilter(): Observable<string> {
-    return this.query.selectNameFilter$;
-  }
-
-  getDescriptionFilter(): Observable<string> {
-    return this.query.selectDescriptionFilter$;
-  }
-
-  getTagIds(): Observable<number[]> {
-    return this.query.selectTagIds$;
-  }
-
   addOrRemoveTagIds(id: number) {
     this.store.update((state) => ({
-      pagination: {
-        ...state.pagination,
-        tagIds: arrayToggle(state.pagination.tagIds, id),
+      filters: {
+        ...state.filters,
+        tagIds: arrayToggle(state.filters.tagIds, id),
+      },
+    }));
+  }
+
+  addOrRemoveDeviceUserIds(id: number) {
+    this.store.update((state) => ({
+      filters: {
+        ...state.filters,
+        deviceUserIds: arrayToggle(state.filters.deviceUserIds, id),
       },
     }));
   }
@@ -109,7 +128,9 @@ export class PlanningsStateService {
   }
 
   onDelete() {
-    this.total -= 1;
+    this.store.update((state) => ({
+      totalPlannings: state.totalPlannings - 1,
+    }));
     this.checkOffset();
   }
 
@@ -132,7 +153,7 @@ export class PlanningsStateService {
     const newOffset = getOffset(
       this.query.pageSetting.pagination.pageSize,
       this.query.pageSetting.pagination.offset,
-      this.total
+      this.query.pageSetting.totalPlannings
     );
     if (newOffset !== this.query.pageSetting.pagination.offset) {
       this.store.update((state) => ({
@@ -146,10 +167,14 @@ export class PlanningsStateService {
 
   updateDescriptionFilter(newDescriptionFilter: string) {
     this.store.update((state) => ({
-      pagination: {
-        ...state.pagination,
+      filters: {
+        ...state.filters,
         descriptionFilter: newDescriptionFilter,
       },
     }));
+  }
+
+  getPagination(): Observable<PaginationModel> {
+    return this.query.selectPagination$;
   }
 }

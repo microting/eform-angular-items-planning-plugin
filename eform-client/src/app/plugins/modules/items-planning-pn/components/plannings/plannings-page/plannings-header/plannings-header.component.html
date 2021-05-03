@@ -1,5 +1,5 @@
 <div class="row pl-1">
-  <div class="col-md-4 col-sm-8 ng-select-wrapper">
+  <div class="col-md-3 col-sm-6 ng-select-wrapper">
     <ng-select
       class="custom"
       dropdownPosition="'bottom'"
@@ -12,6 +12,22 @@
       [bindLabel]="'name'"
       [bindValue]="'id'"
       id="tagSelector"
+      [multiple]="true"
+    ></ng-select>
+  </div>
+  <div class="col-md-3 col-sm-6 ng-select-wrapper">
+    <ng-select
+      class="custom"
+      dropdownPosition="'bottom'"
+      [placeholder]="'Device users' | translate"
+      [items]="sites"
+      [ngModel]="planningsStateService.getDeviceUserIds() | async"
+      (add)="saveSite($event)"
+      (remove)="removeSavedSite($event)"
+      [clearable]="false"
+      [bindLabel]="'siteName'"
+      [bindValue]="'id'"
+      id="deviceUsersSelector"
       [multiple]="true"
     ></ng-select>
   </div>
