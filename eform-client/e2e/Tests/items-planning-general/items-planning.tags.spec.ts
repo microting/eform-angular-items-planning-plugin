@@ -53,7 +53,7 @@ describe('Items planning - Tags', function () {
   });
   it('should not delete tag', function () {
     const tagsRowsBeforeDelete = tagsModalPage.rowNum;
-    tagsModalPage.cancelDeleteTag(tagsRowsBeforeDelete);
+    tagsModalPage.getTagByName(updatedTagName).deleteTag(true);
     const tagsRowsAfterCancelDelete = tagsModalPage.rowNum;
     expect(
       tagsRowsAfterCancelDelete,
@@ -62,12 +62,12 @@ describe('Items planning - Tags', function () {
   });
   it('should delete tag', function () {
     const tagsRowsBeforeDelete = tagsModalPage.rowNum;
-    tagsModalPage.deleteTag(tagsRowsBeforeDelete);
+    tagsModalPage.getTagByName(updatedTagName).deleteTag();
     browser.pause(500);
     const tagsRowsAfterDelete = tagsModalPage.rowNum;
     expect(
       tagsRowsAfterDelete,
-      "Number of rows hasn't changed after delete tag"
+      `Number of rows hasn't changed after delete tag`
     ).equal(tagsRowsBeforeDelete - 1);
   });
 });
