@@ -112,6 +112,17 @@ namespace ItemsPlanning.Pn.Services.WordService
                 //     itemsHtml = await InsertImage(headerImageName, itemsHtml, 150, 150, core, basePicturePath);
                 // }
                 itemsHtml += @"</p>";
+
+                // moving the cursor to the end of the page
+                for (var i = 0; i < 5; i++)
+                {
+                    itemsHtml += @"<p style='font-size:24px;text-align:center;color:#fff;'>Enter</p>";
+                }
+                // add tag names in end document
+                foreach (var nameTage in reportModel.Last().NameTagsInEndPage)
+                {
+                    itemsHtml += $@"<p style='font-size:24px;text-align:center;'>{nameTage}</p>";
+                }
                 itemsHtml += @"<div style='page-break-before:always;'>";
                 for (var i = 0; i < reportModel.Count; i++)
                 {
@@ -242,11 +253,6 @@ namespace ItemsPlanning.Pn.Services.WordService
                     // itemsHtml += @"</table>";
                 }
 
-                // add tag names in end document
-                foreach(var nameTage in reportModel.Last().NameTagsInEndPage)
-                {
-                    itemsHtml += $@"<p style='font-size:24px;text-align:center;'>{nameTage}</p>";
-                }
 
                 itemsHtml += @"</div>";
                 itemsHtml += "</body>";
