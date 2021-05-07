@@ -25,7 +25,7 @@ const pairingPersistStorage = persistState({
 });
 
 @Injectable({ providedIn: 'root' })
-@StoreConfig({ name: 'pairing' })
+@StoreConfig({ name: 'pairing', resettable: true })
 export class PairingStore extends Store<PairingState> {
   constructor() {
     super(createInitialState());
