@@ -127,31 +127,35 @@ namespace ItemsPlanning.Pn.Services.WordService
                 for (var i = 0; i < reportModel.Count; i++)
                 {
                     var reportEformModel = reportModel[i];
-                    if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header1))
+                    if (reportEformModel.TextHeaders != null)
                     {
-                        itemsHtml += $@"<h1>{Regex.Replace(reportEformModel.TextHeaders.Header1, @"\. ", ".")}</h1>";
-                        // We do this, even thought some would look at it and find it looking stupid. But if we don't do it,
-                        // Word WILL mess up the header titles, because it thinks it needs to fix the number order.
-                    }
+                        if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header1))
+                        {
+                            itemsHtml +=
+                                $@"<h1>{Regex.Replace(reportEformModel.TextHeaders.Header1, @"\. ", ".")}</h1>";
+                            // We do this, even thought some would look at it and find it looking stupid. But if we don't do it,
+                            // Word WILL mess up the header titles, because it thinks it needs to fix the number order.
+                        }
 
-                    if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header2))
-                    {
-                        itemsHtml += $@"<h2>{reportEformModel.TextHeaders.Header2}</h2>";
-                    }
+                        if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header2))
+                        {
+                            itemsHtml += $@"<h2>{reportEformModel.TextHeaders.Header2}</h2>";
+                        }
 
-                    if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header3))
-                    {
-                        itemsHtml += $@"<h3>{reportEformModel.TextHeaders.Header3}</h3>";
-                    }
+                        if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header3))
+                        {
+                            itemsHtml += $@"<h3>{reportEformModel.TextHeaders.Header3}</h3>";
+                        }
 
-                    if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header4))
-                    {
-                        itemsHtml += $@"<h4>{reportEformModel.TextHeaders.Header4}</h4>";
-                    }
+                        if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header4))
+                        {
+                            itemsHtml += $@"<h4>{reportEformModel.TextHeaders.Header4}</h4>";
+                        }
 
-                    if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header5))
-                    {
-                        itemsHtml += $@"<h5>{reportEformModel.TextHeaders.Header5}</h5>";
+                        if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header5))
+                        {
+                            itemsHtml += $@"<h5>{reportEformModel.TextHeaders.Header5}</h5>";
+                        }
                     }
 
                     foreach (var description in reportEformModel.DescriptionBlocks)

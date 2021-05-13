@@ -47,13 +47,13 @@ namespace ItemsPlanning.Pn.Services.RebusService
             _coreHelper = coreHelper;
         }
 
-        public async Task Start(string connectionString)
+        public async Task Start(string connectionString, string rabbitMqUser, string rabbitMqPassword, string rabbitMqHost)
         {
             _connectionString = connectionString;
             _container = new WindsorContainer();
             _container.Install(
                 new RebusHandlerInstaller()
-                , new RebusInstaller(connectionString, 1, 1)
+                , new RebusInstaller(connectionString, 1, 1, rabbitMqUser, rabbitMqPassword, rabbitMqHost)
             );
 
             Core _core = await _coreHelper.GetCore();
