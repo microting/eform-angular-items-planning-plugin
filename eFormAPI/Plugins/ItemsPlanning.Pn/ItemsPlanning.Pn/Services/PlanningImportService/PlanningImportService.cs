@@ -206,7 +206,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                     // Process planning tags
                     var tags = await _dbContext.PlanningTags
-                        .AsNoTracking()
+                        //.AsNoTracking()
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Select(x => new
                         {
@@ -232,7 +232,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                     {
                         var planningTagExist = tags.FirstOrDefault(x =>
                                 x.Name ==
-                                fileTag);
+                                fileTag.ToLower());
 
                         if (planningTagExist == null)
                         {
@@ -294,7 +294,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             {
                                 var mainFolder = folders.FirstOrDefault(x =>
                                     x.Label ==
-                                        folderModel.Label.Split("|")[0]
+                                        folderModel.Label.Split("|")[0].ToLower()
                                     && x.ParentId == null);
 
                                 if (mainFolder == null)
@@ -362,7 +362,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                                 var sdkFolder = folders.FirstOrDefault(x =>
                                     x.Label ==
-                                        folderModel.Label.Split("|")[0]
+                                        folderModel.Label.Split("|")[0].ToLower()
                                     && x.ParentId == parentId);
 
 
