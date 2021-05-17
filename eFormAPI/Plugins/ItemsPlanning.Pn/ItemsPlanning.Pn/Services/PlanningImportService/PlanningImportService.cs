@@ -211,7 +211,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         .Select(x => new
                         {
                             x.Id,
-                            Name = x.Name.ToLower(),
+                            Name = x.Name,
                         }).ToListAsync();
 
                     // Trim tag names
@@ -232,7 +232,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                     {
                         var planningTagExist = tags.FirstOrDefault(x =>
                                 x.Name ==
-                                fileTag.ToLower());
+                                fileTag);
 
                         if (planningTagExist == null)
                         {
@@ -252,7 +252,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         .Select(x => new
                         {
                             x.Id,
-                            Name = x.Name.ToLower(),
+                            Name = x.Name,
                         }).ToListAsync();
 
                     // Folders
@@ -277,7 +277,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         .Select(x => new PlanningImportFolderModel
                         {
                             Id = x.Id,
-                            Label = x.Name.ToLower(),
+                            Label = x.Name,
                             Description = x.Description,
                             ParentId = x.ParentId,
                         }).ToListAsync();
@@ -294,7 +294,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             {
                                 var mainFolder = folders.FirstOrDefault(x =>
                                     x.Label ==
-                                        folderModel.Label.Split("|")[0].ToLower()
+                                        folderModel.Label.Split("|")[0]
                                     && x.ParentId == null);
 
                                 if (mainFolder == null)
@@ -362,7 +362,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                                 var sdkFolder = folders.FirstOrDefault(x =>
                                     x.Label ==
-                                        folderModel.Label.Split("|")[0].ToLower()
+                                        folderModel.Label.Split("|")[0]
                                     && x.ParentId == parentId);
 
 
@@ -438,7 +438,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         {
                             foreach (var tagName in excelModel.Tags)
                             {
-                                var planningTagExist = tags.FirstOrDefault(x => x.Name == tagName.ToLower());
+                                var planningTagExist = tags.FirstOrDefault(x => x.Name == tagName);
 
                                 if (planningTagExist != null)
                                 {
