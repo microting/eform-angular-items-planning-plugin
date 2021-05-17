@@ -25,10 +25,6 @@
       <PackageReference Include="ExcelDataReader" Version="3.6.0" />
       <PackageReference Include="Magick.NET-Q16-x64" Version="7.24.0" />
       <PackageReference Include="ClosedXML" Version="0.95.4" />
-      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.5" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.5" />
-      <!--<PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.8" />-->
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.5">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
