@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { persistState, Store, StoreConfig } from '@datorama/akita';
-import { CommonPaginationState } from 'src/app/common/models/common-pagination-state';
-import { FiltrationStateModel } from 'src/app/common/models';
+import {
+  FiltrationStateModel,
+  CommonPaginationState,
+} from 'src/app/common/models';
 
 export interface PlanningsState {
   pagination: CommonPaginationState;

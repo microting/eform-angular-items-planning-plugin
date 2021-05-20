@@ -11,27 +11,27 @@ import {
   ItemsPlanningPnPlanningsService,
   ItemsPlanningPnTagsService,
 } from '../../../../services';
-import { EFormService } from 'src/app/common/services/eform';
-import { SitesService } from 'src/app/common/services/advanced';
-import { AuthService } from 'src/app/common/services/auth/auth.service';
 import { PlanningCreateModel } from '../../../../models/plannings';
-import {
-  TemplateListModel,
-  TemplateRequestModel,
-} from 'src/app/common/models/eforms';
 import { Location } from '@angular/common';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
-import { FoldersService } from 'src/app/common/services/advanced/folders.service';
-import { FolderDto } from 'src/app/common/models/dto/folder.dto';
-import { PlanningFoldersModalComponent } from '../../planning-additions/planning-folders-modal/planning-folders-modal.component';
-import { CommonDictionaryModel } from 'src/app/common/models';
-import { composeFolderName } from 'src/app/common/helpers/folder-name.helper';
+import { PlanningFoldersModalComponent } from '../../planning-additions';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { applicationLanguages } from 'src/app/common/const/application-languages.const';
-import moment = require('moment');
-import { SecurityGroupEformsPermissionsService } from 'src/app/common/services';
 import { AuthStateService } from 'src/app/common/store';
+import { applicationLanguages } from 'src/app/common/const';
+import { composeFolderName } from 'src/app/common/helpers';
+import {
+  SitesService,
+  EFormService,
+  FoldersService,
+} from 'src/app/common/services';
+import {
+  TemplateListModel,
+  TemplateRequestModel,
+  CommonDictionaryModel,
+  FolderDto,
+} from 'src/app/common/models';
+import moment = require('moment');
 
 @AutoUnsubscribe()
 @Component({
@@ -40,7 +40,6 @@ import { AuthStateService } from 'src/app/common/store';
   styleUrls: ['./planning-create.component.scss'],
 })
 export class PlanningCreateComponent implements OnInit, OnDestroy {
-  @ViewChild('frame', { static: false }) frame;
   @ViewChild('foldersModal', { static: false })
   foldersModal: PlanningFoldersModalComponent;
   newPlanningModel: PlanningCreateModel = new PlanningCreateModel();
@@ -55,6 +54,9 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   saveButtonDisabled = true;
   availableTags: CommonDictionaryModel[] = [];
   translationsArray: FormArray = new FormArray([]);
+  daysBeforeRedeploymentPushMessage = Array(27)
+    .fill(0)
+    .map((_e, i) => i + 1);
 
   selectedFolderName: string;
 
@@ -88,10 +90,6 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadFoldersTree();
-  }
-
-  show() {
-    this.frame.show();
   }
 
   goBack() {

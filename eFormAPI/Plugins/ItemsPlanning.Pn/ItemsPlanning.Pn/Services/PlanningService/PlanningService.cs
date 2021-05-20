@@ -312,7 +312,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     RelatedEFormName = template.Label,
                     SdkFolderName = sdkFolder.Name,
                     SdkFolderId = model.Folder.EFormSdkFolderId,
-                    PlanningsTags = new List<PlanningsTags>()
+                    PlanningsTags = new List<PlanningsTags>(),
+                    DaysBeforeRedeploymentPushMessageRepeat = model.Reiteration.DaysBeforeRedeploymentPushMessageRepeat,
+                    DaysBeforeRedeploymentPushMessage = model.Reiteration.DaysBeforeRedeploymentPushMessage,
                 };
 
                 if (model.Reiteration.StartDate.HasValue)
@@ -530,6 +532,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     }
                 }
 
+                planning.DaysBeforeRedeploymentPushMessage = updateModel.Reiteration.DaysBeforeRedeploymentPushMessage;
                 planning.DoneByUserNameEnabled = updateModel.EnabledFields.DoneByUserNameEnabled;
                 planning.NumberOfImagesEnabled = updateModel.EnabledFields.NumberOfImagesEnabled;
                 planning.PlanningNumberEnabled = updateModel.EnabledFields.PlanningNumberEnabled;
@@ -539,12 +542,15 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.StartDate = updateModel.Reiteration.StartDate ?? DateTime.UtcNow;
                 planning.DeployedAtEnabled = updateModel.EnabledFields.DeployedAtEnabled;
                 planning.BuildYearEnabled = updateModel.EnabledFields.BuildYearEnabled;
+                planning.DaysBeforeRedeploymentPushMessageRepeat =
+                    updateModel.Reiteration.DaysBeforeRedeploymentPushMessageRepeat;
                 planning.DoneAtEnabled = updateModel.EnabledFields.DoneAtEnabled;
                 planning.RelatedEFormId = updateModel.BoundEform.RelatedEFormId;
                 planning.LabelEnabled = updateModel.EnabledFields.LabelEnabled;
                 planning.TypeEnabled = updateModel.EnabledFields.TypeEnabled;
                 planning.RepeatUntil = updateModel.Reiteration.RepeatUntil;
                 planning.RepeatEvery = updateModel.Reiteration.RepeatEvery;
+                planning.SdkFolderId = updateModel.Folder.EFormSdkFolderId;
                 planning.RepeatType = updateModel.Reiteration.RepeatType;
                 planning.DayOfMonth = updateModel.Reiteration.DayOfMonth;
                 planning.DayOfWeek = updateModel.Reiteration.DayOfWeek;
@@ -554,7 +560,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.BuildYear = updateModel.BuildYear;
                 planning.RelatedEFormName = template.Label;
                 planning.SdkFolderName = sdkFolder.Name;
-                planning.SdkFolderId = updateModel.Folder.EFormSdkFolderId;
                 planning.UpdatedAt = DateTime.UtcNow;
                 planning.Type = updateModel.Type;
 
@@ -667,6 +672,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     DayOfWeek = x.DayOfWeek,
                     DayOfMonth = (int)x.DayOfMonth,
                     StartDate = x.StartDate,
+                    DaysBeforeRedeploymentPushMessageRepeat = x.DaysBeforeRedeploymentPushMessageRepeat,
+                    DaysBeforeRedeploymentPushMessage = x.DaysBeforeRedeploymentPushMessage,
                 },
                 BoundEform = new PlanningEformModel
                 {

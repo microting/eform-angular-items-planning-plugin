@@ -297,6 +297,34 @@
                 <label for="createItemType">{{ 'Type' | translate }}</label>
               </div>
             </div>
+            <div class="col-md-3 col-sm-6 col-xs-6 d-flex align-items-center">
+              <div class="mat-checkbox">
+                <input
+                  [(ngModel)]="
+                    newPlanningModel.reiteration
+                      .daysBeforeRedeploymentPushMessageRepeat
+                  "
+                  type="checkbox"
+                  id="daysBeforeRedeploymentPushMessageRepeatCreate"
+                  name="daysBeforeRedeploymentPushMessageRepeatCreate"
+                />
+                <label for="daysBeforeRedeploymentPushMessageRepeatCreate">{{
+                  'daysBeforeRedeploymentPushMessageRepeat' | translate
+                }}</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <ng-select
+                [items]="daysBeforeRedeploymentPushMessage"
+                [placeholder]="'daysBeforeRedeploymentPushMessage' | translate"
+                [(ngModel)]="
+                  newPlanningModel.reiteration.daysBeforeRedeploymentPushMessage
+                "
+                [clearable]="false"
+                id="createDaysBeforeRedeploymentPushMessage"
+              >
+              </ng-select>
+            </div>
           </div>
         </mdb-card-body>
       </mdb-card>

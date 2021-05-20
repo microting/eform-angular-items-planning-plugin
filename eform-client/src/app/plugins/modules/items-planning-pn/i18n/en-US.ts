@@ -61,4 +61,7 @@ export const enUS = {
   'Eform was deleted': 'Eform was deleted',
   Table: 'Table',
   Id: 'Id',
+  daysBeforeRedeploymentPushMessageRepeat:
+    'Days before redeployment push message repeat',
+  daysBeforeRedeploymentPushMessage: 'Days before redeployment push message',
 };

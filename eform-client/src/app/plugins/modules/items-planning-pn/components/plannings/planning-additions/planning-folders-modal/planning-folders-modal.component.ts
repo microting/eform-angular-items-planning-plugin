@@ -10,7 +10,6 @@ import {
 import { FolderDto, SiteNameDto } from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { PlanningModel } from '../../../../models/plannings';
-import { AuthStateService } from 'src/app/common/store';
 
 @AutoUnsubscribe()
 @Component({
@@ -26,11 +25,7 @@ export class PlanningFoldersModalComponent implements OnInit, OnDestroy {
   sitesDto: Array<SiteNameDto> = [];
   @Input() folders: FolderDto[] = [];
 
-  get userClaims() {
-    return this.authStateService.currentUserClaims;
-  }
-
-  constructor(private authStateService: AuthStateService) {}
+  constructor() {}
 
   ngOnInit() {}
 
