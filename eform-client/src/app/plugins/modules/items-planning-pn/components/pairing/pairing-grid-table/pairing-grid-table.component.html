@@ -82,12 +82,13 @@
             <label
               id="deviceUserCheckboxLabel{{ j }}_planning{{ i }}"
               for="deviceUserCheckbox{{ j }}_planning{{ i }}"
-            ></label><status-bar-compact style="float: right;"
-                                         *ngIf="planningValue.latestCaseStatus"
-                                         [status]="planningValue.latestCaseStatus"
-          ></status-bar-compact>
+            ></label
+            ><status-bar-compact
+              style="float: right"
+              *ngIf="planningValue.latestCaseStatus"
+              [status]="planningValue.latestCaseStatus"
+            ></status-bar-compact>
           </div>
-
         </td>
       </tr>
     </tbody>

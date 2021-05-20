@@ -297,21 +297,24 @@
                 <label for="createItemType">{{ 'Type' | translate }}</label>
               </div>
             </div>
-            <div class="col-md-3 col-sm-6 col-xs-6 d-flex align-items-center">
-              <div class="mat-checkbox">
-                <input
-                  [(ngModel)]="
-                    newPlanningModel.reiteration
-                      .daysBeforeRedeploymentPushMessageRepeat
-                  "
-                  type="checkbox"
-                  id="daysBeforeRedeploymentPushMessageRepeatCreate"
-                  name="daysBeforeRedeploymentPushMessageRepeatCreate"
-                />
-                <label for="daysBeforeRedeploymentPushMessageRepeatCreate">{{
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <ng-select
+                [items]="[
+                  { name: 'Enabled' | translate, value: true },
+                  { name: 'Disabled' | translate, value: false }
+                ]"
+                [(ngModel)]="
+                  newPlanningModel.reiteration
+                    .daysBeforeRedeploymentPushMessageRepeat
+                "
+                id="daysBeforeRedeploymentPushMessageRepeatCreate"
+                [placeholder]="
                   'daysBeforeRedeploymentPushMessageRepeat' | translate
-                }}</label>
-              </div>
+                "
+                [bindLabel]="'name'"
+                [bindValue]="'value'"
+                [clearable]="false"
+              ></ng-select>
             </div>
             <div class="col-md-3 col-sm-6 col-xs-6">
               <ng-select
