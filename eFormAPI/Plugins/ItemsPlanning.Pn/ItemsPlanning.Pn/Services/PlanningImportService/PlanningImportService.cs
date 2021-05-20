@@ -206,12 +206,12 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                     // Process planning tags
                     var tags = await _dbContext.PlanningTags
-                        .AsNoTracking()
+                        //.AsNoTracking()
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Select(x => new
                         {
                             x.Id,
-                            Name = x.Name.ToLower(),
+                            Name = x.Name,
                         }).ToListAsync();
 
                     // Trim tag names
@@ -252,7 +252,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         .Select(x => new
                         {
                             x.Id,
-                            Name = x.Name.ToLower(),
+                            Name = x.Name,
                         }).ToListAsync();
 
                     // Folders
@@ -277,7 +277,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         .Select(x => new PlanningImportFolderModel
                         {
                             Id = x.Id,
-                            Label = x.Name.ToLower(),
+                            Label = x.Name,
                             Description = x.Description,
                             ParentId = x.ParentId,
                         }).ToListAsync();
@@ -438,7 +438,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         {
                             foreach (var tagName in excelModel.Tags)
                             {
-                                var planningTagExist = tags.FirstOrDefault(x => x.Name == tagName.ToLower());
+                                var planningTagExist = tags.FirstOrDefault(x => x.Name == tagName);
 
                                 if (planningTagExist != null)
                                 {
