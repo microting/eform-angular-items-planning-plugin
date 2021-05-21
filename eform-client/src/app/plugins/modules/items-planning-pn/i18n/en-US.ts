@@ -64,4 +64,6 @@ export const enUS = {
   daysBeforeRedeploymentPushMessageRepeat:
     'Days before redeployment push message repeat',
   daysBeforeRedeploymentPushMessage: 'Days before redeployment push message',
+  Enabled: 'Enabled',
+  Disabled: 'Disabled',
 };

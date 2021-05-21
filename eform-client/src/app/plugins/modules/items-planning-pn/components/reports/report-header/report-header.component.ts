@@ -1,11 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {LocaleService} from 'src/app/common/services/auth';
-import {format} from 'date-fns';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ReportPnGenerateModel} from '../../../models/report';
-import {DateTimeAdapter} from '@danielmoncada/angular-datetime-picker';
-import {SharedTagModel} from 'src/app/common/models';
-import {AuthStateService} from 'src/app/common/store';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { format } from 'date-fns';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReportPnGenerateModel } from '../../../models/report';
+import { DateTimeAdapter } from '@danielmoncada/angular-datetime-picker';
+import { SharedTagModel } from 'src/app/common/models';
+import { AuthStateService } from 'src/app/common/store';
+import { PlanningsReportQuery, PlanningsReportStateService } from '../store';
 
 @Component({
   selector: 'app-items-planning-pn-report-header',
@@ -23,8 +23,9 @@ export class ReportHeaderComponent implements OnInit {
 
   constructor(
     dateTimeAdapter: DateTimeAdapter<any>,
-    private localeService: LocaleService,
     private formBuilder: FormBuilder,
+    private planningsReportStateService: PlanningsReportStateService,
+    private planningsReportQuery: PlanningsReportQuery,
     authStateService: AuthStateService
   ) {
     dateTimeAdapter.setLocale(authStateService.currentUserLocale);
@@ -33,7 +34,7 @@ export class ReportHeaderComponent implements OnInit {
   ngOnInit() {
     this.generateForm = this.formBuilder.group({
       dateRange: ['', Validators.required],
-      tagIds: [[]],
+      tagIds: [this.planningsReportQuery.pageSetting.filters.tagIds],
     });
   }
 
@@ -51,7 +52,11 @@ export class ReportHeaderComponent implements OnInit {
     return new ReportPnGenerateModel({
       dateFrom: format(formValue.dateRange[0], 'yyyy-MM-dd'),
       dateTo: format(formValue.dateRange[1], 'yyyy-MM-dd'),
-      tagIds: [...formValue.tagIds],
+      tagIds: [...this.planningsReportQuery.getValue().filters.tagIds],
     });
+  }
+
+  addOrDeleteTagId(tag: SharedTagModel) {
+    this.planningsReportStateService.addOrRemoveTagIds(tag.id);
   }
 }
