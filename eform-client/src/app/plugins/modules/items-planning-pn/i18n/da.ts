@@ -59,7 +59,7 @@ export const da = {
   'Done by': 'Udført af',
   'Item name': 'Område',
   'Selected date range': 'Valgt datointerval',
-  'Generate': 'Vis rapport',
+  Generate: 'Vis rapport',
   'Item List': 'Gruppe',
   Item: 'Enhed',
 
@@ -76,4 +76,7 @@ export const da = {
   Table: 'Tabel',
   'Edit Case': 'Rediger sagen',
   Id: 'Id',
+  daysBeforeRedeploymentPushMessageRepeat:
+    'Dage før omfordeling push - besked gentag',
+  daysBeforeRedeploymentPushMessage: 'Antal dage før du sender en push-besked',
 };

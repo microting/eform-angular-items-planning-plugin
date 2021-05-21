@@ -297,6 +297,37 @@
                 <label for="createItemType">{{ 'Type' | translate }}</label>
               </div>
             </div>
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <ng-select
+                [items]="[
+                  { name: 'Enabled' | translate, value: true },
+                  { name: 'Disabled' | translate, value: false }
+                ]"
+                [(ngModel)]="
+                  newPlanningModel.reiteration
+                    .daysBeforeRedeploymentPushMessageRepeat
+                "
+                id="daysBeforeRedeploymentPushMessageRepeatCreate"
+                [placeholder]="
+                  'daysBeforeRedeploymentPushMessageRepeat' | translate
+                "
+                [bindLabel]="'name'"
+                [bindValue]="'value'"
+                [clearable]="false"
+              ></ng-select>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <ng-select
+                [items]="daysBeforeRedeploymentPushMessage"
+                [placeholder]="'daysBeforeRedeploymentPushMessage' | translate"
+                [(ngModel)]="
+                  newPlanningModel.reiteration.daysBeforeRedeploymentPushMessage
+                "
+                [clearable]="false"
+                id="createDaysBeforeRedeploymentPushMessage"
+              >
+              </ng-select>
+            </div>
           </div>
         </mdb-card-body>
       </mdb-card>

@@ -40,6 +40,10 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 
         public DateTime? StartDate { get; set; }
 
+        public int DaysBeforeRedeploymentPushMessage { get; set; }
+
+        public bool DaysBeforeRedeploymentPushMessageRepeat { get; set; }
+
         //public string InternalRepeatUntil { get; set; }
     }
 }

@@ -6,7 +6,10 @@ import itemsPlanningPlanningPage, {
 import itemsPlanningModalPage from '../../Page objects/ItemsPlanning/ItemsPlanningModal.page';
 import myEformsPage from '../../Page objects/MyEforms.page';
 import foldersPage from '../../Page objects/Folders.page';
-import { generateRandmString } from '../../Helpers/helper-functions';
+import {
+  generateRandmString,
+  getRandomInt,
+} from '../../Helpers/helper-functions';
 import { format, parse } from 'date-fns';
 
 const expect = require('chai').expect;
@@ -24,6 +27,8 @@ const planningData: PlanningCreateUpdate = {
   locationCode: '12345',
   buildYear: '10',
   number: '10',
+  daysBeforeRedeploymentPushMessage: getRandomInt(1, 27),
+  daysBeforeRedeploymentPushMessageRepeat: true,
 };
 describe('Items planning - Add', function () {
   before(function () {
@@ -43,7 +48,11 @@ describe('Items planning - Add', function () {
     itemsPlanningPlanningPage.goToPlanningsPage();
   });
   it('should create planning with all fields', function () {
+    const rowNumBeforeCreatePlanning = itemsPlanningPlanningPage.rowNum;
     itemsPlanningModalPage.createPlanning(planningData);
+    expect(rowNumBeforeCreatePlanning + 1, 'Planning not created').eq(
+      itemsPlanningPlanningPage.rowNum
+    );
   });
   it('check all fields planning', function () {
     // Check that planning is created in table
@@ -138,6 +147,22 @@ describe('Items planning - Add', function () {
       ),
       'Saved start from is incorrect'
     ).eq(format(planningData.startFrom, 'M/d/yyyy'));
+    expect(
+      itemsPlanningModalPage.daysBeforeRedeploymentPushMessageRepeatEdit
+        .$('.ng-value-label')
+        .getText(),
+      'Saved daysBeforeRedeploymentPushMessageRepeat code is incorrect'
+    ).eq(
+      planningData.daysBeforeRedeploymentPushMessageRepeat
+        ? 'Aktiveret'
+        : 'Deaktiveret'
+    );
+    expect(
+      +itemsPlanningModalPage.editDaysBeforeRedeploymentPushMessage
+        .$('.ng-value-label')
+        .getText(),
+      'Saved editDaysBeforeRedeploymentPushMessage code is incorrect'
+    ).eq(planningData.daysBeforeRedeploymentPushMessage);
     PlanningRowObject.closeEdit(true);
   });
   after('delete all created in this test', function () {

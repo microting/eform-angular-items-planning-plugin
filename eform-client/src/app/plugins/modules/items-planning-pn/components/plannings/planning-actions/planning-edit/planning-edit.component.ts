@@ -1,20 +1,34 @@
-import {ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output, ViewChild,} from '@angular/core';
-import {ItemsPlanningPnPlanningsService, ItemsPlanningPnTagsService,} from 'src/app/plugins/modules/items-planning-pn/services';
-import {PlanningModel, PlanningUpdateModel,} from '../../../../models/plannings';
-import {TemplateListModel, TemplateRequestModel,} from '../../../../../../../common/models/eforms';
-import {debounceTime, switchMap} from 'rxjs/operators';
-import {EFormService} from 'src/app/common/services/eform';
-import * as moment from 'moment';
-import {ActivatedRoute} from '@angular/router';
-import {Location} from '@angular/common';
-import {FolderDto} from 'src/app/common/models/dto/folder.dto';
-import {FoldersService} from 'src/app/common/services/advanced/folders.service';
-import {PlanningFoldersModalComponent} from '../../planning-additions/planning-folders-modal/planning-folders-modal.component';
-import {CommonDictionaryModel, CommonTranslationModel,} from 'src/app/common/models';
-import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
-import {Subscription} from 'rxjs';
-import {composeFolderName} from 'src/app/common/helpers/folder-name.helper';
-import {FormArray, FormControl, FormGroup} from '@angular/forms';
+import {
+  ItemsPlanningPnPlanningsService,
+  ItemsPlanningPnTagsService,
+} from '../../../../services';
+import {
+  CommonDictionaryModel,
+  CommonTranslationModel,
+  FolderDto,
+  TemplateListModel,
+  TemplateRequestModel,
+} from 'src/app/common/models';
+import { EFormService, FoldersService } from 'src/app/common/services';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { Location } from '@angular/common';
+import { PlanningFoldersModalComponent } from '../../../../components';
+import { debounceTime, switchMap } from 'rxjs/operators';
+import { PlanningModel, PlanningUpdateModel } from '../../../../models';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import { composeFolderName } from 'src/app/common/helpers';
+import moment = require('moment');
 
 @AutoUnsubscribe()
 @Component({
@@ -43,8 +57,12 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
   getItemsPlanningSub$: Subscription;
   getFoldersTreeSub$: Subscription;
   getFoldersListSub$: Subscription;
+  activatedRouteSub$: Subscription;
 
   selectedFolderName: string;
+  daysBeforeRedeploymentPushMessage = Array(27)
+    .fill(0)
+    .map((_e, i) => i + 1);
 
   constructor(
     private foldersService: FoldersService,
@@ -67,7 +85,7 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
         this.templatesModel = items.model;
         this.cd.markForCheck();
       });
-    const activatedRouteSub = this.activateRoute.params.subscribe((params) => {
+    this.activatedRouteSub$ = this.activateRoute.params.subscribe((params) => {
       this.selectedPlanningId = +params['id'];
     });
   }
