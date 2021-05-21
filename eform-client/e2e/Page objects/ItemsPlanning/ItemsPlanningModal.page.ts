@@ -23,14 +23,6 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
 
-  public get createPlanningSelectorOption() {
-    browser.pause(500);
-    const ele = $(`.ng-option`);
-    ele.waitForDisplayed({ timeout: 20000 });
-    ele.waitForClickable({ timeout: 20000 });
-    return ele;
-  }
-
   public get createPlanningItemDescription() {
     const ele = $('#createPlanningItemDescription');
     ele.waitForDisplayed({ timeout: 20000 });
@@ -41,15 +33,6 @@ export class ItemsPlanningModalPage extends Page {
     const ele = $('#createRepeatEvery');
     ele.waitForDisplayed({ timeout: 20000 });
     return ele;
-  }
-
-  public selectCreateRepeatType(n: number) {
-    const spinnerAnimation = $('#spinner-animation');
-    $('#createRepeatType').click();
-    spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
-    const choices = $$('#createRepeatType .ng-option');
-    choices[n].click();
-    spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
   }
 
   public selectFolder(nameFolder: string) {
@@ -152,12 +135,6 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
 
-  public get editPlanningSelectorValue() {
-    return $(
-      `/ /*[contains(@id, 'editPlanningSelector')]//*[contains(@class, 'ng-value')]//div[contains(@class, 'ng-star-inserted')]`
-    );
-  }
-
   public get editPlanningTagsSelector() {
     const ele = $('#editPlanningTagsSelector');
     // ele.waitForDisplayed({timeout: 20000});
@@ -195,15 +172,6 @@ export class ItemsPlanningModalPage extends Page {
     const ele = $('#editRepeatType');
     ele.waitForDisplayed({ timeout: 20000 });
     return ele;
-  }
-
-  public selectEditRepeatType(n: number) {
-    const spinnerAnimation = $('#spinner-animation');
-    this.editRepeatType.click();
-    spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
-    const choices = this.editRepeatType.$$('.ng-option');
-    choices[n].click();
-    spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
   }
 
   public get editRepeatUntil() {
@@ -283,6 +251,30 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
 
+  public get daysBeforeRedeploymentPushMessageRepeatCreate() {
+    const ele = $('#daysBeforeRedeploymentPushMessageRepeatCreate');
+    ele.waitForDisplayed({ timeout: 40000 });
+    return ele;
+  }
+
+  public get createDaysBeforeRedeploymentPushMessage() {
+    const ele = $('#createDaysBeforeRedeploymentPushMessage');
+    ele.waitForDisplayed({ timeout: 40000 });
+    return ele;
+  }
+
+  public get daysBeforeRedeploymentPushMessageRepeatEdit() {
+    const ele = $('#daysBeforeRedeploymentPushMessageRepeatEdit');
+    ele.waitForDisplayed({ timeout: 40000 });
+    return ele;
+  }
+
+  public get editDaysBeforeRedeploymentPushMessage() {
+    const ele = $('#editDaysBeforeRedeploymentPushMessage');
+    ele.waitForDisplayed({ timeout: 40000 });
+    return ele;
+  }
+
   public createPlanning(planning: PlanningCreateUpdate, clickCancel = false) {
     const spinnerAnimation = $('#spinner-animation');
     itemsPlanningPlanningPage.planningCreateBtn.click();
@@ -344,6 +336,28 @@ export class ItemsPlanningModalPage extends Page {
     if (planning.type) {
       this.createItemType.setValue(planning.type);
     }
+    if (planning.daysBeforeRedeploymentPushMessageRepeat != null) {
+      const status = planning.daysBeforeRedeploymentPushMessageRepeat
+        ? 'Aktiveret'
+        : 'Deaktiveret';
+      this.daysBeforeRedeploymentPushMessageRepeatCreate
+        .$('input')
+        .setValue(status);
+      let value = this.daysBeforeRedeploymentPushMessageRepeatCreate
+        .$('ng-dropdown-panel')
+        .$(`.ng-option=${status}`);
+      value.waitForDisplayed({ timeout: 40000 });
+      value.click();
+
+      this.createDaysBeforeRedeploymentPushMessage
+        .$('input')
+        .setValue(planning.daysBeforeRedeploymentPushMessage);
+      value = this.createDaysBeforeRedeploymentPushMessage
+        .$('ng-dropdown-panel')
+        .$(`.ng-option=${planning.daysBeforeRedeploymentPushMessage}`);
+      value.waitForDisplayed({ timeout: 40000 });
+      value.click();
+    }
     if (!clickCancel) {
       this.planningCreateSaveBtn.click();
       spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
@@ -351,25 +365,6 @@ export class ItemsPlanningModalPage extends Page {
       this.planningCreateCancelBtn.click();
     }
     this.planningId.waitForDisplayed();
-  }
-
-  public editPlanning(data: any, clickCancel = false) {
-    this.planningEditSaveBtn.waitForDisplayed({ timeout: 20000 });
-    for (let i = 0; i < data.name.length; i++) {
-      if (this.editPlanningItemName(i).getValue() !== data.name[i]) {
-        this.editPlanningItemName(i).setValue(data.name[i]);
-      }
-    }
-    this.editPlanningDescription.setValue(data.description);
-    this.editRepeatEvery.setValue(data.repeatEvery);
-    this.selectEditRepeatType(data.repeatType);
-    this.editRepeatUntil.setValue(data.repeatUntil);
-    if (!clickCancel) {
-      this.planningEditSaveBtn.click();
-    } else {
-      this.planningEditCancelBtn.click();
-    }
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
   }
 
   public addNewItem() {

@@ -4,7 +4,10 @@ import itemsPlanningPlanningPage, {
   PlanningRowObject,
 } from '../../Page objects/ItemsPlanning/ItemsPlanningPlanningPage';
 import itemsPlanningModalPage from '../../Page objects/ItemsPlanning/ItemsPlanningModal.page';
-import { generateRandmString } from '../../Helpers/helper-functions';
+import {
+  generateRandmString,
+  getRandomInt,
+} from '../../Helpers/helper-functions';
 import myEformsPage from '../../Page objects/MyEforms.page';
 import foldersPage from '../../Page objects/Folders.page';
 import { format, parse } from 'date-fns';
@@ -23,6 +26,8 @@ let planningData: PlanningCreateUpdate = {
   locationCode: '12345',
   startFrom: new Date(2020, 7, 9),
   number: '10',
+  daysBeforeRedeploymentPushMessageRepeat: false,
+  daysBeforeRedeploymentPushMessage: getRandomInt(1, 27),
 };
 let folderNameForEdit = generateRandmString();
 let eFormNameForEdit = generateRandmString();
@@ -84,6 +89,8 @@ describe('Items planning actions - Edit', function () {
       type: generateRandmString(),
       repeatUntil: parse('10/18/2020', 'M/d/yyyy', new Date()),
       repeatEvery: '2',
+      daysBeforeRedeploymentPushMessageRepeat: true,
+      daysBeforeRedeploymentPushMessage: getRandomInt(1, 27),
     };
     folderNameForEdit = tempForSwapFolderName;
     eFormNameForEdit = tempForSwapEFormFormName;
@@ -157,6 +164,22 @@ describe('Items planning actions - Edit', function () {
       ),
       'Saved start from is incorrect'
     ).eq(format(planningData.startFrom, 'M/d/yyyy'));
+    expect(
+      itemsPlanningModalPage.daysBeforeRedeploymentPushMessageRepeatEdit
+        .$('.ng-value-label')
+        .getText(),
+      'Saved daysBeforeRedeploymentPushMessageRepeat code is incorrect'
+    ).eq(
+      planningData.daysBeforeRedeploymentPushMessageRepeat
+        ? 'Aktiveret'
+        : 'Deaktiveret'
+    );
+    expect(
+      +itemsPlanningModalPage.editDaysBeforeRedeploymentPushMessage
+        .$('.ng-value-label')
+        .getText(),
+      'Saved editDaysBeforeRedeploymentPushMessage code is incorrect'
+    ).eq(planningData.daysBeforeRedeploymentPushMessage);
     PlanningRowObject.closeEdit(true);
   });
   after(function () {

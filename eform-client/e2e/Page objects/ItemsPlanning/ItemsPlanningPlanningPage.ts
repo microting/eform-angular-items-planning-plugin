@@ -448,6 +448,28 @@ export class PlanningRowObject {
     ) {
       itemsPlanningModalPage.editItemType.setValue(planning.type);
     }
+    if (planning.daysBeforeRedeploymentPushMessageRepeat != null) {
+      const status = planning.daysBeforeRedeploymentPushMessageRepeat
+        ? 'Aktiveret'
+        : 'Deaktiveret';
+      itemsPlanningModalPage.daysBeforeRedeploymentPushMessageRepeatEdit
+        .$('input')
+        .setValue(status);
+      let value = itemsPlanningModalPage.daysBeforeRedeploymentPushMessageRepeatEdit
+        .$('ng-dropdown-panel')
+        .$(`.ng-option=${status}`);
+      value.waitForDisplayed({ timeout: 40000 });
+      value.click();
+
+      itemsPlanningModalPage.editDaysBeforeRedeploymentPushMessage
+        .$('input')
+        .setValue(planning.daysBeforeRedeploymentPushMessage);
+      value = itemsPlanningModalPage.editDaysBeforeRedeploymentPushMessage
+        .$('ng-dropdown-panel')
+        .$(`.ng-option=${planning.daysBeforeRedeploymentPushMessage}`);
+      value.waitForDisplayed({ timeout: 40000 });
+      value.click();
+    }
     PlanningRowObject.closeEdit(clickCancel);
   }
 
@@ -477,4 +499,6 @@ export class PlanningCreateUpdate {
   public locationCode?: string;
   public buildYear?: string;
   public type?: string;
+  public daysBeforeRedeploymentPushMessageRepeat?: boolean;
+  public daysBeforeRedeploymentPushMessage?: number;
 }
