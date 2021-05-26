@@ -1,4 +1,4 @@
-<div class="row p-1 mt-4 table-responsive no-gutters">
+<div class="row p-1 mt-4 table-responsive no-gutters table-with-sticky-headers">
   <table
     mdbTable
     striped="true"
@@ -12,9 +12,10 @@
       [sort]="planningsStateService.getSort() | async"
       (sortChanged)="onSortTable($event)"
       [customCell]="selectAllPlanningsCheckbox"
+      [stickyHeader]="true"
     >
       <ng-template #selectAllPlanningsCheckbox>
-        <th scope="col">
+        <th scope="col" class="sticky-top">
           <div>
             <div class="mat-checkbox" *ngIf="planningsModel.total">
               <input

@@ -1,4 +1,4 @@
-<div class="row p-1 mt-4 table-responsive no-gutters">
+<div class="row p-1 mt-4 table-responsive no-gutters table-with-sticky-headers">
   <table
     *ngIf="
       pairingsModel.deviceUsers &&
@@ -14,8 +14,9 @@
   >
     <thead>
       <tr>
-        <th scope="col"></th>
+        <th scope="col" class="sticky-top"></th>
         <th
+          class="sticky-top"
           scope="col"
           id="deviceUserTableHeader{{ i }}"
           *ngFor="let deviceUser of pairingsModel.deviceUsers; let i = index"
