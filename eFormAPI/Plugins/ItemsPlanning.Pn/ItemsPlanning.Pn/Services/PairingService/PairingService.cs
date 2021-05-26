@@ -135,7 +135,10 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         //if (pairingModelPairingValue.DeviceUserId == planningCaseSite.MicrotingSdkSiteId &&
                         //    pairingModelPairingValue.Paired)
                         //{
+                        if (planningCaseSite != null)
+                        {
                             pairingModelPairingValue.LatestCaseStatus = planningCaseSite.Status;
+                        }
                         //}
                     }
                     // Add users
