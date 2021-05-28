@@ -66,4 +66,6 @@ export const ukUA = {
     'За кілька днів повторювати push-повідомлення',
   daysBeforeRedeploymentPushMessage:
     'Кількість днів перед відправкою push message',
+  Enabled: 'Увімкнуто',
+  Disabled: 'Вимкнуто',
 };

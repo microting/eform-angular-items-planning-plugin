@@ -79,4 +79,6 @@ export const da = {
   daysBeforeRedeploymentPushMessageRepeat:
     'Dage før omfordeling push - besked gentag',
   daysBeforeRedeploymentPushMessage: 'Antal dage før du sender en push-besked',
+  Enabled: 'Aktiveret',
+  Disabled: 'Deaktiveret',
 };

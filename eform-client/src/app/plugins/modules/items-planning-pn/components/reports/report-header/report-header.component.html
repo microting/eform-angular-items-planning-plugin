@@ -10,32 +10,54 @@
         [clearable]="false"
         [bindLabel]="'name'"
         [bindValue]="'id'"
+        (add)="addOrDeleteTagId($event)"
+        (remove)="addOrDeleteTagId($event.value)"
         id="tagSelector"
-        [multiple]="true"></ng-select>
+        [multiple]="true"
+      ></ng-select>
     </div>
     <div class="col-md-3">
       <div class="md-form" [owlDateTimeTrigger]="dateRangePicker">
-        <i class="material-icons prefix">
-          calendar_today
-        </i>
-        <input mdbInput  formControlName="dateRange"
-               name="dateRange" required
-               [(ngModel)]="range"
-               type="text" [owlDateTime]="dateRangePicker" [selectMode]="'range'"
-               class="form-control input-sm" id="dateFormInput">
-        <label for="dateFormInput">{{'Selected date range' | translate}}</label>
+        <i class="material-icons prefix"> calendar_today </i>
+        <input
+          mdbInput
+          formControlName="dateRange"
+          name="dateRange"
+          required
+          type="text"
+          [owlDateTime]="dateRangePicker"
+          [selectMode]="'range'"
+          class="form-control input-sm"
+          id="dateFormInput"
+        />
+        <label for="dateFormInput">{{
+          'Selected date range' | translate
+        }}</label>
       </div>
     </div>
     <div class="col-md-3 text-center pt-3">
-      <button mdbBtn class="btn-success btn-small-height" [disabled]="generateForm.invalid" (click)="onSubmit()">
-        {{'Generate' | translate}}
+      <button
+        mdbBtn
+        class="btn-success btn-small-height"
+        [disabled]="generateForm.invalid"
+        (click)="onSubmit()"
+      >
+        {{ 'Generate' | translate }}
       </button>
-      <button mdbBtn class="btn-info btn-icon mb-2" [disabled]="generateForm.invalid" (click)="onSave()">
+      <button
+        mdbBtn
+        class="btn-info btn-icon mb-2"
+        [disabled]="generateForm.invalid"
+        (click)="onSave()"
+      >
         <fa-icon icon="file-word" size="lg" [fixedWidth]="true"></fa-icon>
       </button>
     </div>
-
   </div>
 </form>
 
-<owl-date-time [pickerType]="'calendar'" [firstDayOfWeek]="1" #dateRangePicker></owl-date-time>
+<owl-date-time
+  [pickerType]="'calendar'"
+  [firstDayOfWeek]="1"
+  #dateRangePicker
+></owl-date-time>
