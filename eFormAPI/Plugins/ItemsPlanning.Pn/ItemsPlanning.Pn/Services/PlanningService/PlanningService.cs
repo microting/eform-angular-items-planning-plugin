@@ -40,6 +40,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
     using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
     using Infrastructure.Models.Planning;
     using Microting.eForm.Infrastructure.Data.Entities;
+    using Microting.eFormApi.BasePn.Infrastructure.Helpers;
     using PnBase = Microting.ItemsPlanningBase.Infrastructure.Data.Entities.PnBase;
 
 
@@ -71,40 +72,25 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
 
                 var planningsQuery = _dbContext.Plannings
-                    .AsQueryable();
+                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                        .AsQueryable();
 
                 if (!string.IsNullOrEmpty(pnRequestModel.NameFilter))
                 {
                     planningsQuery = planningsQuery.Where(x =>
-                        x.NameTranslations.Any(y => y.Name.Contains(pnRequestModel.NameFilter, StringComparison.CurrentCultureIgnoreCase)));
+                        x.NameTranslations.Any(y => y.Name.Contains(pnRequestModel.NameFilter)));
                 }
 
                 if (!string.IsNullOrEmpty(pnRequestModel.DescriptionFilter))
                 {
                     planningsQuery = planningsQuery.Where(x =>
-                        x.Description.Contains(pnRequestModel.DescriptionFilter,
-                            StringComparison.CurrentCultureIgnoreCase));
+                        x.Description.Contains(pnRequestModel.DescriptionFilter));
                 }
 
+                var excludeSort = new List<string>{ "TranslatedName" };
                 // sort
-                if (!string.IsNullOrEmpty(pnRequestModel.Sort) && pnRequestModel.Sort != "TranslatedName")
-                {
-                    if (pnRequestModel.IsSortDsc)
-                    {
-                        planningsQuery = planningsQuery
-                            .CustomOrderByDescending(pnRequestModel.Sort);
-                    }
-                    else
-                    {
-                        planningsQuery = planningsQuery
-                            .CustomOrderBy(pnRequestModel.Sort);
-                    }
-                }
-                else
-                {
-                    planningsQuery = planningsQuery
-                        .OrderBy(x => x.Id);
-                }
+                planningsQuery = QueryHelper.AddSortToQuery(planningsQuery, pnRequestModel.Sort,
+                    pnRequestModel.IsSortDsc, excludeSort);
 
                 // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
                 foreach (var tagId in pnRequestModel.TagIds)
@@ -120,11 +106,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         y.SiteId == deviceUserId && y.WorkflowState != Constants.WorkflowStates.Removed));
                 }
 
-                planningsQuery = planningsQuery
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed);
-
                 // calculate total before pagination
-                var total = await planningsQuery.CountAsync();
+                var total = await planningsQuery.Select(x => x.Id).CountAsync();
 
                 // add select
                 var localeString = await _userService.GetCurrentUserLocale();
