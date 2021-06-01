@@ -60,11 +60,11 @@ namespace ItemsPlanning.Pn.Helpers
             var folderId = folder.MicrotingUid.ToString();
 
             // get planning cases
-            var planningCase = _dbContext.PlanningCases
+            var planningCase = await _dbContext.PlanningCases
                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Retracted)
                 .Where(x => x.PlanningId == planningPnModel.Id)
-                .SingleOrDefault(x => x.MicrotingSdkeFormId == relatedEFormId);
+                .FirstOrDefaultAsync(x => x.MicrotingSdkeFormId == relatedEFormId);
 
             if (planningCase == null)
             {
