@@ -72,8 +72,21 @@
           <!--                mdbTooltip="{{ 'Posts' | translate }}">-->
           <!--          <fa-icon icon="sticky-note" size="lg" [fixedWidth]="true"></fa-icon>-->
           <!--        </button>-->
+          <button
+            id="deletePlanningBtn"
+            class="btn btn-danger btn-icon mb-2"
+            mdbTooltip="{{ 'Delete case' | translate }}"
+            (click)="onShowDeletePlanningCaseModal(item)"
+          >
+            <fa-icon icon="trash-alt" size="lg" [fixedWidth]="true"></fa-icon>
+          </button>
         </td>
       </tr>
     </tbody>
   </table>
 </div>
+
+<app-planning-case-delete
+  #deletePlanningCaseModal
+  (planningCaseDeleted)="onPlanningCaseDeleted()"
+></app-planning-case-delete>

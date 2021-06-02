@@ -1,6 +1,14 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit,} from '@angular/core';
-import {ReportEformItemModel} from '../../../models/report';
-import {AuthStateService} from 'src/app/common/store';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { ReportEformItemModel } from '../../../models/report';
+import { AuthStateService } from 'src/app/common/store';
 
 @Component({
   selector: 'app-report-table',
@@ -14,6 +22,8 @@ export class ReportTableComponent implements OnInit {
   @Input() dateTo: any;
   @Input() itemHeaders: { key: string; value: string }[] = [];
   @Input() newPostModal: any;
+  @ViewChild('deletePlanningCaseModal') deletePlanningCaseModal;
+  @Output() planningCaseDeleted: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(private authStateService: AuthStateService) {}
 
@@ -29,5 +39,13 @@ export class ReportTableComponent implements OnInit {
     this.newPostModal.currentUserFullName = this.authStateService.currentUserFullName;
     this.newPostModal.pdfReportAvailable = pdfReportAvailable;
     this.newPostModal.show();
+  }
+
+  onShowDeletePlanningCaseModal(item: ReportEformItemModel) {
+    this.deletePlanningCaseModal.show(item);
+  }
+
+  onPlanningCaseDeleted() {
+    this.planningCaseDeleted.emit();
   }
 }

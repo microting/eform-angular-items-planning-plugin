@@ -43,5 +43,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
         Task<OperationResult> Delete(int id);
 
         Task<OperationResult> MultipleDeletePlannings(List<int> planningIds);
+
+        Task<OperationResult> DeletePlanningCase(int planningCaseId);
     }
 }
