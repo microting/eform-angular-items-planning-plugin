@@ -605,7 +605,7 @@
   {
     "Key": "CaseNotFound",
     "LocalizedValue": {
-      "da": "Sag ikke fundet",
+      "da": "Sagen blev ikke fundet",
       "de": "Fall nicht gefunden",
       "en-US": "Case not found",
       "uk-UA": "Кейс не знайдено"
@@ -614,7 +614,7 @@
   {
     "Key": "CaseDeleteSuccessfully",
     "LocalizedValue": {
-      "da": "Sag slet med succes",
+      "da": "Sagen blev slettet",
       "de": "Fall erfolgreich löschen",
       "en-US": "Case delete successfully",
       "uk-UA": "Кейс успішно видалений"
@@ -623,7 +623,7 @@
   {
     "Key": "ErrorWhileDeleteCase",
     "LocalizedValue": {
-      "da": "Fejl under slet sag",
+      "da": "Fejl under sletning af sag",
       "de": "Fehler beim Löschen des Falls",
       "en-US": "Error while delete case",
       "uk-UA": "помилка при видаленні кейса"
