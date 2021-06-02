@@ -74,6 +74,7 @@ export const da = {
   Pairing: 'Parring',
   'Eform was deleted': 'Eform udgår',
   Table: 'Tabel',
+  'Select tags': 'Vælg filter',
   'Edit Case': 'Rediger sagen',
   Id: 'Id',
   daysBeforeRedeploymentPushMessageRepeat:
@@ -81,4 +82,5 @@ export const da = {
   daysBeforeRedeploymentPushMessage: 'Antal dage før du sender en push-besked',
   Enabled: 'Aktiveret',
   Disabled: 'Deaktiveret',
+  'Select date range': 'Vælg periode',
 };
