@@ -60,6 +60,8 @@ export const ukUA = {
   'Generate Report': 'Згенерувати звіт',
   'Update pairing': `Оновлення зв'язку`,
   Pairing: `Зв'язок`,
+  Table: 'Таблиця',
+  'Select Tags': 'Виберіть теги',
   'Eform was deleted': 'ЕФорма була видалена',
   Id: 'Ідентифікатор',
   daysBeforeRedeploymentPushMessageRepeat:
@@ -68,4 +70,5 @@ export const ukUA = {
     'Кількість днів перед відправкою push message',
   Enabled: 'Увімкнуто',
   Disabled: 'Вимкнуто',
+  'Select date range': 'Виберіть діапазон дат'
 };

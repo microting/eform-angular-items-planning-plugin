@@ -60,10 +60,12 @@ export const enUS = {
   Pairing: 'Pairing',
   'Eform was deleted': 'Eform was deleted',
   Table: 'Table',
+  'Select Tags': 'Select tags',
   Id: 'Id',
   daysBeforeRedeploymentPushMessageRepeat:
     'Days before redeployment push message repeat',
   daysBeforeRedeploymentPushMessage: 'Days before redeployment push message',
   Enabled: 'Enabled',
   Disabled: 'Disabled',
+  'Select date range': 'Select date range',
 };
