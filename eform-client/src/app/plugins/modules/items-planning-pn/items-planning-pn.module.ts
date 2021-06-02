@@ -12,6 +12,7 @@ import {
   PairingGridTableComponent,
   PairingGridUpdateComponent,
   PlanningAssignSitesModalComponent,
+  PlanningCaseDeleteComponent,
   PlanningCasePageComponent,
   PlanningCreateComponent,
   PlanningDeleteComponent,
@@ -48,6 +49,7 @@ import { EformSharedModule } from 'src/app/common/modules/eform-shared/eform-sha
 import { CasesModule } from 'src/app/modules';
 import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/eform-shared-tags.module';
 import { planningsStoreProviders } from './store-providers.config';
+// import { SharedPnService } from 'src/app/plugins/modules/shared/services';
 
 @NgModule({
   imports: [
@@ -91,6 +93,7 @@ import { planningsStoreProviders } from './store-providers.config';
     PlanningsHeaderComponent,
     PlanningsTableComponent,
     PlanningMultipleDeleteComponent,
+    PlanningCaseDeleteComponent,
   ],
   providers: [
     ItemsPlanningPnSettingsService,
@@ -101,6 +104,7 @@ import { planningsStoreProviders } from './store-providers.config';
     ItemsPlanningPnTagsService,
     ItemsPlanningPnPairingService,
     ...planningsStoreProviders,
+    // SharedPnService, // need for planning case components
   ],
 })
 export class ItemsPlanningPnModule {}

@@ -114,7 +114,11 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
     this.dateFrom = model.dateFrom;
     this.dateTo = model.dateTo;
     this.generateReportSub$ = this.reportService
-      .generateReport(model)
+      .generateReport({
+        dateFrom: this.dateFrom,
+        dateTo: this.dateTo,
+        tagIds: this.planningsReportQuery.pageSetting.filters.tagIds,
+      })
       .subscribe((data) => {
         if (data && data.success) {
           this.reportsModel = data.model;
@@ -148,5 +152,16 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
             this.dateTo,
         ])
       );
+  }
+
+  onPlanningCaseDeleted() {
+    const model = {
+      dateFrom: this.dateFrom,
+      dateTo: this.dateTo,
+      tagIds: [],
+    };
+    if (model.dateFrom !== undefined) {
+      this.onGenerateReport(model);
+    }
   }
 }

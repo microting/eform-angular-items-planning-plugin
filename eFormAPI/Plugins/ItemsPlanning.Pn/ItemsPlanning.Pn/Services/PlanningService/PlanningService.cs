@@ -782,5 +782,33 @@ namespace ItemsPlanning.Pn.Services.PlanningService
             // Delete planning
             await planning.Delete(_dbContext);
         }
+
+        public async Task<OperationResult> DeletePlanningCase(int planningCaseId)
+        {
+            try
+            {
+                var planningCase = await _dbContext.PlanningCases
+                    .Where(x => x.Id == planningCaseId)
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .FirstOrDefaultAsync();
+                if (planningCase == null)
+                {
+                    return new OperationResult(false, _itemsPlanningLocalizationService.GetString("CaseNotFound"));
+                }
+
+                var core = await _coreService.GetCore();
+                await core.CaseDeleteResult(planningCase.MicrotingSdkCaseId);
+
+                await planningCase.Delete(_dbContext);
+                return new OperationResult(true, _itemsPlanningLocalizationService.GetString("CaseDeleteSuccessfully"));
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message);
+                return new OperationResult(
+                    false,
+                    _itemsPlanningLocalizationService.GetString("ErrorWhileDeleteCase"));
+            }
+        }
     }
 }

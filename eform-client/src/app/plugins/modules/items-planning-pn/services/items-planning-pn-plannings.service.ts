@@ -1,23 +1,25 @@
 import { Injectable } from '@angular/core';
-
 import { Observable } from 'rxjs';
 import {
   OperationDataResult,
   OperationResult,
-} from 'src/app/common/models/operation.models';
-
+  Paged,
+} from 'src/app/common/models';
 import {
   PlanningCreateModel,
   PlanningModel,
   PlanningsRequestModel,
   PlanningUpdateModel,
 } from '../models/plannings';
-import { Paged } from 'src/app/common/models';
-import {ApiBaseService} from 'src/app/common/services';
+import { ApiBaseService } from 'src/app/common/services';
 
 export let ItemsPlanningPnPlanningsMethods = {
   Plannings: 'api/items-planning-pn/plannings',
+  PlanningsIndex: 'api/items-planning-pn/plannings/index',
+  PlanningsImport: 'api/items-planning-pn/plannings/import',
   PlanningsAssign: 'api/items-planning-pn/plannings/assign-sites',
+  PlanningsDeleteCase: 'api/items-planning-pn/plannings-case/delete',
+  PlanningsDeleteMultiple: 'api/items-planning-pn/plannings/delete-multiple',
 };
 
 @Injectable({
@@ -30,7 +32,7 @@ export class ItemsPlanningPnPlanningsService {
     model: PlanningsRequestModel
   ): Observable<OperationDataResult<Paged<PlanningModel>>> {
     return this.apiBaseService.post(
-      ItemsPlanningPnPlanningsMethods.Plannings + '/index',
+      ItemsPlanningPnPlanningsMethods.PlanningsIndex,
       model
     );
   }
@@ -38,9 +40,9 @@ export class ItemsPlanningPnPlanningsService {
   getSinglePlanning(
     planningId: number
   ): Observable<OperationDataResult<PlanningModel>> {
-    return this.apiBaseService.get(
-      ItemsPlanningPnPlanningsMethods.Plannings + '/' + planningId
-    );
+    return this.apiBaseService.get(ItemsPlanningPnPlanningsMethods.Plannings, {
+      id: planningId,
+    });
   }
 
   updatePlanning(model: PlanningUpdateModel): Observable<OperationResult> {
@@ -57,23 +59,31 @@ export class ItemsPlanningPnPlanningsService {
     );
   }
 
-  deletePlanning(fractionId: number): Observable<OperationResult> {
+  deletePlanning(planningId: number): Observable<OperationResult> {
     return this.apiBaseService.delete(
-      ItemsPlanningPnPlanningsMethods.Plannings + '/' + fractionId
+      ItemsPlanningPnPlanningsMethods.Plannings,
+      { id: planningId }
     );
   }
 
   deletePlannings(planningsIds: number[]): Observable<OperationResult> {
     return this.apiBaseService.post(
-      ItemsPlanningPnPlanningsMethods.Plannings + '/delete-multiple',
+      ItemsPlanningPnPlanningsMethods.PlanningsDeleteMultiple,
       planningsIds
     );
   }
 
   importPlanningsFromExcel(excelFile: File): Observable<OperationResult> {
     return this.apiBaseService.uploadFile(
-      ItemsPlanningPnPlanningsMethods.Plannings + '/import',
+      ItemsPlanningPnPlanningsMethods.PlanningsImport,
       excelFile
+    );
+  }
+
+  deleteCasePlanning(planningCaseId: number): Observable<OperationResult> {
+    return this.apiBaseService.delete(
+      ItemsPlanningPnPlanningsMethods.PlanningsDeleteCase,
+      { planningCaseId: planningCaseId }
     );
   }
 }

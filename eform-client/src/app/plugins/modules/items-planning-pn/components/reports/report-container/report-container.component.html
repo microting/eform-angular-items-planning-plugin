@@ -43,6 +43,7 @@
           [dateFrom]="dateFrom"
           [dateTo]="dateTo"
           [newPostModal]="newPostModal"
+          (planningCaseDeleted)="onPlanningCaseDeleted()"
         ></app-report-table>
         <p>{{ report.templateName }}</p>
         <app-report-images
@@ -50,7 +51,6 @@
           *ngIf="report.imageNames.length > 0"
         ></app-report-images>
       </ng-container>
-
     </div>
   </ng-container>
 </div>

@@ -67,7 +67,7 @@ namespace ItemsPlanning.Pn.Controllers
         }
 
         [HttpGet]
-        [Route("api/items-planning-pn/plannings/{id}")]
+        [Route("api/items-planning-pn/plannings")]
         public async Task<OperationDataResult<PlanningPnModel>> Read(int id)
         {
             return await _planningService.Read(id);
@@ -81,7 +81,7 @@ namespace ItemsPlanning.Pn.Controllers
         }
 
         [HttpDelete]
-        [Route("api/items-planning-pn/plannings/{id}")]
+        [Route("api/items-planning-pn/plannings")]
         public async Task<OperationResult> Delete(int id)
         {
             return await _planningService.Delete(id);
@@ -109,6 +109,13 @@ namespace ItemsPlanning.Pn.Controllers
         public async Task<OperationResult> MultipleDelete([FromBody] List<int> planningIds)
         {
             return await _planningService.MultipleDeletePlannings(planningIds);
+        }
+
+        [HttpDelete]
+        [Route("api/items-planning-pn/plannings-case/delete")]
+        public async Task<OperationResult> DeletePlanningCase(int planningCaseId)
+        {
+            return await _planningService.DeletePlanningCase(planningCaseId);
         }
     }
 }

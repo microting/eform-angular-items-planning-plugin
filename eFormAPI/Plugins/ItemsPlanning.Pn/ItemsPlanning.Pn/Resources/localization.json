@@ -599,7 +599,34 @@
       "da": "Info om eForm er null",
       "de": "Informationen zu eForm sind null",
       "en-US": "Info about eForm is null",
-      "uk-UA": "Інформація про еформу порожня"
+      "uk-UA": "Інформація про Еформу порожня"
+    }
+  },
+  {
+    "Key": "CaseNotFound",
+    "LocalizedValue": {
+      "da": "Sag ikke fundet",
+      "de": "Fall nicht gefunden",
+      "en-US": "Case not found",
+      "uk-UA": "Кейс не знайдено"
+    }
+  },
+  {
+    "Key": "CaseDeleteSuccessfully",
+    "LocalizedValue": {
+      "da": "Sag slet med succes",
+      "de": "Fall erfolgreich löschen",
+      "en-US": "Case delete successfully",
+      "uk-UA": "Кейс успішно видалений"
+    }
+  },
+  {
+    "Key": "ErrorWhileDeleteCase",
+    "LocalizedValue": {
+      "da": "Fejl under slet sag",
+      "de": "Fehler beim Löschen des Falls",
+      "en-US": "Error while delete case",
+      "uk-UA": "помилка при видаленні кейса"
     }
   }
 ]
