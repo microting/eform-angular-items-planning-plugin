@@ -6,16 +6,15 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import {CaseEditElementComponent} from 'src/app/common/modules/eform-cases/components';
 import { CasesService } from 'src/app/common/services/cases';
 import { EFormService } from 'src/app/common/services/eform';
-import { CaseEditElementComponent } from '../../../../../../modules/cases/components';
 import { TemplateDto } from '../../../../../../common/models/dto';
 import {
   CaseEditRequest,
   ReplyElementDto,
   ReplyRequest,
 } from '../../../../../../common/models/cases';
-import { AuthService } from 'src/app/common/services/auth/auth.service';
 import { AuthStateService } from 'src/app/common/store';
 
 @Component({
