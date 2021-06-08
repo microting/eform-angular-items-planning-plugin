@@ -197,7 +197,14 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                         foreach (var dataModelCaseField in dataModel.CaseFields)
                         {
-                            itemsHtml += $@"<td>{dataModelCaseField}</td>";
+                            if (dataModelCaseField == "checked")
+                            {
+                                itemsHtml += $@"<td>&#10004;</td>";
+                            }
+                            else
+                            {
+                                itemsHtml += $@"<td>{dataModelCaseField}</td>";
+                            }
                         }
 
                         // itemsHtml += $@"<td>{dataModel.ImagesCount}</td>";
