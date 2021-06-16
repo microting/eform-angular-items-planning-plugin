@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { ToastrService } from 'ngx-toastr';
+import { CasePostNewComponent } from 'src/app/common/modules/eform-cases/components';
 import {
   ReportEformPnModel,
   ReportPnGenerateModel,
@@ -13,7 +14,6 @@ import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { parseISO } from 'date-fns';
-import { CasePostNewComponent } from 'src/app/modules/cases/components';
 import {
   CasePostsListModel,
   CommonDictionaryModel,
