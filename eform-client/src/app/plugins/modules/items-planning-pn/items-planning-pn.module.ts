@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {EformCasesModule} from 'src/app/common/modules/eform-cases/eform-cases.module';
 import { ItemsPlanningPnLayoutComponent } from './layouts';
 import {
   ItemsPlanningSettingsComponent,
@@ -46,10 +47,8 @@ import {
 import { FileUploadModule } from 'ng2-file-upload';
 import { OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { EformSharedModule } from 'src/app/common/modules/eform-shared/eform-shared.module';
-import { CasesModule } from 'src/app/modules';
 import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/eform-shared-tags.module';
 import { planningsStoreProviders } from './store-providers.config';
-// import { SharedPnService } from 'src/app/plugins/modules/shared/services';
 
 @NgModule({
   imports: [
@@ -65,7 +64,7 @@ import { planningsStoreProviders } from './store-providers.config';
     ReactiveFormsModule,
     FileUploadModule,
     OwlDateTimeModule,
-    CasesModule,
+    EformCasesModule,
     EformSharedTagsModule,
   ],
   declarations: [
