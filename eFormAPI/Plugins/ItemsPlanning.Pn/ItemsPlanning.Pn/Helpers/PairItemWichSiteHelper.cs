@@ -66,6 +66,8 @@ namespace ItemsPlanning.Pn.Helpers
                 .Where(x => x.PlanningId == planningPnModel.Id)
                 .FirstOrDefaultAsync(x => x.MicrotingSdkeFormId == relatedEFormId);
 
+            var planning = await _dbContext.Plannings.SingleOrDefaultAsync(x => x.Id == planningCase.PlanningId);
+
             if (planningCase == null)
             {
                 planningCase = new PlanningCase()
@@ -192,7 +194,7 @@ namespace ItemsPlanning.Pn.Helpers
                     mainElement.ElementList[0].Description.InderValue = unixTimestamp.ToString();
                 }
 
-                if (planningCaseSite.MicrotingSdkCaseId < 1)
+                if (planningCaseSite.MicrotingSdkCaseId < 1 && planning.StartDate <= DateTime.Now)
                 {
                     // ReSharper disable once PossibleInvalidOperationException
                     var caseId = await sdkCore.CaseCreate(mainElement, "", (int) sdkSite.MicrotingUid, null);
