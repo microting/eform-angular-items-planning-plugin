@@ -47,7 +47,7 @@ namespace ItemsPlanning.Pn.Helpers
             _coreService = coreService;
         }
 
-        public async Task Pair(PlanningPnModel planningPnModel, int assignmentSiteId, int relatedEFormId)
+        public async Task Pair(PlanningPnModel planningPnModel, int assignmentSiteId, int relatedEFormId, int planningId)
         {
             var sdkCore =
                 await _coreService.GetCore();
@@ -66,7 +66,7 @@ namespace ItemsPlanning.Pn.Helpers
                 .Where(x => x.PlanningId == planningPnModel.Id)
                 .FirstOrDefaultAsync(x => x.MicrotingSdkeFormId == relatedEFormId);
 
-            var planning = await _dbContext.Plannings.SingleOrDefaultAsync(x => x.Id == planningCase.PlanningId);
+            var planning = await _dbContext.Plannings.SingleOrDefaultAsync(x => x.Id == planningId);
 
             if (planningCase == null)
             {

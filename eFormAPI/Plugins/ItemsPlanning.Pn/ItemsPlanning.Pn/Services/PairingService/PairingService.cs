@@ -265,7 +265,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                     var dataResult = await _planningService.Read(planning.Id);
                     if(dataResult.Success)
                     {
-                        await _pairItemWichSiteHelper.Pair(dataResult.Model, assignmentSiteId, planning.RelatedEFormId);
+                        await _pairItemWichSiteHelper.Pair(dataResult.Model, assignmentSiteId, planning.RelatedEFormId, planning.Id);
                     }
                 }
 
@@ -388,7 +388,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                             var dataResult = await _planningService.Read(planning.PlanningId);
                             if (dataResult.Success)
                             {
-                                await _pairItemWichSiteHelper.Pair(dataResult.Model, assignmentSiteId, planning.RelatedEFormId);
+                                await _pairItemWichSiteHelper.Pair(dataResult.Model, assignmentSiteId, planning.RelatedEFormId, planning.PlanningId);
                             }
                         }
                     }
