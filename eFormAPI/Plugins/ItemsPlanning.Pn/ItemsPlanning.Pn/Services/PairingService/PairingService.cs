@@ -138,6 +138,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         if (planningCaseSite != null)
                         {
                             pairingModelPairingValue.LatestCaseStatus = planningCaseSite.Status;
+                            pairingModelPairingValue.PlanningCaseSiteId = planningCaseSite.Id;
                         }
                         //}
                     }

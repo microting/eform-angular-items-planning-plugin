@@ -13,4 +13,5 @@ export class PairingValueModel {
   deviceUserId: number;
   paired: boolean;
   latestCaseStatus: number | null;
+  planningCaseSiteId: number | null;
 }

@@ -89,6 +89,9 @@
               *ngIf="planningValue.latestCaseStatus"
               [status]="planningValue.latestCaseStatus"
             ></status-bar-compact>
+            <div *ngIf="authStateService.isAdmin">
+              <small style="color: var(--blue-400);">({{planningValue.deviceUserId}}<span *ngIf="planningValue.planningCaseSiteId">/{{planningValue.planningCaseSiteId}}</span>)</small>
+            </div>
           </div>
         </td>
       </tr>
