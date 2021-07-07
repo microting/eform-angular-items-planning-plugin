@@ -7,10 +7,10 @@ export class PlanningReiterationModel {
   startDate: string;
   internalRepeatUntil: string;
   daysBeforeRedeploymentPushMessage: number;
-  daysBeforeRedeploymentPushMessageRepeat: boolean;
+  pushMessageEnabled: boolean;
 
   constructor() {
-    this.daysBeforeRedeploymentPushMessageRepeat = false;
+    this.pushMessageEnabled = true;
     this.daysBeforeRedeploymentPushMessage = 5;
   }
 }

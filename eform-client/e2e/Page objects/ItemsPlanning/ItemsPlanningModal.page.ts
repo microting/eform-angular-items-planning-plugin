@@ -251,8 +251,8 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
 
-  public get daysBeforeRedeploymentPushMessageRepeatCreate() {
-    const ele = $('#daysBeforeRedeploymentPushMessageRepeatCreate');
+  public get pushMessageEnabledCreate() {
+    const ele = $('#pushMessageEnabledCreate');
     ele.waitForDisplayed({ timeout: 40000 });
     return ele;
   }
@@ -263,8 +263,8 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
 
-  public get daysBeforeRedeploymentPushMessageRepeatEdit() {
-    const ele = $('#daysBeforeRedeploymentPushMessageRepeatEdit');
+  public get pushMessageEnabledEdit() {
+    const ele = $('#pushMessageEnabledEdit');
     ele.waitForDisplayed({ timeout: 40000 });
     return ele;
   }
@@ -336,14 +336,14 @@ export class ItemsPlanningModalPage extends Page {
     if (planning.type) {
       this.createItemType.setValue(planning.type);
     }
-    if (planning.daysBeforeRedeploymentPushMessageRepeat != null) {
-      const status = planning.daysBeforeRedeploymentPushMessageRepeat
+    if (planning.pushMessageEnabled != null) {
+      const status = planning.pushMessageEnabled
         ? 'Aktiveret'
         : 'Deaktiveret';
-      this.daysBeforeRedeploymentPushMessageRepeatCreate
+      this.pushMessageEnabledCreate
         .$('input')
         .setValue(status);
-      let value = this.daysBeforeRedeploymentPushMessageRepeatCreate
+      let value = this.pushMessageEnabledCreate
         .$('ng-dropdown-panel')
         .$(`.ng-option=${status}`);
       value.waitForDisplayed({ timeout: 40000 });

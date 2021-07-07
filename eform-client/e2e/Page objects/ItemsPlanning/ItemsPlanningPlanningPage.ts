@@ -448,14 +448,14 @@ export class PlanningRowObject {
     ) {
       itemsPlanningModalPage.editItemType.setValue(planning.type);
     }
-    if (planning.daysBeforeRedeploymentPushMessageRepeat != null) {
-      const status = planning.daysBeforeRedeploymentPushMessageRepeat
+    if (planning.pushMessageEnabled != null) {
+      const status = planning.pushMessageEnabled
         ? 'Aktiveret'
         : 'Deaktiveret';
-      itemsPlanningModalPage.daysBeforeRedeploymentPushMessageRepeatEdit
+      itemsPlanningModalPage.pushMessageEnabledEdit
         .$('input')
         .setValue(status);
-      let value = itemsPlanningModalPage.daysBeforeRedeploymentPushMessageRepeatEdit
+      let value = itemsPlanningModalPage.pushMessageEnabledEdit
         .$('ng-dropdown-panel')
         .$(`.ng-option=${status}`);
       value.waitForDisplayed({ timeout: 40000 });
@@ -499,6 +499,6 @@ export class PlanningCreateUpdate {
   public locationCode?: string;
   public buildYear?: string;
   public type?: string;
-  public daysBeforeRedeploymentPushMessageRepeat?: boolean;
+  public pushMessageEnabled?: boolean;
   public daysBeforeRedeploymentPushMessage?: number;
 }

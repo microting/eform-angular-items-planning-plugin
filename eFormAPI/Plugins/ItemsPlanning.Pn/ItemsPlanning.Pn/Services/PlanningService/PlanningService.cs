@@ -296,18 +296,11 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     SdkFolderName = sdkFolder.Name,
                     SdkFolderId = model.Folder.EFormSdkFolderId,
                     PlanningsTags = new List<PlanningsTags>(),
-                    DaysBeforeRedeploymentPushMessageRepeat = model.Reiteration.DaysBeforeRedeploymentPushMessageRepeat,
+                    DaysBeforeRedeploymentPushMessageRepeat = model.Reiteration.PushMessageEnabled,
                     DaysBeforeRedeploymentPushMessage = model.Reiteration.DaysBeforeRedeploymentPushMessage,
                 };
 
-                if (model.Reiteration.StartDate.HasValue)
-                {
-                    planning.StartDate = model.Reiteration.StartDate.Value;
-                }
-                else
-                {
-                    planning.StartDate = DateTime.UtcNow;
-                }
+                planning.StartDate = model.Reiteration.StartDate ?? DateTime.UtcNow;
 
                 foreach (var tagId in tagIds)
                 {
@@ -526,7 +519,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.DeployedAtEnabled = updateModel.EnabledFields.DeployedAtEnabled;
                 planning.BuildYearEnabled = updateModel.EnabledFields.BuildYearEnabled;
                 planning.DaysBeforeRedeploymentPushMessageRepeat =
-                    updateModel.Reiteration.DaysBeforeRedeploymentPushMessageRepeat;
+                    updateModel.Reiteration.PushMessageEnabled;
                 planning.DoneAtEnabled = updateModel.EnabledFields.DoneAtEnabled;
                 planning.RelatedEFormId = updateModel.BoundEform.RelatedEFormId;
                 planning.LabelEnabled = updateModel.EnabledFields.LabelEnabled;
@@ -655,7 +648,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     DayOfWeek = x.DayOfWeek,
                     DayOfMonth = (int)x.DayOfMonth,
                     StartDate = x.StartDate,
-                    DaysBeforeRedeploymentPushMessageRepeat = x.DaysBeforeRedeploymentPushMessageRepeat,
+                    PushMessageEnabled = x.DaysBeforeRedeploymentPushMessageRepeat,
                     DaysBeforeRedeploymentPushMessage = x.DaysBeforeRedeploymentPushMessage,
                 },
                 BoundEform = new PlanningEformModel

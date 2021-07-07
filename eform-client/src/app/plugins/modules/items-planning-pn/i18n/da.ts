@@ -77,8 +77,8 @@ export const da = {
   'Select tags': 'Vælg filter',
   'Edit Case': 'Rediger sagen',
   Id: 'Id',
-  daysBeforeRedeploymentPushMessageRepeat:
-    'Dage før omfordeling push - besked gentag',
+  pushMessageEnabled:
+    'Push beskeder slået til',
   daysBeforeRedeploymentPushMessage: 'Antal dage før du sender en push-besked',
   Enabled: 'Aktiveret',
   Disabled: 'Deaktiveret',

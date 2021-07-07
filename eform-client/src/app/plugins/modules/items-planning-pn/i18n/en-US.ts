@@ -62,8 +62,8 @@ export const enUS = {
   Table: 'Table',
   'Select Tags': 'Select tags',
   Id: 'Id',
-  daysBeforeRedeploymentPushMessageRepeat:
-    'Days before redeployment push message repeat',
+  pushMessageEnabled:
+    'Push message enabled',
   daysBeforeRedeploymentPushMessage: 'Days before redeployment push message',
   Enabled: 'Enabled',
   Disabled: 'Disabled',

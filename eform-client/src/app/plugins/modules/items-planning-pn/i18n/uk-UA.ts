@@ -64,8 +64,8 @@ export const ukUA = {
   'Select Tags': 'Виберіть теги',
   'Eform was deleted': 'ЕФорма була видалена',
   Id: 'Ідентифікатор',
-  daysBeforeRedeploymentPushMessageRepeat:
-    'За кілька днів повторювати push-повідомлення',
+  pushMessageEnabled:
+    'Push-повідомлення увімкнено',
   daysBeforeRedeploymentPushMessage:
     'Кількість днів перед відправкою push message',
   Enabled: 'Увімкнуто',

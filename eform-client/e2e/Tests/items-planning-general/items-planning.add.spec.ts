@@ -28,7 +28,7 @@ const planningData: PlanningCreateUpdate = {
   buildYear: '10',
   number: '10',
   daysBeforeRedeploymentPushMessage: getRandomInt(1, 27),
-  daysBeforeRedeploymentPushMessageRepeat: true,
+  pushMessageEnabled: true,
 };
 describe('Items planning - Add', function () {
   before(function () {
@@ -148,12 +148,12 @@ describe('Items planning - Add', function () {
       'Saved start from is incorrect'
     ).eq(format(planningData.startFrom, 'M/d/yyyy'));
     expect(
-      itemsPlanningModalPage.daysBeforeRedeploymentPushMessageRepeatEdit
+      itemsPlanningModalPage.pushMessageEnabledEdit
         .$('.ng-value-label')
         .getText(),
-      'Saved daysBeforeRedeploymentPushMessageRepeat code is incorrect'
+      'Saved pushMessageEnabled code is incorrect'
     ).eq(
-      planningData.daysBeforeRedeploymentPushMessageRepeat
+      planningData.pushMessageEnabled
         ? 'Aktiveret'
         : 'Deaktiveret'
     );

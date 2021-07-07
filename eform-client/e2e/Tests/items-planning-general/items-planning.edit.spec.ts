@@ -26,7 +26,7 @@ let planningData: PlanningCreateUpdate = {
   locationCode: '12345',
   startFrom: new Date(2020, 7, 9),
   number: '10',
-  daysBeforeRedeploymentPushMessageRepeat: false,
+  pushMessageEnabled: false,
   daysBeforeRedeploymentPushMessage: getRandomInt(1, 27),
 };
 let folderNameForEdit = generateRandmString();
@@ -89,7 +89,7 @@ describe('Items planning actions - Edit', function () {
       type: generateRandmString(),
       repeatUntil: parse('10/18/2020', 'M/d/yyyy', new Date()),
       repeatEvery: '2',
-      daysBeforeRedeploymentPushMessageRepeat: true,
+      pushMessageEnabled: true,
       daysBeforeRedeploymentPushMessage: getRandomInt(1, 27),
     };
     folderNameForEdit = tempForSwapFolderName;
@@ -165,12 +165,12 @@ describe('Items planning actions - Edit', function () {
       'Saved start from is incorrect'
     ).eq(format(planningData.startFrom, 'M/d/yyyy'));
     expect(
-      itemsPlanningModalPage.daysBeforeRedeploymentPushMessageRepeatEdit
+      itemsPlanningModalPage.pushMessageEnabledEdit
         .$('.ng-value-label')
         .getText(),
-      'Saved daysBeforeRedeploymentPushMessageRepeat code is incorrect'
+      'Saved pushMessageEnabled code is incorrect'
     ).eq(
-      planningData.daysBeforeRedeploymentPushMessageRepeat
+      planningData.pushMessageEnabled
         ? 'Aktiveret'
         : 'Deaktiveret'
     );
