@@ -14,6 +14,7 @@ import {EformImportedModule} from 'src/app/common/modules/eform-imported/eform-i
 import {EformSharedModule} from 'src/app/common/modules/eform-shared/eform-shared.module';
 import {PlanningCasePageComponent} from 'src/app/plugins/modules/items-planning-pn/components/planning-case/planning-case-page/planning-case-page.component';
 import {PlanningCaseHeaderComponent} from 'src/app/plugins/modules/items-planning-pn/components/planning-case/planning-case-header/planning-case-header.component';
+import {EformCasesModule} from 'src/app/common/modules/eform-cases/eform-cases.module';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import {PlanningCaseHeaderComponent} from 'src/app/plugins/modules/items-plannin
     GalleryModule,
     FormsModule,
     FontAwesomeModule,
-    CasesModule
+    CasesModule,
+    EformCasesModule
   ]
 })
 export class PlanningCaseModule {
