@@ -205,7 +205,13 @@ namespace ItemsPlanning.Pn.Services.WordService
                                 }
                                 else
                                 {
-                                    itemsHtml += $@"<td>{dataModelCaseField}</td>";
+                                    if (dataModelCaseField == "unchecked")
+                                    {
+                                        itemsHtml += $@"<td></td>";
+                                    } else
+                                    {
+                                        itemsHtml += $@"<td>{dataModelCaseField}</td>";
+                                    }
                                 }
                             }
 
