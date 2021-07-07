@@ -60,9 +60,9 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
   activatedRouteSub$: Subscription;
 
   selectedFolderName: string;
-  daysBeforeRedeploymentPushMessage = Array(27)
+  daysBeforeRedeploymentPushMessage = Array(28)
     .fill(0)
-    .map((_e, i) => i + 1);
+    .map((_e, i) => i);
 
   constructor(
     private foldersService: FoldersService,
