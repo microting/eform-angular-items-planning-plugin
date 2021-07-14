@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microting.eForm.Infrastructure;
+using Microting.eForm.Infrastructure.Data.Entities;
+
 namespace ItemsPlanning.Pn.Helpers
 {
     using System;
@@ -197,6 +200,28 @@ namespace ItemsPlanning.Pn.Helpers
                 if (planningCaseSite.MicrotingSdkCaseId < 1 && planning.StartDate <= DateTime.Now)
                 {
                     // ReSharper disable once PossibleInvalidOperationException
+                    if (planning.PushMessageOnDeployment)
+                    {
+                        string body = "";
+                        folder = await getTopFolderName((int) planning.SdkFolderId, sdkDbContext);
+                        if (folder != null)
+                        {
+                            planning.SdkFolderId = sdkDbContext.Folders
+                                .FirstOrDefault(y => y.Id == planning.SdkFolderId).Id;
+                            FolderTranslation folderTranslation =
+                                await sdkDbContext.FolderTranslations.SingleOrDefaultAsync(x =>
+                                    x.FolderId == folder.Id && x.LanguageId == sdkSite.LanguageId);
+                            body = $"{folderTranslation.Name} ({sdkSite.Name};{DateTime.Now:d, M yyyy})";
+                        }
+
+                        PlanningNameTranslation planningNameTranslation =
+                            await _dbContext.PlanningNameTranslation.SingleOrDefaultAsync(x =>
+                                x.PlanningId == planning.Id
+                                && x.LanguageId == sdkSite.LanguageId);
+
+                        mainElement.PushMessageBody = body;
+                        mainElement.PushMessageTitle = planningNameTranslation.Name;
+                    }
                     var caseId = await sdkCore.CaseCreate(mainElement, "", (int) sdkSite.MicrotingUid, null);
                     if (caseId != null)
                     {
@@ -207,6 +232,16 @@ namespace ItemsPlanning.Pn.Helpers
                     }
                 }
             }
+        }
+
+        private async Task<Folder> getTopFolderName(int folderId, MicrotingDbContext dbContext)
+        {
+            var result = await dbContext.Folders.FirstOrDefaultAsync(y => y.Id == folderId);
+            if (result.ParentId != null)
+            {
+                result = await getTopFolderName((int)result.ParentId, dbContext);
+            }
+            return result;
         }
     }
 }
