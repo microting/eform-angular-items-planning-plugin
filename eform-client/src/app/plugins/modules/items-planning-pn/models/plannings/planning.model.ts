@@ -18,6 +18,9 @@ export class PlanningModel {
   locationCode: string;
   buildYear: string;
   type: string;
+  lastExecutedTime: string;
+  nextExecutionTime: string;
+  pushMessageSent: boolean;
 
   folder: PlanningFolderModel = new PlanningFolderModel();
   reiteration: PlanningReiterationModel = new PlanningReiterationModel();

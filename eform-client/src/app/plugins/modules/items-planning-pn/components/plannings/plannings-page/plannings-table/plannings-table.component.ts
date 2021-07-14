@@ -69,6 +69,21 @@ export class PlanningsTableComponent implements OnInit {
       elementId: 'repeatUntilTableHeader',
       sortable: true,
     },
+    {
+      name: 'LastExecutedTime',
+      elementId: 'lastExecutedTime',
+      sortable: true,
+    },
+    {
+      name: 'NextExecutionTime',
+      elementId: 'nextExecutionTime',
+      sortable: true,
+    },
+    {
+      name: 'PushMessageSent',
+      elementId: 'pushMessageSent',
+      sortable: true,
+    },
     { name: 'Actions', elementId: '', sortable: false },
   ];
 

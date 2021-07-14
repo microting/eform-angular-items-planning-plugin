@@ -110,6 +110,21 @@
         <!--            </div>-->
         <!--          </div>-->
         <!--        </td>-->
+        <td id="lastExecutedTime">
+          <date-formatter
+            [date]="planning.lastExecutedTime"
+            [Format]="'datetime'"
+          ></date-formatter>
+        </td>
+        <td id="nextExecutionTime">
+          <date-formatter
+            [date]="planning.nextExecutionTime"
+            [Format]="'datetime'"
+          ></date-formatter>
+        </td>
+        <td id="pushMessageSent">
+          {{planning.pushMessageSent}}
+        </td>
         <td>
           <div class="d-flex flex-row justify-content-center">
             <button

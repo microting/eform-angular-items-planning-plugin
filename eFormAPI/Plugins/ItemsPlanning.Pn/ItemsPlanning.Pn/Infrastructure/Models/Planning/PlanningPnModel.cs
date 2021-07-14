@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System;
+using Microting.eForm.Infrastructure.Models;
+
 namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 {
     using System.Collections.Generic;
@@ -45,6 +48,12 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
         public string BuildYear { get; set; }
 
         public string Type { get; set; }
+
+        public DateTime? LastExecutionTime { get; set; }
+
+        public DateTime? NextExecutionTime { get; set; }
+
+        public bool PushMessageSent { get; set; }
 
         public PlanningFolderModel Folder { get; set; }
 

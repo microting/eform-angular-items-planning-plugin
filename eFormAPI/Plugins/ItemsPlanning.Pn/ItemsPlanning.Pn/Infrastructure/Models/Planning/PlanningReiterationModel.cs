@@ -44,6 +44,8 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 
         public bool PushMessageEnabled { get; set; }
 
+        public bool PushMessageOnDeployment { get; set; }
+
         //public string InternalRepeatUntil { get; set; }
     }
 }

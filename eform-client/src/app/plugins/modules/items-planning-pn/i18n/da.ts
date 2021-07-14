@@ -79,8 +79,12 @@ export const da = {
   Id: 'Id',
   pushMessageEnabled:
     'Push beskeder slået til',
-  daysBeforeRedeploymentPushMessage: 'Antal dage før du sender en push-besked',
+  daysBeforeRedeploymentPushMessage: 'Push besked sendes antal dage før ny periodestart',
   Enabled: 'Aktiveret',
   Disabled: 'Deaktiveret',
   'Select date range': 'Vælg periode',
+  pushMessageOnDeployment: 'Push besked sendes til parret enheder, ved periode start',
+  LastExecutedTime: 'Sidst udsendt',
+  NextExecutionTime: 'Næste udsendelse',
+  PushMessageSent: 'Push påmindelse udsendt'
 };

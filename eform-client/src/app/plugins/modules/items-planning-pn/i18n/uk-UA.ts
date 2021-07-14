@@ -70,5 +70,6 @@ export const ukUA = {
     'Кількість днів перед відправкою push message',
   Enabled: 'Увімкнуто',
   Disabled: 'Вимкнуто',
-  'Select date range': 'Виберіть діапазон дат'
+  'Select date range': 'Виберіть діапазон дат',
+  pushMessageOnDeployment: 'Під час розгортання надсилати повідомлення на спарені пристрої'
 };

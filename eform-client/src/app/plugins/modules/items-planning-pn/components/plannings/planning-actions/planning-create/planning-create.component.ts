@@ -56,7 +56,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   translationsArray: FormArray = new FormArray([]);
   daysBeforeRedeploymentPushMessage = Array(27)
     .fill(0)
-    .map((_e, i) => i + 1);
+    .map((_e, i) => i);
 
   selectedFolderName: string;
 

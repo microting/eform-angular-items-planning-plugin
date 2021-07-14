@@ -68,4 +68,8 @@ export const enUS = {
   Enabled: 'Enabled',
   Disabled: 'Disabled',
   'Select date range': 'Select date range',
+  pushMessageOnDeployment: 'Push message send to paired devices upon deployment',
+  LastExecutedTime: 'Last deployment',
+  NextExecutionTime: 'Next deployment',
+  PushMessageSent: 'Push reminder sent'
 };
