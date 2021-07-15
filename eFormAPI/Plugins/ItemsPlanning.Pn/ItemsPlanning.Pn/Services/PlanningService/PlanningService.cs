@@ -629,7 +629,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 Type = x.Type,
                 LocationCode = x.LocationCode,
                 PlanningNumber = x.PlanningNumber,
-                LastExecutionTime = x.LastExecutedTime,
+                LastExecutedTime = x.LastExecutedTime,
                 NextExecutionTime = x.NextExecutionTime,
                 PushMessageSent = x.PushMessageSent,
                 TranslationsName = x.NameTranslations.Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)

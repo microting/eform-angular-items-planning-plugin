@@ -64,11 +64,11 @@ export class PlanningsTableComponent implements OnInit {
       sortable: true,
     },
     { name: 'RepeatType', elementId: 'repeatTypeTableHeader', sortable: true },
-    {
-      name: 'RepeatUntil',
-      elementId: 'repeatUntilTableHeader',
-      sortable: true,
-    },
+    // {
+    //   name: 'RepeatUntil',
+    //   elementId: 'repeatUntilTableHeader',
+    //   sortable: true,
+    // },
     {
       name: 'LastExecutedTime',
       elementId: 'lastExecutedTime',

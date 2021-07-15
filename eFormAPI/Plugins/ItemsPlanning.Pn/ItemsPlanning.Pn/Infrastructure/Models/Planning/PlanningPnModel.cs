@@ -49,7 +49,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 
         public string Type { get; set; }
 
-        public DateTime? LastExecutionTime { get; set; }
+        public DateTime? LastExecutedTime { get; set; }
 
         public DateTime? NextExecutionTime { get; set; }
 
