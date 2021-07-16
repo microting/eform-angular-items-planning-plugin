@@ -236,8 +236,8 @@ export class PlanningRowObject {
       this.tags = row.$$('#planningTags').map((element) => element.getText());
       this.repeatEvery = +row.$('#planningRepeatEvery').getText();
       this.repeatType = row.$('#planningRepeatType').getText();
-      const date = row.$('#planningRepeatUntil').getText();
-      this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
+      // const date = row.$('#planningRepeatUntil').getText();
+      // this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
       this.pairingBtn = row.$('#planningAssignmentBtn');
       this.updateBtn = row.$('#updatePlanningBtn');
       this.deleteBtn = row.$('#deletePlanningBtn');
