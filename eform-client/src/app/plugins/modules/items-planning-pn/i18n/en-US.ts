@@ -62,10 +62,14 @@ export const enUS = {
   Table: 'Table',
   'Select Tags': 'Select tags',
   Id: 'Id',
-  daysBeforeRedeploymentPushMessageRepeat:
-    'Days before redeployment push message repeat',
+  pushMessageEnabled:
+    'Push message enabled',
   daysBeforeRedeploymentPushMessage: 'Days before redeployment push message',
   Enabled: 'Enabled',
   Disabled: 'Disabled',
   'Select date range': 'Select date range',
+  pushMessageOnDeployment: 'Push message send to paired devices upon deployment',
+  LastExecutedTime: 'Last deployment',
+  NextExecutionTime: 'Next deployment',
+  PushMessageSent: 'Push reminder sent'
 };

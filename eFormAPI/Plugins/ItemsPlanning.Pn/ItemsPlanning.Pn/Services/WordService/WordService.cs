@@ -168,44 +168,60 @@ namespace ItemsPlanning.Pn.Services.WordService
                         itemsHtml += $@"<p style='padding-bottom: 0;'>{_localizationService.GetString("Table")}: {reportEformModel.TableName}</p>";
                     }
 
-                    itemsHtml += @"<table width=""100%"" border=""1"">"; // TODO change font-size 7
-
-                    // Table header
-                    itemsHtml += @"<tr style='background-color:#f5f5f5;font-weight:bold;font-size: 7pt;'>";
-                    itemsHtml += $@"<td>{_localizationService.GetString("Id")}</td>";
-                    itemsHtml += $@"<td>{_localizationService.GetString("CreatedAt")}</td>";
-                    itemsHtml += $@"<td>{_localizationService.GetString("DoneBy")}</td>";
-                    itemsHtml += $@"<td>{_localizationService.GetString("ItemName")}</td>";
-
-                    foreach (var itemHeader in reportEformModel.ItemHeaders)
+                    if (reportEformModel.Items.Any())
                     {
-                        itemsHtml += $@"<td>{itemHeader.Value}</td>";
-                    }
+                        itemsHtml += @"<table width=""100%"" border=""1"">"; // TODO change font-size 7
 
-                    // itemsHtml += $@"<td>{_localizationService.GetString("Pictures")}</td>";
-                    // itemsHtml += $@"<td>{_localizationService.GetString("Posts")}</td>";
-                    itemsHtml += @"</tr>";
+                        // Table header
+                        itemsHtml += @"<tr style='background-color:#f5f5f5;font-weight:bold;font-size: 7pt;'>";
+                        itemsHtml += $@"<td>{_localizationService.GetString("Id")}</td>";
+                        itemsHtml += $@"<td>{_localizationService.GetString("CreatedAt")}</td>";
+                        itemsHtml += $@"<td>{_localizationService.GetString("DoneBy")}</td>";
+                        itemsHtml += $@"<td>{_localizationService.GetString("ItemName")}</td>";
 
-                    foreach (var dataModel in reportEformModel.Items)
-                    {
-                        itemsHtml += @"<tr style='font-size: 7pt;'>";
-                        itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseId}</td>";
-
-                        itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}</td>";
-                        itemsHtml += $@"<td>{dataModel.DoneBy}</td>";
-                        itemsHtml += $@"<td>{dataModel.ItemName}</td>";
-
-                        foreach (var dataModelCaseField in dataModel.CaseFields)
+                        foreach (var itemHeader in reportEformModel.ItemHeaders)
                         {
-                            itemsHtml += $@"<td>{dataModelCaseField}</td>";
+                            itemsHtml += $@"<td>{itemHeader.Value}</td>";
                         }
 
-                        // itemsHtml += $@"<td>{dataModel.ImagesCount}</td>";
-                        // itemsHtml += $@"<td>{dataModel.PostsCount}</td>";
+                        // itemsHtml += $@"<td>{_localizationService.GetString("Pictures")}</td>";
+                        // itemsHtml += $@"<td>{_localizationService.GetString("Posts")}</td>";
                         itemsHtml += @"</tr>";
-                    }
 
-                    itemsHtml += @"</table>";
+                        foreach (var dataModel in reportEformModel.Items)
+                        {
+                            itemsHtml += @"<tr style='font-size: 7pt;'>";
+                            itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseId}</td>";
+
+                            itemsHtml += $@"<td>{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}</td>";
+                            itemsHtml += $@"<td>{dataModel.DoneBy}</td>";
+                            itemsHtml += $@"<td>{dataModel.ItemName}</td>";
+
+                            foreach (var dataModelCaseField in dataModel.CaseFields)
+                            {
+                                if (dataModelCaseField == "checked")
+                                {
+                                    itemsHtml += $@"<td>&#10004;</td>";
+                                }
+                                else
+                                {
+                                    if (dataModelCaseField == "unchecked")
+                                    {
+                                        itemsHtml += $@"<td></td>";
+                                    } else
+                                    {
+                                        itemsHtml += $@"<td>{dataModelCaseField}</td>";
+                                    }
+                                }
+                            }
+
+                            // itemsHtml += $@"<td>{dataModel.ImagesCount}</td>";
+                            // itemsHtml += $@"<td>{dataModel.PostsCount}</td>";
+                            itemsHtml += @"</tr>";
+                        }
+
+                        itemsHtml += @"</table>";
+                    }
 
                     itemsHtml += @"<br/>";
 

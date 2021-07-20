@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {PairingsModel, PairingUpdateModel} from '../../../models/pairings';
+import {AuthStateService} from 'src/app/common/store';
 
 @Component({
   selector: 'app-pairing-grid-table',
@@ -12,7 +13,8 @@ export class PairingGridTableComponent implements OnInit {
   @Input() selectedColCheckboxes: Array<{colNumber: number, checked: boolean}>;
   @Input() selectedRowCheckboxes: Array<{rowNumber: number, checked: boolean}>;
 
-  constructor() {}
+  constructor(
+    public authStateService: AuthStateService) {}
 
   ngOnInit(): void {}
 

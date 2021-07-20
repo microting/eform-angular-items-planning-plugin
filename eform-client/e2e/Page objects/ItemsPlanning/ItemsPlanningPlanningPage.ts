@@ -236,8 +236,8 @@ export class PlanningRowObject {
       this.tags = row.$$('#planningTags').map((element) => element.getText());
       this.repeatEvery = +row.$('#planningRepeatEvery').getText();
       this.repeatType = row.$('#planningRepeatType').getText();
-      const date = row.$('#planningRepeatUntil').getText();
-      this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
+      // const date = row.$('#planningRepeatUntil').getText();
+      // this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
       this.pairingBtn = row.$('#planningAssignmentBtn');
       this.updateBtn = row.$('#updatePlanningBtn');
       this.deleteBtn = row.$('#deletePlanningBtn');
@@ -448,14 +448,14 @@ export class PlanningRowObject {
     ) {
       itemsPlanningModalPage.editItemType.setValue(planning.type);
     }
-    if (planning.daysBeforeRedeploymentPushMessageRepeat != null) {
-      const status = planning.daysBeforeRedeploymentPushMessageRepeat
+    if (planning.pushMessageEnabled != null) {
+      const status = planning.pushMessageEnabled
         ? 'Aktiveret'
         : 'Deaktiveret';
-      itemsPlanningModalPage.daysBeforeRedeploymentPushMessageRepeatEdit
+      itemsPlanningModalPage.pushMessageEnabledEdit
         .$('input')
         .setValue(status);
-      let value = itemsPlanningModalPage.daysBeforeRedeploymentPushMessageRepeatEdit
+      let value = itemsPlanningModalPage.pushMessageEnabledEdit
         .$('ng-dropdown-panel')
         .$(`.ng-option=${status}`);
       value.waitForDisplayed({ timeout: 40000 });
@@ -499,6 +499,6 @@ export class PlanningCreateUpdate {
   public locationCode?: string;
   public buildYear?: string;
   public type?: string;
-  public daysBeforeRedeploymentPushMessageRepeat?: boolean;
+  public pushMessageEnabled?: boolean;
   public daysBeforeRedeploymentPushMessage?: number;
 }

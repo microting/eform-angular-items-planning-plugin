@@ -31,5 +31,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Pairing
         public bool Paired { get; set; }
 
         public int? LatestCaseStatus { get; set; }
+
+        public int PlanningCaseSiteId { get; set; }
     }
 }

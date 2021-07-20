@@ -42,7 +42,9 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 
         public int DaysBeforeRedeploymentPushMessage { get; set; }
 
-        public bool DaysBeforeRedeploymentPushMessageRepeat { get; set; }
+        public bool PushMessageEnabled { get; set; }
+
+        public bool PushMessageOnDeployment { get; set; }
 
         //public string InternalRepeatUntil { get; set; }
     }

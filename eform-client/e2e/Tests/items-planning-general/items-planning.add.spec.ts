@@ -28,7 +28,7 @@ const planningData: PlanningCreateUpdate = {
   buildYear: '10',
   number: '10',
   daysBeforeRedeploymentPushMessage: getRandomInt(1, 27),
-  daysBeforeRedeploymentPushMessageRepeat: true,
+  pushMessageEnabled: true,
 };
 describe('Items planning - Add', function () {
   before(function () {
@@ -74,11 +74,11 @@ describe('Items planning - Add', function () {
       planningRowObject.repeatEvery.toString(),
       'Saved repeat every in table is incorrect'
     ).equal(planningData.repeatEvery);
-    const repeatUntil = new Date(planningData.repeatUntil);
-    expect(
-      planningRowObject.repeatUntil.getDate(),
-      'Saved repeat Until in table is incorrect'
-    ).equal(repeatUntil.getDate());
+    // const repeatUntil = new Date(planningData.repeatUntil);
+    // expect(
+    //   planningRowObject.repeatUntil.getDate(),
+    //   'Saved repeat Until in table is incorrect'
+    // ).equal(repeatUntil.getDate());
     expect(
       planningRowObject.repeatType,
       'Saved repeat type in table is incorrect'
@@ -103,17 +103,17 @@ describe('Items planning - Add', function () {
       itemsPlanningModalPage.editRepeatEvery.getValue(),
       'Saved repeat every is incorrect'
     ).eq(planningData.repeatEvery);
-    expect(
-      format(
-        parse(
-          itemsPlanningModalPage.editRepeatUntil.getValue(),
-          'M/d/yyyy',
-          new Date()
-        ),
-        'M/d/yyyy'
-      ),
-      'Saved repeat until is incorrect'
-    ).eq(format(planningData.repeatUntil, 'M/d/yyyy'));
+    // expect(
+    //   format(
+    //     parse(
+    //       itemsPlanningModalPage.editRepeatUntil.getValue(),
+    //       'M/d/yyyy',
+    //       new Date()
+    //     ),
+    //     'M/d/yyyy'
+    //   ),
+    //   'Saved repeat until is incorrect'
+    // ).eq(format(planningData.repeatUntil, 'M/d/yyyy'));
     expect(
       itemsPlanningModalPage.editRepeatType.$('.ng-value-label').getText(),
       'Saved repeat type is incorrect'
@@ -148,12 +148,12 @@ describe('Items planning - Add', function () {
       'Saved start from is incorrect'
     ).eq(format(planningData.startFrom, 'M/d/yyyy'));
     expect(
-      itemsPlanningModalPage.daysBeforeRedeploymentPushMessageRepeatEdit
+      itemsPlanningModalPage.pushMessageEnabledEdit
         .$('.ng-value-label')
         .getText(),
-      'Saved daysBeforeRedeploymentPushMessageRepeat code is incorrect'
+      'Saved pushMessageEnabled code is incorrect'
     ).eq(
-      planningData.daysBeforeRedeploymentPushMessageRepeat
+      planningData.pushMessageEnabled
         ? 'Aktiveret'
         : 'Deaktiveret'
     );

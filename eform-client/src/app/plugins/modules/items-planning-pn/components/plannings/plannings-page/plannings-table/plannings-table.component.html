@@ -98,18 +98,33 @@
             {{ 'Month' | translate }}
           </div>
         </td>
-        <td id="planningRepeatUntil">
-          <date-formatter
-            [date]="planning.reiteration.repeatUntil"
-            [Format]="'datetime'"
-          ></date-formatter>
-        </td>
+<!--        <td id="planningRepeatUntil">-->
+<!--          <date-formatter-->
+<!--            [date]="planning.reiteration.repeatUntil"-->
+<!--            [Format]="'datetime'"-->
+<!--          ></date-formatter>-->
+<!--        </td>-->
         <!--        <td>-->
         <!--          <div class="d-flex justify-content-center">-->
         <!--            <div>-->
         <!--            </div>-->
         <!--          </div>-->
         <!--        </td>-->
+        <td id="lastExecutedTime">
+          <date-formatter
+            [date]="planning.lastExecutedTime"
+            [Format]="'datetime'"
+          ></date-formatter>
+        </td>
+        <td id="nextExecutionTime">
+          <date-formatter
+            [date]="planning.nextExecutionTime"
+            [Format]="'datetime'"
+          ></date-formatter>
+        </td>
+        <td id="pushMessageSent">
+          <fa-icon icon="check" size="lg" [fixedWidth]="true" *ngIf="planning.pushMessageSent"></fa-icon>
+        </td>
         <td>
           <div class="d-flex flex-row justify-content-center">
             <button

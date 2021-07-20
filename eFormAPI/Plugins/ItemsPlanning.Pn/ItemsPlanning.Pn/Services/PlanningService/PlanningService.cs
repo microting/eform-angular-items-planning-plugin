@@ -296,18 +296,12 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     SdkFolderName = sdkFolder.Name,
                     SdkFolderId = model.Folder.EFormSdkFolderId,
                     PlanningsTags = new List<PlanningsTags>(),
-                    DaysBeforeRedeploymentPushMessageRepeat = model.Reiteration.DaysBeforeRedeploymentPushMessageRepeat,
+                    DaysBeforeRedeploymentPushMessageRepeat = model.Reiteration.PushMessageEnabled,
                     DaysBeforeRedeploymentPushMessage = model.Reiteration.DaysBeforeRedeploymentPushMessage,
+                    PushMessageOnDeployment = model.Reiteration.PushMessageOnDeployment,
+                    StartDate = model.Reiteration.StartDate ?? DateTime.UtcNow
                 };
 
-                if (model.Reiteration.StartDate.HasValue)
-                {
-                    planning.StartDate = model.Reiteration.StartDate.Value;
-                }
-                else
-                {
-                    planning.StartDate = DateTime.UtcNow;
-                }
 
                 foreach (var tagId in tagIds)
                 {
@@ -526,7 +520,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.DeployedAtEnabled = updateModel.EnabledFields.DeployedAtEnabled;
                 planning.BuildYearEnabled = updateModel.EnabledFields.BuildYearEnabled;
                 planning.DaysBeforeRedeploymentPushMessageRepeat =
-                    updateModel.Reiteration.DaysBeforeRedeploymentPushMessageRepeat;
+                    updateModel.Reiteration.PushMessageEnabled;
                 planning.DoneAtEnabled = updateModel.EnabledFields.DoneAtEnabled;
                 planning.RelatedEFormId = updateModel.BoundEform.RelatedEFormId;
                 planning.LabelEnabled = updateModel.EnabledFields.LabelEnabled;
@@ -545,6 +539,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.SdkFolderName = sdkFolder.Name;
                 planning.UpdatedAt = DateTime.UtcNow;
                 planning.Type = updateModel.Type;
+                planning.PushMessageOnDeployment = updateModel.Reiteration.PushMessageOnDeployment;
 
                 var tagIds = planning.PlanningsTags
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
@@ -634,6 +629,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 Type = x.Type,
                 LocationCode = x.LocationCode,
                 PlanningNumber = x.PlanningNumber,
+                LastExecutedTime = x.LastExecutedTime,
+                NextExecutionTime = x.NextExecutionTime,
+                PushMessageSent = x.PushMessageSent,
                 TranslationsName = x.NameTranslations.Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                     .Select(y => new PlanningNameTranslations
                     {
@@ -655,8 +653,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     DayOfWeek = x.DayOfWeek,
                     DayOfMonth = (int)x.DayOfMonth,
                     StartDate = x.StartDate,
-                    DaysBeforeRedeploymentPushMessageRepeat = x.DaysBeforeRedeploymentPushMessageRepeat,
+                    PushMessageEnabled = x.DaysBeforeRedeploymentPushMessageRepeat,
                     DaysBeforeRedeploymentPushMessage = x.DaysBeforeRedeploymentPushMessage,
+                    PushMessageOnDeployment = x.PushMessageOnDeployment
                 },
                 BoundEform = new PlanningEformModel
                 {

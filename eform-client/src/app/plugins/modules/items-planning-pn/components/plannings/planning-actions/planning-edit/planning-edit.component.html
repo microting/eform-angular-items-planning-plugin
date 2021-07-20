@@ -318,11 +318,11 @@
                 ]"
                 [(ngModel)]="
                   selectedPlanningModel.reiteration
-                    .daysBeforeRedeploymentPushMessageRepeat
+                    .pushMessageEnabled
                 "
-                id="daysBeforeRedeploymentPushMessageRepeatEdit"
+                id="pushMessageEnabledEdit"
                 [placeholder]="
-                  'daysBeforeRedeploymentPushMessageRepeat' | translate
+                  'pushMessageEnabled' | translate
                 "
                 [bindLabel]="'name'"
                 [bindValue]="'value'"
@@ -341,6 +341,25 @@
                 id="editDaysBeforeRedeploymentPushMessage"
               >
               </ng-select>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-6">
+              <ng-select
+                [items]="[
+                  { name: 'Enabled' | translate, value: true },
+                  { name: 'Disabled' | translate, value: false }
+                ]"
+                [(ngModel)]="
+                  selectedPlanningModel.reiteration
+                    .pushMessageOnDeployment
+                "
+                id="pushMessageOnDeployment"
+                [placeholder]="
+                  'pushMessageOnDeployment' | translate
+                "
+                [bindLabel]="'name'"
+                [bindValue]="'value'"
+                [clearable]="false"
+              ></ng-select>
             </div>
           </div>
         </mdb-card-body>

@@ -77,10 +77,14 @@ export const da = {
   'Select tags': 'Vælg filter',
   'Edit Case': 'Rediger sagen',
   Id: 'Id',
-  daysBeforeRedeploymentPushMessageRepeat:
-    'Dage før omfordeling push - besked gentag',
-  daysBeforeRedeploymentPushMessage: 'Antal dage før du sender en push-besked',
+  pushMessageEnabled:
+    'Push beskeder slået til',
+  daysBeforeRedeploymentPushMessage: 'Push besked sendes antal dage før ny periodestart',
   Enabled: 'Aktiveret',
   Disabled: 'Deaktiveret',
   'Select date range': 'Vælg periode',
+  pushMessageOnDeployment: 'Push besked sendes til parret enheder, ved periode start',
+  LastExecutedTime: 'Sidst udsendt',
+  NextExecutionTime: 'Næste udsendelse',
+  PushMessageSent: 'Push påmindelse udsendt'
 };
