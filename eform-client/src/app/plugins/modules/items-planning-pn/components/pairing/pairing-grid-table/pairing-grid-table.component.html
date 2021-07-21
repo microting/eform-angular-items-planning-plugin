@@ -47,7 +47,9 @@
             <div class="text-center">
               {{ pairing.planningId }} - {{ pairing.planningName }}
             </div>
-            <div>
+            <div
+              class="d-flex justify-content-center justify-center align-items-center"
+            >
               <div class="mat-checkbox" *ngIf="selectedRowCheckboxes[i]">
                 <input
                   id="planningRowCheckbox{{ i }}"
@@ -90,7 +92,14 @@
               [status]="planningValue.latestCaseStatus"
             ></status-bar-compact>
             <div *ngIf="authStateService.isAdmin">
-              <small style="color: var(--blue-400);">({{planningValue.deviceUserId}}<span *ngIf="planningValue.planningCaseSiteId">/{{planningValue.planningCaseSiteId}}</span>)</small>
+              <small style="color: var(--blue-400)"
+                >({{
+                  planningValue.deviceUserId +
+                    (planningValue.planningCaseSiteId
+                      ? '/' + planningValue.planningCaseSiteId
+                      : '')
+                }})</small
+              >
             </div>
           </div>
         </td>
