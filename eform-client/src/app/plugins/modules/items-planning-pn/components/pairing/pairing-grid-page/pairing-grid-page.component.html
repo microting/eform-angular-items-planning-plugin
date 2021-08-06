@@ -15,7 +15,7 @@
 
 <div class="container-fluid">
   <div class="row pl-1">
-    <div class="col-md-4 col-sm-8 ng-select-wrapper">
+    <div class="col-md-4 col-sm-4 ng-select-wrapper">
       <ng-select
         class="custom"
         dropdownPosition="'bottom'"
@@ -28,6 +28,22 @@
         [bindLabel]="'name'"
         [bindValue]="'id'"
         id="tagSelector"
+        [multiple]="true"
+      ></ng-select>
+    </div>
+    <div class="col-md-4 col-sm-4 ng-select-wrapper">
+      <ng-select
+        class="custom"
+        dropdownPosition="'bottom'"
+        [placeholder]="'Sites' | translate"
+        [items]="sitesDto"
+        [ngModel]="pairingStateService.getSiteIds() | async"
+        (add)="saveSite($event)"
+        (remove)="removeSavedSite($event.value)"
+        [clearable]="false"
+        [bindLabel]="'siteName'"
+        [bindValue]="'id'"
+        id="siteSelector"
         [multiple]="true"
       ></ng-select>
     </div>

@@ -104,6 +104,16 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
     this.getAllPairings();
   }
 
+  saveSite(e: CommonDictionaryModel) {
+    this.pairingStateService.addOrRemoveSiteIds(e.id);
+    this.getAllPairings();
+  }
+
+  removeSavedSite(e: CommonDictionaryModel) {
+    this.pairingStateService.addOrRemoveSiteIds(e.id);
+    this.getAllPairings();
+  }
+
   ngOnDestroy(): void {}
 
   onPairingChanged(model: PairingUpdateModel) {
