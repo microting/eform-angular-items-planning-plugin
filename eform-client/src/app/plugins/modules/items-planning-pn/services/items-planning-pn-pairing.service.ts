@@ -6,7 +6,7 @@ import {
 } from 'src/app/common/models/operation.models';
 import { PlanningAssignSitesModel } from '../models/plannings/planning-assign-sites.model';
 import { PairingsModel, PairingUpdateModel } from '../models/pairings';
-import {ApiBaseService} from 'src/app/common/services';
+import { ApiBaseService } from 'src/app/common/services';
 
 export let ItemsPlanningPnPairingMethods = {
   Pairings: 'api/items-planning-pn/pairings',
@@ -21,8 +21,12 @@ export class ItemsPlanningPnPairingService {
 
   getAllPairings(model: {
     tagIds: number[];
+    siteIds: number[];
   }): Observable<OperationDataResult<PairingsModel>> {
-    return this.apiBaseService.post(ItemsPlanningPnPairingMethods.Pairings, model);
+    return this.apiBaseService.post(
+      ItemsPlanningPnPairingMethods.Pairings,
+      model
+    );
   }
 
   pairSingle(model: PlanningAssignSitesModel): Observable<OperationResult> {
@@ -33,6 +37,9 @@ export class ItemsPlanningPnPairingService {
   }
 
   updatePairings(model: PairingUpdateModel[]): Observable<OperationResult> {
-    return this.apiBaseService.put(ItemsPlanningPnPairingMethods.Pairings, model);
+    return this.apiBaseService.put(
+      ItemsPlanningPnPairingMethods.Pairings,
+      model
+    );
   }
 }

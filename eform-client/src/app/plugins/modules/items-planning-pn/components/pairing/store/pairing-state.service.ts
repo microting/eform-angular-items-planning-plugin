@@ -15,9 +15,7 @@ export class PairingStateService {
   ) {}
 
   getAllPairings(): Observable<OperationDataResult<PairingsModel>> {
-    return this.service.getAllPairings({
-      tagIds: this.query.pageSetting.filters.tagIds,
-    });
+    return this.service.getAllPairings({ ...this.query.pageSetting.filters });
   }
 
   getTagIds(): Observable<number[]> {
@@ -29,6 +27,19 @@ export class PairingStateService {
       filters: {
         ...state.filters,
         tagIds: arrayToggle(state.filters.tagIds, id),
+      },
+    }));
+  }
+
+  getSiteIds(): Observable<number[]> {
+    return this.query.selectSiteIds$;
+  }
+
+  addOrRemoveSiteIds(id: number) {
+    this.store.update((state) => ({
+      filters: {
+        ...state.filters,
+        siteIds: arrayToggle(state.filters.siteIds, id),
       },
     }));
   }
