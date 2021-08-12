@@ -3,13 +3,18 @@ import { persistState, Store, StoreConfig } from '@datorama/akita';
 import { FiltrationStateModel } from 'src/app/common/models';
 
 export interface PairingState {
-  filters: FiltrationStateModel;
+  filters: PairingFiltrationState;
+}
+
+export interface PairingFiltrationState extends FiltrationStateModel {
+  siteIds: number[];
 }
 
 export function createInitialState(): PairingState {
   return <PairingState>{
     filters: {
       tagIds: [],
+      siteIds: [],
     },
   };
 }

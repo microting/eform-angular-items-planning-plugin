@@ -13,4 +13,5 @@ export class PairingQuery extends Query<PairingState> {
   }
 
   selectTagIds$ = this.select((state) => state.filters.tagIds);
+  selectSiteIds$ = this.select((state) => state.filters.siteIds);
 }

@@ -73,14 +73,18 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 var sdkCore =
                     await _coreService.GetCore();
                 await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
-                var deviceUsers = await sdkDbContext.Sites
+                var sitesQuery = sdkDbContext.Sites
                     .AsNoTracking()
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                    .Select(x => new CommonDictionaryModel
-                    {
-                        Id = x.Id,
-                        Name = x.Name,
-                    }).ToListAsync();
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed);
+                if (pairingRequestModel.SiteIds.Any())
+                {
+                    sitesQuery = sitesQuery.Where(x => pairingRequestModel.SiteIds.Contains(x.Id));
+                }
+                var deviceUsers = await sitesQuery.Select(x => new CommonDictionaryModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                }).ToListAsync();
 
                 var pairingQuery = _dbContext.Plannings
                     .Where(x => x.SdkFolderId != null)

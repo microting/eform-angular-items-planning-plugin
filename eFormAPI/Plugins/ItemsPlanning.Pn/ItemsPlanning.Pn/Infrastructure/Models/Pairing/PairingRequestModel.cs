@@ -26,9 +26,12 @@ using System.Collections.Generic;
 
 namespace ItemsPlanning.Pn.Infrastructure.Models.Pairing
 {
-  public class PairingRequestModel
-  {
-    public List<int> TagIds { get; set; }
-      = new List<int>();
-  }
+    public class PairingRequestModel
+    {
+        public List<int> TagIds { get; set; }
+          = new List<int>();
+
+        public List<int> SiteIds { get; set; }
+            = new List<int>();
+    }
 }

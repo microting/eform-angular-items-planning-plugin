@@ -33,7 +33,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
     using Microsoft.EntityFrameworkCore;
     using Microting.eForm.Infrastructure.Constants;
     using Microting.eFormApi.BasePn.Abstractions;
-    using Microting.eFormApi.BasePn.Infrastructure.Extensions;
     using Microting.eFormApi.BasePn.Infrastructure.Models.API;
     using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
     using Microting.ItemsPlanningBase.Infrastructure.Data;
@@ -42,7 +41,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
     using Microting.eForm.Infrastructure.Data.Entities;
     using Microting.eFormApi.BasePn.Infrastructure.Helpers;
     using PnBase = Microting.ItemsPlanningBase.Infrastructure.Data.Entities.PnBase;
-
 
     public class PlanningService : IPlanningService
     {
@@ -102,8 +100,10 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
                 foreach (var deviceUserId in pnRequestModel.DeviceUserIds)
                 {
-                    planningsQuery = planningsQuery.Where(x => x.PlanningSites.Any(y =>
-                        y.SiteId == deviceUserId && y.WorkflowState != Constants.WorkflowStates.Removed));
+                    planningsQuery = planningsQuery.Where(x => x.PlanningSites
+                        .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
+                        .Select(y => y.SiteId)
+                        .Contains(deviceUserId));
                 }
 
                 // calculate total before pagination
