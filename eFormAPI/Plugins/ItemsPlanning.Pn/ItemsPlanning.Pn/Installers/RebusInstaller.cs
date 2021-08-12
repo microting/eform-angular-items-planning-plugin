@@ -27,6 +27,7 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Rebus.Config;
 using System;
+using Rebus.Logging;
 
 namespace ItemsPlanning.Pn.Installers
 {
@@ -53,7 +54,7 @@ namespace ItemsPlanning.Pn.Installers
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             Configure.With(new CastleWindsorContainerAdapter(container))
-                .Logging(l => l.ColoredConsole())
+                .Logging(l => l.ColoredConsole(LogLevel.Info))
                 .Transport(t => t.UseRabbitMq($"amqp://{_rabbitMqUser}:{_rabbitMqPassword}@{_rabbitMqHost}", "eform-angular-items-planning-plugin"))
                 .Options(o =>
                 {
