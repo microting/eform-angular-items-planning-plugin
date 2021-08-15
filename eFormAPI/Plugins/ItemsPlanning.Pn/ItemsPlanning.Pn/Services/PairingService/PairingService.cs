@@ -355,15 +355,15 @@ namespace ItemsPlanning.Pn.Services.PairingService
                             }
                         }
 
-                        var planningCases = await _dbContext.PlanningCases
-                            .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                            .Where(x => deviceUserIdsForRemove.Contains(x.DoneByUserId))
-                            .ToListAsync();
-
-                        foreach (var planningCase in planningCases)
-                        {
-                            await planningCase.Delete(_dbContext);
-                        }
+                        // var planningCases = await _dbContext.PlanningCases
+                        //     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                        //     .Where(x => deviceUserIdsForRemove.Contains(x.DoneByUserId))
+                        //     .ToListAsync();
+                        //
+                        // foreach (var planningCase in planningCases)
+                        // {
+                        //     await planningCase.Delete(_dbContext);
+                        // }
 
                         // for create
                         var sitesForCreateIds = pairing.Models
