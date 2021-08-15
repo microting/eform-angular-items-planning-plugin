@@ -159,6 +159,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 //foreach (var groupedCase in groupedCases)
                 foreach (var checkList in checkLists)
                 {
+                    bool hasChildCheckLists = sdkDbContext.CheckLists.Any(x => x.ParentId == checkList.Id);
                     var checkListTranslation = sdkDbContext.CheckListTranslations
                         .Where(x => x.CheckListId == checkList.Id)
                         .First(x => x.LanguageId == language.Id).Text;
@@ -248,7 +249,15 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                 var fieldTranslation =
                                     await sdkDbContext.FieldTranslations.FirstAsync(x =>
                                         x.FieldId == fieldDto.Id && x.LanguageId == language.Id);
-                                var kvp = new KeyValuePair<int, string>(fieldDto.Id, fieldTranslation.Text);
+                                string text = fieldTranslation.Text;
+                                if (hasChildCheckLists)
+                                {
+                                    var clTranslation =
+                                        await sdkDbContext.CheckListTranslations.FirstOrDefaultAsync(x =>
+                                            x.CheckListId == fieldDto.CheckListId && x.LanguageId == language.Id);
+                                    text = $"{clTranslation.Text} - {text}";
+                                }
+                                var kvp = new KeyValuePair<int, string>(fieldDto.Id, text);
 
                                 reportModel.ItemHeaders.Add(kvp);
                             }

@@ -154,7 +154,10 @@ namespace ItemsPlanning.Pn.Helpers
                         : $" - {planningPnModel.Type}";
                 }
 
-                mainElement.ElementList[0].Label = mainElement.Label;
+                if (mainElement.ElementList.Count == 1)
+                {
+                    mainElement.ElementList[0].Label = mainElement.Label;
+                }
                 mainElement.CheckListFolderName = folderId;
                 mainElement.StartDate = DateTime.Now.ToUniversalTime();
                 mainElement.EndDate = DateTime.Now.AddYears(10).ToUniversalTime();
