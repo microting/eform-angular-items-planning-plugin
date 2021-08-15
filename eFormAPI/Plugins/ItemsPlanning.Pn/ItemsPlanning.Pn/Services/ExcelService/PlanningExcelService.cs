@@ -478,9 +478,9 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         }
 
                         x = 1;
-                        y = 0;
                         foreach (var dataModel in reportEformModel.Items)
                         {
+                            y = 0;
                             worksheet.Cell(x + 1, y + 1).Value = dataModel.MicrotingSdkCaseId;
                             y++;
                             worksheet.Cell(x + 1, y + 1).Value = $"{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}";
