@@ -54,8 +54,9 @@ namespace ItemsPlanning.Pn.Controllers
         /// Download records export word
         /// </summary>
         /// <param name="requestModel">The request model.</param>
+        /// <param name="type">docx or xlsx</param>
         [HttpGet]
-        [Route("api/items-planning-pn/reports/word")]
+        [Route("api/items-planning-pn/reports/file")]
         [ProducesResponseType(typeof(string), 400)]
         public async Task GenerateReportFile(GenerateReportModel requestModel)
         {
@@ -75,18 +76,18 @@ namespace ItemsPlanning.Pn.Controllers
                 }
                 else
                 {
-                    using (var wordStream = result.Model)
+                    await using var wordStream = result.Model;
+                    int bytesRead;
+                    Response.ContentLength = wordStream.Length;
+                    Response.ContentType = requestModel.Type == "docx"
+                        ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                    while ((bytesRead = wordStream.Read(buffer, 0, buffer.Length)) > 0 &&
+                           !HttpContext.RequestAborted.IsCancellationRequested)
                     {
-                        int bytesRead;
-                        Response.ContentLength = wordStream.Length;
-                        Response.ContentType =
-                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                        while ((bytesRead = wordStream.Read(buffer, 0, buffer.Length)) > 0 &&
-                               !HttpContext.RequestAborted.IsCancellationRequested)
-                        {
-                            await Response.Body.WriteAsync(buffer, 0, bytesRead);
-                            await Response.Body.FlushAsync();
-                        }
+                        await Response.Body.WriteAsync(buffer, 0, bytesRead);
+                        await Response.Body.FlushAsync();
                     }
                 }
             });

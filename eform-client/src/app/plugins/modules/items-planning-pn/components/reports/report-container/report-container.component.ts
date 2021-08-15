@@ -69,6 +69,7 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
         dateFrom: params['dateFrom'],
         dateTo: params['dateTo'],
         tagIds: planningsReportQuery.pageSetting.filters.tagIds,
+        type: ''
       };
       if (model.dateFrom !== undefined) {
         this.onGenerateReport(model);
@@ -118,6 +119,7 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
         dateFrom: this.dateFrom,
         dateTo: this.dateTo,
         tagIds: this.planningsReportQuery.pageSetting.filters.tagIds,
+        type: ''
       })
       .subscribe((data) => {
         if (data && data.success) {
@@ -132,6 +134,19 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
       .subscribe(
         (data) => {
           saveAs(data, model.dateFrom + '_' + model.dateTo + '_report.docx');
+        },
+        (_) => {
+          this.toastrService.error('Error downloading report');
+        }
+      );
+  }
+
+  onDownloadExcelReport(model: ReportPnGenerateModel) {
+    this.downloadReportSub$ = this.reportService
+      .downloadReport(model)
+      .subscribe(
+        (data) => {
+          saveAs(data, model.dateFrom + '_' + model.dateTo + '_report.xlsx');
         },
         (_) => {
           this.toastrService.error('Error downloading report');
@@ -159,6 +174,7 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
       dateFrom: this.dateFrom,
       dateTo: this.dateTo,
       tagIds: [],
+      type: ''
     };
     if (model.dateFrom !== undefined) {
       this.onGenerateReport(model);

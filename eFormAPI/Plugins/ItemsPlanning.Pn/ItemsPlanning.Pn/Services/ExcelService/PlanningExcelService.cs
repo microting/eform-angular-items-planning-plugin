@@ -22,6 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Diagnostics;
+using System.Reflection;
+using System.Threading.Tasks;
+using ItemsPlanning.Pn.Infrastructure.Models.Report;
+using ItemsPlanning.Pn.Services.ItemsPlanningLocalizationService;
+using Microting.eForm.Dto;
+using Microting.eFormApi.BasePn.Abstractions;
+using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+using Microting.ItemsPlanningBase.Infrastructure.Data;
+
 namespace ItemsPlanning.Pn.Services.ExcelService
 {
     using System;
@@ -38,10 +48,19 @@ namespace ItemsPlanning.Pn.Services.ExcelService
     public class PlanningExcelService : IPlanningExcelService
     {
         private readonly ILogger<PlanningExcelService> _logger;
+        private readonly IItemsPlanningLocalizationService _localizationService;
+        private readonly IEFormCoreService _coreHelper;
+        private readonly ItemsPlanningPnDbContext _dbContext;
 
-        public PlanningExcelService(ILogger<PlanningExcelService> logger)
+        public PlanningExcelService(ILogger<PlanningExcelService> logger,
+            IItemsPlanningLocalizationService localizationService,
+            IEFormCoreService coreHelper,
+            ItemsPlanningPnDbContext dbContext)
         {
             _logger = logger;
+            _localizationService = localizationService;
+            _coreHelper = coreHelper;
+            _dbContext = dbContext;
         }
 
         public List<PlanningImportExcelModel> ParsePlanningImportFile(Stream excelStream)
@@ -398,6 +417,108 @@ namespace ItemsPlanning.Pn.Services.ExcelService
             {
                 _logger.LogError(e, e.Message);
                 throw;
+            }
+        }
+
+        public async Task<OperationDataResult<Stream>> GenerateExcelDashboard(List<ReportEformModel> reportModel)
+        {
+            try
+            {
+                // get core
+                var core = await _coreHelper.GetCore();
+
+                Directory.CreateDirectory(Path.Combine(await core.GetSdkSetting(Settings.fileLocationJasper)
+                    .ConfigureAwait(false), "results"));
+
+                var timeStamp = $"{DateTime.UtcNow:yyyyMMdd}_{DateTime.UtcNow:hhmmss}";
+
+                var resultDocument = Path.Combine(Path.GetTempPath(), "results",
+                    $"{timeStamp}_.xlsx");
+
+                Directory.CreateDirectory(Path.Combine(await core.GetSdkSetting(Settings.fileLocationJasper)
+                    .ConfigureAwait(false), "results"));
+
+                IXLWorkbook wb = new XLWorkbook();
+
+                for (var i = 0; i < reportModel.Count; i++)
+                {
+                    if (reportModel[i].FromDate != null)
+                    {
+                        int x = 0;
+                        int y = 0;
+                        var reportEformModel = reportModel[i];
+                        string sheetName = "Report";
+                        if (reportEformModel.TextHeaders != null)
+                        {
+                            sheetName = reportEformModel.TextHeaders.Header1;
+                        }
+
+                        IXLWorksheet worksheet = wb.Worksheets.Add(sheetName);
+
+
+                        if (reportEformModel.Items.Any())
+                        {
+                            worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("Id");
+                            worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
+                            y++;
+                            worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("CreatedAt");
+                            worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
+                            y++;
+                            worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("DoneBy");
+                            worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
+                            y++;
+                            worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("ItemName");
+                            worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
+                            foreach (var itemHeader in reportEformModel.ItemHeaders)
+                            {
+                                y++;
+                                worksheet.Cell(x + 1, y + 1).Value = itemHeader.Value;
+                                worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
+                            }
+                        }
+
+                        x = 1;
+                        y = 0;
+                        foreach (var dataModel in reportEformModel.Items)
+                        {
+                            worksheet.Cell(x + 1, y + 1).Value = dataModel.MicrotingSdkCaseId;
+                            y++;
+                            worksheet.Cell(x + 1, y + 1).Value = $"{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}";
+                            y++;
+                            worksheet.Cell(x + 1, y + 1).Value = dataModel.DoneBy;
+                            y++;
+                            worksheet.Cell(x + 1, y + 1).Value = dataModel.ItemName;
+                            y++;
+                            foreach (var dataModelCaseField in dataModel.CaseFields)
+                            {
+                                if (dataModelCaseField == "checked")
+                                {
+                                    worksheet.Cell(x + 1, y + 1).Value = 1;
+                                }
+                                else
+                                {
+                                    worksheet.Cell(x + 1, y + 1).Value = dataModelCaseField;
+                                }
+
+                                y++;
+                            }
+
+                            x++;
+                        }
+                    }
+                }
+                wb.SaveAs(resultDocument);
+
+                Stream result = File.Open(resultDocument, FileMode.Open);
+                return new OperationDataResult<Stream>(true, result);
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message);
+                _logger.LogError(e.Message);
+                return new OperationDataResult<Stream>(
+                    false,
+                    _localizationService.GetString("ErrorWhileCreatingWordFile"));
             }
         }
     }

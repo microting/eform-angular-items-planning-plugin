@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using ItemsPlanning.Pn.Services.ExcelService;
 using Microting.eForm.Infrastructure.Data.Entities;
 
 namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
@@ -48,6 +49,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
         private readonly ILogger<ItemsPlanningReportService> _logger;
         private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
         private readonly IWordService _wordService;
+        private readonly IPlanningExcelService _excelService;
         private readonly IEFormCoreService _coreHelper;
         private readonly ICasePostBaseService _casePostBaseService;
         private readonly ItemsPlanningPnDbContext _dbContext;
@@ -59,6 +61,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             ILogger<ItemsPlanningReportService> logger,
             IEFormCoreService coreHelper,
             IWordService wordService,
+            IPlanningExcelService excelService,
             ICasePostBaseService casePostBaseService,
             ItemsPlanningPnDbContext dbContext,
             IUserService userService)
@@ -67,6 +70,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             _logger = logger;
             _coreHelper = coreHelper;
             _wordService = wordService;
+            _excelService = excelService;
             _casePostBaseService = casePostBaseService;
             _dbContext = dbContext;
             _userService = userService;
@@ -444,15 +448,28 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     return new OperationDataResult<Stream>(false, reportDataResult.Message);
                 }
 
-                var wordDataResult = await _wordService
-                    .GenerateWordDashboard(reportDataResult.Model);
-
-                if (!wordDataResult.Success)
+                if (model.Type == "docx")
                 {
-                    return new OperationDataResult<Stream>(false, wordDataResult.Message);
-                }
+                    var wordDataResult = await _wordService
+                        .GenerateWordDashboard(reportDataResult.Model);
+                    if (!wordDataResult.Success)
+                    {
+                        return new OperationDataResult<Stream>(false, wordDataResult.Message);
+                    }
 
-                return new OperationDataResult<Stream>(true, wordDataResult.Model);
+                    return new OperationDataResult<Stream>(true, wordDataResult.Model);
+                }
+                else
+                {
+                    var wordDataResult = await _excelService
+                        .GenerateExcelDashboard(reportDataResult.Model);
+                    if (!wordDataResult.Success)
+                    {
+                        return new OperationDataResult<Stream>(false, wordDataResult.Message);
+                    }
+
+                    return new OperationDataResult<Stream>(true, wordDataResult.Model);
+                }
             }
             catch (Exception e)
             {
