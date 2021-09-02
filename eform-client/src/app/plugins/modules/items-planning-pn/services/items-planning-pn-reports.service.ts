@@ -23,7 +23,7 @@ export class ItemsPlanningPnReportsService {
 
   downloadReport(model: ReportPnGenerateModel): Observable<any> {
     return this.apiBaseService.getBlobData(
-      ItemsPlanningPnReportsMethods.Reports + '/word',
+      ItemsPlanningPnReportsMethods.Reports + '/file',
       model
     );
   }

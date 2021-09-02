@@ -33,5 +33,6 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Report
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
         public List<int> TagIds { get; set; } = new List<int>();
+        public string Type { get; set; }
     }
 }

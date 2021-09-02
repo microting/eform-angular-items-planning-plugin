@@ -52,6 +52,14 @@
       >
         <fa-icon icon="file-word" size="lg" [fixedWidth]="true"></fa-icon>
       </button>
+      <button
+        mdbBtn
+        class="btn-success btn-icon mb-2"
+        [disabled]="generateForm.invalid"
+        (click)="onExcelSave()"
+      >
+        <fa-icon icon="file-excel" size="lg" [fixedWidth]="true"></fa-icon>
+      </button>
     </div>
   </div>
 </form>

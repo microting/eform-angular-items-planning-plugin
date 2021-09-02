@@ -154,7 +154,10 @@ namespace ItemsPlanning.Pn.Helpers
                         : $" - {planningPnModel.Type}";
                 }
 
-                mainElement.ElementList[0].Label = mainElement.Label;
+                if (mainElement.ElementList.Count == 1)
+                {
+                    mainElement.ElementList[0].Label = mainElement.Label;
+                }
                 mainElement.CheckListFolderName = folderId;
                 mainElement.StartDate = DateTime.Now.ToUniversalTime();
                 mainElement.EndDate = DateTime.Now.AddYears(10).ToUniversalTime();
@@ -207,7 +210,8 @@ namespace ItemsPlanning.Pn.Helpers
                         if (folder != null)
                         {
                             planning.SdkFolderId = sdkDbContext.Folders
-                                .FirstOrDefault(y => y.Id == planning.SdkFolderId).Id;
+                                .FirstOrDefault(y => y.Id == planning.SdkFolderId)
+                                ?.Id;
                             FolderTranslation folderTranslation =
                                 await sdkDbContext.FolderTranslations.SingleOrDefaultAsync(x =>
                                     x.FolderId == folder.Id && x.LanguageId == sdkSite.LanguageId);
@@ -225,9 +229,7 @@ namespace ItemsPlanning.Pn.Helpers
                     var caseId = await sdkCore.CaseCreate(mainElement, "", (int) sdkSite.MicrotingUid, null);
                     if (caseId != null)
                     {
-                        var caseDto = await sdkCore.CaseLookupMUId((int) caseId);
-                        if (caseDto?.CaseId != null)
-                            planningCaseSite.MicrotingSdkCaseId = (int) caseDto.CaseId;
+                        planningCaseSite.MicrotingSdkCaseId = sdkDbContext.Cases.Single(x => x.MicrotingUid == caseId).Id;
                         await planningCaseSite.Update(_dbContext);
                     }
                 }

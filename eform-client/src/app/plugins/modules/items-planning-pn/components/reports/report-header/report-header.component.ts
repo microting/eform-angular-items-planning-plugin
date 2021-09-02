@@ -17,6 +17,8 @@ export class ReportHeaderComponent implements OnInit {
   generateReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
   @Output()
   downloadReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
+  @Output()
+  downloadExcelReport: EventEmitter<ReportPnGenerateModel> = new EventEmitter();
   @Input() range: Date[];
   @Input() availableTags: SharedTagModel[] = [];
   generateForm: FormGroup;
@@ -45,7 +47,14 @@ export class ReportHeaderComponent implements OnInit {
 
   onSave() {
     const model = this.extractData(this.generateForm.value);
+    model.type = 'docx';
     this.downloadReport.emit(model);
+  }
+
+  onExcelSave() {
+    const model = this.extractData(this.generateForm.value);
+    model.type = 'xlsx';
+    this.downloadExcelReport.emit(model);
   }
 
   private extractData(formValue: any): ReportPnGenerateModel {

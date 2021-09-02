@@ -22,6 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Threading.Tasks;
+using ItemsPlanning.Pn.Infrastructure.Models.Report;
+using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+
 namespace ItemsPlanning.Pn.Services.ExcelService
 {
     using System.Collections.Generic;
@@ -31,5 +35,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
     public interface IPlanningExcelService
     {
         List<PlanningImportExcelModel> ParsePlanningImportFile(Stream excelStream);
+
+        Task<OperationDataResult<Stream>> GenerateExcelDashboard(List<ReportEformModel> reportModel);
     }
 }
