@@ -20,7 +20,7 @@ exports.config = {
       'e2e/Tests/items-planning-general/items-planning.multiple-delete.spec.ts',
       'e2e/Tests/items-planning-general/items-planning.tags.spec.ts',
       'e2e/Tests/items-planning-general/items-planning.pairing.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.import.spec.ts'
+      // 'e2e/Tests/items-planning-general/items-planning.import.spec.ts' // Disabled until async is implemented completely.
     ],
     suites: {
         settings: [
