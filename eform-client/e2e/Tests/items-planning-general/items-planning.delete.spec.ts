@@ -19,43 +19,43 @@ const planningData: PlanningCreateUpdate = {
 };
 
 describe('Items planning actions - Delete', function () {
-  before(function () {
-    loginPage.open('/auth');
-    loginPage.login();
-    if (myEformsPage.rowNum <= 0) {
-      myEformsPage.createNewEform(planningData.eFormName); // Create eform
+  before(async () => {
+    await loginPage.open('/auth');
+    await loginPage.login();
+    if (await myEformsPage.rowNum() <= 0) {
+      await myEformsPage.createNewEform(planningData.eFormName); // Create eform
     } else {
-      planningData.eFormName = myEformsPage.getFirstMyEformsRowObj().eFormName;
+      planningData.eFormName = await (await myEformsPage.getFirstMyEformsRowObj()).eFormName;
     }
-    myEformsPage.Navbar.goToFolderPage();
-    if (foldersPage.rowNum <= 0) {
-      foldersPage.createNewFolder(planningData.folderName, 'Description'); // Create folder
+    await myEformsPage.Navbar.goToFolderPage();
+    if (await foldersPage.rowNum() <= 0) {
+      await foldersPage.createNewFolder(planningData.folderName, 'Description'); // Create folder
     } else {
-      planningData.folderName = foldersPage.getFolder(1).name;
+      planningData.folderName = await (await foldersPage.getFolder(1)).name;
     }
-    itemsPlanningPlanningPage.goToPlanningsPage();
+    await itemsPlanningPlanningPage.goToPlanningsPage();
   });
-  it('should should create planning', function () {
-    itemsPlanningModalPage.createPlanning(planningData);
+  it('should should create planning', async () => {
+    await itemsPlanningModalPage.createPlanning(planningData);
   });
-  it('should not delete existing planning', function () {
-    const numRowBeforeDelete = itemsPlanningPlanningPage.rowNum;
-    const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
+  it('should not delete existing planning', async () => {
+    const numRowBeforeDelete = await itemsPlanningPlanningPage.rowNum();
+    const planningRowObject = await itemsPlanningPlanningPage.getPlaningByName(
       planningData.name[0]
     );
-    planningRowObject.delete(true);
+    await planningRowObject.delete(true);
     expect(numRowBeforeDelete, 'Planning is deleted').eq(
-      itemsPlanningPlanningPage.rowNum
+      await itemsPlanningPlanningPage.rowNum()
     );
   });
-  it('should delete existing planning', function () {
-    const numRowBeforeDelete = itemsPlanningPlanningPage.rowNum;
-    const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
+  it('should delete existing planning', async () => {
+    const numRowBeforeDelete = await itemsPlanningPlanningPage.rowNum();
+    const planningRowObject = await itemsPlanningPlanningPage.getPlaningByName(
       planningData.name[0]
     );
-    planningRowObject.delete();
+    await planningRowObject.delete();
     expect(numRowBeforeDelete - 1, 'Planning is not deleted').eq(
-      itemsPlanningPlanningPage.rowNum
+      await itemsPlanningPlanningPage.rowNum()
     );
   });
 });

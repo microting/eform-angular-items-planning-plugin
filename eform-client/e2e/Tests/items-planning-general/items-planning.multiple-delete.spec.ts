@@ -10,42 +10,42 @@ let folderName = generateRandmString();
 const countPlannings = 5;
 
 describe('Items planning plannings - Multiple delete', function () {
-  before(function () {
-    loginPage.open('/auth');
-    loginPage.login();
-    if (myEformsPage.rowNum <= 0) {
-      myEformsPage.createNewEform(template); // Create eform
+  before(async () => {
+    await loginPage.open('/auth');
+    await loginPage.login();
+    if (await myEformsPage.rowNum() <= 0) {
+      await myEformsPage.createNewEform(template); // Create eform
     } else {
-      template = myEformsPage.getFirstMyEformsRowObj().eFormName;
+      template = (await myEformsPage.getFirstMyEformsRowObj()).eFormName;
     }
-    myEformsPage.Navbar.goToFolderPage();
-    if (foldersPage.rowNum <= 0) {
-      foldersPage.createNewFolder(folderName, 'Description'); // Create folder
+    await myEformsPage.Navbar.goToFolderPage();
+    if (await foldersPage.rowNum() <= 0) {
+      await foldersPage.createNewFolder(folderName, 'Description'); // Create folder
     } else {
-      folderName = foldersPage.getFolder(1).name;
+      folderName = (await foldersPage.getFolder(1)).name;
     }
-    itemsPlanningPlanningPage.goToPlanningsPage();
+    await itemsPlanningPlanningPage.goToPlanningsPage();
   });
-  it('should create dummy plannings', function () {
-    itemsPlanningPlanningPage.createDummyPlannings(
+  it('should create dummy plannings', async () => {
+    await itemsPlanningPlanningPage.createDummyPlannings(
       template,
       folderName,
       countPlannings
     );
   });
-  it('should not delete because click cancel', function () {
-    const countBeforeDelete = itemsPlanningPlanningPage.rowNum;
-    itemsPlanningPlanningPage.selectAllPlanningsForDelete();
-    itemsPlanningPlanningPage.multipleDelete(true);
+  it('should not delete because click cancel', async () => {
+    const countBeforeDelete = await itemsPlanningPlanningPage.rowNum();
+    await itemsPlanningPlanningPage.selectAllPlanningsForDelete();
+    await itemsPlanningPlanningPage.multipleDelete(true);
     expect(countBeforeDelete, 'plannings has been delete').eq(
-      itemsPlanningPlanningPage.rowNum
+      await itemsPlanningPlanningPage.rowNum()
     );
   });
-  it('should multiple delete plannings', function () {
-    const countBeforeDelete = itemsPlanningPlanningPage.rowNum;
-    itemsPlanningPlanningPage.multipleDelete();
+  it('should multiple delete plannings', async () => {
+    const countBeforeDelete = await itemsPlanningPlanningPage.rowNum();
+    await itemsPlanningPlanningPage.multipleDelete();
     expect(countBeforeDelete - countPlannings, 'plannings not delete').eq(
-      itemsPlanningPlanningPage.rowNum
+      await itemsPlanningPlanningPage.rowNum()
     );
   });
 });

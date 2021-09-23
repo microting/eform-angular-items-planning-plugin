@@ -7,42 +7,42 @@ import { planningsImportTestData } from '../../Page objects/ItemsPlanning/Planni
 const expect = require('chai').expect;
 
 describe('Items planning - Import', function () {
-  before(function () {
-    loginPage.open('/auth');
-    loginPage.login();
+  before(async () => {
+    await loginPage.open('/auth');
+    await loginPage.login();
   });
-  it('should be imported plannings', function () {
+  it('should be imported plannings', async () => {
     const localPath = process.cwd();
-    myEformsPage.importEformsBtn.click();
+    await (await myEformsPage.importEformsBtn()).click();
     browser.pause(2000);
     // import Eforms
     const filePath = localPath + '/e2e/Assets/Skabelon Døvmark NEW.xlsx';
-    const remoteFilePath = browser.uploadFile(filePath);
-    $('app-eforms-bulk-import-modal * *').waitForDisplayed({ timeout: 20000 });
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
-    myEformsPage.xlsxImportInput.addValue(remoteFilePath);
-    const eformsBeforeImport = myEformsPage.rowNum;
-    myEformsPage.newEformBtn.waitForClickable({ timeout: 60000 });
-    expect(eformsBeforeImport).not.eq(myEformsPage.rowNum);
+    const remoteFilePath = await browser.uploadFile(filePath);
+    await (await $('app-eforms-bulk-import-modal * *')).waitForDisplayed({ timeout: 20000 });
+    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
+    await (await myEformsPage.xlsxImportInput()).addValue(remoteFilePath);
+    const eformsBeforeImport = await myEformsPage.rowNum();
+    await (await myEformsPage.newEformBtn()).waitForClickable({ timeout: 60000 });
+    expect(eformsBeforeImport).not.eq(await myEformsPage.rowNum());
 
-    itemsPlanningPlanningPage.goToPlanningsPage();
-    const planningsBeforeImport = itemsPlanningPlanningPage.rowNum;
-    itemsPlanningPlanningPage.importPlanningsBtn.click();
+    await itemsPlanningPlanningPage.goToPlanningsPage();
+    const planningsBeforeImport = await itemsPlanningPlanningPage.rowNum();
+    (await itemsPlanningPlanningPage.importPlanningsBtn()).click();
     // import plannings
-    $('app-plannings-bulk-import-modal * *').waitForDisplayed({
+    await (await $('app-plannings-bulk-import-modal * *')).waitForDisplayed({
       timeout: 20000,
     });
-    itemsPlanningModalPage.xlsxImportPlanningsInput.addValue(remoteFilePath);
-    itemsPlanningPlanningPage.planningCreateBtn.waitForClickable({
+    await (await itemsPlanningModalPage.xlsxImportPlanningsInput()).addValue(remoteFilePath);
+    await (await itemsPlanningPlanningPage.planningCreateBtn()).waitForClickable({
       timeout: 60000,
     });
     expect(planningsBeforeImport, 'plannings not imported').not.eq(
-      itemsPlanningPlanningPage.rowNum
+      await itemsPlanningPlanningPage.rowNum()
     );
   });
-  it('should be imported data equal moq data', function () {
+  it('should be imported data equal moq data', async () => {
     for (let i = 0; i < planningsImportTestData.length; i++) {
-      const planning = itemsPlanningPlanningPage.getPlanningByIndex(i + 1);
+      const planning = await itemsPlanningPlanningPage.getPlanningByIndex(i + 1);
       const testPlanning = planningsImportTestData[i];
       expect(planning.name, `Planning[${i}] name is incorrect`).eq(
         testPlanning.translatedName
