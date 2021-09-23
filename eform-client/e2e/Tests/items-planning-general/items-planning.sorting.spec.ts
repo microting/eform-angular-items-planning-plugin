@@ -39,7 +39,7 @@ describe('Items planning plannings - Sorting', function () {
       await itemsPlanningPlanningPage.clickIdTableHeader();
 
       list = await $$('#planningId');
-      const planningAfter = Promise.all(list.map((item) => {
+      const planningAfter = await Promise.all(list.map((item) => {
         return item.getText();
       }));
 
