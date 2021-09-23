@@ -7,35 +7,35 @@ export class ItemsPlanningSettingsPage extends Page {
     super();
   }
 
-  public get saveSettingsBtn() {
+  public async saveSettingsBtn() {
     return browser.$('#saveBtn');
   }
 
-  public get sdkConnectionString() {
+  public async sdkConnectionString() {
     return browser.$('#sdkConnectionString');
   }
 
-  public get logLevel() {
+  public async logLevel() {
     return browser.$('#logLevel');
   }
 
-  public get logLimit() {
+  public async logLimit() {
     return browser.$('#logLimit');
   }
 
-  public get maxParallelism() {
+  public async maxParallelism() {
     return browser.$('#maxParallelism');
   }
 
-  public get numberOfWorkers() {
+  public async numberOfWorkers() {
     return browser.$('#numberOfWorkers');
   }
 
-  public get itemsPlanningBtn() {
+  public async itemsPlanningBtn() {
     return browser.$('#items-planning-pn');
   }
 
-  public get itemsPlanningSettingsBtn() {
+  public async itemsPlanningSettingsBtn() {
     return browser.$('#items-planning-pn-settings');
   }
 
