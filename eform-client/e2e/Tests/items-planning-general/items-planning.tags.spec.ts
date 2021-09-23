@@ -8,13 +8,13 @@ const tagName = 'Test tag';
 const updatedTagName = 'Test tag 2';
 
 describe('Items planning - Tags', function () {
-  before(function () {
+  before(async () => {
     loginPage.open('/auth');
     loginPage.login();
     itemsPlanningPlanningPage.goToPlanningsPage();
     itemsPlanningPlanningPage.planningManageTagsBtn.click();
   });
-  it('should create tag', function () {
+  it('should create tag', async () => {
     const tagsRowsBeforeCreate = tagsModalPage.rowNum;
     tagsModalPage.createTag(tagName);
     const tagsRowsAfterCreate = tagsModalPage.rowNum;
@@ -25,7 +25,7 @@ describe('Items planning - Tags', function () {
     ).equal(tagsRowsBeforeCreate + 1);
     expect(tagRowObject.name, 'Saved Name is incorrect').equal(tagName);
   });
-  it('should not create tag', function () {
+  it('should not create tag', async () => {
     const tagsRowsBeforeCreate = tagsModalPage.rowNum;
     tagsModalPage.cancelCreateTag(tagName);
     const tagsRowsAfterCreate = tagsModalPage.rowNum;
@@ -34,7 +34,7 @@ describe('Items planning - Tags', function () {
       'Number of rows changed after not creatings tag'
     ).equal(tagsRowsBeforeCreate);
   });
-  it('should update tag', function () {
+  it('should update tag', async () => {
     const rowNum = tagsModalPage.rowNum;
     tagsModalPage.editTag(rowNum, updatedTagName);
     const tagRowObjectAfterEdit = new TagRowObject(rowNum);
@@ -42,7 +42,7 @@ describe('Items planning - Tags', function () {
       updatedTagName
     );
   });
-  it('should not update tag', function () {
+  it('should not update tag', async () => {
     const rowNum = tagsModalPage.rowNum;
     tagsModalPage.cancelEditTag(rowNum, updatedTagName);
     const tagRowObjectAfterCancelEdit = new TagRowObject(rowNum);
@@ -51,7 +51,7 @@ describe('Items planning - Tags', function () {
       'Updated tag name is incorrect'
     ).equal(updatedTagName);
   });
-  it('should not delete tag', function () {
+  it('should not delete tag', async () => {
     const tagsRowsBeforeDelete = tagsModalPage.rowNum;
     tagsModalPage.getTagByName(updatedTagName).deleteTag(true);
     const tagsRowsAfterCancelDelete = tagsModalPage.rowNum;
@@ -60,7 +60,7 @@ describe('Items planning - Tags', function () {
       'Number of rows changed after cancel delete tag'
     ).equal(tagsRowsBeforeDelete);
   });
-  it('should delete tag', function () {
+  it('should delete tag', async () => {
     const tagsRowsBeforeDelete = tagsModalPage.rowNum;
     tagsModalPage.getTagByName(updatedTagName).deleteTag();
     browser.pause(500);

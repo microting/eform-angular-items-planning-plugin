@@ -31,32 +31,32 @@ const planningData: PlanningCreateUpdate = {
   pushMessageEnabled: true,
 };
 describe('Items planning - Add', function () {
-  before(function () {
-    loginPage.open('/auth');
-    loginPage.login();
-    if (myEformsPage.rowNum <= 0) {
-      myEformsPage.createNewEform(planningData.eFormName); // Create eform
+  before(async () => {
+    await loginPage.open('/auth');
+    await loginPage.login();
+    if (await myEformsPage.rowNum() <= 0) {
+      await myEformsPage.createNewEform(planningData.eFormName); // Create eform
     } else {
-      planningData.eFormName = myEformsPage.getFirstMyEformsRowObj().eFormName;
+      planningData.eFormName = (await myEformsPage.getFirstMyEformsRowObj()).eFormName;
     }
-    myEformsPage.Navbar.goToFolderPage();
-    if (foldersPage.rowNum <= 0) {
-      foldersPage.createNewFolder(planningData.folderName, 'Description'); // Create folder
+    await myEformsPage.Navbar.goToFolderPage();
+    if (await foldersPage.rowNum() <= 0) {
+      await foldersPage.createNewFolder(planningData.folderName, 'Description'); // Create folder
     } else {
-      planningData.folderName = foldersPage.getFolder(1).name;
+      planningData.folderName = (await foldersPage.getFolder(1)).name;
     }
-    itemsPlanningPlanningPage.goToPlanningsPage();
+    await itemsPlanningPlanningPage.goToPlanningsPage();
   });
-  it('should create planning with all fields', function () {
-    const rowNumBeforeCreatePlanning = itemsPlanningPlanningPage.rowNum;
-    itemsPlanningModalPage.createPlanning(planningData);
+  it('should create planning with all fields', async () => {
+    const rowNumBeforeCreatePlanning = await itemsPlanningPlanningPage.rowNum();
+    await itemsPlanningModalPage.createPlanning(planningData);
     expect(rowNumBeforeCreatePlanning + 1, 'Planning not created').eq(
-      itemsPlanningPlanningPage.rowNum
+      await itemsPlanningPlanningPage.rowNum()
     );
   });
-  it('check all fields planning', function () {
+  it('check all fields planning', async () => {
     // Check that planning is created in table
-    const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
+    const planningRowObject = await itemsPlanningPlanningPage.getPlaningByName(
       planningData.name[0]
     );
     expect(planningRowObject.name, 'Saved name in table is incorrect').equal(
@@ -84,23 +84,23 @@ describe('Items planning - Add', function () {
       'Saved repeat type in table is incorrect'
     ).equal(planningData.repeatType);
     // Check that all planning fields are saved
-    planningRowObject.openEdit();
+    await planningRowObject.openEdit();
     for (let i = 0; i < planningData.name.length; i++) {
       expect(
-        itemsPlanningModalPage.editPlanningItemName(i).getValue(),
+        await (await itemsPlanningModalPage.editPlanningItemName(i)).getValue(),
         'Name save is incorrect'
       ).eq(planningData.name[i]);
     }
     expect(
-      itemsPlanningModalPage.editPlanningDescription.getValue(),
+      await (await itemsPlanningModalPage.editPlanningDescription()).getValue(),
       'Description save is incorrect'
     ).eq(planningData.description);
     expect(
-      itemsPlanningModalPage.editPlanningSelector.$('.ng-value').getText(),
+      await (await (await itemsPlanningModalPage.editPlanningSelector()).$('.ng-value')).getText(),
       'Saved template is incorrect'
     ).eq(planningData.eFormName);
     expect(
-      itemsPlanningModalPage.editRepeatEvery.getValue(),
+      await (await itemsPlanningModalPage.editRepeatEvery()).getValue(),
       'Saved repeat every is incorrect'
     ).eq(planningData.repeatEvery);
     // expect(
@@ -115,31 +115,31 @@ describe('Items planning - Add', function () {
     //   'Saved repeat until is incorrect'
     // ).eq(format(planningData.repeatUntil, 'M/d/yyyy'));
     expect(
-      itemsPlanningModalPage.editRepeatType.$('.ng-value-label').getText(),
+      await (await (await itemsPlanningModalPage.editRepeatType()).$('.ng-value-label')).getText(),
       'Saved repeat type is incorrect'
     ).eq(planningData.repeatType);
     expect(
-      itemsPlanningModalPage.editItemType.getValue(),
+      await (await itemsPlanningModalPage.editItemType()).getValue(),
       'Saved type is incorrect'
     ).eq(planningData.type);
     expect(
-      itemsPlanningModalPage.editItemBuildYear.getValue(),
+      await (await itemsPlanningModalPage.editItemBuildYear()).getValue(),
       'Saved build year is incorrect'
     ).eq(planningData.buildYear);
     expect(
-      itemsPlanningModalPage.editFolderName
-        .$('#editFolderSelectorInput')
+      await (await (await itemsPlanningModalPage.editFolderName())
+        .$('#editFolderSelectorInput'))
         .getValue(),
       'Saved folder name is incorrect'
     ).eq(planningData.folderName);
     expect(
-      itemsPlanningModalPage.editItemLocationCode.getValue(),
+      await (await itemsPlanningModalPage.editItemLocationCode()).getValue(),
       'Saved location code is incorrect'
     ).eq(planningData.locationCode);
     expect(
       format(
         parse(
-          itemsPlanningModalPage.editStartFrom.getValue(),
+          await (await itemsPlanningModalPage.editStartFrom()).getValue(),
           'M/d/yyyy',
           new Date()
         ),
@@ -148,8 +148,8 @@ describe('Items planning - Add', function () {
       'Saved start from is incorrect'
     ).eq(format(planningData.startFrom, 'M/d/yyyy'));
     expect(
-      itemsPlanningModalPage.pushMessageEnabledEdit
-        .$('.ng-value-label')
+      await (await (await itemsPlanningModalPage.pushMessageEnabledEdit())
+        .$('.ng-value-label'))
         .getText(),
       'Saved pushMessageEnabled code is incorrect'
     ).eq(
@@ -158,26 +158,26 @@ describe('Items planning - Add', function () {
         : 'Deaktiveret'
     );
     expect(
-      +itemsPlanningModalPage.editDaysBeforeRedeploymentPushMessage
-        .$('.ng-value-label')
+      +await (await (await itemsPlanningModalPage.editDaysBeforeRedeploymentPushMessage())
+        .$('.ng-value-label'))
         .getText(),
       'Saved editDaysBeforeRedeploymentPushMessage code is incorrect'
     ).eq(planningData.daysBeforeRedeploymentPushMessage);
-    PlanningRowObject.closeEdit(true);
+    await PlanningRowObject.closeEdit(true);
   });
-  after('delete all created in this test', function () {
+  after('delete all created in this test', async () => {
     // Delete
-    const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
+    const planningRowObject = await itemsPlanningPlanningPage.getPlaningByName(
       planningData.name[0]
     );
-    planningRowObject.delete();
+    await planningRowObject.delete();
 
-    myEformsPage.Navbar.goToFolderPage();
-    foldersPage.getFolderByName(planningData.folderName).delete();
+    await myEformsPage.Navbar.goToFolderPage();
+    await (await foldersPage.getFolderByName(planningData.folderName)).delete();
 
-    myEformsPage.Navbar.goToMyEForms();
-    myEformsPage
-      .getEformsRowObjByNameEForm(planningData.eFormName)
+    await myEformsPage.Navbar.goToMyEForms();
+    await (await myEformsPage
+      .getEformsRowObjByNameEForm(planningData.eFormName))
       .deleteEForm();
   });
 });

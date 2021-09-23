@@ -7,11 +7,11 @@ import { planningsImportTestData } from '../../Page objects/ItemsPlanning/Planni
 const expect = require('chai').expect;
 
 describe('Items planning - Import', function () {
-  before(function () {
+  before(async () => {
     loginPage.open('/auth');
     loginPage.login();
   });
-  it('should be imported plannings', function () {
+  it('should be imported plannings', async () => {
     const localPath = process.cwd();
     myEformsPage.importEformsBtn.click();
     browser.pause(2000);
@@ -40,7 +40,7 @@ describe('Items planning - Import', function () {
       itemsPlanningPlanningPage.rowNum
     );
   });
-  it('should be imported data equal moq data', function () {
+  it('should be imported data equal moq data', async () => {
     for (let i = 0; i < planningsImportTestData.length; i++) {
       const planning = itemsPlanningPlanningPage.getPlanningByIndex(i + 1);
       const testPlanning = planningsImportTestData[i];

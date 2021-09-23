@@ -4,12 +4,12 @@ import itemsPlanningSettingsPage from '../../Page objects/ItemsPlanning/ItemsPla
 const expect = require('chai').expect;
 
 describe('Items planning plugin settings page', function () {
-  before(function () {
+  before(async () => {
     loginPage.open('/auth');
     loginPage.login();
     itemsPlanningSettingsPage.goToSettingsPage();
   });
-  it('save items planning settings', function () {
+  it('save items planning settings', async () => {
     const settingsData = {
       sdkConnectionString: 'Server=SQLEXPRESS;Database=123_SDK;User ID=sa;Password=Qq1234567$;',
       logLevel: '4',

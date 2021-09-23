@@ -10,7 +10,7 @@ let folderName = generateRandmString();
 const countPlannings = 5;
 
 describe('Items planning plannings - Multiple delete', function () {
-  before(function () {
+  before(async () => {
     loginPage.open('/auth');
     loginPage.login();
     if (myEformsPage.rowNum <= 0) {
@@ -26,14 +26,14 @@ describe('Items planning plannings - Multiple delete', function () {
     }
     itemsPlanningPlanningPage.goToPlanningsPage();
   });
-  it('should create dummy plannings', function () {
+  it('should create dummy plannings', async () => {
     itemsPlanningPlanningPage.createDummyPlannings(
       template,
       folderName,
       countPlannings
     );
   });
-  it('should not delete because click cancel', function () {
+  it('should not delete because click cancel', async () => {
     const countBeforeDelete = itemsPlanningPlanningPage.rowNum;
     itemsPlanningPlanningPage.selectAllPlanningsForDelete();
     itemsPlanningPlanningPage.multipleDelete(true);
@@ -41,7 +41,7 @@ describe('Items planning plannings - Multiple delete', function () {
       itemsPlanningPlanningPage.rowNum
     );
   });
-  it('should multiple delete plannings', function () {
+  it('should multiple delete plannings', async () => {
     const countBeforeDelete = itemsPlanningPlanningPage.rowNum;
     itemsPlanningPlanningPage.multipleDelete();
     expect(countBeforeDelete - countPlannings, 'plannings not delete').eq(

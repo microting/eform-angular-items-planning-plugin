@@ -32,7 +32,7 @@ let planningData: PlanningCreateUpdate = {
 let folderNameForEdit = generateRandmString();
 let eFormNameForEdit = generateRandmString();
 describe('Items planning actions - Edit', function () {
-  before(function () {
+  before(async () => {
     loginPage.open('/auth');
     loginPage.login();
     if (myEformsPage.rowNum >= 2) {
@@ -63,10 +63,10 @@ describe('Items planning actions - Edit', function () {
     }
     itemsPlanningPlanningPage.goToPlanningsPage();
   });
-  it('should create a new planning', function () {
+  it('should create a new planning', async () => {
     itemsPlanningModalPage.createPlanning(planningData);
   });
-  it('should change all fields after edit', function () {
+  it('should change all fields after edit', async () => {
     let planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
       planningData.name[0]
     );
@@ -182,7 +182,7 @@ describe('Items planning actions - Edit', function () {
     ).eq(planningData.daysBeforeRedeploymentPushMessage);
     PlanningRowObject.closeEdit(true);
   });
-  after(function () {
+  after(async () => {
     // Delete
     const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
       planningData.name[0]

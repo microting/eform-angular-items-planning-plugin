@@ -8,7 +8,7 @@ const expect = require('chai').expect;
 let template = generateRandmString();
 let folderName = generateRandmString();
 describe('Items planning plannings - Sorting', function () {
-  before(function () {
+  before(async () => {
     loginPage.open('/auth');
     loginPage.login();
     if (myEformsPage.rowNum <= 0) {
@@ -24,10 +24,10 @@ describe('Items planning plannings - Sorting', function () {
     }
     itemsPlanningPlanningPage.goToPlanningsPage();
   });
-  it('should create dummy plannings', function () {
+  it('should create dummy plannings', async () => {
     itemsPlanningPlanningPage.createDummyPlannings(template, folderName);
   });
-  it('should be able to sort by ID', function () {
+  it('should be able to sort by ID', async () => {
     browser.pause(1000);
     const planningBefore = $$('#planningId').map((item) => {
       return item.getText();
@@ -55,7 +55,7 @@ describe('Items planning plannings - Sorting', function () {
     }
     $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
   });
-  it('should be able to sort by Name', function () {
+  it('should be able to sort by Name', async () => {
     const planningBefore = $$('#planningName').map((item) => {
       return item.getText();
     });
@@ -87,7 +87,7 @@ describe('Items planning plannings - Sorting', function () {
     }
     $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
   });
-  it('should be able to sort by Description', function () {
+  it('should be able to sort by Description', async () => {
     const planningBefore = $$('#planningDescription').map((item) => {
       return item.getText();
     });
@@ -115,7 +115,7 @@ describe('Items planning plannings - Sorting', function () {
     }
     $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
   });
-  it('should clear table', function () {
+  it('should clear table', async () => {
     itemsPlanningPlanningPage.clearTable();
   });
 });

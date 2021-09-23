@@ -21,7 +21,7 @@ const countDeviceUsers = 4; // constant, how need create user devices for test
 const countPlanning = 4; // constant, how need create plannings
 
 describe('Items planning plugin - Pairing', function () {
-  before(function () {
+  before(async () => {
     loginPage.open('/auth');
     loginPage.login();
 
@@ -69,7 +69,7 @@ describe('Items planning plugin - Pairing', function () {
 
     itemsPlanningPairingPage.goToPairingPage();
   });
-  it('should pair one device user which all plannings', function () {
+  it('should pair one device user which all plannings', async () => {
     const pair = true;
     const pairingColObject = itemsPlanningPairingPage.getDeviceUserByIndex(1);
     pairingColObject.pairWhichAllPlannings(pair);
@@ -77,7 +77,7 @@ describe('Items planning plugin - Pairing', function () {
       expect(pairingColObject.pairCheckboxes[i].getValue()).eq(pair.toString());
     }
   });
-  it('should unpair one device user which all plannings', function () {
+  it('should unpair one device user which all plannings', async () => {
     const pair = false;
     const pairingColObject = itemsPlanningPairingPage.getDeviceUserByIndex(1);
     pairingColObject.pairWhichAllPlannings(pair, true);
@@ -85,7 +85,7 @@ describe('Items planning plugin - Pairing', function () {
       expect(pairingColObject.pairCheckboxes[i].getValue()).eq(pair.toString());
     }
   });
-  it('should pair one planning which all device user', function () {
+  it('should pair one planning which all device user', async () => {
     const pair = true;
     const pairingRowObject = itemsPlanningPairingPage.getPlanningByIndex(1);
     pairingRowObject.pairWhichAllDeviceUsers(pair);
@@ -93,7 +93,7 @@ describe('Items planning plugin - Pairing', function () {
       expect(pairingRowObject.pairCheckboxes[i].getValue()).eq(pair.toString());
     }
   });
-  it('should unpair one planning which all device user', function () {
+  it('should unpair one planning which all device user', async () => {
     const pair = false;
     const pairingRowObject = itemsPlanningPairingPage.getPlanningByIndex(1);
     pairingRowObject.pairWhichAllDeviceUsers(pair, true);
@@ -101,7 +101,7 @@ describe('Items planning plugin - Pairing', function () {
       expect(pairingRowObject.pairCheckboxes[i].getValue()).eq(pair.toString());
     }
   });
-  it('should pair one planning which one device user', function () {
+  it('should pair one planning which one device user', async () => {
     const pair = true;
     const indexDeviceForPair = 1;
     const pairingRowObject = itemsPlanningPairingPage.getPlanningByIndex(1);
@@ -110,7 +110,7 @@ describe('Items planning plugin - Pairing', function () {
       pair.toString()
     );
   });
-  it('should unpair one planning which one device user', function () {
+  it('should unpair one planning which one device user', async () => {
     const pair = false;
     const indexDeviceForPair = 1;
     const pairingRowObject = itemsPlanningPairingPage.getPlanningByIndex(1);
@@ -119,7 +119,7 @@ describe('Items planning plugin - Pairing', function () {
       pair.toString()
     );
   });
-  after('delete all created for this test', function () {
+  after('delete all created for this test', async () => {
     itemsPlanningPlanningPage.goToPlanningsPage();
     itemsPlanningPlanningPage.clearTable();
 
