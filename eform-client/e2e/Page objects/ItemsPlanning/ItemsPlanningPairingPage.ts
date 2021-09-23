@@ -16,7 +16,7 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
 
   public async goToPairingPage(): Promise<WebdriverIO.Element> {
     await (await itemsPlanningPlanningPage.itemPlanningButton()).click();
-    await this.pairingBtn.click();
+    await (await this.pairingBtn()).click();
     await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
     await this.savePairingGridBtn.waitForDisplayed();
   }
