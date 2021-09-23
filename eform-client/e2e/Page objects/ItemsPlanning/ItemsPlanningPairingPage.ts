@@ -52,7 +52,7 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
     if (clickCancel) {
       await (await this.updatePairingsSaveCancelBtn()).click();
     } else {
-      await (this.updatePairingsSaveBtn()).click();
+      await (await this.updatePairingsSaveBtn()).click();
       await (await $('#spinner-animation')).waitForDisplayed({
         timeout: 90000,
         reverse: true,
@@ -61,7 +61,7 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
     await (await this.savePairingGridBtn()).waitForDisplayed();
   }
 
-  public async countDeviceUserCol(): number {
+  public async countDeviceUserCol(): Promise<number> {
     await browser.pause(500);
     let i = 0;
     while (await (await $(`#deviceUserTableHeader${i}`)).isExisting()) {
@@ -70,9 +70,10 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
     return i > 0 ? i + 1 : 0;
   }
 
-  public async planningRowByPlanningName(planningName: string): PairingRowObject {
+  public async planningRowByPlanningName(planningName: string): Promise<PairingRowObject> {
     for (let i = 1; i < (await this.countPlanningRow()) + 1; i++) {
-      const element = new PairingRowObject(i);
+      const pairObj = new PairingRowObject();
+      const element = await pairObj.getRow(i);
       if (element.planningName === planningName) {
         return element;
       }
@@ -80,23 +81,25 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
     return null;
   }
 
-  getDeviceUserByIndex(index: number): PairingColObject {
-    if (index > 0 && index <= this.countDeviceUserCol) {
-      return new PairingColObject(index);
+  async getDeviceUserByIndex(index: number): Promise<PairingColObject> {
+    if (index > 0 && index <= (await this.countDeviceUserCol())) {
+      const obj = new PairingColObject();
+      return await obj.getRow(index);
     }
     return null;
   }
 
-  getPlanningByIndex(index: number): PairingRowObject {
-    if (index > 0 && index <= this.countPlanningRow) {
-      return new PairingRowObject(index);
+  async getPlanningByIndex(index: number): Promise<PairingRowObject> {
+    if (index > 0 && index <= (await this.countPlanningRow())) {
+      const obj = new PairingRowObject();
+      return await obj.getRow(index);
     }
     return null;
   }
 
-  public indexColDeviceUserInTableByName(deviceUserName: string): number {
-    for (let i = 0; i < this.countDeviceUserCol; i++) {
-      const deviceUser = this.getDeviceUserByIndex(i);
+  public async indexColDeviceUserInTableByName(deviceUserName: string): Promise<number> {
+    for (let i = 0; i < (await this.countDeviceUserCol()); i++) {
+      const deviceUser = await this.getDeviceUserByIndex(i);
       if (deviceUser.deviceUserName === deviceUserName) {
         return i;
       }
@@ -194,7 +197,7 @@ export class PairingColObject {
   public pairCheckboxesForClick: WebdriverIO.Element[];
   public pairCheckboxes: WebdriverIO.Element[];
 
-  async getRow(rowNum: number): Promise<PairingRowObject> {
+  async getRow(rowNum: number): Promise<PairingColObject> {
 
     const ele = await $(`#deviceUserTableHeader${rowNum - 1}`);
     await ele.waitForDisplayed({ timeout: 20000 });
@@ -213,6 +216,7 @@ export class PairingColObject {
         this.pairCheckboxesForClick.push(await this.pairCheckboxes[i].$('..'));
       }
     }
+    return this;
   }
   public async pairWhichAllPlannings(
     pair: boolean,
