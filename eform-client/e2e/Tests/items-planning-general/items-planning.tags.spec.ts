@@ -9,62 +9,65 @@ const updatedTagName = 'Test tag 2';
 
 describe('Items planning - Tags', function () {
   before(async () => {
-    loginPage.open('/auth');
-    loginPage.login();
-    itemsPlanningPlanningPage.goToPlanningsPage();
-    itemsPlanningPlanningPage.planningManageTagsBtn.click();
+    await loginPage.open('/auth');
+    await loginPage.login();
+    await itemsPlanningPlanningPage.goToPlanningsPage();
+    await (await itemsPlanningPlanningPage.planningManageTagsBtn()).click();
   });
   it('should create tag', async () => {
-    const tagsRowsBeforeCreate = tagsModalPage.rowNum;
-    tagsModalPage.createTag(tagName);
-    const tagsRowsAfterCreate = tagsModalPage.rowNum;
-    const tagRowObject = new TagRowObject(tagsRowsAfterCreate);
+    const tagsRowsBeforeCreate = await tagsModalPage.rowNum();
+    await tagsModalPage.createTag(tagName);
+    const tagsRowsAfterCreate = await tagsModalPage.rowNum();
+    const tagRowObject = new TagRowObject();
+    const tagRowObj = await tagRowObject.getRow(tagsRowsAfterCreate);
     expect(
       tagsRowsAfterCreate,
-      "Number of rows hasn't changed after creating tag"
+      'Number of rows hasn\'t changed after creating tag'
     ).equal(tagsRowsBeforeCreate + 1);
-    expect(tagRowObject.name, 'Saved Name is incorrect').equal(tagName);
+    expect(tagRowObj.name, 'Saved Name is incorrect').equal(tagName);
   });
   it('should not create tag', async () => {
-    const tagsRowsBeforeCreate = tagsModalPage.rowNum;
-    tagsModalPage.cancelCreateTag(tagName);
-    const tagsRowsAfterCreate = tagsModalPage.rowNum;
+    const tagsRowsBeforeCreate = await tagsModalPage.rowNum();
+    await tagsModalPage.cancelCreateTag(tagName);
+    const tagsRowsAfterCreate = await tagsModalPage.rowNum();
     expect(
       tagsRowsAfterCreate,
       'Number of rows changed after not creatings tag'
     ).equal(tagsRowsBeforeCreate);
   });
   it('should update tag', async () => {
-    const rowNum = tagsModalPage.rowNum;
-    tagsModalPage.editTag(rowNum, updatedTagName);
-    const tagRowObjectAfterEdit = new TagRowObject(rowNum);
-    expect(tagRowObjectAfterEdit.name, 'Updated tag name is incorrect').equal(
+    const rowNum = await tagsModalPage.rowNum();
+    await tagsModalPage.editTag(rowNum, updatedTagName);
+    const tagRowObjectAfterEdit = new TagRowObject();
+    const tagRowObj = await tagRowObjectAfterEdit.getRow(rowNum);
+    expect(tagRowObj.name, 'Updated tag name is incorrect').equal(
       updatedTagName
     );
   });
   it('should not update tag', async () => {
-    const rowNum = tagsModalPage.rowNum;
-    tagsModalPage.cancelEditTag(rowNum, updatedTagName);
-    const tagRowObjectAfterCancelEdit = new TagRowObject(rowNum);
+    const rowNum = await tagsModalPage.rowNum();
+    await tagsModalPage.cancelEditTag(rowNum, updatedTagName);
+    const tagRowObjectAfterCancelEdit = new TagRowObject();
+    const tagRowObj = await tagRowObjectAfterCancelEdit.getRow(rowNum);
     expect(
-      tagRowObjectAfterCancelEdit.name,
+      tagRowObj.name,
       'Updated tag name is incorrect'
     ).equal(updatedTagName);
   });
   it('should not delete tag', async () => {
-    const tagsRowsBeforeDelete = tagsModalPage.rowNum;
-    tagsModalPage.getTagByName(updatedTagName).deleteTag(true);
-    const tagsRowsAfterCancelDelete = tagsModalPage.rowNum;
+    const tagsRowsBeforeDelete = await tagsModalPage.rowNum();
+    await (await tagsModalPage.getTagByName(updatedTagName)).deleteTag(true);
+    const tagsRowsAfterCancelDelete = await tagsModalPage.rowNum();
     expect(
       tagsRowsAfterCancelDelete,
       'Number of rows changed after cancel delete tag'
     ).equal(tagsRowsBeforeDelete);
   });
   it('should delete tag', async () => {
-    const tagsRowsBeforeDelete = tagsModalPage.rowNum;
-    tagsModalPage.getTagByName(updatedTagName).deleteTag();
+    const tagsRowsBeforeDelete = await tagsModalPage.rowNum();
+    await (await tagsModalPage.getTagByName(updatedTagName)).deleteTag();
     browser.pause(500);
-    const tagsRowsAfterDelete = tagsModalPage.rowNum;
+    const tagsRowsAfterDelete = await tagsModalPage.rowNum();
     expect(
       tagsRowsAfterDelete,
       `Number of rows hasn't changed after delete tag`

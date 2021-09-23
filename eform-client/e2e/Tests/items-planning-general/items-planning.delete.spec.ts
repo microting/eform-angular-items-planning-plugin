@@ -43,19 +43,19 @@ describe('Items planning actions - Delete', function () {
     const planningRowObject = await itemsPlanningPlanningPage.getPlaningByName(
       planningData.name[0]
     );
-    planningRowObject.delete(true);
+    await planningRowObject.delete(true);
     expect(numRowBeforeDelete, 'Planning is deleted').eq(
-      itemsPlanningPlanningPage.rowNum
+      await itemsPlanningPlanningPage.rowNum()
     );
   });
   it('should delete existing planning', async () => {
-    const numRowBeforeDelete = itemsPlanningPlanningPage.rowNum;
-    const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
+    const numRowBeforeDelete = await itemsPlanningPlanningPage.rowNum();
+    const planningRowObject = await itemsPlanningPlanningPage.getPlaningByName(
       planningData.name[0]
     );
-    planningRowObject.delete();
+    await planningRowObject.delete();
     expect(numRowBeforeDelete - 1, 'Planning is not deleted').eq(
-      itemsPlanningPlanningPage.rowNum
+      await itemsPlanningPlanningPage.rowNum()
     );
   });
 });

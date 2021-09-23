@@ -33,41 +33,41 @@ let folderNameForEdit = generateRandmString();
 let eFormNameForEdit = generateRandmString();
 describe('Items planning actions - Edit', function () {
   before(async () => {
-    loginPage.open('/auth');
-    loginPage.login();
-    if (myEformsPage.rowNum >= 2) {
-      planningData.eFormName = myEformsPage.getEformRowObj(1).eFormName;
-      eFormNameForEdit = myEformsPage.getEformRowObj(2).eFormName;
+    await loginPage.open('/auth');
+    await loginPage.login();
+    if (await myEformsPage.rowNum() >= 2) {
+      planningData.eFormName = (await myEformsPage.getEformRowObj(1)).eFormName;
+      eFormNameForEdit = (await myEformsPage.getEformRowObj(2)).eFormName;
     } else {
       // Create eforms
-      if (myEformsPage.rowNum === 1) {
-        planningData.eFormName = myEformsPage.getEformRowObj(1).eFormName;
+      if (await myEformsPage.rowNum() === 1) {
+        planningData.eFormName = (await myEformsPage.getEformRowObj(1)).eFormName;
       } else {
-        myEformsPage.createNewEform(planningData.eFormName);
+        await myEformsPage.createNewEform(planningData.eFormName);
       }
-      myEformsPage.createNewEform(eFormNameForEdit);
+      await myEformsPage.createNewEform(eFormNameForEdit);
     }
 
-    myEformsPage.Navbar.goToFolderPage();
-    if (foldersPage.rowNum >= 2) {
-      planningData.folderName = foldersPage.getFolder(1).name;
-      folderNameForEdit = foldersPage.getFolder(2).name;
+    await myEformsPage.Navbar.goToFolderPage();
+    if (await foldersPage.rowNum() >= 2) {
+      planningData.folderName = (await foldersPage.getFolder(1)).name;
+      folderNameForEdit = (await foldersPage.getFolder(2)).name;
     } else {
       // Create two folder
-      if (foldersPage.rowNum === 1) {
-        planningData.folderName = foldersPage.getFolder(1).name;
+      if (await foldersPage.rowNum() === 1) {
+        planningData.folderName = (await foldersPage.getFolder(1)).name;
       } else {
-        foldersPage.createNewFolder(planningData.folderName, 'Description');
+        await foldersPage.createNewFolder(planningData.folderName, 'Description');
       }
-      foldersPage.createNewFolder(folderNameForEdit, 'Description');
+      await foldersPage.createNewFolder(folderNameForEdit, 'Description');
     }
-    itemsPlanningPlanningPage.goToPlanningsPage();
+    await itemsPlanningPlanningPage.goToPlanningsPage();
   });
   it('should create a new planning', async () => {
-    itemsPlanningModalPage.createPlanning(planningData);
+    await itemsPlanningModalPage.createPlanning(planningData);
   });
   it('should change all fields after edit', async () => {
-    let planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
+    let planningRowObject = await itemsPlanningPlanningPage.getPlaningByName(
       planningData.name[0]
     );
     const tempForSwapFolderName = planningData.folderName;
@@ -94,36 +94,36 @@ describe('Items planning actions - Edit', function () {
     };
     folderNameForEdit = tempForSwapFolderName;
     eFormNameForEdit = tempForSwapEFormFormName;
-    planningRowObject.update(planningData);
+    await planningRowObject.update(planningData);
 
     // Check that list is edited successfully in table
-    planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
+    planningRowObject = await itemsPlanningPlanningPage.getPlaningByName(
       planningData.name[0]
     );
-    planningRowObject.openEdit();
+    await planningRowObject.openEdit();
     browser.pause(1000);
     for (let i = 0; i < planningData.name.length; i++) {
       expect(
-        itemsPlanningModalPage.editPlanningItemName(i).getValue(),
+        await (await itemsPlanningModalPage.editPlanningItemName(i)).getValue(),
         'Name save is incorrect'
       ).eq(planningData.name[i]);
     }
     expect(
-      itemsPlanningModalPage.editPlanningDescription.getValue(),
+      await (await itemsPlanningModalPage.editPlanningDescription()).getValue(),
       'Description save is incorrect'
     ).eq(planningData.description);
     expect(
-      itemsPlanningModalPage.editPlanningSelector.$('.ng-value').getText(),
+      await (await (await itemsPlanningModalPage.editPlanningSelector()).$('.ng-value')).getText(),
       'Saved template is incorrect'
     ).eq(planningData.eFormName);
     expect(
-      itemsPlanningModalPage.editRepeatEvery.getValue(),
+      await (await itemsPlanningModalPage.editRepeatEvery()).getValue(),
       'Saved repeat every is incorrect'
     ).eq(planningData.repeatEvery);
     expect(
       format(
         parse(
-          itemsPlanningModalPage.editRepeatUntil.getValue(),
+          await (await itemsPlanningModalPage.editRepeatUntil()).getValue(),
           'M/d/yyyy',
           new Date()
         ),
@@ -132,31 +132,31 @@ describe('Items planning actions - Edit', function () {
       'Saved repeat until is incorrect'
     ).eq(format(planningData.repeatUntil, 'M/d/yyyy'));
     expect(
-      itemsPlanningModalPage.editRepeatType.$('.ng-value-label').getText(),
+      await (await (await itemsPlanningModalPage.editRepeatType()).$('.ng-value-label')).getText(),
       'Saved repeat type is incorrect'
     ).eq(planningData.repeatType);
     expect(
-      itemsPlanningModalPage.editItemType.getValue(),
+      await (await itemsPlanningModalPage.editItemType()).getValue(),
       'Saved type is incorrect'
     ).eq(planningData.type);
     expect(
-      itemsPlanningModalPage.editItemBuildYear.getValue(),
+      await (await itemsPlanningModalPage.editItemBuildYear()).getValue(),
       'Saved build year is incorrect'
     ).eq(planningData.buildYear);
     expect(
-      itemsPlanningModalPage.editFolderName
-        .$('#editFolderSelectorInput')
+      await (await (await itemsPlanningModalPage.editFolderName())
+        .$('#editFolderSelectorInput'))
         .getValue(),
       'Saved folder name is incorrect'
     ).eq(planningData.folderName);
     expect(
-      itemsPlanningModalPage.editItemLocationCode.getValue(),
+      await (await itemsPlanningModalPage.editItemLocationCode()).getValue(),
       'Saved location code is incorrect'
     ).eq(planningData.locationCode);
     expect(
       format(
         parse(
-          itemsPlanningModalPage.editStartFrom.getValue(),
+          await (await itemsPlanningModalPage.editStartFrom()).getValue(),
           'M/d/yyyy',
           new Date()
         ),
@@ -165,8 +165,8 @@ describe('Items planning actions - Edit', function () {
       'Saved start from is incorrect'
     ).eq(format(planningData.startFrom, 'M/d/yyyy'));
     expect(
-      itemsPlanningModalPage.pushMessageEnabledEdit
-        .$('.ng-value-label')
+      await (await (await itemsPlanningModalPage.pushMessageEnabledEdit())
+        .$('.ng-value-label'))
         .getText(),
       'Saved pushMessageEnabled code is incorrect'
     ).eq(
@@ -175,28 +175,28 @@ describe('Items planning actions - Edit', function () {
         : 'Deaktiveret'
     );
     expect(
-      +itemsPlanningModalPage.editDaysBeforeRedeploymentPushMessage
-        .$('.ng-value-label')
+      +await (await (await itemsPlanningModalPage.editDaysBeforeRedeploymentPushMessage())
+        .$('.ng-value-label'))
         .getText(),
       'Saved editDaysBeforeRedeploymentPushMessage code is incorrect'
     ).eq(planningData.daysBeforeRedeploymentPushMessage);
-    PlanningRowObject.closeEdit(true);
+    await PlanningRowObject.closeEdit(true);
   });
   after(async () => {
     // Delete
-    const planningRowObject = itemsPlanningPlanningPage.getPlaningByName(
+    const planningRowObject = await itemsPlanningPlanningPage.getPlaningByName(
       planningData.name[0]
     );
-    planningRowObject.delete();
+    await planningRowObject.delete();
 
-    myEformsPage.Navbar.goToFolderPage();
-    foldersPage.getFolderByName(planningData.folderName).delete();
-    foldersPage.getFolderByName(folderNameForEdit).delete();
+    await myEformsPage.Navbar.goToFolderPage();
+    await (await foldersPage.getFolderByName(planningData.folderName)).delete();
+    await (await foldersPage.getFolderByName(folderNameForEdit)).delete();
 
-    myEformsPage.Navbar.goToMyEForms();
-    myEformsPage.getEformsRowObjByNameEForm(eFormNameForEdit).deleteEForm();
-    myEformsPage
-      .getEformsRowObjByNameEForm(planningData.eFormName)
+    await myEformsPage.Navbar.goToMyEForms();
+    await (await myEformsPage.getEformsRowObjByNameEForm(eFormNameForEdit)).deleteEForm();
+    await (await myEformsPage
+      .getEformsRowObjByNameEForm(planningData.eFormName))
       .deleteEForm();
   });
 });
