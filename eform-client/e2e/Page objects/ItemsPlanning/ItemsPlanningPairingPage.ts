@@ -14,11 +14,11 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
     return ele;
   }
 
-  public async goToPairingPage(): Promise<WebdriverIO.Element> {
+  public async goToPairingPage() {
     await (await itemsPlanningPlanningPage.itemPlanningButton()).click();
     await (await this.pairingBtn()).click();
     await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
-    await this.savePairingGridBtn.waitForDisplayed();
+    await (await this.savePairingGridBtn()).waitForDisplayed();
   }
 
   public async countPlanningRow(): Promise<number> {
