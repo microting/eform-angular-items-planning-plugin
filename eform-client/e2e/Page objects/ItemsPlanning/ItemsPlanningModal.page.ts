@@ -1,8 +1,6 @@
 import Page from '../Page';
-import itemsPlanningPlanningPage, {
-  PlanningCreateUpdate,
-} from './ItemsPlanningPlanningPage';
-import { format } from 'date-fns';
+import itemsPlanningPlanningPage, {PlanningCreateUpdate,} from './ItemsPlanningPlanningPage';
+import {format} from 'date-fns';
 
 export class ItemsPlanningModalPage extends Page {
   constructor() {
@@ -10,366 +8,363 @@ export class ItemsPlanningModalPage extends Page {
   }
 
   // Create page elements
-  public createPlanningItemName(index: number) {
-    const ele = $(`#createPlanningNameTranslation_${index}`);
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async createPlanningItemName(index: number): Promise<WebdriverIO.Element> {
+    const ele = await $(`#createPlanningNameTranslation_${index}`);
+    await ele.waitForDisplayed({ timeout: 20000 });
     return ele;
   }
 
-  public get createPlanningSelector() {
-    const ele = $('#createPlanningSelector');
-    ele.waitForDisplayed({ timeout: 20000 });
-    ele.waitForClickable({ timeout: 20000 });
+  public async createPlanningSelector(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createPlanningSelector');
+    await ele.waitForDisplayed({ timeout: 20000 });
+    await ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
-  public get createPlanningItemDescription() {
-    const ele = $('#createPlanningItemDescription');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async createPlanningItemDescription(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createPlanningItemDescription');
+    await ele.waitForDisplayed({ timeout: 20000 });
     return ele;
   }
 
-  public get createRepeatEvery() {
-    const ele = $('#createRepeatEvery');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async createRepeatEvery(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createRepeatEvery');
+    await ele.waitForDisplayed({ timeout: 20000 });
     return ele;
   }
 
-  public selectFolder(nameFolder: string) {
-    if (this.createFolderName.isExisting()) {
-      this.createFolderName.click();
+  public async selectFolder(nameFolder: string) {
+    if (await (await this.createFolderName()).isExisting()) {
+      await (await this.createFolderName()).click();
     } else {
-      this.editFolderName.click();
+      await (await this.editFolderName()).click();
     }
-    const treeViewport = $('tree-viewport');
-    treeViewport.waitForDisplayed({ timeout: 20000 });
-    $(`#folderTreeName=${nameFolder}`).click();
-    treeViewport.waitForDisplayed({ timeout: 2000, reverse: true });
+    const treeViewport = await $('tree-viewport');
+    await treeViewport.waitForDisplayed({ timeout: 20000 });
+    await (await $(`#folderTreeName=${nameFolder}`)).click();
+    await treeViewport.waitForDisplayed({ timeout: 2000, reverse: true });
   }
 
-  public get createFolderName() {
-    const ele = $('#createFolderSelector');
+  public async createFolderName(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createFolderSelector');
     // ele.waitForDisplayed({timeout: 20000});
     return ele;
   }
 
-  public get editFolderName() {
-    const ele = $('#editFolderSelector');
+  public async editFolderName(): Promise<WebdriverIO.Element> {
+    const ele = await $('#editFolderSelector');
     // ele.waitForDisplayed({timeout: 20000});
     return ele;
   }
 
-  public get createRepeatUntil() {
-    const ele = $('#createRepeatUntil');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async createRepeatUntil(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createRepeatUntil');
+    await ele.waitForDisplayed({ timeout: 20000 });
     return ele;
   }
 
-  public get planningCreateSaveBtn() {
-    const ele = $('#planningCreateSaveBtn');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async planningCreateSaveBtn(): Promise<WebdriverIO.Element> {
+    const ele = await $('#planningCreateSaveBtn');
+    await ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
-  public get planningCreateCancelBtn() {
-    const ele = $('#planningCreateCancelBtn');
-    ele.waitForDisplayed({ timeout: 20000 });
-    ele.waitForClickable({ timeout: 20000 });
+  public async planningCreateCancelBtn(): Promise<WebdriverIO.Element> {
+    const ele = await $('#planningCreateCancelBtn');
+    await ele.waitForDisplayed({ timeout: 20000 });
+    await ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
-  public get createPlanningTagsSelector() {
-    const ele = $('#createPlanningTagsSelector');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async createPlanningTagsSelector(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createPlanningTagsSelector');
+    await ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
-  public get createStartFrom() {
-    const ele = $('#createStartFrom');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async createStartFrom(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createStartFrom');
+    await ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
-  public get createItemNumber() {
-    const ele = $('#createItemNumber');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async createItemNumber(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createItemNumber');
+    await ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
-  public get createItemLocationCode() {
-    const ele = $('#createItemLocationCode');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async createItemLocationCode(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createItemLocationCode');
+    await ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
-  public get createItemBuildYear() {
-    const ele = $('#createItemBuildYear');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async createItemBuildYear(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createItemBuildYear');
+    await ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
-  public get createItemType() {
-    const ele = $('#createItemType');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async createItemType(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createItemType');
+    await ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
   // Edit page elements
-  public editPlanningItemName(index: number) {
-    const ele = $(`#editPlanningNameTranslation_${index}`);
-    ele.waitForDisplayed({ timeout: 20000 });
-    ele.waitForClickable({ timeout: 20000 });
+  public async editPlanningItemName(index: number): Promise<WebdriverIO.Element> {
+    const ele = await $(`#editPlanningNameTranslation_${index}`);
+    await ele.waitForDisplayed({ timeout: 20000 });
+    await ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
-  public get editPlanningSelector() {
-    const ele = $('#editPlanningSelector');
-    ele.waitForDisplayed({ timeout: 20000 });
-    ele.waitForClickable({ timeout: 20000 });
+  public async editPlanningSelector(): Promise<WebdriverIO.Element> {
+    const ele = await $('#editPlanningSelector');
+    await ele.waitForDisplayed({ timeout: 20000 });
+    await ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
-  public get editPlanningTagsSelector() {
-    const ele = $('#editPlanningTagsSelector');
+  public async editPlanningTagsSelector(): Promise<WebdriverIO.Element> {
     // ele.waitForDisplayed({timeout: 20000});
     // ele.waitForClickable({timeout: 20000});
-    return ele;
+    return $('#editPlanningTagsSelector');
   }
-  public get editItemNumber() {
-    const ele = $('#editItemNumber');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async editItemNumber(): Promise<WebdriverIO.Element> {
+    const ele = await $('#editItemNumber');
+    await ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
-  public get editPlanningDescription() {
-    const ele = $('#editPlanningItemDescription');
-    ele.waitForDisplayed({ timeout: 20000 });
-    ele.waitForClickable({ timeout: 20000 });
+  public async editPlanningDescription(): Promise<WebdriverIO.Element> {
+    const ele = await $('#editPlanningItemDescription');
+    await ele.waitForDisplayed({ timeout: 20000 });
+    await ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
-  public get editRepeatEvery() {
-    const ele = $('#editRepeatEvery');
-    ele.waitForDisplayed({ timeout: 20000 });
-    ele.waitForClickable({ timeout: 20000 });
+  public async editRepeatEvery(): Promise<WebdriverIO.Element> {
+    const ele = await $('#editRepeatEvery');
+    await ele.waitForDisplayed({ timeout: 20000 });
+    await ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
-  public get planningId() {
-    const ele = $('#planningId');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async planningId(): Promise<WebdriverIO.Element> {
+    const ele = await $('#planningId');
+    await ele.waitForDisplayed({ timeout: 20000 });
     return ele;
   }
 
-  public get editRepeatType() {
-    const ele = $('#editRepeatType');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async editRepeatType(): Promise<WebdriverIO.Element> {
+    const ele = await $('#editRepeatType');
+    await ele.waitForDisplayed({ timeout: 20000 });
     return ele;
   }
 
-  public get editRepeatUntil() {
-    const ele = $('#editRepeatUntil');
-    ele.waitForDisplayed({ timeout: 20000 });
-    ele.waitForClickable({ timeout: 20000 });
+  public async editRepeatUntil(): Promise<WebdriverIO.Element> {
+    const ele = await $('#editRepeatUntil');
+    await ele.waitForDisplayed({ timeout: 20000 });
+    await ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
-  public get editStartFrom() {
-    const ele = $('#editStartFrom');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async editStartFrom(): Promise<WebdriverIO.Element> {
+    const ele = await $('#editStartFrom');
+    await ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
-  public get editItemLocationCode() {
-    const ele = $('#editItemLocationCode');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async editItemLocationCode(): Promise<WebdriverIO.Element> {
+    const ele = await $('#editItemLocationCode');
+    await ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
-  public get editItemBuildYear() {
-    const ele = $('#editItemBuildYear');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async editItemBuildYear(): Promise<WebdriverIO.Element> {
+    const ele = await $('#editItemBuildYear');
+    await ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
-  public get editItemType() {
-    const ele = $('#editItemType');
-    ele.waitForDisplayed({ timeout: 20000 });
+  public async editItemType(): Promise<WebdriverIO.Element> {
+    const ele = await $('#editItemType');
+    await ele.waitForDisplayed({ timeout: 20000 });
     // ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
-  public get planningEditSaveBtn() {
-    const ele = $('#planningEditSaveBtn');
-    ele.waitForDisplayed({ timeout: 20000 });
-    ele.waitForClickable({ timeout: 20000 });
+  public async planningEditSaveBtn(): Promise<WebdriverIO.Element> {
+    const ele = await $('#planningEditSaveBtn');
+    await ele.waitForDisplayed({ timeout: 20000 });
+    await ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
-  public get planningEditCancelBtn() {
-    const ele = $('#planningEditCancelBtn');
-    ele.waitForDisplayed({ timeout: 20000 });
-    ele.waitForClickable({ timeout: 20000 });
+  public async planningEditCancelBtn(): Promise<WebdriverIO.Element> {
+    const ele = await $('#planningEditCancelBtn');
+    await ele.waitForDisplayed({ timeout: 20000 });
+    await ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
   // Add item elements
-  public get addItemBtn() {
-    const ele = $('#addItemBtn');
-    ele.waitForDisplayed({ timeout: 20000 });
-    ele.waitForClickable({ timeout: 20000 });
+  public async addItemBtn(): Promise<WebdriverIO.Element> {
+    const ele = await $('#addItemBtn');
+    await ele.waitForDisplayed({ timeout: 20000 });
+    await ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
   // Delete page elements
-  public get planningDeleteDeleteBtn() {
-    const ele = $('#planningDeleteDeleteBtn');
-    ele.waitForDisplayed({ timeout: 20000 });
-    ele.waitForClickable({ timeout: 20000 });
+  public async planningDeleteDeleteBtn(): Promise<WebdriverIO.Element> {
+    const ele = await $('#planningDeleteDeleteBtn');
+    await ele.waitForDisplayed({ timeout: 20000 });
+    await ele.waitForClickable({ timeout: 20000 });
     return ele;
   }
 
-  public get planningDeleteCancelBtn() {
-    const cancelBtn = $('#planningDeleteCancelBtn');
-    cancelBtn.waitForDisplayed({ timeout: 20000 });
-    cancelBtn.waitForClickable({ timeout: 20000 });
+  public async planningDeleteCancelBtn(): Promise<WebdriverIO.Element> {
+    const cancelBtn = await $('#planningDeleteCancelBtn');
+    await cancelBtn.waitForDisplayed({ timeout: 20000 });
+    await cancelBtn.waitForClickable({ timeout: 20000 });
     return cancelBtn;
   }
 
-  public get xlsxImportPlanningsInput() {
-    const ele = $('#xlsxImportPlanningsInput');
+  public async xlsxImportPlanningsInput(): Promise<WebdriverIO.Element> {
+    return $('#xlsxImportPlanningsInput');
+  }
+
+  public async pushMessageEnabledCreate(): Promise<WebdriverIO.Element> {
+    const ele = await $('#pushMessageEnabledCreate');
+    await ele.waitForDisplayed({ timeout: 40000 });
     return ele;
   }
 
-  public get pushMessageEnabledCreate() {
-    const ele = $('#pushMessageEnabledCreate');
-    ele.waitForDisplayed({ timeout: 40000 });
+  public async createDaysBeforeRedeploymentPushMessage(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createDaysBeforeRedeploymentPushMessage');
+    await ele.waitForDisplayed({ timeout: 40000 });
     return ele;
   }
 
-  public get createDaysBeforeRedeploymentPushMessage() {
-    const ele = $('#createDaysBeforeRedeploymentPushMessage');
-    ele.waitForDisplayed({ timeout: 40000 });
+  public async pushMessageEnabledEdit(): Promise<WebdriverIO.Element> {
+    const ele = await $('#pushMessageEnabledEdit');
+    await ele.waitForDisplayed({ timeout: 40000 });
     return ele;
   }
 
-  public get pushMessageEnabledEdit() {
-    const ele = $('#pushMessageEnabledEdit');
-    ele.waitForDisplayed({ timeout: 40000 });
+  public async editDaysBeforeRedeploymentPushMessage(): Promise<WebdriverIO.Element> {
+    const ele = await $('#editDaysBeforeRedeploymentPushMessage');
+    await ele.waitForDisplayed({ timeout: 40000 });
     return ele;
   }
 
-  public get editDaysBeforeRedeploymentPushMessage() {
-    const ele = $('#editDaysBeforeRedeploymentPushMessage');
-    ele.waitForDisplayed({ timeout: 40000 });
-    return ele;
-  }
-
-  public createPlanning(planning: PlanningCreateUpdate, clickCancel = false) {
+  public async createPlanning(planning: PlanningCreateUpdate, clickCancel = false) {
     const spinnerAnimation = $('#spinner-animation');
-    itemsPlanningPlanningPage.planningCreateBtn.click();
-    spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
+    await (await itemsPlanningPlanningPage.planningCreateBtn()).click();
+    await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
     const ngOption = $('.ng-option');
-    this.planningCreateSaveBtn.waitForDisplayed();
+    await (await this.planningCreateSaveBtn()).waitForDisplayed();
     for (let i = 0; i < planning.name.length; i++) {
-      this.createPlanningItemName(i).setValue(planning.name[i]);
+      await (await this.createPlanningItemName(i)).setValue(planning.name[i]);
     }
     // if (planning.folderName) {
-    this.selectFolder(planning.folderName);
+    await this.selectFolder(planning.folderName);
     // }
     // if (planning.eFormName) {
-    this.createPlanningSelector.$('input').setValue(planning.eFormName);
-    spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
-    ngOption.waitForDisplayed({ timeout: 20000 });
-    this.createPlanningSelector
-      .$('ng-dropdown-panel')
-      .$(`.ng-option=${planning.eFormName}`)
+    await (await (await this.createPlanningSelector()).$('input')).setValue(planning.eFormName);
+    await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
+    await ngOption.waitForDisplayed({ timeout: 20000 });
+    await (await (await (await this.createPlanningSelector())
+      .$('ng-dropdown-panel'))
+      .$(`.ng-option=${planning.eFormName}`))
       .click();
-    spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
+    await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
     // }
     if (planning.tags && planning.tags.length > 0) {
       for (let i = 0; i < planning.tags.length; i++) {
-        this.createPlanningTagsSelector.addValue(planning.tags[i]);
-        browser.keys(['Return']);
+        await (await this.createPlanningTagsSelector()).addValue(planning.tags[i]);
+        await browser.keys(['Return']);
       }
     }
     if (planning.repeatEvery) {
-      this.createRepeatEvery.setValue(planning.repeatEvery);
+      await (await this.createRepeatEvery()).setValue(planning.repeatEvery);
     }
     if (planning.repeatType) {
-      $('#createRepeatType input').setValue(planning.repeatType);
-      spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
-      ngOption.waitForDisplayed({ timeout: 20000 });
-      $('#createRepeatType ng-dropdown-panel')
-        .$(`.ng-option=${planning.repeatType}`)
+      await (await $('#createRepeatType input')).setValue(planning.repeatType);
+      await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
+      await ngOption.waitForDisplayed({ timeout: 20000 });
+      await (await (await $('#createRepeatType ng-dropdown-panel'))
+        .$(`.ng-option=${planning.repeatType}`))
         .click();
-      spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
+      await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
     }
     if (planning.startFrom) {
-      this.createStartFrom.setValue(format(planning.startFrom, 'M/d/yyyy'));
+      await (await this.createStartFrom()).setValue(format(planning.startFrom, 'M/d/yyyy'));
     }
     if (planning.repeatUntil) {
-      this.createRepeatUntil.setValue(format(planning.repeatUntil, 'M/d/yyyy'));
+      await (await this.createRepeatUntil()).setValue(format(planning.repeatUntil, 'M/d/yyyy'));
     }
     if (planning.description) {
-      this.createPlanningItemDescription.setValue(planning.description);
+      await (await this.createPlanningItemDescription()).setValue(planning.description);
     }
     if (planning.number) {
-      this.createItemNumber.setValue(planning.number);
+      await (await this.createItemNumber()).setValue(planning.number);
     }
     if (planning.locationCode) {
-      this.createItemLocationCode.setValue(planning.locationCode);
+      await (await this.createItemLocationCode()).setValue(planning.locationCode);
     }
     if (planning.buildYear) {
-      this.createItemBuildYear.setValue(planning.buildYear);
+      await (await this.createItemBuildYear()).setValue(planning.buildYear);
     }
     if (planning.type) {
-      this.createItemType.setValue(planning.type);
+      await (await this.createItemType()).setValue(planning.type);
     }
     if (planning.pushMessageEnabled != null) {
       const status = planning.pushMessageEnabled
         ? 'Aktiveret'
         : 'Deaktiveret';
-      this.pushMessageEnabledCreate
-        .$('input')
+      await (await (await this.pushMessageEnabledCreate())
+        .$('input'))
         .setValue(status);
-      let value = this.pushMessageEnabledCreate
-        .$('ng-dropdown-panel')
+      let value = await (await (await this.pushMessageEnabledCreate())
+        .$('ng-dropdown-panel'))
         .$(`.ng-option=${status}`);
-      value.waitForDisplayed({ timeout: 40000 });
-      value.click();
+      await value.waitForDisplayed({ timeout: 40000 });
+      await value.click();
 
-      this.createDaysBeforeRedeploymentPushMessage
-        .$('input')
+      await (await (await this.createDaysBeforeRedeploymentPushMessage())
+        .$('input'))
         .setValue(planning.daysBeforeRedeploymentPushMessage);
-      value = this.createDaysBeforeRedeploymentPushMessage
-        .$('ng-dropdown-panel')
-        .$(`.ng-option=${planning.daysBeforeRedeploymentPushMessage}`);
-      value.waitForDisplayed({ timeout: 40000 });
-      value.click();
+      value = await (await (await this.createDaysBeforeRedeploymentPushMessage())
+        .$('ng-dropdown-panel')).$(`.ng-option=${planning.daysBeforeRedeploymentPushMessage}`);
+      await value.waitForDisplayed({ timeout: 40000 });
+      await value.click();
     }
     if (!clickCancel) {
-      this.planningCreateSaveBtn.click();
-      spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
+      await (await this.planningCreateSaveBtn()).click();
+      await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
     } else {
-      this.planningCreateCancelBtn.click();
+      await (await this.planningCreateCancelBtn()).click();
     }
-    this.planningId.waitForDisplayed();
+    await (await this.planningId()).waitForDisplayed();
   }
 
-  public addNewItem() {
-    this.addItemBtn.click();
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+  public async addNewItem() {
+    await (await this.addItemBtn()).click();
+    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
   }
 }
 
@@ -377,13 +372,7 @@ const itemsPlanningModalPage = new ItemsPlanningModalPage();
 export default itemsPlanningModalPage;
 
 export class PlanningItemRowObject {
-  constructor(rowNumber) {
-    this.name = $$('#createItemName')[rowNumber - 1].getText();
-    this.description = $$('#createItemDescription')[rowNumber - 1].getText();
-    this.number = $$('#createItemNumber')[rowNumber - 1].getText();
-    this.locationCode = $$('#createItemLocationCode')[rowNumber - 1].getText();
-    this.deleteBtn = $$('#deleteItemBtn')[rowNumber - 1];
-  }
+  constructor() {}
 
   public name;
   public description;
@@ -391,8 +380,18 @@ export class PlanningItemRowObject {
   public locationCode;
   public deleteBtn;
 
-  public deleteItem() {
-    this.deleteBtn.click();
-    $('#spinner-animation').waitForDisplayed({ timeout: 90000, reverse: true });
+  async getRow(rowNum: number): Promise<PlanningItemRowObject> {
+    this.name = $$('#createItemName')[rowNum - 1].getText();
+    this.description = $$('#createItemDescription')[rowNum - 1].getText();
+    this.number = $$('#createItemNumber')[rowNum - 1].getText();
+    this.locationCode = $$('#createItemLocationCode')[rowNum - 1].getText();
+    this.deleteBtn = $$('#deleteItemBtn')[rowNum - 1];
+
+    return this;
+  }
+
+  public async deleteItem() {
+    await this.deleteBtn.click();
+    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
   }
 }

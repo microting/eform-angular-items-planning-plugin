@@ -21,37 +21,37 @@ const countDeviceUsers = 4; // constant, how need create user devices for test
 const countPlanning = 4; // constant, how need create plannings
 
 describe('Items planning plugin - Pairing', function () {
-  before(function () {
-    loginPage.open('/auth');
-    loginPage.login();
+  before(async () => {
+    await loginPage.open('/auth');
+    await loginPage.login();
 
-    if (myEformsPage.rowNum <= 0) {
-      myEformsPage.createNewEform(template); // Create eform
+    if (await myEformsPage.rowNum() <= 0) {
+      await myEformsPage.createNewEform(template); // Create eform
     } else {
-      template = myEformsPage.getFirstMyEformsRowObj().eFormName;
+      template = (await myEformsPage.getFirstMyEformsRowObj()).eFormName;
     }
 
-    myEformsPage.Navbar.goToDeviceUsersPage();
-    while (deviceUsersPage.rowNum !== countDeviceUsers) {
+    await myEformsPage.Navbar.goToDeviceUsersPage();
+    while (await deviceUsersPage.rowNum() !== countDeviceUsers) {
       // create device users
-      deviceUsersPage.createNewDeviceUser(
+      await deviceUsersPage.createNewDeviceUser(
         generateRandmString(),
         generateRandmString()
       );
     }
     for (let i = 1; i < countDeviceUsers + 1; i++) {
-      deviceUsers.push(deviceUsersPage.getDeviceUser(i));
+      deviceUsers.push(await deviceUsersPage.getDeviceUser(i));
     }
 
-    myEformsPage.Navbar.goToFolderPage();
-    if (foldersPage.rowNum <= 0) {
-      foldersPage.createNewFolder(folderName, 'Description'); // Create folder
+    await myEformsPage.Navbar.goToFolderPage();
+    if (await foldersPage.rowNum() <= 0) {
+      await foldersPage.createNewFolder(folderName, 'Description'); // Create folder
     } else {
-      folderName = foldersPage.getFolder(1).name;
+      folderName = (await foldersPage.getFolder(1)).name;
     }
 
-    itemsPlanningPlanningPage.goToPlanningsPage();
-    while (itemsPlanningPlanningPage.rowNum < countPlanning) {
+    await itemsPlanningPlanningPage.goToPlanningsPage();
+    while (await itemsPlanningPlanningPage.rowNum() < countPlanning) {
       const planningData: PlanningCreateUpdate = {
         name: [
           generateRandmString(),
@@ -61,77 +61,77 @@ describe('Items planning plugin - Pairing', function () {
         eFormName: template,
         folderName: folderName,
       };
-      itemsPlanningModalPage.createPlanning(planningData);
+      await itemsPlanningModalPage.createPlanning(planningData);
     }
     planningRowObjects = [
-      ...itemsPlanningPlanningPage.getAllPlannings(countPlanning),
+      ...await itemsPlanningPlanningPage.getAllPlannings(countPlanning),
     ];
 
-    itemsPlanningPairingPage.goToPairingPage();
+    await itemsPlanningPairingPage.goToPairingPage();
   });
-  it('should pair one device user which all plannings', function () {
+  it('should pair one device user which all plannings', async () => {
     const pair = true;
-    const pairingColObject = itemsPlanningPairingPage.getDeviceUserByIndex(1);
-    pairingColObject.pairWhichAllPlannings(pair);
+    const pairingColObject = await itemsPlanningPairingPage.getDeviceUserByIndex(1);
+    await pairingColObject.pairWhichAllPlannings(pair);
     for (let i = 0; i < pairingColObject.pairCheckboxesForClick.length; i++) {
-      expect(pairingColObject.pairCheckboxes[i].getValue()).eq(pair.toString());
+      expect(await pairingColObject.pairCheckboxes[i].getValue()).eq(pair.toString());
     }
   });
-  it('should unpair one device user which all plannings', function () {
+  it('should unpair one device user which all plannings', async () => {
     const pair = false;
-    const pairingColObject = itemsPlanningPairingPage.getDeviceUserByIndex(1);
-    pairingColObject.pairWhichAllPlannings(pair, true);
+    const pairingColObject = await itemsPlanningPairingPage.getDeviceUserByIndex(1);
+    await pairingColObject.pairWhichAllPlannings(pair, true);
     for (let i = 0; i < pairingColObject.pairCheckboxesForClick.length; i++) {
-      expect(pairingColObject.pairCheckboxes[i].getValue()).eq(pair.toString());
+      expect(await pairingColObject.pairCheckboxes[i].getValue()).eq(pair.toString());
     }
   });
-  it('should pair one planning which all device user', function () {
+  it('should pair one planning which all device user', async () => {
     const pair = true;
-    const pairingRowObject = itemsPlanningPairingPage.getPlanningByIndex(1);
-    pairingRowObject.pairWhichAllDeviceUsers(pair);
+    const pairingRowObject = await itemsPlanningPairingPage.getPlanningByIndex(1);
+    await pairingRowObject.pairWhichAllDeviceUsers(pair);
     for (let i = 0; i < pairingRowObject.pairCheckboxesForClick.length; i++) {
-      expect(pairingRowObject.pairCheckboxes[i].getValue()).eq(pair.toString());
+      expect(await pairingRowObject.pairCheckboxes[i].getValue()).eq(pair.toString());
     }
   });
-  it('should unpair one planning which all device user', function () {
+  it('should unpair one planning which all device user', async () => {
     const pair = false;
-    const pairingRowObject = itemsPlanningPairingPage.getPlanningByIndex(1);
-    pairingRowObject.pairWhichAllDeviceUsers(pair, true);
+    const pairingRowObject = await itemsPlanningPairingPage.getPlanningByIndex(1);
+    await pairingRowObject.pairWhichAllDeviceUsers(pair, true);
     for (let i = 0; i < pairingRowObject.pairCheckboxesForClick.length; i++) {
-      expect(pairingRowObject.pairCheckboxes[i].getValue()).eq(pair.toString());
+      expect(await pairingRowObject.pairCheckboxes[i].getValue()).eq(pair.toString());
     }
   });
-  it('should pair one planning which one device user', function () {
+  it('should pair one planning which one device user', async () => {
     const pair = true;
     const indexDeviceForPair = 1;
-    const pairingRowObject = itemsPlanningPairingPage.getPlanningByIndex(1);
-    pairingRowObject.pairWithOneDeviceUser(pair, indexDeviceForPair);
-    expect(pairingRowObject.pairCheckboxes[indexDeviceForPair].getValue()).eq(
+    const pairingRowObject = await itemsPlanningPairingPage.getPlanningByIndex(1);
+    await pairingRowObject.pairWithOneDeviceUser(pair, indexDeviceForPair);
+    expect(await pairingRowObject.pairCheckboxes[indexDeviceForPair].getValue()).eq(
       pair.toString()
     );
   });
-  it('should unpair one planning which one device user', function () {
+  it('should unpair one planning which one device user', async () => {
     const pair = false;
     const indexDeviceForPair = 1;
-    const pairingRowObject = itemsPlanningPairingPage.getPlanningByIndex(1);
-    pairingRowObject.pairWithOneDeviceUser(pair, indexDeviceForPair);
-    expect(pairingRowObject.pairCheckboxes[indexDeviceForPair].getValue()).eq(
+    const pairingRowObject = await itemsPlanningPairingPage.getPlanningByIndex(1);
+    await pairingRowObject.pairWithOneDeviceUser(pair, indexDeviceForPair);
+    expect(await pairingRowObject.pairCheckboxes[indexDeviceForPair].getValue()).eq(
       pair.toString()
     );
   });
-  after('delete all created for this test', function () {
-    itemsPlanningPlanningPage.goToPlanningsPage();
-    itemsPlanningPlanningPage.clearTable();
+  after('delete all created for this test', async () => {
+    await itemsPlanningPlanningPage.goToPlanningsPage();
+    await itemsPlanningPlanningPage.clearTable();
 
-    myEformsPage.Navbar.goToFolderPage();
-    foldersPage.getFolderByName(folderName).delete();
+    await myEformsPage.Navbar.goToFolderPage();
+    await (await foldersPage.getFolderByName(folderName)).delete();
 
-    myEformsPage.Navbar.goToDeviceUsersPage();
+    await myEformsPage.Navbar.goToDeviceUsersPage();
     for (let i = 0; i < deviceUsers.length; i++) {
-      deviceUsers[i].delete();
+      await deviceUsers[i].delete();
     }
 
-    myEformsPage.Navbar.goToMyEForms();
-    myEformsPage.getEformsRowObjByNameEForm(template).deleteEForm();
+    await myEformsPage.Navbar.goToMyEForms();
+    await (await myEformsPage.getEformsRowObjByNameEForm(template)).deleteEForm();
   });
 });
