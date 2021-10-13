@@ -70,12 +70,12 @@ namespace ItemsPlanning.Pn.Services.PairingService
         {
             try
             {
-                var sdkCore =
-                    await _coreService.GetCore();
+                var sdkCore = await _coreService.GetCore();
                 await using var sdkDbContext = sdkCore.DbContextHelper.GetDbContext();
                 var sitesQuery = sdkDbContext.Sites
-                    .AsNoTracking()
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed);
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .AsNoTracking();
+
                 if (pairingRequestModel.SiteIds.Any())
                 {
                     sitesQuery = sitesQuery.Where(x => pairingRequestModel.SiteIds.Contains(x.Id));
@@ -88,7 +88,8 @@ namespace ItemsPlanning.Pn.Services.PairingService
 
                 var pairingQuery = _dbContext.Plannings
                     .Where(x => x.SdkFolderId != null)
-                    .Where(x => x.SdkFolderId != 0).AsQueryable();
+                    .Where(x => x.SdkFolderId != 0)
+                    .AsQueryable();
 
                 if (pairingRequestModel.TagIds.Any())
                 {
@@ -98,31 +99,25 @@ namespace ItemsPlanning.Pn.Services.PairingService
                             y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
                     }
                 }
-                var languageQuery = sdkDbContext.Languages;
-                var localeString = await _userService.GetCurrentUserLocale();
-                if (string.IsNullOrEmpty(localeString))
-                {
-                    return new OperationDataResult<PairingsModel>(false,
-                        _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
-                }
-                var language = languageQuery.Single(x => x.LanguageCode == localeString);
-                var pairing = await pairingQuery.Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                  .Select(x => new PairingModel
-                  {
-                      PlanningId = x.Id,
-                      PlanningName = x.NameTranslations
+                var language = await _userService.GetCurrentUserLanguage();
+                var pairing = await pairingQuery
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Select(x => new PairingModel
+                    {
+                        PlanningId = x.Id,
+                        PlanningName = x.NameTranslations
                         .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                         .Where(y => y.Language.Id == language.Id)
                         .Select(y => y.Name)
                         .FirstOrDefault(),
-                      PairingValues = x.PlanningSites
+                        PairingValues = x.PlanningSites
                       .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                       .Select(y => new PairingValueModel
                       {
                           DeviceUserId = y.SiteId,
                           Paired = true
                       }).ToList(),
-                  }).ToListAsync();
+                    }).ToListAsync();
 
                 // Add users who is not paired
                 foreach (var pairingModel in pairing)
@@ -167,14 +162,11 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 }
 
                 // Build result
-                var result = new PairingsModel();
-
-                foreach (var deviceUser in deviceUsers)
+                var result = new PairingsModel()
                 {
-                    result.DeviceUsers.Add(deviceUser.Name);
-                }
-
-                result.Pairings = pairing;
+                    DeviceUsers = deviceUsers.Select(x => x.Name).ToList(),
+                    Pairings = pairing,
+                };
 
                 return new OperationDataResult<PairingsModel>(
                     true,

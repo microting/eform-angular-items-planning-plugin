@@ -13,11 +13,11 @@ import {
   PlanningAssignmentSiteModel,
   PlanningAssignSitesModel,
   PlanningModel,
-} from '../../../../models/plannings';
+} from '../../../../models';
 import {
   ItemsPlanningPnPairingService,
   ItemsPlanningPnPlanningsService,
-} from 'src/app/plugins/modules/items-planning-pn/services';
+} from '../../../../services';
 import { Subscription } from 'rxjs';
 import { AuthStateService } from 'src/app/common/store';
 
@@ -106,6 +106,10 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
           this.sitesAssigned.emit();
         }
       });
+  }
+
+  hide() {
+    this.frame.hide();
   }
 
   ngOnDestroy(): void {}

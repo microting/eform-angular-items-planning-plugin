@@ -1,6 +1,8 @@
 import Page from '../Page';
-import itemsPlanningPlanningPage, {PlanningCreateUpdate,} from './ItemsPlanningPlanningPage';
-import {format} from 'date-fns';
+import itemsPlanningPlanningPage, {
+  PlanningCreateUpdate,
+} from './ItemsPlanningPlanningPage';
+import { format } from 'date-fns';
 
 export class ItemsPlanningModalPage extends Page {
   constructor() {
@@ -8,7 +10,9 @@ export class ItemsPlanningModalPage extends Page {
   }
 
   // Create page elements
-  public async createPlanningItemName(index: number): Promise<WebdriverIO.Element> {
+  public async createPlanningItemName(
+    index: number
+  ): Promise<WebdriverIO.Element> {
     const ele = await $(`#createPlanningNameTranslation_${index}`);
     await ele.waitForDisplayed({ timeout: 20000 });
     return ele;
@@ -119,7 +123,9 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
   // Edit page elements
-  public async editPlanningItemName(index: number): Promise<WebdriverIO.Element> {
+  public async editPlanningItemName(
+    index: number
+  ): Promise<WebdriverIO.Element> {
     const ele = await $(`#editPlanningNameTranslation_${index}`);
     await ele.waitForDisplayed({ timeout: 20000 });
     await ele.waitForClickable({ timeout: 20000 });
@@ -271,7 +277,10 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
 
-  public async createPlanning(planning: PlanningCreateUpdate, clickCancel = false) {
+  public async createPlanning(
+    planning: PlanningCreateUpdate,
+    clickCancel = false
+  ) {
     const spinnerAnimation = $('#spinner-animation');
     await (await itemsPlanningPlanningPage.planningCreateBtn()).click();
     await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
@@ -284,18 +293,23 @@ export class ItemsPlanningModalPage extends Page {
     await this.selectFolder(planning.folderName);
     // }
     // if (planning.eFormName) {
-    await (await (await this.createPlanningSelector()).$('input')).setValue(planning.eFormName);
+    await (await (await this.createPlanningSelector()).$('input')).setValue(
+      planning.eFormName
+    );
     await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
     await ngOption.waitForDisplayed({ timeout: 20000 });
-    await (await (await (await this.createPlanningSelector())
-      .$('ng-dropdown-panel'))
-      .$(`.ng-option=${planning.eFormName}`))
-      .click();
+    await (
+      await (
+        await (await this.createPlanningSelector()).$('ng-dropdown-panel')
+      ).$(`.ng-option=${planning.eFormName}`)
+    ).click();
     await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
     // }
     if (planning.tags && planning.tags.length > 0) {
       for (let i = 0; i < planning.tags.length; i++) {
-        await (await this.createPlanningTagsSelector()).addValue(planning.tags[i]);
+        await (await this.createPlanningTagsSelector()).addValue(
+          planning.tags[i]
+        );
         await browser.keys(['Return']);
       }
     }
@@ -304,27 +318,43 @@ export class ItemsPlanningModalPage extends Page {
     }
     if (planning.repeatType) {
       await (await $('#createRepeatType input')).setValue(planning.repeatType);
-      await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
+      await spinnerAnimation.waitForDisplayed({
+        timeout: 90000,
+        reverse: true,
+      });
       await ngOption.waitForDisplayed({ timeout: 20000 });
-      await (await (await $('#createRepeatType ng-dropdown-panel'))
-        .$(`.ng-option=${planning.repeatType}`))
-        .click();
-      await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
+      await (
+        await (await $('#createRepeatType ng-dropdown-panel')).$(
+          `.ng-option=${planning.repeatType}`
+        )
+      ).click();
+      await spinnerAnimation.waitForDisplayed({
+        timeout: 90000,
+        reverse: true,
+      });
     }
     if (planning.startFrom) {
-      await (await this.createStartFrom()).setValue(format(planning.startFrom, 'M/d/yyyy'));
+      await (await this.createStartFrom()).setValue(
+        format(planning.startFrom, 'M/d/yyyy')
+      );
     }
     if (planning.repeatUntil) {
-      await (await this.createRepeatUntil()).setValue(format(planning.repeatUntil, 'M/d/yyyy'));
+      await (await this.createRepeatUntil()).setValue(
+        format(planning.repeatUntil, 'M/d/yyyy')
+      );
     }
     if (planning.description) {
-      await (await this.createPlanningItemDescription()).setValue(planning.description);
+      await (await this.createPlanningItemDescription()).setValue(
+        planning.description
+      );
     }
     if (planning.number) {
       await (await this.createItemNumber()).setValue(planning.number);
     }
     if (planning.locationCode) {
-      await (await this.createItemLocationCode()).setValue(planning.locationCode);
+      await (await this.createItemLocationCode()).setValue(
+        planning.locationCode
+      );
     }
     if (planning.buildYear) {
       await (await this.createItemBuildYear()).setValue(planning.buildYear);
@@ -333,29 +363,33 @@ export class ItemsPlanningModalPage extends Page {
       await (await this.createItemType()).setValue(planning.type);
     }
     if (planning.pushMessageEnabled != null) {
-      const status = planning.pushMessageEnabled
-        ? 'Aktiveret'
-        : 'Deaktiveret';
-      await (await (await this.pushMessageEnabledCreate())
-        .$('input'))
-        .setValue(status);
-      let value = await (await (await this.pushMessageEnabledCreate())
-        .$('ng-dropdown-panel'))
-        .$(`.ng-option=${status}`);
+      const status = planning.pushMessageEnabled ? 'Aktiveret' : 'Deaktiveret';
+      await (await (await this.pushMessageEnabledCreate()).$('input')).setValue(
+        status
+      );
+      let value = await (
+        await (await this.pushMessageEnabledCreate()).$('ng-dropdown-panel')
+      ).$(`.ng-option=${status}`);
       await value.waitForDisplayed({ timeout: 40000 });
       await value.click();
 
-      await (await (await this.createDaysBeforeRedeploymentPushMessage())
-        .$('input'))
-        .setValue(planning.daysBeforeRedeploymentPushMessage);
-      value = await (await (await this.createDaysBeforeRedeploymentPushMessage())
-        .$('ng-dropdown-panel')).$(`.ng-option=${planning.daysBeforeRedeploymentPushMessage}`);
+      await (
+        await (await this.createDaysBeforeRedeploymentPushMessage()).$('input')
+      ).setValue(planning.daysBeforeRedeploymentPushMessage);
+      value = await (
+        await (await this.createDaysBeforeRedeploymentPushMessage()).$(
+          'ng-dropdown-panel'
+        )
+      ).$(`.ng-option=${planning.daysBeforeRedeploymentPushMessage}`);
       await value.waitForDisplayed({ timeout: 40000 });
       await value.click();
     }
     if (!clickCancel) {
       await (await this.planningCreateSaveBtn()).click();
-      await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
+      await spinnerAnimation.waitForDisplayed({
+        timeout: 90000,
+        reverse: true,
+      });
     } else {
       await (await this.planningCreateCancelBtn()).click();
     }
@@ -364,7 +398,10 @@ export class ItemsPlanningModalPage extends Page {
 
   public async addNewItem() {
     await (await this.addItemBtn()).click();
-    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
+    await (await $('#spinner-animation')).waitForDisplayed({
+      timeout: 90000,
+      reverse: true,
+    });
   }
 }
 
@@ -392,6 +429,9 @@ export class PlanningItemRowObject {
 
   public async deleteItem() {
     await this.deleteBtn.click();
-    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
+    await (await $('#spinner-animation')).waitForDisplayed({
+      timeout: 90000,
+      reverse: true,
+    });
   }
 }
