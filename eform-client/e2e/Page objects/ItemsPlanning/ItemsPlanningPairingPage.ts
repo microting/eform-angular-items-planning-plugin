@@ -17,7 +17,10 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
   public async goToPairingPage() {
     await (await itemsPlanningPlanningPage.itemPlanningButton()).click();
     await (await this.pairingBtn()).click();
-    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
+    await (await $('#spinner-animation')).waitForDisplayed({
+      timeout: 90000,
+      reverse: true,
+    });
     await (await this.savePairingGridBtn()).waitForDisplayed();
   }
 
@@ -70,7 +73,9 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
     return i > 0 ? i + 1 : 0;
   }
 
-  public async planningRowByPlanningName(planningName: string): Promise<PairingRowObject> {
+  public async planningRowByPlanningName(
+    planningName: string
+  ): Promise<PairingRowObject> {
     for (let i = 1; i < (await this.countPlanningRow()) + 1; i++) {
       const pairObj = new PairingRowObject();
       const element = await pairObj.getRow(i);
@@ -97,7 +102,9 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
     return null;
   }
 
-  public async indexColDeviceUserInTableByName(deviceUserName: string): Promise<number> {
+  public async indexColDeviceUserInTableByName(
+    deviceUserName: string
+  ): Promise<number> {
     for (let i = 0; i < (await this.countDeviceUserCol()); i++) {
       const deviceUser = await this.getDeviceUserByIndex(i);
       if (deviceUser.deviceUserName === deviceUserName) {
@@ -112,7 +119,7 @@ const itemsPlanningPairingPage = new ItemsPlanningPairingPage();
 export default itemsPlanningPairingPage;
 
 export class PairingRowObject {
-  constructor() {  }
+  constructor() {}
 
   public planningName: string;
   public pairRow: WebdriverIO.Element;
@@ -129,12 +136,12 @@ export class PairingRowObject {
       this.pairRowForClick = await this.pairRow.$('..');
       this.pairCheckboxes = [];
       for (
-          let i = 0;
-          i < (await itemsPlanningPairingPage.countDeviceUserCol()) - 1;
-          i++
+        let i = 0;
+        i < (await itemsPlanningPairingPage.countDeviceUserCol()) - 1;
+        i++
       ) {
         this.pairCheckboxes.push(
-            await $(`#deviceUserCheckbox${i}_planning${rowNum - 1}`)
+          await $(`#deviceUserCheckbox${i}_planning${rowNum - 1}`)
         );
       }
       this.pairCheckboxesForClick = [];
@@ -154,12 +161,12 @@ export class PairingRowObject {
   ) {
     if (clickOnPairRow) {
       await this.pairRowForClick.click();
-      if (await this.pairRow.getValue() !== pair.toString()) {
+      if ((await this.pairRow.getValue()) !== pair.toString()) {
         await this.pairRowForClick.click();
       }
     } else {
       for (let i = 0; i < this.pairCheckboxesForClick.length; i++) {
-        if (await this.pairCheckboxes[i].getValue() !== pair.toString()) {
+        if ((await this.pairCheckboxes[i].getValue()) !== pair.toString()) {
           await this.pairCheckboxesForClick[i].click();
         }
       }
@@ -173,7 +180,8 @@ export class PairingRowObject {
     clickCancel = false
   ) {
     if (
-        await this.pairCheckboxes[indexDeviceForPair].getValue() !== pair.toString()
+      (await this.pairCheckboxes[indexDeviceForPair].getValue()) !==
+      pair.toString()
     ) {
       await this.pairCheckboxesForClick[indexDeviceForPair].click();
     }
@@ -198,7 +206,6 @@ export class PairingColObject {
   public pairCheckboxes: WebdriverIO.Element[];
 
   async getRow(rowNum: number): Promise<PairingColObject> {
-
     const ele = await $(`#deviceUserTableHeader${rowNum - 1}`);
     await ele.waitForDisplayed({ timeout: 20000 });
     if (ele.isExisting()) {
@@ -207,9 +214,13 @@ export class PairingColObject {
       this.pairColForClick = await this.pairCol.$('..');
       this.pairCheckboxesForClick = [];
       this.pairCheckboxes = [];
-      for (let i = 0; i < (await itemsPlanningPairingPage.countPlanningRow()); i++) {
+      for (
+        let i = 0;
+        i < (await itemsPlanningPairingPage.countPlanningRow());
+        i++
+      ) {
         this.pairCheckboxes.push(
-            await $(`#deviceUserCheckbox${rowNum - 1}_planning${i}`)
+          await $(`#deviceUserCheckbox${rowNum - 1}_planning${i}`)
         );
       }
       for (let i = 0; i < this.pairCheckboxes.length; i++) {
@@ -225,12 +236,12 @@ export class PairingColObject {
   ) {
     if (clickOnPairRow) {
       await this.pairColForClick.click();
-      if (await this.pairCol.getValue() !== pair.toString()) {
+      if ((await this.pairCol.getValue()) !== pair.toString()) {
         await this.pairColForClick.click();
       }
     } else {
       for (let i = 0; i < this.pairCheckboxesForClick.length; i++) {
-        if (await this.pairCheckboxes[i].getValue() !== pair.toString()) {
+        if ((await this.pairCheckboxes[i].getValue()) !== pair.toString()) {
           await this.pairCheckboxesForClick[i].click();
         }
       }
