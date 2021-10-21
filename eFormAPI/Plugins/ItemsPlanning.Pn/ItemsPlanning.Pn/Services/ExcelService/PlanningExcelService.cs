@@ -468,6 +468,15 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                             }
                         }
 
+                        sheetName = sheetName
+                            .Replace(":", "")
+                            .Replace("\\", "")
+                            .Replace("/", "")
+                            .Replace("?", "")
+                            .Replace("*", "")
+                            .Replace("[", "")
+                            .Replace("]", "");
+
                         if (sheetName.Length > 30)
                         {
                             sheetName = sheetName.Substring(0, 30);
