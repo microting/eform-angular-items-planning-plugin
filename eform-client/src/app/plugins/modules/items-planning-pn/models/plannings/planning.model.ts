@@ -26,6 +26,9 @@ export class PlanningModel {
   reiteration: PlanningReiterationModel = new PlanningReiterationModel();
   boundEform: PlanningEformModel = new PlanningEformModel();
   enabledFields: PlanningFieldsModel = new PlanningFieldsModel();
+  isLocked: boolean;
+  isEditable: boolean;
+  isHidden: boolean;
 }
 
 export class PlanningAssignedSitesModel {

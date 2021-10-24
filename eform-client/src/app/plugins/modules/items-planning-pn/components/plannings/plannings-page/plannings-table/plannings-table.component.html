@@ -146,6 +146,7 @@
               mdbTooltip="{{
                 'Click to edit pairing with user(s)' | translate
               }}"
+              [disabled]="planning.isLocked || !planning.isEditable"
             >
               <fa-icon icon="link" size="lg" [fixedWidth]="true"></fa-icon>
             </button>
@@ -157,6 +158,7 @@
               class="btn btn-accent text-black-50 btn-icon mb-2"
               mdbTooltip="{{ 'Edit Planning' | translate }}"
               [routerLink]="['./edit/' + planning.id]"
+              [disabled]="planning.isLocked || !planning.isEditable"
             >
               <fa-icon icon="pen" size="lg" [fixedWidth]="true"></fa-icon>
             </button>
@@ -165,6 +167,7 @@
               class="btn btn-danger btn-icon mb-2"
               mdbTooltip="{{ 'Delete Planning' | translate }}"
               (click)="onShowDeletePlanningModal(planning)"
+              [disabled]="planning.isLocked"
             >
               <fa-icon icon="trash-alt" size="lg" [fixedWidth]="true"></fa-icon>
             </button>

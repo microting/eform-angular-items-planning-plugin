@@ -632,6 +632,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 LastExecutedTime = x.LastExecutedTime,
                 NextExecutionTime = x.NextExecutionTime,
                 PushMessageSent = x.PushMessageSent,
+                IsLocked = x.IsLocked,
+                IsEditable = x.IsEditable,
+                IsHidden = x.IsHidden,
                 TranslationsName = x.NameTranslations.Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                     .Select(y => new PlanningNameTranslations
                     {

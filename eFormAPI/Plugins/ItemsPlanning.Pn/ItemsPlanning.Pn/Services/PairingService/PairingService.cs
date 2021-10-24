@@ -89,6 +89,9 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 var pairingQuery = _dbContext.Plannings
                     .Where(x => x.SdkFolderId != null)
                     .Where(x => x.SdkFolderId != 0)
+                    .Where(x => x.IsLocked == false)
+                    .Where(x => x.IsEditable == true)
+                    .Where(x => x.IsHidden == false)
                     .AsQueryable();
 
                 if (pairingRequestModel.TagIds.Any())
