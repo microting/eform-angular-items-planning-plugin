@@ -101,7 +101,7 @@ describe('Items planning actions - Edit', function () {
       planningData.name[0]
     );
     await planningRowObject.openEdit();
-    browser.pause(1000);
+    await browser.pause(1000);
     for (let i = 0; i < planningData.name.length; i++) {
       expect(
         await (await itemsPlanningModalPage.editPlanningItemName(i)).getValue(),

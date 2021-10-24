@@ -14,7 +14,7 @@ describe('Items planning - Import', function () {
   it('should be imported plannings', async () => {
     const localPath = process.cwd();
     await (await myEformsPage.importEformsBtn()).click();
-    browser.pause(2000);
+    await browser.pause(2000);
     // import Eforms
     const filePath = localPath + '/e2e/Assets/Skabelon Døvmark NEW.xlsx';
     const remoteFilePath = await browser.uploadFile(filePath);

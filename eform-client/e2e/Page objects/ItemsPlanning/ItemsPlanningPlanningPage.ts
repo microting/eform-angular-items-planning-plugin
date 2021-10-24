@@ -126,7 +126,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     await (await this.itemPlanningButton()).click();
     await (await this.planningsButton()).click();
     await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
-    await (await this.planningCreateBtn()).waitForClickable({ timeout: 90000 });
+    await this.planningCreateBtn();
   }
 
   public async getPlaningByName(namePlanning: string) {

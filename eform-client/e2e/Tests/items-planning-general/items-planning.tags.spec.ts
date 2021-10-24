@@ -66,7 +66,7 @@ describe('Items planning - Tags', function () {
   it('should delete tag', async () => {
     const tagsRowsBeforeDelete = await tagsModalPage.rowNum();
     await (await tagsModalPage.getTagByName(updatedTagName)).deleteTag();
-    browser.pause(500);
+    await browser.pause(500);
     const tagsRowsAfterDelete = await tagsModalPage.rowNum();
     expect(
       tagsRowsAfterDelete,
