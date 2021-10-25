@@ -41,6 +41,7 @@
                       (change)="addToArray($event, assignment.siteId)"
                       [checked]="assignment.isChecked"
                       [value]="assignment.isChecked"
+                      [disabled]="selectedPlanning.isLocked"
                       color="primary"
                       type="checkbox"
                     />

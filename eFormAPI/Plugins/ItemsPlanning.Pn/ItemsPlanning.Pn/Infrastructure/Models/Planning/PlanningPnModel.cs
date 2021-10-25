@@ -71,5 +71,11 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 
         public List<int> TagsIds { get; set; }
             = new List<int>();
+
+        public bool IsLocked { get; set; }
+
+        public bool IsEditable { get; set; }
+
+        public bool IsHidden { get; set; }
     }
 }

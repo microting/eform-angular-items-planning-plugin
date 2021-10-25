@@ -447,26 +447,16 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         int x = 0;
                         int y = 0;
                         var reportEformModel = reportModel[i];
-                        string sheetName = "Report";
-                        if (reportEformModel.TextHeaders != null)
-                        {
-                            if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header1))
-                            {
-                                sheetName = reportEformModel.TextHeaders.Header1;
-                            }
-                            if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header2))
-                            {
-                                sheetName = reportEformModel.TextHeaders.Header2;
-                            }
-                            if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header3))
-                            {
-                                sheetName = reportEformModel.TextHeaders.Header3;
-                            }
-                            if (!string.IsNullOrEmpty(reportEformModel.TextHeaders.Header4))
-                            {
-                                sheetName = reportEformModel.TextHeaders.Header4;
-                            }
-                        }
+                        string sheetName = reportEformModel.TemplateName;
+
+                        sheetName = sheetName
+                            .Replace(":", "")
+                            .Replace("\\", "")
+                            .Replace("/", "")
+                            .Replace("?", "")
+                            .Replace("*", "")
+                            .Replace("[", "")
+                            .Replace("]", "");
 
                         if (sheetName.Length > 30)
                         {
