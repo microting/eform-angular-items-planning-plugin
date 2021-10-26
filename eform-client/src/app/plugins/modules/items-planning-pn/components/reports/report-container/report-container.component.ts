@@ -78,29 +78,7 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.getEmailRecipientsAndTags();
-    this.getEmailRecipients();
     this.getTags();
-  }
-
-  getEmailRecipientsAndTags() {
-    this.getEmailsTagsSub$ = this.emailRecipientsService
-      .getEmailRecipientsAndTags()
-      .subscribe((data) => {
-        if (data && data.success) {
-          this.availableEmailRecipientsAndTags = data.model;
-        }
-      });
-  }
-
-  getEmailRecipients() {
-    this.getRecipientsSub$ = this.emailRecipientsService
-      .getSimpleEmailRecipients()
-      .subscribe((data) => {
-        if (data && data.success) {
-          this.availableEmailRecipients = data.model;
-        }
-      });
   }
 
   getTags() {
