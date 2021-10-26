@@ -1,4 +1,4 @@
-<eform-subheader [title]="'New planning' | translate">
+<eform-subheader [forceStaticTitle]="true" [title]="'New planning' | translate">
   <div class="p-3">
     <button
       mdbBtn
@@ -209,7 +209,8 @@
                   mdbInput
                   [owlDateTime]="dt2"
                   [max]="newPlanningModel.reiteration.internalRepeatUntil"
-                  [(ngModel)]="newPlanningModel.reiteration.startDate"
+                  [ngModel]="newPlanningModel.reiteration.startDate"
+                  (ngModelChange)="updateStartDate($event)"
                   type="text"
                   id="createStartFrom"
                   name="createStartFrom"
@@ -228,6 +229,7 @@
                   [owlDateTime]="dt1"
                   [min]="newPlanningModel.reiteration.startDate"
                   [(ngModel)]="newPlanningModel.reiteration.internalRepeatUntil"
+                  (ngModelChange)="updateEndDate($event)"
                   type="text"
                   id="createRepeatUntil"
                   name="createRepeatUntil"
@@ -303,14 +305,9 @@
                   { name: 'Enabled' | translate, value: true },
                   { name: 'Disabled' | translate, value: false }
                 ]"
-                [(ngModel)]="
-                  newPlanningModel.reiteration
-                    .pushMessageEnabled
-                "
+                [(ngModel)]="newPlanningModel.reiteration.pushMessageEnabled"
                 id="pushMessageEnabledCreate"
-                [placeholder]="
-                  'pushMessageEnabled' | translate
-                "
+                [placeholder]="'pushMessageEnabled' | translate"
                 [bindLabel]="'name'"
                 [bindValue]="'value'"
                 [clearable]="false"
@@ -335,13 +332,10 @@
                   { name: 'Disabled' | translate, value: false }
                 ]"
                 [(ngModel)]="
-                  newPlanningModel.reiteration
-                    .pushMessageOnDeployment
+                  newPlanningModel.reiteration.pushMessageOnDeployment
                 "
                 id="pushMessageOnDeployment"
-                [placeholder]="
-                  'pushMessageOnDeployment' | translate
-                "
+                [placeholder]="'pushMessageOnDeployment' | translate"
                 [bindLabel]="'name'"
                 [bindValue]="'value'"
                 [clearable]="false"

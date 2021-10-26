@@ -28,7 +28,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { composeFolderName } from 'src/app/common/helpers';
-import moment = require('moment');
+import { format, set } from 'date-fns';
 
 @AutoUnsubscribe()
 @Component({
@@ -157,16 +157,6 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
   }
 
   updatePlanning() {
-    if (this.selectedPlanningModel.reiteration.internalRepeatUntil) {
-      this.selectedPlanningModel.reiteration.repeatUntil = moment(
-        this.selectedPlanningModel.reiteration.internalRepeatUntil
-      ).format('YYYY-MM-DDT00:00:00');
-    }
-    if (this.selectedPlanningModel.reiteration.startDate) {
-      this.selectedPlanningModel.reiteration.startDate = moment(
-        this.selectedPlanningModel.reiteration.startDate
-      ).format('YYYY-MM-DDT00:00:00');
-    }
     const model = {
       ...this.selectedPlanningModel,
       translationsName: this.translationsArray.getRawValue(),
@@ -220,6 +210,34 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
       this.foldersListDto
     );
     this.updateSaveButtonDisabled();
+  }
+
+  updateStartDate(e: any) {
+    let date = new Date(e);
+    date = set(date, {
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      milliseconds: 0,
+    });
+    this.selectedPlanningModel.reiteration.startDate = format(
+      date,
+      `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`
+    );
+  }
+
+  updateEndDate(e: any) {
+    let date = new Date(e);
+    date = set(date, {
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      milliseconds: 0,
+    });
+    this.selectedPlanningModel.reiteration.repeatUntil = format(
+      date,
+      `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`
+    );
   }
 
   ngOnDestroy(): void {}
