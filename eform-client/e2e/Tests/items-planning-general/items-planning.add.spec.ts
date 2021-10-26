@@ -10,7 +10,6 @@ import {
   generateRandmString,
   getRandomInt,
 } from '../../Helpers/helper-functions';
-import { format, parse } from 'date-fns';
 
 const expect = require('chai').expect;
 
@@ -21,8 +20,8 @@ const planningData: PlanningCreateUpdate = {
   description: generateRandmString(),
   repeatEvery: '1',
   repeatType: 'Dag',
-  startFrom: new Date(2020, 7, 9),
-  repeatUntil: new Date(2020, 6, 10),
+  startFrom: { year: 2020, day: 7, month: 9 },
+  repeatUntil: { year: 2020, day: 6, month: 10 },
   type: generateRandmString(),
   locationCode: '12345',
   buildYear: '10',
@@ -34,13 +33,15 @@ describe('Items planning - Add', function () {
   before(async () => {
     await loginPage.open('/auth');
     await loginPage.login();
-    if (await myEformsPage.rowNum() <= 0) {
+    if ((await myEformsPage.rowNum()) <= 0) {
       await myEformsPage.createNewEform(planningData.eFormName); // Create eform
     } else {
-      planningData.eFormName = (await myEformsPage.getFirstMyEformsRowObj()).eFormName;
+      planningData.eFormName = (
+        await myEformsPage.getFirstMyEformsRowObj()
+      ).eFormName;
     }
     await myEformsPage.Navbar.goToFolderPage();
-    if (await foldersPage.rowNum() <= 0) {
+    if ((await foldersPage.rowNum()) <= 0) {
       await foldersPage.createNewFolder(planningData.folderName, 'Description'); // Create folder
     } else {
       planningData.folderName = (await foldersPage.getFolder(1)).name;
@@ -96,7 +97,11 @@ describe('Items planning - Add', function () {
       'Description save is incorrect'
     ).eq(planningData.description);
     expect(
-      await (await (await itemsPlanningModalPage.editPlanningSelector()).$('.ng-value')).getText(),
+      await (
+        await (await itemsPlanningModalPage.editPlanningSelector()).$(
+          '.ng-value'
+        )
+      ).getText(),
       'Saved template is incorrect'
     ).eq(planningData.eFormName);
     expect(
@@ -115,7 +120,11 @@ describe('Items planning - Add', function () {
     //   'Saved repeat until is incorrect'
     // ).eq(format(planningData.repeatUntil, 'M/d/yyyy'));
     expect(
-      await (await (await itemsPlanningModalPage.editRepeatType()).$('.ng-value-label')).getText(),
+      await (
+        await (await itemsPlanningModalPage.editRepeatType()).$(
+          '.ng-value-label'
+        )
+      ).getText(),
       'Saved repeat type is incorrect'
     ).eq(planningData.repeatType);
     expect(
@@ -127,9 +136,11 @@ describe('Items planning - Add', function () {
       'Saved build year is incorrect'
     ).eq(planningData.buildYear);
     expect(
-      await (await (await itemsPlanningModalPage.editFolderName())
-        .$('#editFolderSelectorInput'))
-        .getValue(),
+      await (
+        await (await itemsPlanningModalPage.editFolderName()).$(
+          '#editFolderSelectorInput'
+        )
+      ).getValue(),
       'Saved folder name is incorrect'
     ).eq(planningData.folderName);
     expect(
@@ -137,30 +148,25 @@ describe('Items planning - Add', function () {
       'Saved location code is incorrect'
     ).eq(planningData.locationCode);
     expect(
-      format(
-        parse(
-          await (await itemsPlanningModalPage.editStartFrom()).getValue(),
-          'M/d/yyyy',
-          new Date()
-        ),
-        'M/d/yyyy'
-      ),
+      await (await itemsPlanningModalPage.editStartFrom()).getValue(),
       'Saved start from is incorrect'
-    ).eq(format(planningData.startFrom, 'M/d/yyyy'));
-    expect(
-      await (await (await itemsPlanningModalPage.pushMessageEnabledEdit())
-        .$('.ng-value-label'))
-        .getText(),
-      'Saved pushMessageEnabled code is incorrect'
     ).eq(
-      planningData.pushMessageEnabled
-        ? 'Aktiveret'
-        : 'Deaktiveret'
+      `${planningData.startFrom.month}/${planningData.startFrom.day}/${planningData.startFrom.year}`
     );
     expect(
-      +await (await (await itemsPlanningModalPage.editDaysBeforeRedeploymentPushMessage())
-        .$('.ng-value-label'))
-        .getText(),
+      await (
+        await (await itemsPlanningModalPage.pushMessageEnabledEdit()).$(
+          '.ng-value-label'
+        )
+      ).getText(),
+      'Saved pushMessageEnabled code is incorrect'
+    ).eq(planningData.pushMessageEnabled ? 'Aktiveret' : 'Deaktiveret');
+    expect(
+      +(await (
+        await (
+          await itemsPlanningModalPage.editDaysBeforeRedeploymentPushMessage()
+        ).$('.ng-value-label')
+      ).getText()),
       'Saved editDaysBeforeRedeploymentPushMessage code is incorrect'
     ).eq(planningData.daysBeforeRedeploymentPushMessage);
     await PlanningRowObject.closeEdit(true);
@@ -176,8 +182,8 @@ describe('Items planning - Add', function () {
     await (await foldersPage.getFolderByName(planningData.folderName)).delete();
 
     await myEformsPage.Navbar.goToMyEForms();
-    await (await myEformsPage
-      .getEformsRowObjByNameEForm(planningData.eFormName))
-      .deleteEForm();
+    await (
+      await myEformsPage.getEformsRowObjByNameEForm(planningData.eFormName)
+    ).deleteEForm();
   });
 });

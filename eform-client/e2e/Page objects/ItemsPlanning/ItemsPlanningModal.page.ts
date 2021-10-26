@@ -2,7 +2,7 @@ import Page from '../Page';
 import itemsPlanningPlanningPage, {
   PlanningCreateUpdate,
 } from './ItemsPlanningPlanningPage';
-import { format } from 'date-fns';
+import { selectDateOnDatePicker } from '../../Helpers/helper-functions';
 
 export class ItemsPlanningModalPage extends Page {
   constructor() {
@@ -334,14 +334,26 @@ export class ItemsPlanningModalPage extends Page {
       });
     }
     if (planning.startFrom) {
-      await (await this.createStartFrom()).setValue(
-        format(planning.startFrom, 'M/d/yyyy')
+      await (await this.createStartFrom()).click();
+      await selectDateOnDatePicker(
+        planning.startFrom.year,
+        planning.startFrom.month,
+        planning.startFrom.day
       );
+      // await (await this.createStartFrom()).setValue(
+      //   format(planning.startFrom, 'M/d/yyyy')
+      // );
     }
     if (planning.repeatUntil) {
-      await (await this.createRepeatUntil()).setValue(
-        format(planning.repeatUntil, 'M/d/yyyy')
+      await (await this.createRepeatUntil()).click();
+      await selectDateOnDatePicker(
+        planning.repeatUntil.year,
+        planning.repeatUntil.month,
+        planning.repeatUntil.day
       );
+      // await (await this.createRepeatUntil()).setValue(
+      //   format(planning.repeatUntil, 'M/d/yyyy')
+      // );
     }
     if (planning.description) {
       await (await this.createPlanningItemDescription()).setValue(
