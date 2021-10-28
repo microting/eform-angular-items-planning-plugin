@@ -175,7 +175,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 
                         var reportModel = new ReportEformModel
                         {
-                            TemplateName = checkList.Label,
+                            TemplateName = checkListTranslation,
                             FromDate = $"{fromDate:yyyy-MM-dd}",
                             ToDate = $"{toDate:yyyy-MM-dd}",
                             TextHeaders = new ReportEformTextHeaderModel(),
@@ -191,8 +191,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             else
                             {
                                 reportModel.TextHeaders.Header1 = checkListTranslation;
-                                reportModel.TableName = null;
-                                reportModel.TemplateName = null;
+                                // reportModel.TableName = null;
+                                // reportModel.TemplateName = null;
                             }
                             reportModel.TextHeaders.Header2 = checkList.ReportH2;
                             reportModel.TextHeaders.Header3 = checkList.ReportH3;
