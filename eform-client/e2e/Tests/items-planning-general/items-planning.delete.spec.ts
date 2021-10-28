@@ -14,7 +14,6 @@ const planningData: PlanningCreateUpdate = {
   description: 'Description',
   repeatEvery: '1',
   repeatType: 'Dag',
-  repeatUntil: new Date('5/15/2020'),
   folderName: generateRandmString(),
 };
 
@@ -22,13 +21,15 @@ describe('Items planning actions - Delete', function () {
   before(async () => {
     await loginPage.open('/auth');
     await loginPage.login();
-    if (await myEformsPage.rowNum() <= 0) {
+    if ((await myEformsPage.rowNum()) <= 0) {
       await myEformsPage.createNewEform(planningData.eFormName); // Create eform
     } else {
-      planningData.eFormName = await (await myEformsPage.getFirstMyEformsRowObj()).eFormName;
+      planningData.eFormName = await (
+        await myEformsPage.getFirstMyEformsRowObj()
+      ).eFormName;
     }
     await myEformsPage.Navbar.goToFolderPage();
-    if (await foldersPage.rowNum() <= 0) {
+    if ((await foldersPage.rowNum()) <= 0) {
       await foldersPage.createNewFolder(planningData.folderName, 'Description'); // Create folder
     } else {
       planningData.folderName = await (await foldersPage.getFolder(1)).name;

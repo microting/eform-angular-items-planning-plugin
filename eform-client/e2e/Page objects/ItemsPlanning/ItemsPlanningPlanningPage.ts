@@ -1,7 +1,9 @@
 import itemsPlanningModalPage from './ItemsPlanningModal.page';
 import { PageWithNavbarPage } from '../PageWithNavbar.page';
-import { generateRandmString } from '../../Helpers/helper-functions';
-import { format, parse } from 'date-fns';
+import {
+  generateRandmString,
+  selectDateOnDatePicker,
+} from '../../Helpers/helper-functions';
 
 export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   constructor() {
@@ -157,7 +159,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
         description: generateRandmString(),
         repeatEvery: '1',
         repeatType: 'Dag',
-        repeatUntil: new Date('5/15/2020'),
+        repeatUntil: { year: 2020, day: 15, month: 5 },
         folderName: folderName,
       };
       masResult.push(planningData);
@@ -445,27 +447,27 @@ export class PlanningRowObject {
       ).click();
     }
     if (
-      planning.startFrom &&
-      parse(
-        await (await itemsPlanningModalPage.editStartFrom()).getValue(),
-        'M/d/yyyy',
-        new Date()
-      ).toISOString() !== planning.startFrom.toISOString()
+      planning.repeatUntil &&
+      (await (await itemsPlanningModalPage.editRepeatUntil()).getValue()) !==
+        `${planning.repeatUntil.month}/${planning.repeatUntil.day}/${planning.repeatUntil.year}`
     ) {
-      await (await itemsPlanningModalPage.editStartFrom()).setValue(
-        format(planning.startFrom, 'M/d/yyyy')
+      await (await itemsPlanningModalPage.editRepeatUntil()).click();
+      await selectDateOnDatePicker(
+        planning.repeatUntil.year,
+        planning.repeatUntil.month,
+        planning.repeatUntil.day
       );
     }
     if (
-      planning.repeatUntil &&
-      parse(
-        await (await itemsPlanningModalPage.editRepeatUntil()).getValue(),
-        'M/d/yyyy',
-        new Date()
-      ).toISOString() !== planning.repeatUntil.toISOString()
+      planning.startFrom &&
+      (await (await itemsPlanningModalPage.editStartFrom()).getValue()) !==
+        `${planning.startFrom.month}/${planning.startFrom.day}/${planning.startFrom.year}`
     ) {
-      await (await itemsPlanningModalPage.editRepeatUntil()).setValue(
-        format(planning.repeatUntil, 'M/d/yyyy')
+      await (await itemsPlanningModalPage.editStartFrom()).click();
+      await selectDateOnDatePicker(
+        planning.startFrom.year,
+        planning.startFrom.month,
+        planning.startFrom.day
       );
     }
     if (
@@ -583,8 +585,8 @@ export class PlanningCreateUpdate {
   public tags?: string[];
   public repeatEvery?: string;
   public repeatType?: string;
-  public startFrom?: Date;
-  public repeatUntil?: Date;
+  public startFrom?: { month: number; day: number; year: number };
+  public repeatUntil?: { month: number; day: number; year: number };
   public number?: string;
   public description?: string;
   public locationCode?: string;

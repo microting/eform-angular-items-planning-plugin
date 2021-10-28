@@ -31,7 +31,7 @@ import {
   CommonDictionaryModel,
   FolderDto,
 } from 'src/app/common/models';
-import moment = require('moment');
+import { format, set } from 'date-fns';
 
 @AutoUnsubscribe()
 @Component({
@@ -125,17 +125,6 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   }
 
   createPlanning() {
-    if (this.newPlanningModel.reiteration.internalRepeatUntil) {
-      this.newPlanningModel.reiteration.repeatUntil = moment(
-        this.newPlanningModel.reiteration.internalRepeatUntil
-      ).format('YYYY-MM-DDT00:00:00');
-    }
-    if (this.newPlanningModel.reiteration.startDate) {
-      this.newPlanningModel.reiteration.startDate = moment(
-        this.newPlanningModel.reiteration.startDate
-      ).format('YYYY-MM-DDT00:00:00');
-    }
-
     this.createSub$ = this.itemsPlanningPnPlanningsService
       .createPlanning({
         ...this.newPlanningModel,
@@ -184,5 +173,33 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
       ? `${folderDto.name} - ${folderDto.parent.name}`
       : folderDto.name;
     this.updateSaveButtonDisabled();
+  }
+
+  updateStartDate(e: any) {
+    let date = new Date(e);
+    date = set(date, {
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      milliseconds: 0,
+    });
+    this.newPlanningModel.reiteration.startDate = format(
+      date,
+      `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`
+    );
+  }
+
+  updateEndDate(e: any) {
+    let date = new Date(e);
+    date = set(date, {
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      milliseconds: 0,
+    });
+    this.newPlanningModel.reiteration.repeatUntil = format(
+      date,
+      `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`
+    );
   }
 }
