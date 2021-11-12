@@ -45,12 +45,12 @@ namespace ItemsPlanning.Pn.Infrastructure.Data.Seed.Data
             new PluginConfigurationValue()
             {
                 Name = $"{TagItemsPlanningBaseSettingsName}:StartTime",
-                Value = "1"
+                Value = "7"
             },
             new PluginConfigurationValue()
             {
                 Name = $"{TagItemsPlanningBaseSettingsName}:EndTime",
-                Value = "4"
+                Value = "9"
             },
             new PluginConfigurationValue()
             {

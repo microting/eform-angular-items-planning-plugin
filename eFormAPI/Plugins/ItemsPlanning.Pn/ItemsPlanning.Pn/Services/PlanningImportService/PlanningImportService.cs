@@ -579,7 +579,10 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                 SdkFolderId = sdkFolder?.Id,
                                 StartDate = DateTime.UtcNow,
                                 RepeatEvery = excelModel.RepeatEvery ?? 1,
-                                RepeatType = excelModel.RepeatType ?? RepeatType.Month
+                                RepeatType = excelModel.RepeatType ?? RepeatType.Month,
+                                IsLocked = false,
+                                IsEditable = true,
+                                IsHidden = false
                             };
 
                             foreach (var tagId in tagIds)
