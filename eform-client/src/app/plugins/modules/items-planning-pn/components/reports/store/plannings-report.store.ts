@@ -4,6 +4,7 @@ import { FiltrationStateModel } from 'src/app/common/models';
 
 export interface PlanningsReportState {
   filters: FiltrationStateModel;
+  dateRange: string[];
 }
 
 function createInitialState(): PlanningsReportState {
@@ -11,15 +12,20 @@ function createInitialState(): PlanningsReportState {
     filters: {
       tagIds: [],
     },
+    dateRange: [],
   };
 }
 
 const planningsReportPersistStorage = persistState({
   include: ['planningsReport'],
   key: 'itemsPlanningPn',
-  preStorageUpdate(storeName, state: PlanningsReportState) {
+  preStorageUpdate(
+    storeName,
+    state: PlanningsReportState
+  ): PlanningsReportState {
     return {
       filters: state.filters,
+      dateRange: state.dateRange,
     };
   },
 });

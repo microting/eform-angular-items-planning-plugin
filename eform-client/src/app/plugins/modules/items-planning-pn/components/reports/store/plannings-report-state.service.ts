@@ -24,4 +24,10 @@ export class PlanningsReportStateService {
       },
     }));
   }
+
+  updateDateRange(dateRange: string[]) {
+    this.store.update((state) => ({
+      dateRange: dateRange,
+    }));
+  }
 }
