@@ -24,6 +24,7 @@ SOFTWARE.
 
 using Microting.eForm.Infrastructure;
 using Microting.eForm.Infrastructure.Data.Entities;
+using Microting.ItemsPlanningBase.Infrastructure.Enums;
 
 namespace ItemsPlanning.Pn.Helpers
 {
@@ -161,6 +162,10 @@ namespace ItemsPlanning.Pn.Helpers
                 mainElement.CheckListFolderName = folderId;
                 mainElement.StartDate = DateTime.Now.ToUniversalTime();
                 mainElement.EndDate = DateTime.Now.AddYears(10).ToUniversalTime();
+                if (planning.RepeatType == RepeatType.Day && planning.RepeatEvery == 0)
+                {
+                    mainElement.Repeated = 0;
+                }
                 // mainElement.PushMessageBody = mainElement.Label;
                 // mainElement.PushMessageTitle = folder.Name;
                 // if (folder.ParentId != null)
