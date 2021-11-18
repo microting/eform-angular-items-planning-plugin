@@ -276,7 +276,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
             {
                 Trace.TraceError(e.Message);
                 return new OperationResult(false,
-                    _itemsPlanningLocalizationService.GetString("ErrorWhileUpdatingItemsPlanning"));
+                    _itemsPlanningLocalizationService.GetString("ErrorWhileUpdatingItemsPlanning") + $" {e.Message}");
             }
         }
 
@@ -402,7 +402,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
             {
                 Trace.TraceError(e.Message);
                 return new OperationResult(false,
-                    _itemsPlanningLocalizationService.GetString("ErrorWhileUpdatingItemsPlanning"));
+                    _itemsPlanningLocalizationService.GetString("ErrorWhileUpdatingItemsPlanning") + $" {e.Message}");
             }
         }
     }
