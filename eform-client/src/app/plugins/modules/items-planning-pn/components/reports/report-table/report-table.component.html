@@ -12,10 +12,10 @@
         <th>{{ 'CreatedAt' | translate }}</th>
         <th>{{ 'Done by' | translate }}</th>
         <th>{{ 'Item name' | translate }}</th>
+        <th>{{ 'Actions' | translate }}</th>
         <th *ngFor="let itemHeader of itemHeaders">{{ itemHeader.value }}</th>
         <!--      <th>{{'Images' | translate}}</th>-->
         <!--      <th>{{'Posts' | translate}}</th>-->
-        <th>{{ 'Actions' | translate }}</th>
       </tr>
     </thead>
     <tbody id="tableBody">
@@ -35,18 +35,6 @@
         <td>
           {{ item.itemName }}
         </td>
-        <ng-container *ngFor="let field of item.caseFields">
-          <td>
-            <div *ngIf="field == 'checked'">
-              <fa-icon icon="check" size="lg" [fixedWidth]="true"></fa-icon>
-            </div>
-            <div *ngIf="field != 'checked' && field != 'unchecked'">
-              <div [innerHTML]="field"></div>
-            </div>
-          </td>
-        </ng-container>
-        <!--      <td>{{item.imagesCount}}</td>-->
-        <!--      <td>{{item.postsCount}}</td>-->
         <td>
           <button
             mdbBtn
@@ -81,6 +69,19 @@
             <fa-icon icon="trash-alt" size="lg" [fixedWidth]="true"></fa-icon>
           </button>
         </td>
+        <ng-container *ngFor="let field of item.caseFields">
+          <td>
+            <div *ngIf="field == 'checked'">
+              <fa-icon icon="check" size="lg" [fixedWidth]="true"></fa-icon>
+            </div>
+            <div *ngIf="field != 'checked' && field != 'unchecked'">
+              <div [innerHTML]="field"></div>
+            </div>
+          </td>
+        </ng-container>
+        <!--      <td>{{item.imagesCount}}</td>-->
+        <!--      <td>{{item.postsCount}}</td>-->
+
       </tr>
     </tbody>
   </table>
