@@ -259,7 +259,10 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                     var clTranslation =
                                         await sdkDbContext.CheckListTranslations.FirstOrDefaultAsync(x =>
                                             x.CheckListId == fieldDto.CheckListId && x.LanguageId == language.Id);
-                                    text = $"{clTranslation.Text} - {text}";
+                                    if (checkListTranslation != clTranslation.Text)
+                                    {
+                                        text = $"{clTranslation.Text} - {text}";
+                                    }
                                 }
                                 var kvp = new KeyValuePair<int, string>(fieldDto.Id, text);
 
