@@ -347,7 +347,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         }
 
                         // add cases
-                        foreach (var planningCase in groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt))
+                        foreach (var planningCase in groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt).ToList())
                         {
                             var planningNameTranslation =
                                 await _dbContext.PlanningNameTranslation.SingleOrDefaultAsync(x =>
