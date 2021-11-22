@@ -737,7 +737,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 _itemsPlanningLocalizationService.GetString("ListDeletedSuccessfully"));
         }
 
-        private async Task DeleteOnePlanning(PnBase planning)
+        private async Task DeleteOnePlanning(Planning planning)
         {
             var core = await _coreService.GetCore();
             await using var sdkDbContext = core.DbContextHelper.GetDbContext();
@@ -754,10 +754,22 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     .Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0)
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed))
                 {
-                    var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
-                    if (result.MicrotingUid != null)
+                    var theCase =
+                        await sdkDbContext.Cases.SingleOrDefaultAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
+                    if (theCase != null)
                     {
-                        await core.CaseDelete((int)result.MicrotingUid);
+                        if (theCase.MicrotingUid != null)
+                            await core.CaseDelete((int) theCase.MicrotingUid);
+                    }
+                    else
+                    {
+                        var checkListSite =
+                            await sdkDbContext.CheckListSites.SingleOrDefaultAsync(x =>
+                                x.Id == planningCaseSite.MicrotingCheckListSitId);
+                        if (checkListSite != null)
+                        {
+                            await core.CaseDelete(checkListSite.MicrotingUid);
+                        }
                     }
                 }
                 // Delete planning case

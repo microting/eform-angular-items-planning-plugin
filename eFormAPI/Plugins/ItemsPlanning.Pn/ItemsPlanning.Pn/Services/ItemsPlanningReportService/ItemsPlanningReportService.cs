@@ -259,7 +259,10 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                     var clTranslation =
                                         await sdkDbContext.CheckListTranslations.FirstOrDefaultAsync(x =>
                                             x.CheckListId == fieldDto.CheckListId && x.LanguageId == language.Id);
-                                    text = $"{clTranslation.Text} - {text}";
+                                    if (checkListTranslation != clTranslation.Text)
+                                    {
+                                        text = $"{clTranslation.Text} - {text}";
+                                    }
                                 }
                                 var kvp = new KeyValuePair<int, string>(fieldDto.Id, text);
 
@@ -344,7 +347,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         }
 
                         // add cases
-                        foreach (var planningCase in groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt))
+                        foreach (var planningCase in groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt).ToList())
                         {
                             var planningNameTranslation =
                                 await _dbContext.PlanningNameTranslation.SingleOrDefaultAsync(x =>

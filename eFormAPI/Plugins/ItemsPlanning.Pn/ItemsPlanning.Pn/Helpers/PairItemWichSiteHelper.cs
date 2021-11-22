@@ -93,9 +93,24 @@ namespace ItemsPlanning.Pn.Helpers
 
             foreach (var caseToDelete in casesToDelete)
             {
-                var caseDto = await sdkCore.CaseLookupCaseId(caseToDelete.MicrotingSdkCaseId);
-                if (caseDto.MicrotingUId != null)
-                    await sdkCore.CaseDelete((int) caseDto.MicrotingUId);
+                var theCase =
+                    await sdkDbContext.Cases.SingleOrDefaultAsync(x => x.Id == caseToDelete.MicrotingSdkCaseId);
+                if (theCase != null)
+                {
+                    if (theCase.MicrotingUid != null)
+                        await sdkCore.CaseDelete((int) theCase.MicrotingUid);
+                }
+                else
+                {
+                    var checkListSite =
+                        await sdkDbContext.CheckListSites.SingleOrDefaultAsync(x =>
+                            x.Id == caseToDelete.MicrotingCheckListSitId);
+                    if (checkListSite != null)
+                    {
+                        await sdkCore.CaseDelete(checkListSite.MicrotingUid);
+                    }
+                }
+
                 caseToDelete.WorkflowState = Constants.WorkflowStates.Retracted;
                 await caseToDelete.Update(_dbContext);
             }
@@ -234,7 +249,16 @@ namespace ItemsPlanning.Pn.Helpers
                     var caseId = await sdkCore.CaseCreate(mainElement, "", (int) sdkSite.MicrotingUid, null);
                     if (caseId != null)
                     {
-                        planningCaseSite.MicrotingSdkCaseId = sdkDbContext.Cases.Single(x => x.MicrotingUid == caseId).Id;
+                        if (sdkDbContext.Cases.Any(x => x.MicrotingUid == caseId))
+                        {
+                            planningCaseSite.MicrotingSdkCaseId =
+                                sdkDbContext.Cases.Single(x => x.MicrotingUid == caseId).Id;
+                        }
+                        else
+                        {
+                            planningCaseSite.MicrotingCheckListSitId =
+                                sdkDbContext.CheckListSites.Single(x => x.MicrotingUid == caseId).Id;
+                        }
                         await planningCaseSite.Update(_dbContext);
                     }
                 }

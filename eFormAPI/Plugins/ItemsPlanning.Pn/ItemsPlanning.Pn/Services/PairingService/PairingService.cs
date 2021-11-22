@@ -230,10 +230,22 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         .ToListAsync();
                     foreach (var planningCaseSite in planningCaseSites.Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0))
                     {
-                        var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
-                        if (result.MicrotingUid != null)
+                        var theCase =
+                            await sdkDbContext.Cases.SingleOrDefaultAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
+                        if (theCase != null)
                         {
-                            await sdkCore.CaseDelete((int)result.MicrotingUid);
+                            if (theCase.MicrotingUid != null)
+                                await sdkCore.CaseDelete((int) theCase.MicrotingUid);
+                        }
+                        else
+                        {
+                            var checkListSite =
+                                await sdkDbContext.CheckListSites.SingleOrDefaultAsync(x =>
+                                    x.Id == planningCaseSite.MicrotingCheckListSitId);
+                            if (checkListSite != null)
+                            {
+                                await sdkCore.CaseDelete(checkListSite.MicrotingUid);
+                            }
                         }
                     }
                     // Delete planning case
@@ -338,16 +350,34 @@ namespace ItemsPlanning.Pn.Services.PairingService
 
                         foreach (var planningCaseSite in planningCaseSites)
                         {
-                            if (planningCaseSite.MicrotingSdkCaseId != 0)
+                            // if (planningCaseSite.MicrotingSdkCaseId != 0)
+                            // {
+                            //     var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
+                            //     if (result.MicrotingUid != null)
+                            //     {
+                            //         await sdkCore.CaseDelete((int)result.MicrotingUid);
+                            //     }
+                            //
+                            //     await planningCaseSite.Delete(_dbContext);
+                            // }
+                            var theCase =
+                                await sdkDbContext.Cases.SingleOrDefaultAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
+                            if (theCase != null)
                             {
-                                var result = await sdkDbContext.Cases.SingleAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
-                                if (result.MicrotingUid != null)
-                                {
-                                    await sdkCore.CaseDelete((int)result.MicrotingUid);
-                                }
-
-                                await planningCaseSite.Delete(_dbContext);
+                                if (theCase.MicrotingUid != null)
+                                    await sdkCore.CaseDelete((int) theCase.MicrotingUid);
                             }
+                            else
+                            {
+                                var checkListSite =
+                                    await sdkDbContext.CheckListSites.SingleOrDefaultAsync(x =>
+                                        x.Id == planningCaseSite.MicrotingCheckListSitId);
+                                if (checkListSite != null)
+                                {
+                                    await sdkCore.CaseDelete(checkListSite.MicrotingUid);
+                                }
+                            }
+                            await planningCaseSite.Delete(_dbContext);
                         }
 
                         // var planningCases = await _dbContext.PlanningCases
