@@ -64,6 +64,7 @@ export class PlanningsTableComponent implements OnInit {
       sortable: true,
     },
     { name: 'RepeatType', elementId: 'repeatTypeTableHeader', sortable: true },
+    { name: 'DayOfWeek', elementId: 'dayOfWeekTableHeader', sortable: true },
     // {
     //   name: 'RepeatUntil',
     //   elementId: 'repeatUntilTableHeader',

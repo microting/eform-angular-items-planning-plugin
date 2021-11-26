@@ -97,6 +97,28 @@
           <div *ngIf="planning.reiteration.repeatType == 3">
             {{ 'Month' | translate }}
           </div>
+        <td id="planningRepeatDayOfWeek">
+          <div *ngIf="planning.reiteration.dayOfWeek == 1">
+            {{ 'Monday' | translate }}
+          </div>
+          <div *ngIf="planning.reiteration.dayOfWeek == 2">
+            {{ 'Tuesday' | translate }}
+          </div>
+          <div *ngIf="planning.reiteration.dayOfWeek == 3">
+            {{ 'Wednesday' | translate }}
+          </div>
+          <div *ngIf="planning.reiteration.dayOfWeek == 4">
+            {{ 'Thursday' | translate }}
+          </div>
+          <div *ngIf="planning.reiteration.dayOfWeek == 5">
+            {{ 'Friday' | translate }}
+          </div>
+          <div *ngIf="planning.reiteration.dayOfWeek == 6">
+            {{ 'Saturday' | translate }}
+          </div>
+          <div *ngIf="planning.reiteration.dayOfWeek == 7">
+            {{ 'Sunday' | translate }}
+          </div>
         </td>
         <!--        <td id="planningRepeatUntil">-->
         <!--          <date-formatter-->
