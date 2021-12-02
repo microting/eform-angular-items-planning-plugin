@@ -27,6 +27,7 @@ export const da = {
   Number: 'Nummer',
   'Number of workers': 'Antal arbejdstagere',
   RepeatType: 'Gentag type',
+  DayOfWeek: 'Ugedag',
   RepeatEvery: 'Gentag hver gang',
   RepeatUntil: 'Gentag indtil',
   'SDK connection string': 'SDK-forbindelsesstreng',
