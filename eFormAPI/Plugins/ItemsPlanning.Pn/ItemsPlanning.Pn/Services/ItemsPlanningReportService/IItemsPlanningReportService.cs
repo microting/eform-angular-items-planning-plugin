@@ -32,7 +32,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 
     public interface IItemsPlanningReportService
     {
-        Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model);
+        Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model, bool isDocx);
         Task<OperationDataResult<Stream>> GenerateReportFile(GenerateReportModel model);
     }
 }

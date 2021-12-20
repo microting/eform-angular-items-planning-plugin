@@ -47,7 +47,7 @@ namespace ItemsPlanning.Pn.Controllers
         [Route("api/items-planning-pn/reports")]
         public async Task<OperationDataResult<List<ReportEformModel>>> GenerateReport([FromBody]GenerateReportModel requestModel)
         {
-            return await _reportService.GenerateReport(requestModel);
+            return await _reportService.GenerateReport(requestModel, false);
         }
 
         /// <summary>

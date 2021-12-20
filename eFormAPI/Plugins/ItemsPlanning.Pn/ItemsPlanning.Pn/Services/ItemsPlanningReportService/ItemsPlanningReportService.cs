@@ -76,7 +76,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             _userService = userService;
         }
 
-        public async Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model)
+        public async Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model, bool isDocx)
         {
             try
             {
@@ -306,7 +306,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                             await sdkDbContext.UploadedDatas.SingleAsync(x => x.Id == imageField.UploadedDataId);
                                         if (!string.IsNullOrEmpty(uploadedData.FileName))
                                         {
-                                            list.Add(uploadedData.FileName);
+                                            list.Add(isDocx
+                                                ? $"{uploadedData.Id}_700_{uploadedData.Checksum}{uploadedData.Extension}"
+                                                : uploadedData.FileName);
                                             list.Add(geoTag);
                                             reportModel.ImageNames.Add(
                                                 new KeyValuePair<List<string>, List<string>>(keyList, list));
@@ -445,7 +447,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
         {
             try
             {
-                var reportDataResult = await GenerateReport(model);
+                var reportDataResult = await GenerateReport(model, true);
                 if (!reportDataResult.Success)
                 {
                     return new OperationDataResult<Stream>(false, reportDataResult.Message);
