@@ -22,6 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System;
+using System.Linq;
+using DocumentFormat.OpenXml.Wordprocessing;
+using ItemsPlanning.Pn.Infrastructure.Models.Planning;
+
 namespace ItemsPlanning.Pn.Controllers
 {
     using System.Collections.Generic;
@@ -57,9 +62,19 @@ namespace ItemsPlanning.Pn.Controllers
         /// <param name="type">docx or xlsx</param>
         [HttpGet]
         [Route("api/items-planning-pn/reports/file")]
+
         [ProducesResponseType(typeof(string), 400)]
-        public async Task GenerateReportFile(GenerateReportModel requestModel)
+        public async Task GenerateReportFile([FromQuery]DateTime dateFrom, [FromQuery]DateTime dateTo, [FromQuery]string tagIds, [FromQuery]string type)
         {
+            var requestModel = new GenerateReportModel();
+            var tags = tagIds.Split(",").ToList();
+            foreach (string tag in tags)
+            {
+                requestModel.TagIds.Add(int.Parse(tag));
+            }
+            requestModel.DateFrom = dateFrom;
+            requestModel.DateTo = dateTo;
+            requestModel.Type = type;
             var result = await _reportService.GenerateReportFile(requestModel);
             const int bufferSize = 4086;
             byte[] buffer = new byte[bufferSize];

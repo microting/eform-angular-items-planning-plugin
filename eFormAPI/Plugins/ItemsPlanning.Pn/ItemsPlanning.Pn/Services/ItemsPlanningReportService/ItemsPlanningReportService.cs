@@ -116,10 +116,13 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     foreach (var tagId in model.TagIds)
                     {
                         planningCasesQuery = planningCasesQuery.Where(x =>
-                            x.Planning.PlanningsTags.Any(y => y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
+                            x.Planning.PlanningsTags.Any(y => y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed))
+                            .AsNoTracking();
                     }
                 }
-                var groupedCaseCheckListIds = planningCasesQuery.GroupBy(x => x.MicrotingSdkeFormId).Select(x => x.Key).ToList();
+                var groupedCaseCheckListIds = planningCasesQuery.GroupBy(x => x.MicrotingSdkeFormId)
+                    .Select(x => x.Key)
+                    .ToList();
 
                 List<CheckList> checkLists = new List<CheckList>();
 
@@ -128,11 +131,11 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     checkLists = await sdkDbContext.CheckLists
                         .FromSqlRaw("SELECT * FROM CheckLists WHERE" +
                                     $" Id IN ({string.Join(",", groupedCaseCheckListIds)})" +
-                                    "  ORDER BY ReportH1  * 1, ReportH2 * 1, ReportH3 * 1, ReportH4 * 1").ToListAsync();
+                                    "  ORDER BY ReportH1  * 1, ReportH2 * 1, ReportH3 * 1, ReportH4 * 1").AsNoTracking().ToListAsync();
                 }
 
                 var itemCases = await planningCasesQuery
-                    .OrderBy(x => x.Planning.RelatedEFormName)
+                    .OrderBy(x => x.Planning.RelatedEFormName).AsNoTracking()
                     .ToListAsync();
 
                 var groupedCases = itemCases
