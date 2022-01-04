@@ -67,10 +67,13 @@ namespace ItemsPlanning.Pn.Controllers
         public async Task GenerateReportFile([FromQuery]DateTime dateFrom, [FromQuery]DateTime dateTo, [FromQuery]string tagIds, [FromQuery]string type)
         {
             var requestModel = new GenerateReportModel();
-            var tags = tagIds.Split(",").ToList();
-            foreach (string tag in tags)
+            var tags = tagIds?.Split(",").ToList();
+            if (tags != null)
             {
-                requestModel.TagIds.Add(int.Parse(tag));
+                foreach (string tag in tags)
+                {
+                    requestModel.TagIds.Add(int.Parse(tag));
+                }
             }
             requestModel.DateFrom = dateFrom;
             requestModel.DateTo = dateTo;
