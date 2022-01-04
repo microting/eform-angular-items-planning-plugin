@@ -301,7 +301,6 @@ namespace ItemsPlanning.Pn.Helpers
         }
     }
 
-
     public static class DateTimeExtensions
     {
         public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startOfWeek)
