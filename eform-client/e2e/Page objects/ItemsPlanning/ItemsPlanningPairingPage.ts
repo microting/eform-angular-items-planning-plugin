@@ -184,6 +184,7 @@ export class PairingRowObject {
       pair.toString()
     ) {
       await this.pairCheckboxesForClick[indexDeviceForPair].click();
+      await browser.pause(500);
     }
     await itemsPlanningPairingPage.savePairing(clickCancel);
   }
