@@ -235,7 +235,7 @@ namespace ItemsPlanning.Pn.Helpers
                             FolderTranslation folderTranslation =
                                 await sdkDbContext.FolderTranslations.SingleOrDefaultAsync(x =>
                                     x.FolderId == folder.Id && x.LanguageId == sdkSite.LanguageId);
-                            body = $"{folderTranslation.Name} ({sdkSite.Name};{DateTime.Now:d, M yyyy})";
+                            body = $"{folderTranslation.Name} ({sdkSite.Name};{DateTime.Now:dd.MM.yyyy})";
                         }
 
                         PlanningNameTranslation planningNameTranslation =
