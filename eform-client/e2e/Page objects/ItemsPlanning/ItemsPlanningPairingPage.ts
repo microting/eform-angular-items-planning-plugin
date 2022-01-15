@@ -32,14 +32,14 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
   public async savePairingGridBtn(): Promise<WebdriverIO.Element> {
     const ele = await $('#savePairingGridBtn');
     await ele.waitForDisplayed({ timeout: 20000 });
-    // ele.waitForClickable({timeout: 20000});
+    await ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
   public async updatePairingsSaveBtn(): Promise<WebdriverIO.Element> {
     const ele = await $('#updatePairingsSaveBtn');
     await ele.waitForDisplayed({ timeout: 20000 });
-    // ele.waitForClickable({timeout: 20000});
+    await ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
