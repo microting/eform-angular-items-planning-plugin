@@ -57,7 +57,7 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
     } else {
       await (await this.updatePairingsSaveBtn()).click();
       await (await $('#spinner-animation')).waitForDisplayed({
-        timeout: 90000,
+        timeout: 120000,
         reverse: true,
       });
     }
