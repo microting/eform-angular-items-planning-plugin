@@ -131,7 +131,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     checkLists = await sdkDbContext.CheckLists
                         .FromSqlRaw("SELECT * FROM CheckLists WHERE" +
                                     $" Id IN ({string.Join(",", groupedCaseCheckListIds)})" +
-                                    "  ORDER BY ReportH1  * 1, ReportH2 * 1, ReportH3 * 1, ReportH4 * 1").AsNoTracking().ToListAsync();
+                                    "  ORDER BY ReportH1, ReportH2, ReportH3, ReportH4").AsNoTracking().ToListAsync();
                 }
 
                 var itemCases = await planningCasesQuery

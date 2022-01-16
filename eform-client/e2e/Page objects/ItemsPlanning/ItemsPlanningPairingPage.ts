@@ -31,15 +31,15 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
 
   public async savePairingGridBtn(): Promise<WebdriverIO.Element> {
     const ele = await $('#savePairingGridBtn');
-    await ele.waitForDisplayed({ timeout: 20000 });
-    // ele.waitForClickable({timeout: 20000});
+    await ele.waitForDisplayed({ timeout: 40000 });
+    // await ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
   public async updatePairingsSaveBtn(): Promise<WebdriverIO.Element> {
     const ele = await $('#updatePairingsSaveBtn');
-    await ele.waitForDisplayed({ timeout: 20000 });
-    // ele.waitForClickable({timeout: 20000});
+    await ele.waitForDisplayed({ timeout: 40000 });
+    // await ele.waitForClickable({timeout: 20000});
     return ele;
   }
 
@@ -57,7 +57,7 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
     } else {
       await (await this.updatePairingsSaveBtn()).click();
       await (await $('#spinner-animation')).waitForDisplayed({
-        timeout: 90000,
+        timeout: 120000,
         reverse: true,
       });
     }
@@ -184,6 +184,7 @@ export class PairingRowObject {
       pair.toString()
     ) {
       await this.pairCheckboxesForClick[indexDeviceForPair].click();
+      await browser.pause(500);
     }
     await itemsPlanningPairingPage.savePairing(clickCancel);
   }
