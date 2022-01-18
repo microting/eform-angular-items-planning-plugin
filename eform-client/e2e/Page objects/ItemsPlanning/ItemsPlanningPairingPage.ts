@@ -180,12 +180,12 @@ export class PairingRowObject {
     indexDeviceForPair: number,
     clickCancel = false
   ) {
-    if (
-      (await this.pairCheckboxes[indexDeviceForPair].getValue()) !==
-      pair.toString()
-    ) {
+    // if (
+    //   (await this.pairCheckboxes[indexDeviceForPair].getValue()) !==
+    //   pair.toString()
+    // ) {
       await this.pairCheckboxesForClick[indexDeviceForPair].click();
-    }
+    // }
     await browser.pause(1000);
     await itemsPlanningPairingPage.savePairing(clickCancel);
   }
