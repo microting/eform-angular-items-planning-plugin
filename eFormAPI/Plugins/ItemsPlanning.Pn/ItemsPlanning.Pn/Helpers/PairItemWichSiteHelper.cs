@@ -235,7 +235,7 @@ namespace ItemsPlanning.Pn.Helpers
                             FolderTranslation folderTranslation =
                                 await sdkDbContext.FolderTranslations.SingleOrDefaultAsync(x =>
                                     x.FolderId == folder.Id && x.LanguageId == sdkSite.LanguageId);
-                            body = $"{folderTranslation.Name} ({sdkSite.Name};{DateTime.Now:d, M yyyy})";
+                            body = $"{folderTranslation.Name} ({sdkSite.Name};{DateTime.Now:dd.MM.yyyy})";
                         }
 
                         PlanningNameTranslation planningNameTranslation =
@@ -262,6 +262,31 @@ namespace ItemsPlanning.Pn.Helpers
                         await planningCaseSite.Update(_dbContext);
                     }
                 }
+
+                var now = DateTime.UtcNow;
+                switch (planning.RepeatType)
+                {
+                    case RepeatType.Day:
+                        planning.NextExecutionTime = now.AddDays(planning.RepeatEvery);
+                        break;
+                    case RepeatType.Week:
+                        var startOfWeek =
+                            new DateTime(now.Year, now.Month, now.Day, 0, 0, 0).StartOfWeek(
+                                (DayOfWeek) planning.DayOfWeek);
+                        planning.NextExecutionTime = startOfWeek.AddDays(planning.RepeatEvery * 7);
+                        break;
+                    case RepeatType.Month:
+                        planning.DayOfMonth ??= 1;
+                        if (planning.DayOfMonth == 0)
+                        {
+                            planning.DayOfMonth = 1;
+                        }
+                        var startOfMonth = new DateTime(now.Year, now.Month, (int) planning.DayOfMonth, 0, 0, 0);
+                        planning.NextExecutionTime = startOfMonth.AddMonths(planning.RepeatEvery);
+                        break;
+                }
+                planning.LastExecutedTime = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
+                await planning.Update(_dbContext);
             }
         }
 
@@ -273,6 +298,15 @@ namespace ItemsPlanning.Pn.Helpers
                 result = await getTopFolderName((int)result.ParentId, dbContext);
             }
             return result;
+        }
+    }
+
+    public static class DateTimeExtensions
+    {
+        public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startOfWeek)
+        {
+            int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
+            return dt.AddDays(-1 * diff).Date;
         }
     }
 }

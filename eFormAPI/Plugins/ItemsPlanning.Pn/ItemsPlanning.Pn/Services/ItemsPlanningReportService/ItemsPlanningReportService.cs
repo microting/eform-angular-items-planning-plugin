@@ -76,7 +76,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
             _userService = userService;
         }
 
-        public async Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model)
+        public async Task<OperationDataResult<List<ReportEformModel>>> GenerateReport(GenerateReportModel model, bool isDocx)
         {
             try
             {
@@ -116,10 +116,13 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     foreach (var tagId in model.TagIds)
                     {
                         planningCasesQuery = planningCasesQuery.Where(x =>
-                            x.Planning.PlanningsTags.Any(y => y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed));
+                            x.Planning.PlanningsTags.Any(y => y.PlanningTagId == tagId && y.WorkflowState != Constants.WorkflowStates.Removed))
+                            .AsNoTracking();
                     }
                 }
-                var groupedCaseCheckListIds = planningCasesQuery.GroupBy(x => x.MicrotingSdkeFormId).Select(x => x.Key).ToList();
+                var groupedCaseCheckListIds = planningCasesQuery.GroupBy(x => x.MicrotingSdkeFormId)
+                    .Select(x => x.Key)
+                    .ToList();
 
                 List<CheckList> checkLists = new List<CheckList>();
 
@@ -128,11 +131,11 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     checkLists = await sdkDbContext.CheckLists
                         .FromSqlRaw("SELECT * FROM CheckLists WHERE" +
                                     $" Id IN ({string.Join(",", groupedCaseCheckListIds)})" +
-                                    "  ORDER BY ReportH1  * 1, ReportH2 * 1, ReportH3 * 1, ReportH4 * 1").ToListAsync();
+                                    "  ORDER BY ReportH1, ReportH2, ReportH3, ReportH4").AsNoTracking().ToListAsync();
                 }
 
                 var itemCases = await planningCasesQuery
-                    .OrderBy(x => x.Planning.RelatedEFormName)
+                    .OrderBy(x => x.Planning.RelatedEFormName).AsNoTracking()
                     .ToListAsync();
 
                 var groupedCases = itemCases
@@ -306,7 +309,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                             await sdkDbContext.UploadedDatas.SingleAsync(x => x.Id == imageField.UploadedDataId);
                                         if (!string.IsNullOrEmpty(uploadedData.FileName))
                                         {
-                                            list.Add(uploadedData.FileName);
+                                            list.Add(isDocx
+                                                ? $"{uploadedData.Id}_700_{uploadedData.Checksum}{uploadedData.Extension}"
+                                                : uploadedData.FileName);
                                             list.Add(geoTag);
                                             reportModel.ImageNames.Add(
                                                 new KeyValuePair<List<string>, List<string>>(keyList, list));
@@ -445,7 +450,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
         {
             try
             {
-                var reportDataResult = await GenerateReport(model);
+                var reportDataResult = await GenerateReport(model, true);
                 if (!reportDataResult.Success)
                 {
                     return new OperationDataResult<Stream>(false, reportDataResult.Message);
