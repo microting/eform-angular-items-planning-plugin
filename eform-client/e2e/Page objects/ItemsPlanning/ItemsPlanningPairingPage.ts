@@ -141,13 +141,11 @@ export class PairingRowObject {
         i < (await itemsPlanningPairingPage.countDeviceUserCol()) - 1;
         i++
       ) {
-        this.pairCheckboxes.push(
-          await $(`#deviceUserCheckbox${i}_planning${rowNum - 1}`)
-        );
+        this.pairCheckboxes = [...this.pairCheckboxes, await $(`#deviceUserCheckbox${i}_planning${rowNum - 1}`)];
       }
       this.pairCheckboxesForClick = [];
       for (let i = 0; i < this.pairCheckboxes.length; i++) {
-        this.pairCheckboxesForClick.push(await this.pairCheckboxes[i].$('..'));
+        this.pairCheckboxesForClick = [...this.pairCheckboxesForClick, await this.pairCheckboxes[i].$('..')];
       }
     } else {
       return null;
