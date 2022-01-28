@@ -136,6 +136,7 @@ export class PairingRowObject {
       this.pairRow = await this.row.$(`#planningRowCheckbox${rowNum - 1}`);
       this.pairRowForClick = await this.pairRow.$('..');
       this.pairCheckboxes = [];
+      browser.pause(1000);
       for (
         let i = 0;
         i < (await itemsPlanningPairingPage.countDeviceUserCol()) - 1;

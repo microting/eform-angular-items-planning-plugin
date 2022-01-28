@@ -114,7 +114,6 @@ describe('Items planning plugin - Pairing', function () {
     const pair = false;
     const indexDeviceForPair = 1;
     const pairingRowObject = await itemsPlanningPairingPage.getPlanningByIndex(1);
-    await browser.pause(500);
     await pairingRowObject.pairWithOneDeviceUser(pair, indexDeviceForPair);
     expect(await pairingRowObject.pairCheckboxes[indexDeviceForPair].getValue()).eq(
       pair.toString()
