@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { PageWithNavbarPage } from '../PageWithNavbar.page';
 import itemsPlanningPlanningPage from './ItemsPlanningPlanningPage';
 import { DeviceUsersRowObject } from '../DeviceUsers.page';
@@ -130,6 +131,7 @@ export class PairingRowObject {
   public row: WebdriverIO.Element;
 
   async getRow(rowNum: number): Promise<PairingRowObject> {
+    console.log(`PairingRowObject.getRow(${rowNum})`)
     this.row = (await $$('tr'))[rowNum];
     if (await this.row.isExisting()) {
       this.planningName = await (await this.row.$('#planningName')).getText();
@@ -149,8 +151,11 @@ export class PairingRowObject {
         this.pairCheckboxesForClick = [...this.pairCheckboxesForClick, await this.pairCheckboxes[i].$('..')];
       }
     } else {
+      console.log(`return null`)
       return null;
     }
+    console.log(`return this`)
+    console.log(this)
     return this;
   }
 
@@ -179,6 +184,7 @@ export class PairingRowObject {
     indexDeviceForPair: number,
     clickCancel = false
   ) {
+    console.log(`PairingRowObject.pairWithOneDeviceUser(${pair}, ${indexDeviceForPair}, ${clickCancel})`)
     // if (
     //   (await this.pairCheckboxes[indexDeviceForPair].getValue()) !==
     //   pair.toString()
@@ -187,6 +193,7 @@ export class PairingRowObject {
     // }
     await browser.pause(1000);
     await itemsPlanningPairingPage.savePairing(clickCancel);
+    console.log(`end PairingRowObject.pairWithOneDeviceUser(${pair}, ${indexDeviceForPair}, ${clickCancel})`)
   }
 
   public async isPair(deviceUser: DeviceUsersRowObject): Promise<boolean> {
@@ -207,6 +214,7 @@ export class PairingColObject {
   public pairCheckboxes: WebdriverIO.Element[];
 
   async getRow(rowNum: number): Promise<PairingColObject> {
+    console.log(`PairingColObject.getRow(${rowNum})`)
     const ele = await $(`#deviceUserTableHeader${rowNum - 1}`);
     await ele.waitForDisplayed({ timeout: 20000 });
     if (ele.isExisting()) {
@@ -228,6 +236,8 @@ export class PairingColObject {
         this.pairCheckboxesForClick.push(await this.pairCheckboxes[i].$('..'));
       }
     }
+    console.log(`return this`)
+    console.log(this)
     return this;
   }
   public async pairWhichAllPlannings(
