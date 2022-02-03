@@ -52,7 +52,7 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
   }
 
   public async savePairing(clickCancel = false) {
-    await (await this.savePairingGridBtn()).waitForClickable({ timeout: 60000 });
+    await (await this.savePairingGridBtn()).waitForDisplayed({ timeout: 60000 });
     await (await this.savePairingGridBtn()).click();
     if (clickCancel) {
       await (await this.updatePairingsSaveCancelBtn()).click();
@@ -193,7 +193,6 @@ export class PairingRowObject {
     // }
     await browser.pause(1000);
     await itemsPlanningPairingPage.savePairing(clickCancel);
-    console.log(`end PairingRowObject.pairWithOneDeviceUser(${pair}, ${indexDeviceForPair}, ${clickCancel})`)
   }
 
   public async isPair(deviceUser: DeviceUsersRowObject): Promise<boolean> {
