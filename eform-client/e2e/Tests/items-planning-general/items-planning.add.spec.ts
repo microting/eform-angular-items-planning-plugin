@@ -173,10 +173,7 @@ describe('Items planning - Add', function () {
   });
   after('delete all created in this test', async () => {
     // Delete
-    const planningRowObject = await itemsPlanningPlanningPage.getPlaningByName(
-      planningData.name[0]
-    );
-    await planningRowObject.delete();
+    await itemsPlanningPlanningPage.clearTable();
 
     await myEformsPage.Navbar.goToFolderPage();
     await (await foldersPage.getFolderByName(planningData.folderName)).delete();

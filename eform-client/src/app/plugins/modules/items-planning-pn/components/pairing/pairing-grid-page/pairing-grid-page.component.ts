@@ -78,7 +78,7 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
           this.pairings = operation.model;
           this.setSelectedColCheckboxes();
           this.setSelectedRowCheckboxes();
-          this.pairingsForUpdate.splice(0, this.pairingsForUpdate.length);
+          this.pairingsForUpdate = [];
         }
       });
   }
@@ -117,17 +117,17 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {}
 
   onPairingChanged(model: PairingUpdateModel) {
-    const foundObject = this.pairingsForUpdate.findIndex(
+    const foundIndexObject = this.pairingsForUpdate.findIndex(
       (x) =>
         x.deviceUserId === model.deviceUserId &&
         x.planningId === model.planningId
     );
     // If pairing found in updates and clicked again - remove from updates
-    if (foundObject > -1) {
+    if (foundIndexObject > -1) {
       // Value does not need to be deleted if the pairing property is equal.
-      if (this.pairingsForUpdate[foundObject].paired !== model.paired) {
+      if (this.pairingsForUpdate[foundIndexObject].paired !== model.paired) {
         this.pairingsForUpdate = R.remove(
-          foundObject,
+          foundIndexObject,
           1,
           this.pairingsForUpdate
         );
