@@ -15,28 +15,30 @@ import {EformSharedModule} from 'src/app/common/modules/eform-shared/eform-share
 import {PlanningCasePageComponent} from 'src/app/plugins/modules/items-planning-pn/components/planning-case/planning-case-page/planning-case-page.component';
 import {PlanningCaseHeaderComponent} from 'src/app/plugins/modules/items-planning-pn/components/planning-case/planning-case-header/planning-case-header.component';
 import {EformCasesModule} from 'src/app/common/modules/eform-cases/eform-cases.module';
+import {OwlDateTimeModule} from '@danielmoncada/angular-datetime-picker';
 
 @NgModule({
   declarations: [
     PlanningCaseHeaderComponent,
     PlanningCasePageComponent
   ],
-  imports: [
-    TranslateModule,
-    MDBBootstrapModule,
-    EformSharedModule,
-    PlanningCaseRoutingModule,
-    CommonModule,
-    NgSelectModule,
-    EformImportedModule,
-    GallerizeModule,
-    LightboxModule,
-    GalleryModule,
-    FormsModule,
-    FontAwesomeModule,
-    CasesModule,
-    EformCasesModule
-  ]
+    imports: [
+        TranslateModule,
+        MDBBootstrapModule,
+        EformSharedModule,
+        PlanningCaseRoutingModule,
+        CommonModule,
+        NgSelectModule,
+        EformImportedModule,
+        GallerizeModule,
+        LightboxModule,
+        GalleryModule,
+        FormsModule,
+        FontAwesomeModule,
+        CasesModule,
+        EformCasesModule,
+        OwlDateTimeModule
+    ]
 })
 export class PlanningCaseModule {
 }
