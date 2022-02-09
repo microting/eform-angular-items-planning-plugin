@@ -424,19 +424,12 @@ namespace ItemsPlanning.Pn.Services.ExcelService
         {
             try
             {
-                // get core
-                var core = await _coreHelper.GetCore();
-
-                Directory.CreateDirectory(Path.Combine(await core.GetSdkSetting(Settings.fileLocationJasper)
-                    .ConfigureAwait(false), "results"));
+                Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "results"));
 
                 var timeStamp = $"{DateTime.UtcNow:yyyyMMdd}_{DateTime.UtcNow:hhmmss}";
 
                 var resultDocument = Path.Combine(Path.GetTempPath(), "results",
                     $"{timeStamp}_.xlsx");
-
-                Directory.CreateDirectory(Path.Combine(await core.GetSdkSetting(Settings.fileLocationJasper)
-                    .ConfigureAwait(false), "results"));
 
                 IXLWorkbook wb = new XLWorkbook();
 
@@ -506,7 +499,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                                 }
                                 else
                                 {
-                                    worksheet.Cell(x + 1, y + 1).Value = dataModelCaseField;
+                                    worksheet.Cell(x + 1, y + 1).Value = dataModelCaseField == "unchecked" ? "0" : dataModelCaseField == "checked" ? "1" : dataModelCaseField;
                                 }
 
                                 y++;
