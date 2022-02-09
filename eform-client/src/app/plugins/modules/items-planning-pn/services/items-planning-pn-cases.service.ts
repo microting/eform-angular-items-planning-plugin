@@ -10,7 +10,6 @@ import {
   PlanningCaseResultListModel,
 } from '../models/plannings/planning-cases';
 import { ApiBaseService } from 'src/app/common/services';
-import {BackendConfigurationPnCompliancesMethods} from 'src/app/plugins/modules/backend-configuration-pn/services';
 
 export let ItemsPlanningPnCasesMethods = {
   Cases: 'api/items-planning-pn/plannings-cases',
