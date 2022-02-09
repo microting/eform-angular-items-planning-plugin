@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 using System.Text.RegularExpressions;
+using ItemsPlanning.Pn.Services.ItemsPlanningCaseService;
 
 namespace ItemsPlanning.Pn
 {
@@ -81,6 +82,7 @@ namespace ItemsPlanning.Pn
             services.AddTransient<IItemsPlanningPnSettingsService, ItemsPlanningPnSettingsService>();
             services.AddTransient<IItemsPlanningReportService, ItemsPlanningReportService>();
             services.AddTransient<IItemsPlanningTagsService, ItemsPlanningTagsService>();
+            services.AddTransient<IItemsPlanningCaseService, ItemsPlanningCaseService>();
             services.AddTransient<IPlanningService, PlanningService>();
             services.AddTransient<IPairingService, PairingService>();
             services.AddTransient<IUploadedDataService, UploadedDataService>();

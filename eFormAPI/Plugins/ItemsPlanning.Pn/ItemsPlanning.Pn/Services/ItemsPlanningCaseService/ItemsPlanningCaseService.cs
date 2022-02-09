@@ -1,0 +1,163 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using ItemsPlanning.Pn.Services.ItemsPlanningLocalizationService;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microting.eForm.Infrastructure.Constants;
+using Microting.eForm.Infrastructure.Data.Entities;
+using Microting.eFormApi.BasePn.Abstractions;
+using Microting.eFormApi.BasePn.Infrastructure.Delegates.CaseUpdate;
+using Microting.eFormApi.BasePn.Infrastructure.Helpers;
+using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+using Microting.eFormApi.BasePn.Infrastructure.Models.Application.Case.CaseEdit;
+using Microting.ItemsPlanningBase.Infrastructure.Data;
+using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
+
+namespace ItemsPlanning.Pn.Services.ItemsPlanningCaseService;
+
+public class ItemsPlanningCaseService : IItemsPlanningCaseService
+{
+    private readonly ILogger<ItemsPlanningCaseService> _logger;
+    private readonly IItemsPlanningLocalizationService _localizationService;
+    // private readonly IWordService _wordService;
+    // private readonly IPlanningExcelService _excelService;
+    private readonly IEFormCoreService _coreHelper;
+    // private readonly ICasePostBaseService _casePostBaseService;
+    private readonly ItemsPlanningPnDbContext _dbContext;
+    private readonly IUserService _userService;
+
+    public ItemsPlanningCaseService(ItemsPlanningPnDbContext dbContext, ILogger<ItemsPlanningCaseService> logger, IEFormCoreService coreHelper, IItemsPlanningLocalizationService localizationService, IUserService userService)
+    {
+        _dbContext = dbContext;
+        _logger = logger;
+        _coreHelper = coreHelper;
+        _localizationService = localizationService;
+        _userService = userService;
+    }
+
+    public async Task<OperationResult> Update(ReplyRequest model)
+    {
+        var checkListValueList = new List<string>();
+        var fieldValueList = new List<string>();
+        var core = await _coreHelper.GetCore();
+        var language = await _userService.GetCurrentUserLanguage();
+        var currentUser = await _userService.GetCurrentUserAsync();
+        try
+        {
+            model.ElementList.ForEach(element =>
+            {
+                checkListValueList.AddRange(CaseUpdateHelper.GetCheckList(element));
+                fieldValueList.AddRange(CaseUpdateHelper.GetFieldList(element));
+            });
+        }
+        catch (Exception ex)
+        {
+            Log.LogException(ex.Message);
+            Log.LogException(ex.StackTrace);
+            return new OperationResult(false, $"{_localizationService.GetString("CaseCouldNotBeUpdated")} Exception: {ex.Message}");
+        }
+
+        try
+        {
+            await core.CaseUpdate(model.Id, fieldValueList, checkListValueList);
+            await core.CaseUpdateFieldValues(model.Id, language);
+            var sdkDbContext = core.DbContextHelper.GetDbContext();
+
+            var foundCase = await sdkDbContext.Cases
+                .Where(x => x.Id == model.Id
+                            && x.WorkflowState != Constants.WorkflowStates.Removed)
+                .FirstOrDefaultAsync();
+
+            if(foundCase != null) {
+                var now = DateTime.UtcNow;
+                var newDoneAt = new DateTime(model.DoneAt.Year, model.DoneAt.Month,
+                    model.DoneAt.AddDays(1).Day, now.Hour, now.Minute,
+                    now.Second);
+                foundCase.DoneAtUserModifiable = newDoneAt;
+
+                await foundCase.Update(sdkDbContext);
+
+                var planningCaseSite = await _dbContext.PlanningCaseSites.SingleAsync(x => x.MicrotingSdkCaseId == model.Id);
+                planningCaseSite.MicrotingSdkCaseDoneAt = newDoneAt;
+                planningCaseSite = await SetFieldValue(planningCaseSite, foundCase.Id, language);
+                await planningCaseSite.Update(_dbContext);
+
+                var planningCase = await _dbContext.PlanningCases.SingleAsync(x => x.MicrotingSdkCaseId == model.Id);
+
+                planningCase.MicrotingSdkCaseDoneAt = newDoneAt;
+                planningCase = await SetFieldValue(planningCase, foundCase.Id, language);
+                await planningCase.Update(_dbContext);
+            }
+            else
+            {
+                return new OperationResult(false, _localizationService.GetString("CaseNotFound"));
+            }
+
+            return new OperationResult(true, _localizationService.GetString("CaseHasBeenUpdated"));
+        }
+        catch (Exception ex)
+        {
+            Log.LogException(ex.Message);
+            Log.LogException(ex.StackTrace);
+            return new OperationResult(false, _localizationService.GetString("CaseCouldNotBeUpdated") + $" Exception: {ex.Message}");
+        }
+    }
+
+    private async Task<PlanningCaseSite> SetFieldValue(PlanningCaseSite planningCaseSite, int caseId, Language language)
+        {
+            var planning = _dbContext.Plannings.SingleOrDefault(x => x.Id == planningCaseSite.PlanningId);
+            var caseIds = new List<int>
+            {
+                planningCaseSite.MicrotingSdkCaseId
+            };
+
+            var core = await _coreHelper.GetCore();
+            var fieldValues = await core.Advanced_FieldValueReadList(caseIds, language);
+
+            if (planning == null) return planningCaseSite;
+            if (planning.NumberOfImagesEnabled)
+            {
+                planningCaseSite.NumberOfImages = 0;
+                foreach (var fieldValue in fieldValues)
+                {
+                    if (fieldValue.FieldType == Constants.FieldTypes.Picture)
+                    {
+                        if (fieldValue.UploadedData != null)
+                        {
+                            planningCaseSite.NumberOfImages += 1;
+                        }
+                    }
+                }
+            }
+
+            return planningCaseSite;
+        }
+
+        private async Task<PlanningCase> SetFieldValue(PlanningCase planningCase, int caseId, Language language)
+        {
+            var core = await _coreHelper.GetCore();
+            var planning = await _dbContext.Plannings.SingleOrDefaultAsync(x => x.Id == planningCase.PlanningId).ConfigureAwait(false);
+            var caseIds = new List<int> { planningCase.MicrotingSdkCaseId };
+            var fieldValues = await core.Advanced_FieldValueReadList(caseIds, language).ConfigureAwait(false);
+
+            if (planning == null) return planningCase;
+            if (planning.NumberOfImagesEnabled)
+            {
+                planningCase.NumberOfImages = 0;
+                foreach (var fieldValue in fieldValues)
+                {
+                    if (fieldValue.FieldType == Constants.FieldTypes.Picture)
+                    {
+                        if (fieldValue.UploadedData != null)
+                        {
+                            planningCase.NumberOfImages += 1;
+                        }
+                    }
+                }
+            }
+
+            return planningCase;
+        }
+}
