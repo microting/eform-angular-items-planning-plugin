@@ -71,22 +71,18 @@ public class ItemsPlanningCaseService : IItemsPlanningCaseService
                 .FirstOrDefaultAsync();
 
             if(foundCase != null) {
-                var now = DateTime.UtcNow;
-                var newDoneAt = new DateTime(model.DoneAt.Year, model.DoneAt.Month,
-                    model.DoneAt.AddDays(1).Day, now.Hour, now.Minute,
-                    now.Second);
-                foundCase.DoneAtUserModifiable = newDoneAt;
+                foundCase.DoneAtUserModifiable = model.DoneAt;
 
                 await foundCase.Update(sdkDbContext);
 
                 var planningCaseSite = await _dbContext.PlanningCaseSites.SingleAsync(x => x.MicrotingSdkCaseId == model.Id);
-                planningCaseSite.MicrotingSdkCaseDoneAt = newDoneAt;
+                planningCaseSite.MicrotingSdkCaseDoneAt = model.DoneAt;
                 planningCaseSite = await SetFieldValue(planningCaseSite, foundCase.Id, language);
                 await planningCaseSite.Update(_dbContext);
 
                 var planningCase = await _dbContext.PlanningCases.SingleAsync(x => x.MicrotingSdkCaseId == model.Id);
 
-                planningCase.MicrotingSdkCaseDoneAt = newDoneAt;
+                planningCase.MicrotingSdkCaseDoneAt = model.DoneAt;
                 planningCase = await SetFieldValue(planningCase, foundCase.Id, language);
                 await planningCase.Update(_dbContext);
             }
