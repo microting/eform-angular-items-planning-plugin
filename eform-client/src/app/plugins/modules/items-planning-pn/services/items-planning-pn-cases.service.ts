@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { OperationDataResult } from 'src/app/common/models';
+import {OperationDataResult, OperationResult, ReplyRequest} from 'src/app/common/models';
 import {
   PlanningCaseModel,
   PlanningCasesModel,
@@ -14,6 +14,7 @@ import { ApiBaseService } from 'src/app/common/services';
 export let ItemsPlanningPnCasesMethods = {
   Cases: 'api/items-planning-pn/plannings-cases',
   CaseResults: 'api/items-planning-pn/plannings-case-results',
+  GetCases: 'api/items-planning-pn/cases',
 };
 @Injectable({
   providedIn: 'root',
@@ -47,6 +48,16 @@ export class ItemsPlanningPnCasesService {
   getGeneratedReport(model: PlanningCasesRequestModel): Observable<any> {
     return this.apiBaseService.getBlobData(
       ItemsPlanningPnCasesMethods.CaseResults + '/excel',
+      model
+    );
+  }
+
+  updateCase(
+    model: ReplyRequest,
+    templateId: number
+  ): Observable<OperationResult> {
+    return this.apiBaseService.put<ReplyRequest>(
+      ItemsPlanningPnCasesMethods.GetCases,
       model
     );
   }

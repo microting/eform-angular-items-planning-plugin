@@ -87,5 +87,6 @@ export const da = {
   pushMessageOnDeployment: 'Push besked sendes til parret enheder, ved periode start',
   LastExecutedTime: 'Sidst udsendt',
   NextExecutionTime: 'Næste udsendelse',
-  PushMessageSent: 'Push påmindelse udsendt'
+  PushMessageSent: 'Push påmindelse udsendt',
+  'Select date': 'Vælg dato'
 };

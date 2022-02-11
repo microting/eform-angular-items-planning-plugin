@@ -15,6 +15,8 @@ import {
 } from 'src/app/common/models';
 import { AuthStateService } from 'src/app/common/store';
 import { CaseEditElementComponent } from 'src/app/common/modules/eform-cases/components';
+import {ItemsPlanningPnCasesService} from 'src/app/plugins/modules/items-planning-pn/services';
+import {DateTimeAdapter} from '@danielmoncada/angular-datetime-picker';
 
 @Component({
   selector: 'app-installation-case-page',
@@ -35,29 +37,34 @@ export class PlanningCasePageComponent implements OnInit {
   reverseRoute: string;
   requestModels: Array<CaseEditRequest> = [];
   replyRequest: ReplyRequest = new ReplyRequest();
+  maxDate: Date;
 
   get userClaims() {
     return this.authStateService.currentUserClaims;
   }
 
   constructor(
+    dateTimeAdapter: DateTimeAdapter<any>,
     private activateRoute: ActivatedRoute,
     private casesService: CasesService,
     private eFormService: EFormService,
     private router: Router,
-    private authStateService: AuthStateService
+    private authStateService: AuthStateService,
+    private itemsPlanningPnCasesService: ItemsPlanningPnCasesService
   ) {
     this.activateRoute.params.subscribe((params) => {
-      this.id = +params['sdkCaseId'];
+      this.id = +params['id'];
       this.planningId = +params['planningId'];
       this.eFormId = +params['templateId'];
       this.dateFrom = params['dateFrom'];
       this.dateTo = params['dateTo'];
+      dateTimeAdapter.setLocale(authStateService.currentUserLocale);
     });
   }
 
   ngOnInit() {
     this.loadTemplateInfo();
+    this.maxDate = new Date();
   }
 
   loadCase() {
@@ -93,7 +100,8 @@ export class PlanningCasePageComponent implements OnInit {
     this.replyRequest.id = this.replyElement.id;
     this.replyRequest.label = this.replyElement.label;
     this.replyRequest.elementList = this.requestModels;
-    this.casesService
+    this.replyRequest.doneAt = this.replyElement.doneAt;
+    this.itemsPlanningPnCasesService
       .updateCase(this.replyRequest, this.currenteForm.id)
       .subscribe((operation) => {
         if (operation && operation.success) {
