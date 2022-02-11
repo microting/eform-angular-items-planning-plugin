@@ -51,18 +51,19 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
   }
 
   public async savePairing(clickCancel = false) {
-    await (await this.savePairingGridBtn()).waitForClickable({ timeout: 60000 });
+    await browser.pause(5000);
+    await (await this.savePairingGridBtn()).waitForDisplayed({ timeout: 60000 });
     await (await this.savePairingGridBtn()).click();
     if (clickCancel) {
       await (await this.updatePairingsSaveCancelBtn()).click();
     } else {
       await (await this.updatePairingsSaveBtn()).click();
-      await (await $('#spinner-animation')).waitForDisplayed({
-        timeout: 120000,
-        reverse: true,
-      });
+      // await (await $('#spinner-animation')).waitForDisplayed({
+      //   timeout: 120000,
+      //   reverse: true,
+      // });
     }
-    await (await this.savePairingGridBtn()).waitForDisplayed();
+    await (await this.savePairingGridBtn()).waitForDisplayed({ timeout: 60000 });
   }
 
   public async countDeviceUserCol(): Promise<number> {
@@ -136,18 +137,17 @@ export class PairingRowObject {
       this.pairRow = await this.row.$(`#planningRowCheckbox${rowNum - 1}`);
       this.pairRowForClick = await this.pairRow.$('..');
       this.pairCheckboxes = [];
+      browser.pause(1000);
       for (
         let i = 0;
         i < (await itemsPlanningPairingPage.countDeviceUserCol()) - 1;
         i++
       ) {
-        this.pairCheckboxes.push(
-          await $(`#deviceUserCheckbox${i}_planning${rowNum - 1}`)
-        );
+        this.pairCheckboxes = [...this.pairCheckboxes, await $(`#deviceUserCheckbox${i}_planning${rowNum - 1}`)];
       }
       this.pairCheckboxesForClick = [];
       for (let i = 0; i < this.pairCheckboxes.length; i++) {
-        this.pairCheckboxesForClick.push(await this.pairCheckboxes[i].$('..'));
+        this.pairCheckboxesForClick = [...this.pairCheckboxesForClick, await this.pairCheckboxes[i].$('..')];
       }
     } else {
       return null;

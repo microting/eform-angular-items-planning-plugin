@@ -190,10 +190,7 @@ describe('Items planning actions - Edit', function () {
   });
   after(async () => {
     // Delete
-    const planningRowObject = await itemsPlanningPlanningPage.getPlaningByName(
-      planningData.name[0]
-    );
-    await planningRowObject.delete();
+    await itemsPlanningPlanningPage.clearTable();
 
     await myEformsPage.Navbar.goToFolderPage();
     await (await foldersPage.getFolderByName(planningData.folderName)).delete();

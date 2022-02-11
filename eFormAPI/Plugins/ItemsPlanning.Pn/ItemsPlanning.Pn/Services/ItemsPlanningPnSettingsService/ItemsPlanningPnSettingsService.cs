@@ -58,7 +58,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningPnSettingsService
             _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
         }
 
+#pragma warning disable CS1998
         public async Task<OperationDataResult<ItemsPlanningBaseSettings>> GetSettings()
+#pragma warning restore CS1998
         {
             try
             {

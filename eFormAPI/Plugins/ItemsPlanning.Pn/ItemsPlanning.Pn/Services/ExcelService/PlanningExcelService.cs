@@ -275,12 +275,12 @@ namespace ItemsPlanning.Pn.Services.ExcelService
 
                     if (!string.IsNullOrEmpty(repeatUntilString))
                     {
-                        var dateTime = DateTime.ParseExact(
+                        var dateIsParse = DateTime.TryParseExact(
                             repeatUntilString,
                             "dd.MM.yyyy",
-                            CultureInfo.InvariantCulture);
+                            CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime);
 
-                        if (dateTime != null)
+                        if (dateIsParse)
                         {
                             item.RepeatUntil = dateTime;
                         }
@@ -420,7 +420,9 @@ namespace ItemsPlanning.Pn.Services.ExcelService
             }
         }
 
+#pragma warning disable CS1998
         public async Task<OperationDataResult<Stream>> GenerateExcelDashboard(List<ReportEformModel> reportModel)
+#pragma warning restore CS1998
         {
             try
             {
@@ -433,14 +435,13 @@ namespace ItemsPlanning.Pn.Services.ExcelService
 
                 IXLWorkbook wb = new XLWorkbook();
 
-                for (var i = 0; i < reportModel.Count; i++)
+                foreach (var eformModel in reportModel)
                 {
-                    if (reportModel[i].FromDate != null)
+                    if (eformModel.FromDate != null)
                     {
-                        int x = 0;
-                        int y = 0;
-                        var reportEformModel = reportModel[i];
-                        string sheetName = reportEformModel.TemplateName;
+                        var x = 0;
+                        var y = 0;
+                        var sheetName = eformModel.TemplateName;
 
                         sheetName = sheetName
                             .Replace(":", "")
@@ -455,10 +456,10 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         {
                             sheetName = sheetName.Substring(0, 30);
                         }
-                        IXLWorksheet worksheet = wb.Worksheets.Add(sheetName);
+                        var worksheet = wb.Worksheets.Add(sheetName);
 
 
-                        if (reportEformModel.Items.Any())
+                        if (eformModel.Items.Any())
                         {
                             worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("Id");
                             worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
@@ -471,7 +472,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                             y++;
                             worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("ItemName");
                             worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
-                            foreach (var itemHeader in reportEformModel.ItemHeaders)
+                            foreach (var itemHeader in eformModel.ItemHeaders)
                             {
                                 y++;
                                 worksheet.Cell(x + 1, y + 1).Value = itemHeader.Value;
@@ -480,7 +481,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         }
 
                         x = 1;
-                        foreach (var dataModel in reportEformModel.Items)
+                        foreach (var dataModel in eformModel.Items)
                         {
                             y = 0;
                             worksheet.Cell(x + 1, y + 1).Value = dataModel.MicrotingSdkCaseId;
