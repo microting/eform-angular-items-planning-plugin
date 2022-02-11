@@ -7,7 +7,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { ReportEformItemModel } from '../../../models/report';
+import {ReportEformItemModel, ReportEformPnModel} from '../../../models/report';
 import { AuthStateService } from 'src/app/common/store';
 
 @Component({
@@ -18,12 +18,14 @@ import { AuthStateService } from 'src/app/common/store';
 })
 export class ReportTableComponent implements OnInit {
   @Input() items: ReportEformItemModel[] = [];
+  @Input() reportIndex: number;
   @Input() dateFrom: any;
   @Input() dateTo: any;
   @Input() itemHeaders: { key: string; value: string }[] = [];
   @Input() newPostModal: any;
   @ViewChild('deletePlanningCaseModal') deletePlanningCaseModal;
   @Output() planningCaseDeleted: EventEmitter<void> = new EventEmitter<void>();
+  @Output() btnViewPicturesClicked: EventEmitter<number> = new EventEmitter<number>();
 
   constructor(private authStateService: AuthStateService) {}
 
@@ -47,5 +49,9 @@ export class ReportTableComponent implements OnInit {
 
   onPlanningCaseDeleted() {
     this.planningCaseDeleted.emit();
+  }
+
+  onClickViewPicture(){
+    this.btnViewPicturesClicked.emit(this.reportIndex);
   }
 }

@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { saveAs } from 'file-saver';
-import { ToastrService } from 'ngx-toastr';
-import { CasePostNewComponent } from 'src/app/common/modules/eform-cases/components';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {saveAs} from 'file-saver';
+import {ToastrService} from 'ngx-toastr';
+import {CasePostNewComponent} from 'src/app/common/modules/eform-cases/components';
 import {
   ReportEformPnModel,
   ReportPnGenerateModel,
@@ -10,19 +10,22 @@ import {
   ItemsPlanningPnReportsService,
   ItemsPlanningPnTagsService,
 } from '../../../services';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { parseISO } from 'date-fns';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
+import {Subscription} from 'rxjs';
+import {ActivatedRoute, Router} from '@angular/router';
+import {parseISO} from 'date-fns';
 import {
   CasePostsListModel,
   CommonDictionaryModel,
   EmailRecipientTagCommonModel,
   SharedTagModel,
 } from 'src/app/common/models';
-import { EmailRecipientsService } from 'src/app/common/services';
-import { PlanningsReportQuery } from '../store';
-import { AuthStateService } from 'src/app/common/store';
+import {EmailRecipientsService, TemplateFilesService} from 'src/app/common/services';
+import {PlanningsReportQuery} from '../store';
+import {AuthStateService} from 'src/app/common/store';
+import {Gallery, GalleryItem, ImageItem} from '@ngx-gallery/core';
+import {Lightbox} from '@ngx-gallery/lightbox';
+import {CollapseComponent} from 'angular-bootstrap-md';
 
 @AutoUnsubscribe()
 @Component({
@@ -31,11 +34,10 @@ import { AuthStateService } from 'src/app/common/store';
   styleUrls: ['./report-container.component.scss'],
 })
 export class ReportContainerComponent implements OnInit, OnDestroy {
-  reportsModel: ReportEformPnModel[] = [];
-  dateFrom: any;
-  dateTo: any;
-  range: Date[] = [];
+  @ViewChild('collapse') collapse: CollapseComponent;
   @ViewChild('newPostModal') newPostModal: CasePostNewComponent;
+  reportsModel: ReportEformPnModel[] = [];
+  range: Date[] = [];
   casePostsListModel: CasePostsListModel = new CasePostsListModel();
   availableEmailRecipientsAndTags: EmailRecipientTagCommonModel[] = [];
   availableEmailRecipients: CommonDictionaryModel[] = [];
@@ -43,12 +45,18 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   currentUserFullName: string;
   selectedEformId: number;
   selectedCaseId: number;
+  images: { key: number, value: any }[] = [];
+  galleryImages: GalleryItem[] = [];
+  isDescriptionBlockCollapsed = true;
+  dateFrom: any;
+  dateTo: any;
 
   getTagsSub$: Subscription;
-  getEmailsTagsSub$: Subscription;
-  getRecipientsSub$: Subscription;
+  // getEmailsTagsSub$: Subscription;
+  // getRecipientsSub$: Subscription;
   generateReportSub$: Subscription;
   downloadReportSub$: Subscription;
+  imageSub$: Subscription;
 
   constructor(
     private emailRecipientsService: EmailRecipientsService,
@@ -58,7 +66,10 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
     private router: Router,
     private tagsService: ItemsPlanningPnTagsService,
     private planningsReportQuery: PlanningsReportQuery,
-    public authStateService: AuthStateService
+    public authStateService: AuthStateService,
+    public gallery: Gallery,
+    public lightbox: Lightbox,
+    private imageService: TemplateFilesService,
   ) {
     this.activateRoute.params.subscribe((params) => {
       this.dateFrom = params['dateFrom'];
@@ -132,17 +143,15 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
       );
   }
 
-  ngOnDestroy(): void {}
-
   postDoneRedirect() {
     this.router
-      .navigateByUrl('/', { skipLocationChange: true })
+      .navigateByUrl('/', {skipLocationChange: true})
       .then(() =>
         this.router.navigate([
           '/plugins/items-planning-pn/reports/' +
-            this.dateFrom +
-            '/' +
-            this.dateTo,
+          this.dateFrom +
+          '/' +
+          this.dateTo,
         ])
       );
   }
@@ -157,5 +166,54 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
     if (model.dateFrom !== undefined) {
       this.onGenerateReport(model);
     }
+  }
+
+  getImages(reportEformPnModel: ReportEformPnModel) {
+    reportEformPnModel.imageNames.forEach(imageValue => {
+      this.imageSub$ = this.imageService.getImage(imageValue.value[0]).subscribe(blob => {
+        const imageUrl = URL.createObjectURL(blob);
+        const val = {
+          src: imageUrl,
+          thumbnail: imageUrl,
+          fileName: imageValue.value[0],
+          name: imageValue.key[1],
+          geoTag: imageValue.value[1]
+        };
+        this.images.push({key: Number(imageValue.key[0]), value: val});
+        this.images.sort((a, b) => a.key < b.key ? -1 : a.key > b.key ? 1 : 0);
+      });
+    });
+  }
+
+  updateGallery() {
+    this.galleryImages = [];
+    this.images.forEach(value => {
+      this.galleryImages.push(new ImageItem({src: value.value.src, thumb: value.value.thumbnail}));
+    });
+  }
+
+  openPicture(i: any) {
+    this.updateGallery();
+    if (this.galleryImages.length > 1) {
+      this.gallery.ref('lightbox', {counterPosition: 'bottom', loadingMode: 'indeterminate'}).load(this.galleryImages);
+      this.lightbox.open(i);
+    } else {
+      this.gallery.ref('lightbox', {counter: false, loadingMode: 'indeterminate'}).load(this.galleryImages);
+      this.lightbox.open(i);
+    }
+  }
+
+  onClickViewPicture(reportIndex: number){
+    const reportEformPnModel = this.reportsModel[reportIndex];
+    this.getImages(reportEformPnModel);
+    this.openPicture(0);
+  }
+
+  toggleCollapse() {
+    this.isDescriptionBlockCollapsed = !this.isDescriptionBlockCollapsed;
+    this.collapse.toggle();
+  }
+
+  ngOnDestroy(): void {
   }
 }
