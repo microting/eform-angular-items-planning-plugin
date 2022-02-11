@@ -621,8 +621,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    // ReSharper disable once PossibleIntendedRethrow
-                    throw ex;
+                    throw;
                 }
 
                 result.Message = _itemsPlanningLocalizationService.GetString("ImportCompletedSuccessfully");
