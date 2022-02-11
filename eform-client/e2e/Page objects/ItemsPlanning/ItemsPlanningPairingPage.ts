@@ -58,10 +58,10 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
       await (await this.updatePairingsSaveCancelBtn()).click();
     } else {
       await (await this.updatePairingsSaveBtn()).click();
-      // await (await $('#spinner-animation')).waitForDisplayed({
-      //   timeout: 120000,
-      //   reverse: true,
-      // });
+      await (await $('#spinner-animation')).waitForDisplayed({
+        timeout: 120000,
+        reverse: true,
+      });
     }
     await (await this.savePairingGridBtn()).waitForDisplayed({ timeout: 60000 });
   }
