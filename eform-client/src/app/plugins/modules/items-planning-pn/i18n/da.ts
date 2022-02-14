@@ -56,7 +56,7 @@ export const da = {
   Week: 'Uge',
   Month: 'Måned',
   'Issued on': 'Udsendt den',
-  'Done at': 'Udført den',
+  'Done at': 'Dato',
   'Done by': 'Udført af',
   'Item name': 'Område',
   'Selected date range': 'Valgt datointerval',
