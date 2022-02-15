@@ -405,6 +405,10 @@ export class ItemsPlanningModalPage extends Page {
     } else {
       await (await this.planningCreateCancelBtn()).click();
     }
+    await (await $('#spinner-animation')).waitForDisplayed({
+      timeout: 90000,
+      reverse: true,
+    });
     await (await this.planningId()).waitForDisplayed();
   }
 

@@ -289,17 +289,17 @@ export class PlanningRowObject {
   }
 
   async getRow(rowNum: number): Promise<PlanningRowObject> {
-    const row = $$('#tableBody tr')[rowNum - 1];
+    const row = (await $$('#tableBody tr'))[rowNum - 1];
     if (row) {
-      this.id = +(await row.$('#planningId').getText());
-      this.name = await row.$('#planningName').getText();
-      this.description = await row.$('#planningDescription').getText();
+      this.id = +(await (await row.$('#planningId')).getText());
+      this.name = await (await row.$('#planningName')).getText();
+      this.description = await (await row.$('#planningDescription')).getText();
       this.folderName = await row.$('#planningFolderName').getText();
-      this.eFormName = await row.$('#planningRelatedEformName').getText();
+      this.eFormName = await (await row.$('#planningRelatedEformName')).getText();
       const list = await row.$$('#planningTags');
       this.tags = await Promise.all(list.map((element) => element.getText()));
-      this.repeatEvery = +(await row.$('#planningRepeatEvery').getText());
-      this.repeatType = await row.$('#planningRepeatType').getText();
+      this.repeatEvery = +await ((await row.$('#planningRepeatEvery')).getText());
+      this.repeatType = await (await row.$('#planningRepeatType')).getText();
       // const date = row.$('#planningRepeatUntil').getText();
       // this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
       this.pairingBtn = await row.$('#planningAssignmentBtn');
