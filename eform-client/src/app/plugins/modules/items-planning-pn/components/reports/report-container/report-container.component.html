@@ -50,11 +50,12 @@
           mdbCollapse
           #collapse="bs-collapse"
           [isCollapsed]="isDescriptionBlockCollapsed"
-        ></div>
-        <p
-          *ngFor="let descriptionBlock of report.descriptionBlocks"
-          [innerHTML]="descriptionBlock"
-        ></p>
+          >
+          <p
+            *ngFor="let descriptionBlock of report.descriptionBlocks"
+            [innerHTML]="descriptionBlock"
+          ></p>
+        </div>
       </ng-container>
 
       <ng-container *ngIf="report.items.length > 0">
