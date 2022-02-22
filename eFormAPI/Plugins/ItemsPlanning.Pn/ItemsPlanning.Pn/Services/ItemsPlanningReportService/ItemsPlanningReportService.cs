@@ -97,6 +97,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     .ThenInclude(x => x.PlanningsTags)
                     .Where(x => x.Status == 100)
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .AsNoTracking()
                     .AsQueryable();
 
                 if (model.DateFrom != null)
@@ -135,7 +136,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                 }
 
                 var itemCases = await planningCasesQuery
-                    .OrderBy(x => x.Planning.RelatedEFormName).AsNoTracking()
+                    .OrderBy(x => x.Planning.RelatedEFormName)
                     .ToListAsync();
 
                 var groupedCases = itemCases

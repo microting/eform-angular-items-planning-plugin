@@ -36,7 +36,7 @@ describe('Items planning actions - Delete', function () {
     }
     await itemsPlanningPlanningPage.goToPlanningsPage();
   });
-  it('should should create planning', async () => {
+  it('should create planning', async () => {
     await itemsPlanningModalPage.createPlanning(planningData);
   });
   it('should not delete existing planning', async () => {

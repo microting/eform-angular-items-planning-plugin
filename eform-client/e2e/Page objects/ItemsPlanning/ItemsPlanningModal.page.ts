@@ -167,7 +167,7 @@ export class ItemsPlanningModalPage extends Page {
 
   public async planningId(): Promise<WebdriverIO.Element> {
     const ele = await $('#planningId');
-    await ele.waitForDisplayed({ timeout: 20000 });
+    await ele.waitForDisplayed({ timeout: 40000 });
     return ele;
   }
 
@@ -405,6 +405,10 @@ export class ItemsPlanningModalPage extends Page {
     } else {
       await (await this.planningCreateCancelBtn()).click();
     }
+    await (await $('#spinner-animation')).waitForDisplayed({
+      timeout: 90000,
+      reverse: true,
+    });
     await (await this.planningId()).waitForDisplayed();
   }
 
