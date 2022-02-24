@@ -30,27 +30,51 @@
       </ng-container>
 
       <ng-container *ngIf="report.descriptionBlocks">
-        <p
-          *ngFor="let descriptionBlock of report.descriptionBlocks"
-          [innerHTML]="descriptionBlock"
-        ></p>
+        <button
+          mdbBtn
+          class="btn-icon mb-2 float-right text-black-50"
+          mdbTooltip="{{(isDescriptionBlockCollapsed ? 'Expand all' : 'Collapse all') | translate}}"
+          (click)="toggleCollapse()"
+          id="expandAllBtn"
+        >
+          <fa-icon
+            [icon]="
+              isDescriptionBlockCollapsed
+              ? 'angle-double-right'
+              : 'angle-double-down'"
+            size="lg"
+            [fixedWidth]="true"
+          ></fa-icon>
+        </button>
+        <div
+          mdbCollapse
+          #collapse="bs-collapse"
+          [isCollapsed]="isDescriptionBlockCollapsed"
+          >
+          <p
+            *ngFor="let descriptionBlock of report.descriptionBlocks"
+            [innerHTML]="descriptionBlock"
+          ></p>
+        </div>
       </ng-container>
 
       <ng-container *ngIf="report.items.length > 0">
         <div>{{ 'Table' | translate }}: {{ report.tableName }}</div>
         <app-report-table
           [items]="report.items"
+          [reportIndex]="i"
           [itemHeaders]="report.itemHeaders"
           [dateFrom]="dateFrom"
           [dateTo]="dateTo"
           [newPostModal]="newPostModal"
           (planningCaseDeleted)="onPlanningCaseDeleted()"
+          (btnViewPicturesClicked)="onClickViewPicture($event)"
         ></app-report-table>
         <p>{{ report.templateName }}</p>
-        <app-report-images
-          [imageNames]="report.imageNames"
-          *ngIf="report.imageNames.length > 0"
-        ></app-report-images>
+<!--        <app-report-images-->
+<!--          [imageNames]="report.imageNames"-->
+<!--          *ngIf="report.imageNames.length > 0"-->
+<!--        ></app-report-images>-->
       </ng-container>
     </div>
   </ng-container>

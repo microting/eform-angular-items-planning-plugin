@@ -39,6 +39,15 @@
           <button
             mdbBtn
             class="btn-success btn-icon mb-2"
+            mdbTooltip="{{ 'View images' | translate }}"
+            [disabled]="item.imagesCount > 0"
+            (click)="onClickViewPicture()"
+          >
+            <fa-icon icon="eye" size="lg" [fixedWidth]="true"></fa-icon>
+          </button>
+          <button
+            mdbBtn
+            class="btn-success btn-icon mb-2"
             [routerLink]="[
               '/plugins/items-planning-pn/case/' +
                 item.microtingSdkCaseId +
