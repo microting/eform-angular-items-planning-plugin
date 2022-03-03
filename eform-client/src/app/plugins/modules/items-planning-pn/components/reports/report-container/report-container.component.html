@@ -29,7 +29,7 @@
         </h5>
       </ng-container>
 
-      <ng-container *ngIf="report.descriptionBlocks">
+      <ng-container *ngIf="report.descriptionBlocks.length > 0">
         <button
           mdbBtn
           class="btn-icon mb-2 float-right text-black-50"
@@ -70,7 +70,7 @@
           (planningCaseDeleted)="onPlanningCaseDeleted()"
           (btnViewPicturesClicked)="onClickViewPicture($event)"
         ></app-report-table>
-        <p>{{ report.templateName }}</p>
+<!--        <p>{{ report.templateName }}</p>-->
 <!--        <app-report-images-->
 <!--          [imageNames]="report.imageNames"-->
 <!--          *ngIf="report.imageNames.length > 0"-->
