@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, ViewChildren} from '@angular/core';
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
 import {CasePostNewComponent} from 'src/app/common/modules/eform-cases/components';
@@ -34,7 +34,7 @@ import {CollapseComponent} from 'angular-bootstrap-md';
   styleUrls: ['./report-container.component.scss'],
 })
 export class ReportContainerComponent implements OnInit, OnDestroy {
-  @ViewChild('collapse') collapse: CollapseComponent;
+  @ViewChildren(CollapseComponent) collapses: CollapseComponent[];
   @ViewChild('newPostModal') newPostModal: CasePostNewComponent;
   reportsModel: ReportEformPnModel[] = [];
   range: Date[] = [];
@@ -47,7 +47,7 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   selectedCaseId: number;
   images: { key: number, value: any }[] = [];
   galleryImages: GalleryItem[] = [];
-  isDescriptionBlockCollapsed = true;
+  isDescriptionBlockCollapsed = new Array<boolean>();
   dateFrom: any;
   dateTo: any;
 
@@ -113,6 +113,9 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         if (data && data.success) {
           this.reportsModel = data.model;
+          this.isDescriptionBlockCollapsed = this.reportsModel.map(x => {
+            return true;
+          })
         }
       });
   }
@@ -209,9 +212,13 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
     this.openPicture(0);
   }
 
-  toggleCollapse() {
-    this.isDescriptionBlockCollapsed = !this.isDescriptionBlockCollapsed;
-    this.collapse.toggle();
+  toggleCollapse(i: number) {
+    this.isDescriptionBlockCollapsed[i] = !this.isDescriptionBlockCollapsed[i];
+    this.collapses.forEach((collapse: CollapseComponent, index) => {
+      if(index === i) {
+        collapse.toggle();
+      }
+    });
   }
 
   ngOnDestroy(): void {

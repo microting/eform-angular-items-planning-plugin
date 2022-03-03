@@ -283,41 +283,35 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             .OrderBy(x => x.CaseId)
                             .ToListAsync();
 
-                        foreach (var imageField in imagesForEform)
+                        foreach (var imageField in imagesForEform.Where(x => x.UploadedDataId != null))
                         {
-                            if (imageField.UploadedDataId != null)
+                            var planningCase = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId && x.PlanningId != 0);
+                            var planningNameTranslation =
+                                await _dbContext.PlanningNameTranslation.SingleOrDefaultAsync(x =>
+                                    x.PlanningId == planningCase.PlanningId && x.LanguageId == language.Id);
+
+                            if (planningNameTranslation != null)
                             {
-                                var planningCase = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId);
-                                if (planningCase.PlanningId != 0)
+                                var label = $"{imageField.CaseId}; {planningNameTranslation.Name}";
+                                var geoTag = "";
+                                if (!string.IsNullOrEmpty((imageField.Latitude)))
                                 {
-                                    var planningNameTranslation =
-                                        await _dbContext.PlanningNameTranslation.SingleOrDefaultAsync(x =>
-                                            x.PlanningId == planningCase.PlanningId && x.LanguageId == language.Id);
+                                    geoTag =
+                                        $"https://www.google.com/maps/place/{imageField.Latitude},{imageField.Longitude}";
+                                }
 
-                                    if (planningNameTranslation != null)
-                                    {
-                                        var label = $"{imageField.CaseId}; {planningNameTranslation.Name}";
-                                        var geoTag = "";
-                                        if (!string.IsNullOrEmpty((imageField.Latitude)))
-                                        {
-                                            geoTag =
-                                                $"https://www.google.com/maps/place/{imageField.Latitude},{imageField.Longitude}";
-                                        }
-
-                                        var keyList = new List<string> {imageField.CaseId.ToString(), label};
-                                        var list = new List<string>();
-                                        var uploadedData =
-                                            await sdkDbContext.UploadedDatas.SingleAsync(x => x.Id == imageField.UploadedDataId);
-                                        if (!string.IsNullOrEmpty(uploadedData.FileName))
-                                        {
-                                            list.Add(isDocx
-                                                ? $"{uploadedData.Id}_700_{uploadedData.Checksum}{uploadedData.Extension}"
-                                                : uploadedData.FileName);
-                                            list.Add(geoTag);
-                                            reportModel.ImageNames.Add(
-                                                new KeyValuePair<List<string>, List<string>>(keyList, list));
-                                        }
-                                    }
+                                var keyList = new List<string> {imageField.CaseId.ToString(), label};
+                                var list = new List<string>();
+                                var uploadedData =
+                                    await sdkDbContext.UploadedDatas.SingleAsync(x => x.Id == imageField.UploadedDataId);
+                                if (!string.IsNullOrEmpty(uploadedData.FileName))
+                                {
+                                    list.Add(isDocx
+                                        ? $"{uploadedData.Id}_700_{uploadedData.Checksum}{uploadedData.Extension}"
+                                        : uploadedData.FileName);
+                                    list.Add(geoTag);
+                                    reportModel.ImageNames.Add(
+                                        new KeyValuePair<List<string>, List<string>>(keyList, list));
                                 }
                             }
                         }
@@ -378,27 +372,22 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                         planningCase.MicrotingSdkCaseId
                                     }, language);
 
-                                foreach (var itemHeader in reportModel.ItemHeaders)
+                                foreach (var caseField in reportModel.ItemHeaders.Select(itemHeader => caseFields
+                                             .FirstOrDefault(x => x.FieldId == itemHeader.Key)).Where(caseField => caseField != null))
                                 {
-                                    var caseField = caseFields
-                                        .FirstOrDefault(x => x.FieldId == itemHeader.Key);
-
-                                    if (caseField != null)
+                                    switch (caseField.FieldType)
                                     {
-                                        switch (caseField.FieldType)
-                                        {
-                                            case Constants.FieldTypes.MultiSelect:
-                                                item.CaseFields.Add(caseField.ValueReadable.Replace("|", "<br>"));
-                                                break;
-                                            case Constants.FieldTypes.EntitySearch:
-                                            case Constants.FieldTypes.EntitySelect:
-                                            case Constants.FieldTypes.SingleSelect:
-                                                item.CaseFields.Add(caseField.ValueReadable);
-                                                break;
-                                            default:
-                                                item.CaseFields.Add(caseField.Value);
-                                                break;
-                                        }
+                                        case Constants.FieldTypes.MultiSelect:
+                                            item.CaseFields.Add(caseField.ValueReadable.Replace("|", "<br>"));
+                                            break;
+                                        case Constants.FieldTypes.EntitySearch or
+                                            Constants. FieldTypes.EntitySelect or
+                                            Constants.FieldTypes.SingleSelect:
+                                            item.CaseFields.Add(caseField.ValueReadable);
+                                            break;
+                                        default:
+                                            item.CaseFields.Add(caseField.Value);
+                                            break;
                                     }
                                 }
 
@@ -425,9 +414,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 
                 var reportEformModel = new ReportEformModel();
                 reportEformModel.NameTagsInEndPage.AddRange(_dbContext.PlanningTags
-                .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                .Where(x => model.TagIds.Any(y => y == x.Id))
-                .Select(x => x.Name));
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    .Where(x => model.TagIds.Any(y => y == x.Id))
+                    .Select(x => x.Name));
                 result.Add(reportEformModel);
 
                 if (result.Any())
