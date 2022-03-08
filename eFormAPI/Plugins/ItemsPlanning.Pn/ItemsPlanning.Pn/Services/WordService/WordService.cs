@@ -164,10 +164,10 @@ namespace ItemsPlanning.Pn.Services.WordService
                         itemsHtml.Append($@"<p style='font-size: 7pt;'>{description}</p>");
                     }
 
-                    if (!string.IsNullOrEmpty(reportEformModel.TableName))
-                    {
-                        itemsHtml.Append($@"<p style='padding-bottom: 0;'>{_localizationService.GetString("Table")}: {reportEformModel.TableName}</p>");
-                    }
+                    // if (!string.IsNullOrEmpty(reportEformModel.TableName))
+                    // {
+                    //     itemsHtml.Append($@"<p style='padding-bottom: 0;'>{_localizationService.GetString("Table")}: {reportEformModel.TableName}</p>");
+                    // }
 
                     if (reportEformModel.Items.Any())
                     {
