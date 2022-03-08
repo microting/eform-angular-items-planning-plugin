@@ -41,7 +41,7 @@
             class="btn-success btn-icon mb-2"
             mdbTooltip="{{ 'View images' | translate }}"
             [disabled]="item.imagesCount == 0"
-            (click)="onClickViewPicture()"
+            (click)="onClickViewPicture(item.microtingSdkCaseId)"
           >
             <fa-icon icon="image" size="lg" [fixedWidth]="true"></fa-icon>
           </button>

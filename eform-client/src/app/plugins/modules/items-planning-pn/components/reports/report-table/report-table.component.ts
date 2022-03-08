@@ -7,8 +7,8 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import {ReportEformItemModel, ReportEformPnModel} from '../../../models/report';
-import { AuthStateService } from 'src/app/common/store';
+import {ReportEformItemModel } from '../../../models/report';
+import {AuthStateService} from 'src/app/common/store';
 
 @Component({
   selector: 'app-report-table',
@@ -25,11 +25,14 @@ export class ReportTableComponent implements OnInit {
   @Input() newPostModal: any;
   @ViewChild('deletePlanningCaseModal') deletePlanningCaseModal;
   @Output() planningCaseDeleted: EventEmitter<void> = new EventEmitter<void>();
-  @Output() btnViewPicturesClicked: EventEmitter<number> = new EventEmitter<number>();
+  @Output() btnViewPicturesClicked: EventEmitter<{ reportIndex: number, caseId: number }>
+    = new EventEmitter<{ reportIndex: number, caseId: number }>();
 
-  constructor(private authStateService: AuthStateService) {}
+  constructor(private authStateService: AuthStateService) {
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   openCreateModal(
     caseId: number,
@@ -51,7 +54,7 @@ export class ReportTableComponent implements OnInit {
     this.planningCaseDeleted.emit();
   }
 
-  onClickViewPicture(){
-    this.btnViewPicturesClicked.emit(this.reportIndex);
+  onClickViewPicture(caseId: number) {
+    this.btnViewPicturesClicked.emit({reportIndex: this.reportIndex, caseId});
   }
 }

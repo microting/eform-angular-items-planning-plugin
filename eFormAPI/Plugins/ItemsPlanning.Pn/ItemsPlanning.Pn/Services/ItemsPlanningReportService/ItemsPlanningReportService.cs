@@ -395,6 +395,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                                     .Where(x => x.Field.FieldTypeId == 5)
                                     .Where(x => x.CaseId == planningCase.MicrotingSdkCaseId)
+                                    .Where(x => x.UploadedDataId != null)
                                     .Select(x => x.Id)
                                     .CountAsync();
 
