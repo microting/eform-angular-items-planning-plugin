@@ -172,6 +172,7 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   }
 
   getImages(reportEformPnModel: ReportEformPnModel) {
+    this.images = [];
     reportEformPnModel.imageNames.forEach(imageValue => {
       this.imageSub$ = this.imageService.getImage(imageValue.value[0]).subscribe(blob => {
         const imageUrl = URL.createObjectURL(blob);
