@@ -171,8 +171,9 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  getImages(reportEformPnModel: ReportEformPnModel) {
-    reportEformPnModel.imageNames.forEach(imageValue => {
+  getImages(reportEformPnModel: ReportEformPnModel, caseId: number) {
+    this.images = [];
+    reportEformPnModel.imageNames.filter(x => x.key[0] === caseId.toString()).forEach((imageValue, index) => {
       this.imageSub$ = this.imageService.getImage(imageValue.value[0]).subscribe(blob => {
         const imageUrl = URL.createObjectURL(blob);
         const val = {
@@ -184,19 +185,19 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
         };
         this.images.push({key: Number(imageValue.key[0]), value: val});
         this.images.sort((a, b) => a.key < b.key ? -1 : a.key > b.key ? 1 : 0);
+        if(index === 0) { // 0 because forEach each from last to first element(from n to 0, if index == 0 need open gallery)
+          this.updateGallery();
+          this.openPicture(0);
+        }
       });
     });
   }
 
   updateGallery() {
-    this.galleryImages = [];
-    this.images.forEach(value => {
-      this.galleryImages.push(new ImageItem({src: value.value.src, thumb: value.value.thumbnail}));
-    });
+    this.galleryImages = this.images.map(value => new ImageItem({src: value.value.src, thumb: value.value.thumbnail}));
   }
 
   openPicture(i: any) {
-    this.updateGallery();
     if (this.galleryImages.length > 1) {
       this.gallery.ref('lightbox', {counterPosition: 'bottom', loadingMode: 'indeterminate'}).load(this.galleryImages);
       this.lightbox.open(i);
@@ -206,10 +207,9 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  onClickViewPicture(reportIndex: number){
-    const reportEformPnModel = this.reportsModel[reportIndex];
-    this.getImages(reportEformPnModel);
-    this.openPicture(0);
+  onClickViewPicture(model: {reportIndex: number, caseId: number }){
+    const reportEformPnModel = this.reportsModel[model.reportIndex];
+    this.getImages(reportEformPnModel, model.caseId);
   }
 
   toggleCollapse(i: number) {
