@@ -73,16 +73,19 @@ public class ItemsPlanningCaseService : IItemsPlanningCaseService
             if(foundCase != null) {
                 foundCase.DoneAtUserModifiable = model.DoneAt;
 
+                foundCase.SiteId = sdkDbContext.Sites
+                    .Single(x => x.Name == $"{currentUser.FirstName} {currentUser.LastName}").Id;
+                foundCase.Status = 100;
                 await foundCase.Update(sdkDbContext);
+                var planningCase = await _dbContext.PlanningCases.SingleAsync(x => x.MicrotingSdkCaseId == model.Id);
+                var planningCaseSite = await _dbContext.PlanningCaseSites.SingleAsync(x => x.MicrotingSdkCaseId == model.Id && x.PlanningCaseId == planningCase.Id);
 
-                var planningCaseSite = await _dbContext.PlanningCaseSites.SingleAsync(x => x.MicrotingSdkCaseId == model.Id);
-                planningCaseSite.MicrotingSdkCaseDoneAt = model.DoneAt;
+                planningCaseSite.DoneByUserId = currentUser.Id;
+                planningCaseSite.MicrotingSdkCaseDoneAt = foundCase.DoneAtUserModifiable;
                 planningCaseSite = await SetFieldValue(planningCaseSite, foundCase.Id, language);
                 await planningCaseSite.Update(_dbContext);
 
-                var planningCase = await _dbContext.PlanningCases.SingleAsync(x => x.MicrotingSdkCaseId == model.Id);
-
-                planningCase.MicrotingSdkCaseDoneAt = model.DoneAt;
+                planningCase.MicrotingSdkCaseDoneAt = foundCase.DoneAtUserModifiable;
                 planningCase = await SetFieldValue(planningCase, foundCase.Id, language);
                 await planningCase.Update(_dbContext);
             }
