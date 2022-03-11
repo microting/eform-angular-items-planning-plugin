@@ -39,6 +39,7 @@ export class PlanningCasePageComponent implements OnInit {
   requestModels: Array<CaseEditRequest> = [];
   replyRequest: ReplyRequest = new ReplyRequest();
   maxDate: Date;
+  initialDate: Date;
 
   get userClaims() {
     return this.authStateService.currentUserClaims;
@@ -77,6 +78,7 @@ export class PlanningCasePageComponent implements OnInit {
       .subscribe((operation) => {
         if (operation && operation.success) {
           this.replyElement = operation.model;
+          this.initialDate = this.replyElement.doneAt;
         }
       });
   }
@@ -101,7 +103,11 @@ export class PlanningCasePageComponent implements OnInit {
     this.replyRequest.id = this.replyElement.id;
     this.replyRequest.label = this.replyElement.label;
     this.replyRequest.elementList = this.requestModels;
-    this.replyRequest.doneAt = this.replyElement.doneAt;
+    if (this.initialDate != this.replyElement.doneAt) {
+      this.replyRequest.doneAt = new Date(Date.UTC(this.replyElement.doneAt.getFullYear(), this.replyElement.doneAt.getMonth(), this.replyElement.doneAt.getDate(), 0, 0, 0));
+    } else {
+      this.replyRequest.doneAt = this.replyElement.doneAt;
+    }
     this.itemsPlanningPnCasesService
       .updateCase(this.replyRequest, this.currenteForm.id)
       .subscribe((operation) => {

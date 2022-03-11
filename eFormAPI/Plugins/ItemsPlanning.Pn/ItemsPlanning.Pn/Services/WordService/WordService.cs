@@ -164,10 +164,10 @@ namespace ItemsPlanning.Pn.Services.WordService
                         itemsHtml.Append($@"<p style='font-size: 7pt;'>{description}</p>");
                     }
 
-                    if (!string.IsNullOrEmpty(reportEformModel.TableName))
-                    {
-                        itemsHtml.Append($@"<p style='padding-bottom: 0;'>{_localizationService.GetString("Table")}: {reportEformModel.TableName}</p>");
-                    }
+                    // if (!string.IsNullOrEmpty(reportEformModel.TableName))
+                    // {
+                    //     itemsHtml.Append($@"<p style='padding-bottom: 0;'>{_localizationService.GetString("Table")}: {reportEformModel.TableName}</p>");
+                    // }
 
                     if (reportEformModel.Items.Any())
                     {
@@ -226,15 +226,15 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                     itemsHtml.Append(@"<br/>");
 
-                    if (!string.IsNullOrEmpty(reportEformModel.TemplateName))
-                    {
-                        itemsHtml.Append($@"{reportEformModel.TemplateName}");
-                    }
+                    // if (!string.IsNullOrEmpty(reportEformModel.TemplateName))
+                    // {
+                    //     itemsHtml.Append($@"{reportEformModel.TemplateName}");
+                    // }
 
 
                     foreach (var imagesName in reportEformModel.ImageNames)
                     {
-                        itemsHtml.Append($@"<p style='font-size: 7pt;'>{_localizationService.GetString("Id")}: {imagesName.Key[1]}</p>"); // TODO change to ID: {id}; imagesName.Key[1]
+                        // itemsHtml.Append($@"<p style='font-size: 7pt;'>{_localizationService.GetString("Id")}: {imagesName.Key[1]}</p>"); // TODO change to ID: {id}; imagesName.Key[1]
 
                         itemsHtml = await InsertImage(imagesName.Value[0], itemsHtml, 700, 650, core, basePicturePath);
 

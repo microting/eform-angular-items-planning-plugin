@@ -77,6 +77,8 @@ export const da = {
   Table: 'Tabel',
   'Select tags': 'Vælg filter',
   'Edit Case': 'Rediger sagen',
+  Edit: 'Rediger',
+  'View images': 'Vis billeder',
   Id: 'Id',
   pushMessageEnabled:
     'Push beskeder slået til',
