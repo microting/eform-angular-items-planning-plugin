@@ -277,13 +277,16 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         // images
                         var templateCaseIds = groupedCase.cases.Select(x => (int?)x.MicrotingSdkCaseId).ToArray();
                         var imagesForEform = await sdkDbContext.FieldValues
+                            .Include(x => x.UploadedData)
                             .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Where(x => x.UploadedData.WorkflowState != Constants.WorkflowStates.Removed)
                             .Where(x => x.Field.FieldTypeId == 5)
                             .Where(x => templateCaseIds.Contains(x.CaseId))
+                            .Where(x => x.UploadedDataId != null)
                             .OrderBy(x => x.CaseId)
                             .ToListAsync();
 
-                        foreach (var imageField in imagesForEform.Where(x => x.UploadedDataId != null))
+                        foreach (var imageField in imagesForEform)
                         {
                             var planningCase = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId && x.PlanningId != 0);
                             var planningNameTranslation =
@@ -294,7 +297,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             {
                                 var label = $"{imageField.CaseId}; {planningNameTranslation.Name}";
                                 var geoTag = "";
-                                if (!string.IsNullOrEmpty((imageField.Latitude)))
+                                if (!string.IsNullOrEmpty(imageField.Latitude))
                                 {
                                     geoTag =
                                         $"https://www.google.com/maps/place/{imageField.Latitude},{imageField.Longitude}";
@@ -302,13 +305,11 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 
                                 var keyList = new List<string> {imageField.CaseId.ToString(), label};
                                 var list = new List<string>();
-                                var uploadedData =
-                                    await sdkDbContext.UploadedDatas.SingleAsync(x => x.Id == imageField.UploadedDataId);
-                                if (!string.IsNullOrEmpty(uploadedData.FileName))
+                                if (!string.IsNullOrEmpty(imageField.UploadedData.FileName))
                                 {
                                     list.Add(isDocx
-                                        ? $"{uploadedData.Id}_700_{uploadedData.Checksum}{uploadedData.Extension}"
-                                        : uploadedData.FileName);
+                                        ? $"{imageField.UploadedData.Id}_700_{imageField.UploadedData.Checksum}{imageField.UploadedData.Extension}"
+                                        : imageField.UploadedData.FileName);
                                     list.Add(geoTag);
                                     reportModel.ImageNames.Add(
                                         new KeyValuePair<List<string>, List<string>>(keyList, list));
