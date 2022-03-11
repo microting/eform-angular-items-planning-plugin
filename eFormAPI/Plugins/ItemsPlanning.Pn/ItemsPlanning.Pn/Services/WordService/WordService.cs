@@ -194,7 +194,7 @@ namespace ItemsPlanning.Pn.Services.WordService
                             itemsHtml.Append(@"<tr style='font-size: 7pt;'>");
                             itemsHtml.Append($@"<td>{dataModel.MicrotingSdkCaseId}</td>");
 
-                            itemsHtml.Append($@"<td>{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}</td>");
+                            itemsHtml.Append($@"<td>{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy}</td>");
                             itemsHtml.Append($@"<td>{dataModel.DoneBy}</td>");
                             itemsHtml.Append($@"<td>{dataModel.ItemName}</td>");
 
@@ -234,7 +234,7 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                     foreach (var imagesName in reportEformModel.ImageNames)
                     {
-                        // itemsHtml.Append($@"<p style='font-size: 7pt;'>{_localizationService.GetString("Id")}: {imagesName.Key[1]}</p>"); // TODO change to ID: {id}; imagesName.Key[1]
+                        itemsHtml.Append($@"<p style='font-size: 7pt;'>{_localizationService.GetString("Id")}: {imagesName.Key[1]}</p>"); // TODO change to ID: {id}; imagesName.Key[1]
 
                         itemsHtml = await InsertImage(imagesName.Value[0], itemsHtml, 700, 650, core, basePicturePath);
 
