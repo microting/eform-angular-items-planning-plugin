@@ -11,7 +11,7 @@ import {
   ItemsPlanningPnTagsService,
 } from '../../../services';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
-import {Subscription} from 'rxjs';
+import {forkJoin, Observable, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {parseISO} from 'date-fns';
 import {
@@ -56,7 +56,7 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   // getRecipientsSub$: Subscription;
   generateReportSub$: Subscription;
   downloadReportSub$: Subscription;
-  imageSub$: Subscription;
+  imageSub$: Subscription[] = [];
 
   constructor(
     private emailRecipientsService: EmailRecipientsService,
@@ -173,23 +173,33 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
 
   getImages(reportEformPnModel: ReportEformPnModel, caseId: number) {
     this.images = [];
-    reportEformPnModel.imageNames.filter(x => x.key[0] === caseId.toString()).forEach((imageValue, index) => {
-      this.imageSub$ = this.imageService.getImage(imageValue.value[0]).subscribe(blob => {
-        const imageUrl = URL.createObjectURL(blob);
-        const val = {
-          src: imageUrl,
-          thumbnail: imageUrl,
-          fileName: imageValue.value[0],
-          name: imageValue.key[1],
-          geoTag: imageValue.value[1]
-        };
-        this.images.push({key: Number(imageValue.key[0]), value: val});
-        this.images.sort((a, b) => a.key < b.key ? -1 : a.key > b.key ? 1 : 0);
-        if(index === 0) { // 0 because forEach each from last to first element(from n to 0, if index == 0 need open gallery)
-          this.updateGallery();
-          this.openPicture(0);
+    const observables: Observable<any>[] = []
+    const length = reportEformPnModel.imageNames.filter(x => x.key[0] === caseId.toString()).length;
+    reportEformPnModel.imageNames.filter(x => x.key[0] === caseId.toString())
+      .forEach((imageValue) => {
+        observables.push(this.imageService.getImage(imageValue.value[0]))
+        if(length === observables.length) {
+          this.imageSub$.push(forkJoin(observables).subscribe(blobArr => {
+            if (length === blobArr.length) {
+              blobArr.forEach((blob, index) => {
+                const imageUrl = URL.createObjectURL(blob);
+                const val = {
+                  src: imageUrl,
+                  thumbnail: imageUrl,
+                  fileName: imageValue.value[0],
+                  name: imageValue.key[1],
+                  geoTag: imageValue.value[1]
+                };
+                this.images.push({key: Number(imageValue.key[0]), value: val});
+                this.images.sort((a, b) => a.key < b.key ? -1 : a.key > b.key ? 1 : 0);
+                if (index + 1 === blobArr.length) {
+                  this.updateGallery();
+                  this.openPicture(0);
+                }
+              });
+            }
+          }));
         }
-      });
     });
   }
 
@@ -222,5 +232,6 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.imageSub$.forEach(sub => sub.unsubscribe());
   }
 }
