@@ -71,7 +71,12 @@ public class ItemsPlanningCaseService : IItemsPlanningCaseService
                 .FirstOrDefaultAsync();
 
             if(foundCase != null) {
-                foundCase.DoneAtUserModifiable = model.DoneAt;
+
+                if (foundCase.DoneAt != null)
+                {
+                    var newDoneAt = new DateTime(model.DoneAt.Year, model.DoneAt.Month, model.DoneAt.Day, foundCase.DoneAt.Value.Hour, foundCase.DoneAt.Value.Minute, foundCase.DoneAt.Value.Second);
+                    foundCase.DoneAtUserModifiable = newDoneAt;
+                }
 
                 foundCase.SiteId = sdkDbContext.Sites
                     .Single(x => x.Name == $"{currentUser.FirstName} {currentUser.LastName}").Id;
