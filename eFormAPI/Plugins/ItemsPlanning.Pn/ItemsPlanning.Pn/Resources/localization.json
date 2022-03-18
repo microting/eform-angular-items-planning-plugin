@@ -18,6 +18,15 @@
     }
   },
   {
+    "Key": "CaseHasBeenUpdated",
+    "LocalizedValue": {
+      "da": "Ændringer gemt",
+      "de": "Änderungen gespeichert",
+      "en-US": "Case has been updated",
+      "uk-UA": "Зміни збережено"
+    }
+  },
+  {
     "Key": "Settings",
     "LocalizedValue": {
       "da": "Indstillinger",
