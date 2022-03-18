@@ -13,7 +13,7 @@ import {
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {forkJoin, Observable, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
-import {parseISO} from 'date-fns';
+import {format, parseISO} from 'date-fns';
 import {
   CasePostsListModel,
   CommonDictionaryModel,
