@@ -13,7 +13,7 @@ import {
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {forkJoin, Observable, Subscription} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
-import {parseISO} from 'date-fns';
+import {format, parseISO} from 'date-fns';
 import {
   CasePostsListModel,
   CommonDictionaryModel,
@@ -101,8 +101,8 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   }
 
   onGenerateReport(model: ReportPnGenerateModel) {
-    this.dateFrom = model.dateFrom;
-    this.dateTo = model.dateTo;
+    this.dateFrom = format(parseISO(model.dateFrom), `yyyy-MM-dd'T'HH:mm:ss`);
+    this.dateTo = format(parseISO(model.dateTo), `yyyy-MM-dd'T'HH:mm:ss`);
     this.generateReportSub$ = this.reportService
       .generateReport({
         dateFrom: this.dateFrom,
