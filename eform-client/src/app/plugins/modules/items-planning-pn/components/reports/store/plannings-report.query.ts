@@ -15,5 +15,6 @@ export class PlanningsReportQuery extends Query<PlanningsReportState> {
     return this.getValue();
   }
 
+  selectScrollPosition$ = this.select((state) => state.scrollPosition);
   selectTagIds$ = this.select((state) => state.filters.tagIds);
 }

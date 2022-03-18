@@ -5,6 +5,7 @@ import { FiltrationStateModel } from 'src/app/common/models';
 export interface PlanningsReportState {
   filters: FiltrationStateModel;
   dateRange: string[];
+  scrollPosition: [number, number];
 }
 
 function createInitialState(): PlanningsReportState {
@@ -13,6 +14,7 @@ function createInitialState(): PlanningsReportState {
       tagIds: [],
     },
     dateRange: [],
+    scrollPosition: [0, 0],
   };
 }
 
@@ -26,6 +28,7 @@ const planningsReportPersistStorage = persistState({
     return {
       filters: state.filters,
       dateRange: state.dateRange,
+      scrollPosition: [0, 0],
     };
   },
 });
