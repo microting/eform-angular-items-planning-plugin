@@ -11,7 +11,7 @@ import {
   ItemsPlanningPnTagsService,
 } from '../../../services';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
-import {forkJoin, Observable, Subscription} from 'rxjs';
+import {BehaviorSubject, forkJoin, Observable, Subscription, asyncScheduler} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {format, parseISO} from 'date-fns';
 import {
@@ -26,6 +26,7 @@ import {AuthStateService} from 'src/app/common/store';
 import {Gallery, GalleryItem, ImageItem} from '@ngx-gallery/core';
 import {Lightbox} from '@ngx-gallery/lightbox';
 import {CollapseComponent} from 'angular-bootstrap-md';
+import {ViewportScroller} from '@angular/common';
 
 @AutoUnsubscribe()
 @Component({
@@ -50,6 +51,8 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   isDescriptionBlockCollapsed = new Array<boolean>();
   dateFrom: any;
   dateTo: any;
+  startWithParams = false;
+  private observableReportsModel = new BehaviorSubject<ReportEformPnModel[]>([]);
 
   getTagsSub$: Subscription;
   // getEmailsTagsSub$: Subscription;
@@ -70,12 +73,14 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
     public gallery: Gallery,
     public lightbox: Lightbox,
     private imageService: TemplateFilesService,
+    private viewportScroller: ViewportScroller
   ) {
     this.activateRoute.params.subscribe((params) => {
       this.dateFrom = params['dateFrom'];
       this.dateTo = params['dateTo'];
       this.range.push(parseISO(params['dateFrom']));
       this.range.push(parseISO(params['dateTo']));
+      this.startWithParams = !!(this.dateTo && this.dateFrom);
       const model = {
         dateFrom: params['dateFrom'],
         dateTo: params['dateTo'],
@@ -86,6 +91,14 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
         this.onGenerateReport(model);
       }
     });
+    this.observableReportsModel.subscribe(x => {
+      if(x.length && this.startWithParams){
+        const task = _ => this.planningsReportQuery.selectScrollPosition$
+          .subscribe(value => this.viewportScroller.scrollToPosition(value));
+        asyncScheduler.schedule(task, 1000);
+        this.startWithParams = false;
+      }
+    })
   }
 
   ngOnInit() {
@@ -113,9 +126,10 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         if (data && data.success) {
           this.reportsModel = data.model;
-          this.isDescriptionBlockCollapsed = this.reportsModel.map(x => {
+          this.isDescriptionBlockCollapsed = this.reportsModel.map(_ => {
             return true;
           })
+          this.observableReportsModel.next(data.model);
         }
       });
   }
@@ -137,7 +151,7 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
     this.downloadReportSub$ = this.reportService
       .downloadReport(model)
       .subscribe(
-        (data) => {
+        (data: string | Blob) => {
           saveAs(data, model.dateFrom + '_' + model.dateTo + '_report.xlsx');
         },
         (_) => {

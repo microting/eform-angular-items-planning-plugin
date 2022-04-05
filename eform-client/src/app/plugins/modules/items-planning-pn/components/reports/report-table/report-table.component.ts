@@ -9,6 +9,9 @@ import {
 } from '@angular/core';
 import {ReportEformItemModel } from '../../../models/report';
 import {AuthStateService} from 'src/app/common/store';
+import {ViewportScroller} from '@angular/common';
+import {Router} from '@angular/router';
+import {PlanningsReportStateService} from './../store';
 
 @Component({
   selector: 'app-report-table',
@@ -28,7 +31,10 @@ export class ReportTableComponent implements OnInit {
   @Output() btnViewPicturesClicked: EventEmitter<{ reportIndex: number, caseId: number }>
     = new EventEmitter<{ reportIndex: number, caseId: number }>();
 
-  constructor(private authStateService: AuthStateService) {
+  constructor(private authStateService: AuthStateService,
+              private viewportScroller: ViewportScroller,
+              private router: Router,
+              private planningsReportStateService: PlanningsReportStateService,) {
   }
 
   ngOnInit(): void {
@@ -56,5 +62,11 @@ export class ReportTableComponent implements OnInit {
 
   onClickViewPicture(caseId: number) {
     this.btnViewPicturesClicked.emit({reportIndex: this.reportIndex, caseId});
+  }
+
+  onClickEditCase(microtingSdkCaseId: number, eFormId: number, id: number, dateFrom: string, dateTo: string){
+    this.planningsReportStateService.updateScrollPosition(this.viewportScroller.getScrollPosition());
+    this.router.navigateByUrl(`/plugins/items-planning-pn/case/${microtingSdkCaseId}/${eFormId}/${id}/${dateFrom}/${dateTo}`)
+      .then()
   }
 }

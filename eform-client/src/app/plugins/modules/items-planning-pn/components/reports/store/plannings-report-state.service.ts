@@ -16,6 +16,10 @@ export class PlanningsReportStateService {
     return this.query.selectTagIds$;
   }
 
+  getScrollPosition(): Observable<[number, number]> {
+    return this.query.selectScrollPosition$;
+  }
+
   addOrRemoveTagIds(id: number) {
     this.store.update((state) => ({
       filters: {
@@ -26,8 +30,14 @@ export class PlanningsReportStateService {
   }
 
   updateDateRange(dateRange: string[]) {
-    this.store.update((state) => ({
+    this.store.update((_) => ({
       dateRange: dateRange,
+    }));
+  }
+
+  updateScrollPosition(scrollPosition: [number, number]) {
+    this.store.update((_) => ({
+      scrollPosition: scrollPosition,
     }));
   }
 }
