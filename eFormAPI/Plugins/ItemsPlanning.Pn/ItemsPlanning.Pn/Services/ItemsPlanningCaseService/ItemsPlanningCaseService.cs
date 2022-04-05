@@ -78,9 +78,9 @@ public class ItemsPlanningCaseService : IItemsPlanningCaseService
                     foundCase.DoneAtUserModifiable = newDoneAt;
                 }
 
-                foundCase.SiteId = sdkDbContext.Sites
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                    .Single(x => x.Name == $"{currentUser.FirstName} {currentUser.LastName}").Id;
+                // foundCase.SiteId = sdkDbContext.Sites
+                //     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                //     .Single(x => x.Name == $"{currentUser.FirstName} {currentUser.LastName}").Id;
                 foundCase.Status = 100;
                 await foundCase.Update(sdkDbContext);
                 var planningCase = await _dbContext.PlanningCases.SingleAsync(x => x.MicrotingSdkCaseId == model.Id);
