@@ -90,5 +90,6 @@ export const da = {
   LastExecutedTime: 'Sidst udsendt',
   NextExecutionTime: 'Næste udsendelse',
   PushMessageSent: 'Push påmindelse udsendt',
-  'Select date': 'Vælg dato'
+  'Select date': 'Vælg dato',
+  'Date is required': 'Dato er påkrævet',
 };
