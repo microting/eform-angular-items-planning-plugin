@@ -84,9 +84,22 @@ public class ItemsPlanningCaseService : IItemsPlanningCaseService
                 foundCase.Status = 100;
                 await foundCase.Update(sdkDbContext);
                 var planningCase = await _dbContext.PlanningCases.SingleAsync(x => x.MicrotingSdkCaseId == model.Id);
-                var planningCaseSite = await _dbContext.PlanningCaseSites.SingleAsync(x => x.MicrotingSdkCaseId == model.Id && x.PlanningCaseId == planningCase.Id);
+                var planningCaseSite = await _dbContext.PlanningCaseSites.SingleOrDefaultAsync(x => x.MicrotingSdkCaseId == model.Id && x.PlanningCaseId == planningCase.Id);
 
-                planningCaseSite.DoneByUserId = currentUser.Id;
+                if (planningCaseSite == null)
+                {
+                    planningCaseSite = new PlanningCaseSite()
+                    {
+                        MicrotingSdkCaseId = model.Id,
+                        PlanningCaseId = planningCase.Id,
+                        MicrotingSdkeFormId = planningCase.MicrotingSdkeFormId,
+                        PlanningId = planningCase.PlanningId,
+                        Status = 100,
+                        MicrotingSdkSiteId = (int)foundCase.SiteId
+                    };
+                    await planningCaseSite.Create(_dbContext);
+                }
+
                 planningCaseSite.MicrotingSdkCaseDoneAt = foundCase.DoneAtUserModifiable;
                 planningCaseSite = await SetFieldValue(planningCaseSite, foundCase.Id, language);
                 await planningCaseSite.Update(_dbContext);
