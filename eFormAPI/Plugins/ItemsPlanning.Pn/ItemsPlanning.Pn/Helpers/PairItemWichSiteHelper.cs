@@ -67,6 +67,7 @@ namespace ItemsPlanning.Pn.Helpers
             var planningCase = await _dbContext.PlanningCases
                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Retracted)
+                .Where(x => x.WorkflowState != Constants.WorkflowStates.Processed)
                 .Where(x => x.PlanningId == planningPnModel.Id)
                 .FirstOrDefaultAsync(x => x.MicrotingSdkeFormId == relatedEFormId);
 
