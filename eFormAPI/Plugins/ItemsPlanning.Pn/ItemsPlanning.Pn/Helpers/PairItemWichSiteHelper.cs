@@ -63,6 +63,8 @@ namespace ItemsPlanning.Pn.Helpers
             var folder = await sdkDbContext.Folders.SingleAsync(x => x.Id == planningPnModel.Folder.EFormSdkFolderId);
             var folderId = folder.MicrotingUid.ToString();
 
+            var planning = await _dbContext.Plannings.SingleAsync(x => x.Id == planningId);
+
             // get planning cases
             var planningCase = await _dbContext.PlanningCases
                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
@@ -71,7 +73,16 @@ namespace ItemsPlanning.Pn.Helpers
                 .Where(x => x.PlanningId == planningPnModel.Id)
                 .FirstOrDefaultAsync(x => x.MicrotingSdkeFormId == relatedEFormId);
 
-            var planning = await _dbContext.Plannings.SingleOrDefaultAsync(x => x.Id == planningId);
+            if (planning.RepeatEvery == 0 && planning.RepeatType == RepeatType.Day)
+            {
+                planningCase = new PlanningCase()
+                {
+                    PlanningId = planningPnModel.Id,
+                    Status = 66,
+                    MicrotingSdkeFormId = relatedEFormId
+                };
+                await planningCase.Create(_dbContext);
+            }
 
             if (planningCase == null)
             {
