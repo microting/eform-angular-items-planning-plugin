@@ -492,24 +492,35 @@ namespace ItemsPlanning.Pn
                     var planningCaseSite =
                         await itemsPlanningContext.PlanningCaseSites.SingleOrDefaultAsync(x =>
                             x.MicrotingCheckListSitId == checkListSite.Id);
-                    var site = await sdkDbContext.Sites.SingleAsync(x => x.Id == dbCase.SiteId);
-                    var language = await sdkDbContext.Languages.SingleAsync(x => x.Id == site.LanguageId);
-                    var theCase =
-                        await core.CaseRead((int)dbCase.MicrotingUid!, (int)dbCase.MicrotingCheckUid!, language);
-                    planningCase = new PlanningCase
+                    if (planningCaseSite != null)
                     {
-                        Status = 100,
-                        MicrotingSdkCaseDoneAt = theCase.DoneAt,
-                        MicrotingSdkCaseId = dbCase.Id,
-                        DoneByUserId = theCase.DoneById,
-                        DoneByUserName = site.Name,
-                        WorkflowState = Constants.WorkflowStates.Processed,
-                        MicrotingSdkeFormId = (int)dbCase.CheckListId!,
-                        PlanningId = planningCaseSite!.PlanningId
-                    };
-                    await planningCase.Create(itemsPlanningContext);
-                    planningCase = await SetFieldValue(itemsPlanningContext, core, planningCase, theCase.Id, language);
-                    await planningCase.Update(itemsPlanningContext);
+                        var site = await sdkDbContext.Sites.SingleAsync(x => x.Id == dbCase.SiteId);
+                        var language = await sdkDbContext.Languages.SingleAsync(x => x.Id == site.LanguageId);
+                        var theCase =
+                            await core.CaseRead((int)dbCase.MicrotingUid!, (int)dbCase.MicrotingCheckUid!, language);
+                        try
+                        {
+                            planningCase = new PlanningCase
+                            {
+                                Status = 100,
+                                MicrotingSdkCaseDoneAt = theCase.DoneAt,
+                                MicrotingSdkCaseId = dbCase.Id,
+                                DoneByUserId = theCase.DoneById,
+                                DoneByUserName = site.Name,
+                                WorkflowState = Constants.WorkflowStates.Processed,
+                                MicrotingSdkeFormId = (int)dbCase.CheckListId!,
+                                PlanningId = planningCaseSite!.PlanningId
+                            };
+                            await planningCase.Create(itemsPlanningContext);
+                            planningCase = await SetFieldValue(itemsPlanningContext, core, planningCase, theCase.Id,
+                                language);
+                            await planningCase.Update(itemsPlanningContext);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                        }
+                    }
                 }
             }
         }
