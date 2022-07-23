@@ -489,36 +489,40 @@ namespace ItemsPlanning.Pn
                 {
                     var checkListSite = await sdkDbContext.CheckListSites.SingleOrDefaultAsync(x =>
                         x.MicrotingUid == dbCase.MicrotingUid);
-                    var planningCaseSite =
-                        await itemsPlanningContext.PlanningCaseSites.SingleOrDefaultAsync(x =>
-                            x.MicrotingCheckListSitId == checkListSite.Id);
-                    if (planningCaseSite != null)
+                    if (checkListSite != null)
                     {
-                        var site = await sdkDbContext.Sites.SingleAsync(x => x.Id == dbCase.SiteId);
-                        var language = await sdkDbContext.Languages.SingleAsync(x => x.Id == site.LanguageId);
-                        var theCase =
-                            await core.CaseRead((int)dbCase.MicrotingUid!, (int)dbCase.MicrotingCheckUid!, language);
-                        try
+                        var planningCaseSite =
+                            await itemsPlanningContext.PlanningCaseSites.SingleOrDefaultAsync(x =>
+                                x.MicrotingCheckListSitId == checkListSite.Id);
+                        if (planningCaseSite != null)
                         {
-                            planningCase = new PlanningCase
+                            var site = await sdkDbContext.Sites.SingleAsync(x => x.Id == dbCase.SiteId);
+                            var language = await sdkDbContext.Languages.SingleAsync(x => x.Id == site.LanguageId);
+                            var theCase =
+                                await core.CaseRead((int)dbCase.MicrotingUid!, (int)dbCase.MicrotingCheckUid!,
+                                    language);
+                            try
                             {
-                                Status = 100,
-                                MicrotingSdkCaseDoneAt = theCase.DoneAt,
-                                MicrotingSdkCaseId = dbCase.Id,
-                                DoneByUserId = theCase.DoneById,
-                                DoneByUserName = site.Name,
-                                WorkflowState = Constants.WorkflowStates.Processed,
-                                MicrotingSdkeFormId = (int)dbCase.CheckListId!,
-                                PlanningId = planningCaseSite!.PlanningId
-                            };
-                            await planningCase.Create(itemsPlanningContext);
-                            planningCase = await SetFieldValue(itemsPlanningContext, core, planningCase, theCase.Id,
-                                language);
-                            await planningCase.Update(itemsPlanningContext);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
+                                planningCase = new PlanningCase
+                                {
+                                    Status = 100,
+                                    MicrotingSdkCaseDoneAt = theCase.DoneAt,
+                                    MicrotingSdkCaseId = dbCase.Id,
+                                    DoneByUserId = theCase.DoneById,
+                                    DoneByUserName = site.Name,
+                                    WorkflowState = Constants.WorkflowStates.Processed,
+                                    MicrotingSdkeFormId = (int)dbCase.CheckListId!,
+                                    PlanningId = planningCaseSite!.PlanningId
+                                };
+                                await planningCase.Create(itemsPlanningContext);
+                                planningCase = await SetFieldValue(itemsPlanningContext, core, planningCase, theCase.Id,
+                                    language);
+                                await planningCase.Update(itemsPlanningContext);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                            }
                         }
                     }
                 }
