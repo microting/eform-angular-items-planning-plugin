@@ -373,22 +373,35 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                         planningCase.MicrotingSdkCaseId
                                     }, language);
 
-                                foreach (var caseField in reportModel.ItemHeaders.Select(itemHeader => caseFields
-                                             .FirstOrDefault(x => x.FieldId == itemHeader.Key)).Where(caseField => caseField != null))
+                                foreach (var fieldDto in fields)
                                 {
-                                    switch (caseField.FieldType)
+                                    var caseField = caseFields.FirstOrDefault(x => x.FieldId == fieldDto.Id);
+                                    if (caseField != null)
                                     {
-                                        case Constants.FieldTypes.MultiSelect:
-                                            item.CaseFields.Add(caseField.ValueReadable.Replace("|", "<br>"));
-                                            break;
-                                        case Constants.FieldTypes.EntitySearch or
-                                            Constants. FieldTypes.EntitySelect or
-                                            Constants.FieldTypes.SingleSelect:
-                                            item.CaseFields.Add(caseField.ValueReadable);
-                                            break;
-                                        default:
-                                            item.CaseFields.Add(caseField.Value);
-                                            break;
+                                        switch (caseField.FieldType)
+                                        {
+                                            case Constants.FieldTypes.MultiSelect:
+                                                item.CaseFields.Add(caseField.ValueReadable.Replace("|", "<br>"));
+                                                break;
+                                            case Constants.FieldTypes.EntitySearch or
+                                                Constants.FieldTypes.EntitySelect or
+                                                Constants.FieldTypes.SingleSelect:
+                                                item.CaseFields.Add(caseField.ValueReadable);
+                                                break;
+                                            case Constants.FieldTypes.Picture
+                                                or Constants.FieldTypes.SaveButton
+                                                or Constants.FieldTypes.Signature
+                                                or Constants.FieldTypes.None
+                                                or Constants.FieldTypes.FieldGroup:
+                                                break;
+                                            default:
+                                                item.CaseFields.Add(caseField.Value);
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        item.CaseFields.Add("");
                                     }
                                 }
 
