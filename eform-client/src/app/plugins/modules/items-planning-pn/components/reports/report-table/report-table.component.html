@@ -69,11 +69,16 @@
         </td>
         <ng-container *ngFor="let field of item.caseFields">
           <td>
-            <div *ngIf="field == 'checked'">
+            <div *ngIf="field.value === 'checked'">
               <fa-icon icon="check" size="lg" [fixedWidth]="true"></fa-icon>
             </div>
-            <div *ngIf="field != 'checked' && field != 'unchecked'">
-              <div [innerHTML]="field"></div>
+            <div *ngIf="field.value != 'checked' && field.value != 'unchecked'">
+              <ng-container *ngIf="field.key === 'number'">
+                <div [innerHTML]="field.value.replace('.', ',')"></div>
+              </ng-container>
+              <ng-container *ngIf="field.key !== 'number'">
+                <div [innerHTML]="field.value"></div>
+              </ng-container>
             </div>
           </td>
         </ng-container>

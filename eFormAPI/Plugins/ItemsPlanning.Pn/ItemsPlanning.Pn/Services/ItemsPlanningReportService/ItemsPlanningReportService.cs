@@ -407,7 +407,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                                         }
                                                     }
                                                 }
-                                                item.CaseFields.Add(valueReadable);
+                                                //item.CaseFields.Add(valueReadable);
+                                                item.CaseFields.Add(new KeyValuePair<string, string>("string", valueReadable));
                                                 break;
                                             case Constants.FieldTypes.SingleSelect:
                                                 FieldOption fo = await sdkDbContext.FieldOptions.FirstOrDefaultAsync(x =>
@@ -417,7 +418,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                                     FieldOptionTranslation fieldOptionTranslation =
                                                         await sdkDbContext.FieldOptionTranslations.FirstAsync(x =>
                                                             x.FieldOptionId == fo.Id && x.LanguageId == language.Id);
-                                                    item.CaseFields.Add(fieldOptionTranslation.Text);
+                                                    item.CaseFields.Add(new KeyValuePair<string, string>("string", fieldOptionTranslation.Text));
                                                 }
                                                 break;
                                             case Constants.FieldTypes.EntitySearch or
@@ -426,7 +427,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                                 int id = int.Parse(caseField.Value);
                                                 EntityItem match =
                                                     await sdkDbContext.EntityItems.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-                                                item.CaseFields.Add(match.Name);
+                                                item.CaseFields.Add(new KeyValuePair<string, string>("string", match.Name));
                                                 break;
                                             case Constants.FieldTypes.Picture
                                                 or Constants.FieldTypes.SaveButton
@@ -434,14 +435,24 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                                 or Constants.FieldTypes.None
                                                 or Constants.FieldTypes.FieldGroup:
                                                 break;
+                                            case Constants.FieldTypes.Number
+                                                or Constants.FieldTypes.NumberStepper:
+                                                item.CaseFields.Add(caseField.Value != null
+                                                    ? new KeyValuePair<string, string>("number",
+                                                        caseField.Value.Replace(",", "."))
+                                                    : new KeyValuePair<string, string>("number", ""));
+                                                break;
+                                            case Constants.FieldTypes.Date:
+                                                item.CaseFields.Add(new KeyValuePair<string, string>("date", caseField.Value));
+                                                break;
                                             default:
-                                                item.CaseFields.Add(caseField.Value);
+                                                item.CaseFields.Add(new KeyValuePair<string, string>("string", caseField.Value));
                                                 break;
                                         }
                                     }
                                     else
                                     {
-                                        item.CaseFields.Add("");
+                                        item.CaseFields.Add(new KeyValuePair<string, string>("string", ""));
                                     }
                                 }
 

@@ -200,18 +200,20 @@ namespace ItemsPlanning.Pn.Services.WordService
 
                             foreach (var dataModelCaseField in dataModel.CaseFields)
                             {
-                                if (dataModelCaseField == "checked")
+                                if (dataModelCaseField.Value == "checked")
                                 {
                                     itemsHtml.Append($@"<td>&#10004;</td>");
                                 }
                                 else
                                 {
-                                    if (dataModelCaseField == "unchecked")
+                                    if (dataModelCaseField.Value == "unchecked")
                                     {
                                         itemsHtml.Append($@"<td></td>");
                                     } else
                                     {
-                                        itemsHtml.Append($@"<td>{dataModelCaseField}</td>");
+                                        itemsHtml.Append(dataModelCaseField.Key == "number"
+                                            ? $@"<td>{dataModelCaseField.Value.Replace(".", ",")}</td>"
+                                            : $@"<td>{dataModelCaseField.Value}</td>");
                                     }
                                 }
                             }

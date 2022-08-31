@@ -38,7 +38,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Report
         public int PostsCount { get; set; } // worker name
         public int ImagesCount { get; set; } // worker name
 
-        public List<string> CaseFields { get; set; }
-            = new List<string>();
+        public List<KeyValuePair<string, string>> CaseFields { get; set; }
+            = new List<KeyValuePair<string, string>>();
     }
 }
