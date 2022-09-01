@@ -288,9 +288,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 
                         foreach (var imageField in imagesForEform)
                         {
-                            var planningCase = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId && x.PlanningId != 0);
+                            var planningCase = groupedCase.cases.First(x => x.MicrotingSdkCaseId == imageField.CaseId && x.PlanningId != 0);
                             var planningNameTranslation =
-                                await _dbContext.PlanningNameTranslation.SingleOrDefaultAsync(x =>
+                                await _dbContext.PlanningNameTranslation.FirstOrDefaultAsync(x =>
                                     x.PlanningId == planningCase.PlanningId && x.LanguageId == language.Id);
 
                             if (planningNameTranslation != null)
