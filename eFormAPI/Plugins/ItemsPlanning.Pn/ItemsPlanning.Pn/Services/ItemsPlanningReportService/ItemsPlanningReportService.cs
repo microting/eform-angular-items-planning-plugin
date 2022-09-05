@@ -424,10 +424,17 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                             case Constants.FieldTypes.EntitySearch or
                                                 Constants.FieldTypes.EntitySelect or
                                                 Constants.FieldTypes.SingleSelect:
-                                                int id = int.Parse(caseField.Value);
-                                                EntityItem match =
-                                                    await sdkDbContext.EntityItems.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-                                                item.CaseFields.Add(new KeyValuePair<string, string>("string", match.Name));
+                                                if (caseField.Value != null)
+                                                {
+                                                    int id = int.Parse(caseField.Value);
+                                                    EntityItem match =
+                                                        await sdkDbContext.EntityItems.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                                                    item.CaseFields.Add(new KeyValuePair<string, string>("string", match.Name));
+                                                }
+                                                else
+                                                {
+                                                    item.CaseFields.Add(new KeyValuePair<string, string>("string", ""));
+                                                }
                                                 break;
                                             case Constants.FieldTypes.Picture
                                                 or Constants.FieldTypes.SaveButton
