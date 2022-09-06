@@ -407,7 +407,6 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                                         }
                                                     }
                                                 }
-                                                //item.CaseFields.Add(valueReadable);
                                                 item.CaseFields.Add(new KeyValuePair<string, string>("string", valueReadable));
                                                 break;
                                             case Constants.FieldTypes.SingleSelect:
@@ -420,10 +419,13 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                                             x.FieldOptionId == fo.Id && x.LanguageId == language.Id);
                                                     item.CaseFields.Add(new KeyValuePair<string, string>("string", fieldOptionTranslation.Text));
                                                 }
+                                                else
+                                                {
+                                                    item.CaseFields.Add(new KeyValuePair<string, string>("string", ""));
+                                                }
                                                 break;
                                             case Constants.FieldTypes.EntitySearch or
-                                                Constants.FieldTypes.EntitySelect or
-                                                Constants.FieldTypes.SingleSelect:
+                                                Constants.FieldTypes.EntitySelect:
                                                 if (caseField.Value != null && caseField.Value != "null")
                                                 {
                                                     int id = int.Parse(caseField.Value);
