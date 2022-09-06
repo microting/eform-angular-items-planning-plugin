@@ -424,7 +424,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                             case Constants.FieldTypes.EntitySearch or
                                                 Constants.FieldTypes.EntitySelect or
                                                 Constants.FieldTypes.SingleSelect:
-                                                if (caseField.Value != null)
+                                                if (caseField.Value != null && caseField.Value != "null")
                                                 {
                                                     int id = int.Parse(caseField.Value);
                                                     EntityItem match =
