@@ -288,9 +288,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 
                         foreach (var imageField in imagesForEform)
                         {
-                            var planningCase = groupedCase.cases.Single(x => x.MicrotingSdkCaseId == imageField.CaseId && x.PlanningId != 0);
+                            var planningCase = groupedCase.cases.First(x => x.MicrotingSdkCaseId == imageField.CaseId && x.PlanningId != 0);
                             var planningNameTranslation =
-                                await _dbContext.PlanningNameTranslation.SingleOrDefaultAsync(x =>
+                                await _dbContext.PlanningNameTranslation.FirstOrDefaultAsync(x =>
                                     x.PlanningId == planningCase.PlanningId && x.LanguageId == language.Id);
 
                             if (planningNameTranslation != null)
@@ -348,6 +348,10 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         }
 
                         // add cases
+                        //var caseIds = groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt).Select(x => x.MicrotingSdkCaseId).ToList();
+
+
+
                         foreach (var planningCase in groupedCase.cases.OrderBy(x => x.MicrotingSdkCaseDoneAt).ToList())
                         {
                             var planningNameTranslation =
@@ -367,28 +371,97 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                 };
 
 
-                                var caseFields = await core.Advanced_FieldValueReadList(
-                                    new List<int>()
-                                    {
-                                        planningCase.MicrotingSdkCaseId
-                                    }, language);
+                                var caseFields = sdkDbContext.FieldValues.Where(x => x.CaseId == planningCase.MicrotingSdkCaseId && x.WorkflowState != Constants.WorkflowStates.Removed).ToList();
+                                // var caseFields = await core.Advanced_FieldValueReadList(
+                                //     new List<int>()
+                                //     {
+                                //         planningCase.MicrotingSdkCaseId
+                                //     }, language);
 
-                                foreach (var caseField in reportModel.ItemHeaders.Select(itemHeader => caseFields
-                                             .FirstOrDefault(x => x.FieldId == itemHeader.Key)).Where(caseField => caseField != null))
+                                foreach (var fieldDto in fields)
                                 {
-                                    switch (caseField.FieldType)
+                                    var caseField = caseFields.FirstOrDefault(x => x.FieldId == fieldDto.Id);
+                                    if (caseField != null)
                                     {
-                                        case Constants.FieldTypes.MultiSelect:
-                                            item.CaseFields.Add(caseField.ValueReadable.Replace("|", "<br>"));
-                                            break;
-                                        case Constants.FieldTypes.EntitySearch or
-                                            Constants. FieldTypes.EntitySelect or
-                                            Constants.FieldTypes.SingleSelect:
-                                            item.CaseFields.Add(caseField.ValueReadable);
-                                            break;
-                                        default:
-                                            item.CaseFields.Add(caseField.Value);
-                                            break;
+                                        switch (fieldDto.FieldType)
+                                        {
+                                            case Constants.FieldTypes.MultiSelect:
+                                                List<string> keyLst = string.IsNullOrEmpty(caseField.Value) ? new List<string>() : caseField.Value.Split('|').ToList();
+                                                var valueReadable = "";
+                                                foreach (string key in keyLst)
+                                                {
+                                                    if (!string.IsNullOrEmpty(key))
+                                                    {
+                                                        FieldOption fieldOption = await sdkDbContext.FieldOptions.FirstOrDefaultAsync(x =>
+                                                            x.FieldId == caseField.FieldId && x.Key == key);
+                                                        if (fieldOption != null)
+                                                        {
+                                                            FieldOptionTranslation fieldOptionTranslation =
+                                                                await sdkDbContext.FieldOptionTranslations.FirstAsync(x =>
+                                                                    x.FieldOptionId == fieldOption.Id && x.LanguageId == language.Id);
+                                                            if (valueReadable != "")
+                                                            {
+                                                                valueReadable += '|';
+                                                            }
+                                                            valueReadable += fieldOptionTranslation.Text;
+                                                        }
+                                                    }
+                                                }
+                                                item.CaseFields.Add(new KeyValuePair<string, string>("string", valueReadable));
+                                                break;
+                                            case Constants.FieldTypes.SingleSelect:
+                                                FieldOption fo = await sdkDbContext.FieldOptions.FirstOrDefaultAsync(x =>
+                                                    x.FieldId == caseField.FieldId && x.Key == caseField.Value);
+                                                if (fo != null)
+                                                {
+                                                    FieldOptionTranslation fieldOptionTranslation =
+                                                        await sdkDbContext.FieldOptionTranslations.FirstAsync(x =>
+                                                            x.FieldOptionId == fo.Id && x.LanguageId == language.Id);
+                                                    item.CaseFields.Add(new KeyValuePair<string, string>("string", fieldOptionTranslation.Text));
+                                                }
+                                                else
+                                                {
+                                                    item.CaseFields.Add(new KeyValuePair<string, string>("string", ""));
+                                                }
+                                                break;
+                                            case Constants.FieldTypes.EntitySearch or
+                                                Constants.FieldTypes.EntitySelect:
+                                                if (caseField.Value != null && caseField.Value != "null")
+                                                {
+                                                    int id = int.Parse(caseField.Value);
+                                                    EntityItem match =
+                                                        await sdkDbContext.EntityItems.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                                                    item.CaseFields.Add(new KeyValuePair<string, string>("string", match.Name));
+                                                }
+                                                else
+                                                {
+                                                    item.CaseFields.Add(new KeyValuePair<string, string>("string", ""));
+                                                }
+                                                break;
+                                            case Constants.FieldTypes.Picture
+                                                or Constants.FieldTypes.SaveButton
+                                                or Constants.FieldTypes.Signature
+                                                or Constants.FieldTypes.None
+                                                or Constants.FieldTypes.FieldGroup:
+                                                break;
+                                            case Constants.FieldTypes.Number
+                                                or Constants.FieldTypes.NumberStepper:
+                                                item.CaseFields.Add(caseField.Value != null
+                                                    ? new KeyValuePair<string, string>("number",
+                                                        caseField.Value.Replace(",", "."))
+                                                    : new KeyValuePair<string, string>("number", ""));
+                                                break;
+                                            case Constants.FieldTypes.Date:
+                                                item.CaseFields.Add(new KeyValuePair<string, string>("date", caseField.Value));
+                                                break;
+                                            default:
+                                                item.CaseFields.Add(new KeyValuePair<string, string>("string", caseField.Value));
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        item.CaseFields.Add(new KeyValuePair<string, string>("string", ""));
                                     }
                                 }
 

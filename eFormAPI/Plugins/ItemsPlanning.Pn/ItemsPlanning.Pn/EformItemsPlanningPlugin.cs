@@ -22,8 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using eFormCore;
 using ItemsPlanning.Pn.Services.ItemsPlanningCaseService;
+using Microting.eForm.Infrastructure.Constants;
+using Microting.eForm.Infrastructure.Data.Entities;
+using Microting.eFormApi.BasePn.Abstractions;
+using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
 
 namespace ItemsPlanning.Pn
 {
@@ -91,6 +98,7 @@ namespace ItemsPlanning.Pn
             services.AddTransient<IPlanningExcelService, PlanningExcelService>();
             services.AddTransient<IPlanningImportService, PlanningImportService>();
             services.AddControllers();
+            FixBrokenPlanningCases(services);
         }
 
         public void AddPluginConfig(IConfigurationBuilder builder, string connectionString)
@@ -125,7 +133,7 @@ namespace ItemsPlanning.Pn
                 }));
 
             ItemsPlanningPnContextFactory contextFactory = new ItemsPlanningPnContextFactory();
-            var context = contextFactory.CreateDbContext(new[] {connectionString});
+            var context = contextFactory.CreateDbContext(new[] { connectionString });
             context.Database.Migrate();
 
             // Seed database
@@ -145,7 +153,7 @@ namespace ItemsPlanning.Pn
             }
 
             IRebusService rebusService = serviceProvider.GetService<IRebusService>();
-            rebusService.Start(_connectionString, "admin", "password", rabbitMqHost);
+            rebusService!.Start(_connectionString, "admin", "password", rabbitMqHost).GetAwaiter().GetResult();
 
             //_bus = rebusService.GetBus();
         }
@@ -461,6 +469,93 @@ namespace ItemsPlanning.Pn
             var context = contextFactory.CreateDbContext(new[] { connectionString });
 
             return new PluginPermissionsManager(context);
+        }
+
+        private static async void FixBrokenPlanningCases(IServiceCollection services)
+        {
+            var serviceProvider = services.BuildServiceProvider();
+
+            var core = await serviceProvider.GetRequiredService<IEFormCoreService>().GetCore();
+            var sdkDbContext = core.DbContextHelper.GetDbContext();
+
+            var itemsPlanningContext = serviceProvider.GetRequiredService<ItemsPlanningPnDbContext>();
+
+            var cases = await sdkDbContext.Cases.Where(x => x.DoneAt > new DateTime(2022,7,16, 0,0,0)).ToListAsync();
+
+            foreach (var dbCase in cases)
+            {
+                var planningCase = await itemsPlanningContext.PlanningCases.FirstOrDefaultAsync(x => x.MicrotingSdkCaseId == dbCase.Id);
+                if (planningCase == null)
+                {
+                    var checkListSite = await sdkDbContext.CheckListSites.SingleOrDefaultAsync(x =>
+                        x.MicrotingUid == dbCase.MicrotingUid);
+                    if (checkListSite != null)
+                    {
+                        var planningCaseSite =
+                            await itemsPlanningContext.PlanningCaseSites.SingleOrDefaultAsync(x =>
+                                x.MicrotingCheckListSitId == checkListSite.Id);
+                        if (planningCaseSite != null)
+                        {
+                            var site = await sdkDbContext.Sites.SingleOrDefaultAsync(x => x.Id == dbCase.SiteId);
+                            if (site != null)
+                            {
+                                var language = await sdkDbContext.Languages.SingleAsync(x => x.Id == site.LanguageId);
+                                var theCase =
+                                    await core.CaseRead((int)dbCase.MicrotingUid!, (int)dbCase.MicrotingCheckUid!,
+                                        language);
+                                try
+                                {
+                                    planningCase = new PlanningCase
+                                    {
+                                        Status = 100,
+                                        MicrotingSdkCaseDoneAt = theCase.DoneAt,
+                                        MicrotingSdkCaseId = dbCase.Id,
+                                        DoneByUserId = theCase.DoneById,
+                                        DoneByUserName = site.Name,
+                                        WorkflowState = Constants.WorkflowStates.Processed,
+                                        MicrotingSdkeFormId = (int)dbCase.CheckListId!,
+                                        PlanningId = planningCaseSite!.PlanningId
+                                    };
+                                    await planningCase.Create(itemsPlanningContext);
+                                    planningCase = await SetFieldValue(itemsPlanningContext, core, planningCase,
+                                        theCase.Id,
+                                        language);
+                                    await planningCase.Update(itemsPlanningContext);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private static async Task<PlanningCase> SetFieldValue(ItemsPlanningPnDbContext itemsPlanningContext, Core _sdkCore, PlanningCase planningCase, int caseId, Language language)
+        {
+            var planning = await itemsPlanningContext.Plannings.SingleOrDefaultAsync(x => x.Id == planningCase.PlanningId).ConfigureAwait(false);
+            var caseIds = new List<int> { planningCase.MicrotingSdkCaseId };
+            var fieldValues = await _sdkCore.Advanced_FieldValueReadList(caseIds, language).ConfigureAwait(false);
+
+            if (planning == null) return planningCase;
+            if (planning.NumberOfImagesEnabled)
+            {
+                planningCase.NumberOfImages = 0;
+                foreach (var fieldValue in fieldValues)
+                {
+                    if (fieldValue.FieldType == Constants.FieldTypes.Picture)
+                    {
+                        if (fieldValue.UploadedData != null)
+                        {
+                            planningCase.NumberOfImages += 1;
+                        }
+                    }
+                }
+            }
+
+            return planningCase;
         }
 
         //private void UpdateRelatedCase(int caseId)

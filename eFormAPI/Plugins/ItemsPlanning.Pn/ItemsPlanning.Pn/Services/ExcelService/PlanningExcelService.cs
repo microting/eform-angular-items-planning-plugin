@@ -494,13 +494,29 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                             y++;
                             foreach (var dataModelCaseField in dataModel.CaseFields)
                             {
-                                if (dataModelCaseField == "checked")
+                                if (dataModelCaseField.Value == "checked")
                                 {
                                     worksheet.Cell(x + 1, y + 1).Value = 1;
                                 }
                                 else
                                 {
-                                    worksheet.Cell(x + 1, y + 1).Value = dataModelCaseField == "unchecked" ? "0" : dataModelCaseField == "checked" ? "1" : dataModelCaseField;
+                                    var value = dataModelCaseField.Value == "unchecked" ? "0" : dataModelCaseField.Value == "checked" ? "1" : dataModelCaseField.Value;
+
+                                    worksheet.Cell(x + 1, y + 1).Value = value;
+                                    switch (dataModelCaseField.Key)
+                                    {
+                                        case "date":
+                                            worksheet.Cell(x + 1, y + 1).DataType = XLDataType.DateTime;
+                                            break;
+                                        case "number":
+                                            //worksheet.Cell(x+1, y+1).Style.NumberFormat.Format = "0.00";
+                                            worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Number;
+                                            break;
+                                        default:
+                                            worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Text;
+                                            break;
+                                    }
+                                    //worksheet.Cell(x + 1, y + 1).Value =
                                 }
 
                                 y++;
