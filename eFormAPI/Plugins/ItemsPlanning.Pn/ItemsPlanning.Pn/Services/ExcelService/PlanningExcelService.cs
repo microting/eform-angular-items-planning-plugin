@@ -502,17 +502,19 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                                 {
                                     var value = dataModelCaseField.Value == "unchecked" ? "0" : dataModelCaseField.Value == "checked" ? "1" : dataModelCaseField.Value;
 
-                                    worksheet.Cell(x + 1, y + 1).Value = value;
                                     switch (dataModelCaseField.Key)
                                     {
                                         case "date":
+                                            worksheet.Cell(x + 1, y + 1).Value = value;
                                             worksheet.Cell(x + 1, y + 1).DataType = XLDataType.DateTime;
                                             break;
                                         case "number":
+                                            worksheet.Cell(x + 1, y + 1).Value = value;
                                             //worksheet.Cell(x+1, y+1).Style.NumberFormat.Format = "0.00";
                                             worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Number;
                                             break;
                                         default:
+                                            worksheet.Cell(x + 1, y + 1).Value = "'" + value;
                                             worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Text;
                                             break;
                                     }
