@@ -5,7 +5,17 @@
       "da": "Egenkontrol",
       "de": "Selbstkontrolle",
       "en-US": "Items planning",
-      "uk-UA": "Планування елементів"
+      "uk-UA": "Планування елементів",
+      "pl-PL": "Planowanie elementów",
+      "no-NO": "Elementplanlegging",
+      "sv-SE": "Elementplanering",
+      "es-ES": "Planificación de elementos",
+      "fr-FR": "Planification des éléments",
+      "it-IT": "Pianificazione elementi",
+      "nl-NL": "Elementenplanning",
+      "pt-BR": "Planejamento de itens",
+      "pt-PT": "Planeamento de itens",
+      "fi-FI": "Elementtisuunnittelu"
     }
   },
   {
@@ -14,7 +24,17 @@
       "da": "Lister",
       "de": "Listen",
       "en-US": "Lists",
-      "uk-UA": "Списки"
+      "uk-UA": "Списки",
+      "pl-PL": "Listy",
+      "no-NO": "Lister",
+      "sv-SE": "Listor",
+      "es-ES": "Listas",
+      "fr-FR": "Listes",
+      "it-IT": "Liste",
+      "nl-NL": "Lijsten",
+      "pt-BR": "Listas",
+      "pt-PT": "Listas",
+      "fi-FI": "Listat"
     }
   },
   {
@@ -23,7 +43,17 @@
       "da": "Ændringer gemt",
       "de": "Änderungen gespeichert",
       "en-US": "Case has been updated",
-      "uk-UA": "Зміни збережено"
+      "uk-UA": "Зміни збережено",
+      "pl-PL": "Zmiany zostały zapisane",
+      "no-NO": "Saken er oppdatert",
+      "sv-SE": "Ärendet har uppdaterats",
+      "es-ES": "El caso ha sido actualizado",
+      "fr-FR": "Le cas a été mis à jour",
+      "it-IT": "Caso aggiornato",
+      "nl-NL": "Zaak is bijgewerkt",
+      "pt-BR": "O caso foi atualizado",
+      "pt-PT": "O caso foi atualizado",
+      "fi-FI": "Tapaus on päivitetty"
     }
   },
   {
@@ -32,7 +62,17 @@
       "da": "Indstillinger",
       "de": "die Einstellungen",
       "en-US": "Settings",
-      "uk-UA": "Налаштування"
+      "uk-UA": "Налаштування",
+      "pl-PL": "Ustawienia",
+      "no-NO": "Innstillinger",
+      "sv-SE": "Inställningar",
+      "es-ES": "Ajustes",
+      "fr-FR": "Paramètres",
+      "it-IT": "Impostazioni",
+      "nl-NL": "Instellingen",
+      "pt-BR": "Configurações",
+      "pt-PT": "Configurações",
+      "fi-FI": "Asetukset"
     }
   },
   {
@@ -41,7 +81,17 @@
       "da": "Liste oprettet succesfuldt",
       "de": "Liste erfolgreich erstellt",
       "en-US": "List created successfully",
-      "uk-UA": "Список успішно створений"
+      "uk-UA": "Список успішно створений",
+      "pl-PL": "Lista została utworzona pomyślnie",
+      "no-NO": "Liste opprettet",
+      "sv-SE": "Listan skapades",
+      "es-ES": "Lista creada correctamente",
+      "fr-FR": "Liste créée avec succès",
+      "it-IT": "Lista creata con successo",
+      "nl-NL": "Lijst succesvol aangemaakt",
+      "pt-BR": "Lista criada com sucesso",
+      "pt-PT": "Lista criada com sucesso",
+      "fi-FI": "Lista luotiin onnistuneesti"
     }
   },
   {
@@ -50,7 +100,17 @@
       "da": "Fejl under oprettelse af liste",
       "de": "Fehler beim Erstellen der Liste",
       "en-US": "Error while creating list",
-      "uk-UA": "Помилка при створенні списку"
+      "uk-UA": "Помилка при створенні списку",
+      "pl-PL": "Błąd podczas tworzenia listy",
+      "no-NO": "Feil ved opprettelse av liste",
+      "sv-SE": "Fel vid skapande av lista",
+      "es-ES": "Error al crear la lista",
+      "fr-FR": "Erreur lors de la création de la liste",
+      "it-IT": "Errore durante la creazione della lista",
+      "nl-NL": "Fout bij het maken van lijst",
+      "pt-BR": "Erro ao criar lista",
+      "pt-PT": "Erro ao criar lista",
+      "fi-FI": "Virhe luotaessa listaa"
     }
   },
   {
@@ -59,7 +119,17 @@
       "da": "Fejl under opdatering af liste",
       "de": "Fehler beim Aktualisieren der Liste",
       "en-US": "Error while updating list",
-      "uk-UA": "Помилка при оновленні списку"
+      "uk-UA": "Помилка при оновленні списку",
+      "pl-PL": "Błąd podczas aktualizacji listy",
+      "no-NO": "Feil ved oppdatering av liste",
+      "sv-SE": "Fel vid uppdatering av lista",
+      "es-ES": "Error al actualizar la lista",
+      "fr-FR": "Erreur lors de la mise à jour de la liste",
+      "it-IT": "Errore durante l'aggiornamento della lista",
+      "nl-NL": "Fout bij het bijwerken van lijst",
+      "pt-BR": "Erro ao atualizar lista",
+      "pt-PT": "Erro ao atualizar lista",
+      "fi-FI": "Virhe päivittäessä listaa"
     }
   },
   {
@@ -68,7 +138,17 @@
       "da": "Liste opdateret med succes",
       "de": "Liste erfolgreich aktualisiert",
       "en-US": "List updated successfully",
-      "uk-UA": "Список успішно оновлено"
+      "uk-UA": "Список успішно оновлено",
+      "pl-PL": "Lista została zaktualizowana pomyślnie",
+      "no-NO": "Liste oppdatert",
+      "sv-SE": "Listan uppdaterades",
+      "es-ES": "Lista actualizada correctamente",
+      "fr-FR": "Liste mise à jour avec succès",
+      "it-IT": "Lista aggiornata con successo",
+      "nl-NL": "Lijst succesvol bijgewerkt",
+      "pt-BR": "Lista atualizada com sucesso",
+      "pt-PT": "Lista atualizada com sucesso",
+      "fi-FI": "Lista päivitettiin onnistuneesti"
     }
   },
   {
@@ -77,7 +157,17 @@
       "da": "Liste slettet korrekt",
       "de": "Liste erfolgreich gelöscht",
       "en-US": "List deleted successfully",
-      "uk-UA": "Список успішно видалено"
+      "uk-UA": "Список успішно видалено",
+      "pl-PL": "Lista została usunięta pomyślnie",
+      "no-NO": "Liste slettet",
+      "sv-SE": "Listan raderades",
+      "es-ES": "Lista eliminada correctamente",
+      "fr-FR": "Liste supprimée avec succès",
+      "it-IT": "Lista eliminata con successo",
+      "nl-NL": "Lijst succesvol verwijderd",
+      "pt-BR": "Lista excluída com sucesso",
+      "pt-PT": "Lista excluída com sucesso",
+      "fi-FI": "Lista poistettiin onnistuneesti"
     }
   },
   {
@@ -86,7 +176,17 @@
       "da": "Fejl under fjernelse af liste",
       "de": "Fehler beim Entfernen der Liste",
       "en-US": "Error while removing list",
-      "uk-UA": "Помилка при видаленні списку"
+      "uk-UA": "Помилка при видаленні списку",
+      "pl-PL": "Błąd podczas usuwania listy",
+      "no-NO": "Feil ved fjerning av liste",
+      "sv-SE": "Fel vid borttagning av lista",
+      "es-ES": "Error al eliminar la lista",
+      "fr-FR": "Erreur lors de la suppression de la liste",
+      "it-IT": "Errore durante la rimozione della lista",
+      "nl-NL": "Fout bij het verwijderen van lijst",
+      "pt-BR": "Erro ao remover lista",
+      "pt-PT": "Erro ao remover lista",
+      "fi-FI": "Virhe poistaessa listaa"
     }
   },
   {
@@ -95,7 +195,17 @@
       "da": "Liste ikke fundet",
       "de": "Liste nicht gefunden",
       "en-US": "List not found",
-      "uk-UA": "Список не знайдено"
+      "uk-UA": "Список не знайдено",
+      "pl-PL": "Lista nie znaleziona",
+      "no-NO": "Liste ikke funnet",
+      "sv-SE": "Listan hittades inte",
+      "es-ES": "Lista no encontrada",
+      "fr-FR": "Liste introuvable",
+      "it-IT": "Lista non trovata",
+      "nl-NL": "Lijst niet gevonden",
+      "pt-BR": "Lista não encontrada",
+      "pt-PT": "Lista não encontrada",
+      "fi-FI": "Lista ei löytynyt"
     }
   },
   {
@@ -104,7 +214,17 @@
       "da": "Kunne ikke hente listen",
       "de": "Fehler beim Abrufen der Liste",
       "en-US": "Error while obtaining list",
-      "uk-UA": "Помилка при отриманні списку"
+      "uk-UA": "Помилка при отриманні списку",
+      "pl-PL": "Błąd podczas pobierania listy",
+      "no-NO": "Feil ved henting av liste",
+      "sv-SE": "Fel vid hämtning av lista",
+      "es-ES": "Error al obtener la lista",
+      "fr-FR": "Erreur lors de l'obtention de la liste",
+      "it-IT": "Errore durante l'ottenimento della lista",
+      "nl-NL": "Fout bij het verkrijgen van lijst",
+      "pt-BR": "Erro ao obter lista",
+      "pt-PT": "Erro ao obter lista",
+      "fi-FI": "Virhe haettaessa listaa"
     }
   },
   {
@@ -113,7 +233,17 @@
       "da": "Ingen data i den valgte periode",
       "de": "Keine Daten im ausgewählten Zeitraum",
       "en-US": "No data in the selected period",
-      "uk-UA": "Немає даних за вибраний період"
+      "uk-UA": "Немає даних за вибраний період",
+      "pl-PL": "Brak danych w wybranym okresie",
+      "no-NO": "Ingen data i den valgte perioden",
+      "sv-SE": "Ingen data i den valda perioden",
+      "es-ES": "No hay datos en el período seleccionado",
+      "fr-FR": "Aucune donnée sur la période sélectionnée",
+      "it-IT": "Nessun dato nel periodo selezionato",
+      "nl-NL": "Geen gegevens in de geselecteerde periode",
+      "pt-BR": "Nenhum dado no período selecionado",
+      "pt-PT": "Nenhum dado no período selecionado",
+      "fi-FI": "Valitulla aikavälillä ei ole tietoja"
     }
   },
   {
@@ -122,7 +252,17 @@
       "da": "Ja",
       "de": "Ja",
       "en-US": "Yes",
-      "uk-UA": "Так"
+      "uk-UA": "Так",
+      "pl-PL": "Tak",
+      "no-NO": "Ja",
+      "sv-SE": "Ja",
+      "es-ES": "Sí",
+      "fr-FR": "Oui",
+      "it-IT": "Sì",
+      "nl-NL": "Ja",
+      "pt-BR": "Sim",
+      "pt-PT": "Sim",
+      "fi-FI": "Kyllä"
     }
   },
   {
@@ -131,7 +271,17 @@
       "da": "Nej",
       "de": "Nein",
       "en-US": "No",
-      "uk-UA": "Ні"
+      "uk-UA": "Ні",
+      "pl-PL": "Nie",
+      "no-NO": "Nei",
+      "sv-SE": "Nej",
+      "es-ES": "No",
+      "fr-FR": "Non",
+      "it-IT": "No",
+      "nl-NL": "Nee",
+      "pt-BR": "Não",
+      "pt-PT": "Não",
+      "fi-FI": "Ei"
     }
   },
   {
@@ -140,7 +290,17 @@
       "da": "Udsendt d.",
       "de": "Bereitgestellt bei",
       "en-US": "Deployed at",
-      "uk-UA": "Розгорнуто в"
+      "uk-UA": "Розгорнуто в",
+      "pl-PL": "Wdrożone w",
+      "no-NO": "Publisert på",
+      "sv-SE": "Publicerad på",
+      "es-ES": "Desplegado en",
+      "fr-FR": "Déployé sur",
+      "it-IT": "Pubblicato su",
+      "nl-NL": "Gepubliceerd op",
+      "pt-BR": "Publicado em",
+      "pt-PT": "Publicado em",
+      "fi-FI": "Julkaistu"
     }
   },
   {
@@ -149,7 +309,17 @@
       "da": "Udførelsesdato",
       "de": "Datum der Ausführung",
       "en-US": "Date of doing",
-      "uk-UA": "Дата виконання"
+      "uk-UA": "Дата виконання",
+      "pl-PL": "Data wykonania",
+      "no-NO": "Utførelsesdato",
+      "sv-SE": "Utförandedatum",
+      "es-ES": "Fecha de realización",
+      "fr-FR": "Date d'exécution",
+      "it-IT": "Data di esecuzione",
+      "nl-NL": "Datum van uitvoering",
+      "pt-BR": "Data de execução",
+      "pt-PT": "Data de execução",
+      "fi-FI": "Suorituspäivä"
     }
   },
   {
@@ -158,7 +328,17 @@
       "da": "Udført af",
       "de": "Gemacht von",
       "en-US": "Done by",
-      "uk-UA": "Зроблено"
+      "uk-UA": "Зроблено",
+      "pl-PL": "Wykonane przez",
+      "no-NO": "Utført av",
+      "sv-SE": "Utförd av",
+      "es-ES": "Realizado por",
+      "fr-FR": "Fait par",
+      "it-IT": "Eseguito da",
+      "nl-NL": "Uitgevoerd door",
+      "pt-BR": "Feito por",
+      "pt-PT": "Feito por",
+      "fi-FI": "Suorittanut"
     }
   },
   {
@@ -167,7 +347,17 @@
       "da": "Navn",
       "de": "Name",
       "en-US": "Name",
-      "uk-UA": "Ім'я"
+      "uk-UA": "Ім'я",
+      "pl-PL": "Nazwa",
+      "no-NO": "Navn",
+      "sv-SE": "Namn",
+      "es-ES": "Nombre",
+      "fr-FR": "Nom",
+      "it-IT": "Nome",
+      "nl-NL": "Naam",
+      "pt-BR": "Nome",
+      "pt-PT": "Nome",
+      "fi-FI": "Nimi"
     }
   },
   {
@@ -176,7 +366,17 @@
       "da": "Beskrivelse",
       "de": "Beschreibung",
       "en-US": "Description",
-      "uk-UA": "Опис"
+      "uk-UA": "Опис",
+      "pl-PL": "Opis",
+      "no-NO": "Beskrivelse",
+      "sv-SE": "Beskrivning",
+      "es-ES": "Descripción",
+      "fr-FR": "Description",
+      "it-IT": "Descrizione",
+      "nl-NL": "Beschrijving",
+      "pt-BR": "Descrição",
+      "pt-PT": "Descrição",
+      "fi-FI": "Kuvaus"
     }
   },
   {
@@ -185,7 +385,17 @@
       "da": "Enhedsid",
       "de": "Artikelnummer",
       "en-US": "Item number",
-      "uk-UA": "Номер елементу"
+      "uk-UA": "Номер елементу",
+      "pl-PL": "Numer elementu",
+      "no-NO": "Enhets-ID",
+      "sv-SE": "Enhets-ID",
+      "es-ES": "Número de artículo",
+      "fr-FR": "Numéro d'article",
+      "it-IT": "Numero articolo",
+      "nl-NL": "Itemnummer",
+      "pt-BR": "Número do item",
+      "pt-PT": "Número do item",
+      "fi-FI": "Tuotenumero"
     }
   },
   {
@@ -194,7 +404,17 @@
       "da": "Område",
       "de": "Artikelname",
       "en-US": "Item name",
-      "uk-UA": "Назва елементу"
+      "uk-UA": "Назва елементу",
+      "pl-PL": "Nazwa elementu",
+      "no-NO": "Enhetsnavn",
+      "sv-SE": "Enhetsnamn",
+      "es-ES": "Nombre del artículo",
+      "fr-FR": "Nom de l'article",
+      "it-IT": "Nome articolo",
+      "nl-NL": "Itemnaam",
+      "pt-BR": "Nome do item",
+      "pt-PT": "Nome do item",
+      "fi-FI": "Tuotteen nimi"
     }
   },
   {
@@ -203,7 +423,17 @@
       "da": "Placering",
       "de": "Standortcode",
       "en-US": "Location code",
-      "uk-UA": "Код локації"
+      "uk-UA": "Код локації",
+      "pl-PL": "Kod lokalizacji",
+      "no-NO": "Lokasjonskode",
+      "sv-SE": "Platskod",
+      "es-ES": "Código de ubicación",
+      "fr-FR": "Code de localisation",
+      "it-IT": "Codice di posizione",
+      "nl-NL": "Locatiecode",
+      "pt-BR": "Código de localização",
+      "pt-PT": "Código de localização",
+      "fi-FI": "Sijaintikoodi"
     }
   },
   {
@@ -212,7 +442,17 @@
       "da": "Årgang",
       "de": "Baujahr",
       "en-US": "Build year",
-      "uk-UA": "Рік побудови"
+      "uk-UA": "Рік побудови",
+      "pl-PL": "Rok budowy",
+      "no-NO": "Byggeår",
+      "sv-SE": "Byggnadsår",
+      "es-ES": "Año de construcción",
+      "fr-FR": "Année de construction",
+      "it-IT": "Anno di costruzione",
+      "nl-NL": "Bouwjaar",
+      "pt-BR": "Ano de construção",
+      "pt-PT": "Ano de construção",
+      "fi-FI": "Rakennusvuosi"
     }
   },
   {
@@ -221,7 +461,17 @@
       "da": "Type",
       "de": "Art",
       "en-US": "Type",
-      "uk-UA": "Тип"
+      "uk-UA": "Тип",
+      "pl-PL": "Typ",
+      "no-NO": "Type",
+      "sv-SE": "Typ",
+      "es-ES": "Tipo",
+      "fr-FR": "Type",
+      "it-IT": "Tipo",
+      "nl-NL": "Type",
+      "pt-BR": "Tipo",
+      "pt-PT": "Tipo",
+      "fi-FI": "Tyyppi"
     }
   },
   {
@@ -230,7 +480,17 @@
       "da": "Antal billeder",
       "de": "Anzahl der Bilder",
       "en-US": "Number of images",
-      "uk-UA": "Кількість зображень"
+      "uk-UA": "Кількість зображень",
+      "pl-PL": "Liczba obrazów",
+      "no-NO": "Antall bilder",
+      "sv-SE": "Antal bilder",
+      "es-ES": "Número de imágenes",
+      "fr-FR": "Nombre d'images",
+      "it-IT": "Numero di immagini",
+      "nl-NL": "Aantal afbeeldingen",
+      "pt-BR": "Número de imagens",
+      "pt-PT": "Número de imagens",
+      "fi-FI": "Kuvien määrä"
     }
   },
   {
@@ -239,7 +499,17 @@
       "da": "Dato fra",
       "de": "Datum von",
       "en-US": "Date from",
-      "uk-UA": "Дата від"
+      "uk-UA": "Дата від",
+      "pl-PL": "Data od",
+      "no-NO": "Dato fra",
+      "sv-SE": "Datum från",
+      "es-ES": "Fecha desde",
+      "fr-FR": "Date de",
+      "it-IT": "Data da",
+      "nl-NL": "Datum van",
+      "pt-BR": "Data de",
+      "pt-PT": "Data de",
+      "fi-FI": "Päivämäärä alkaen"
     }
   },
   {
@@ -248,7 +518,17 @@
       "da": "Dato til",
       "de": "Datum bis",
       "en-US": "Date to",
-      "uk-UA": "Дата до"
+      "uk-UA": "Дата до",
+      "pl-PL": "Data do",
+      "no-NO": "Dato til",
+      "sv-SE": "Datum till",
+      "es-ES": "Fecha hasta",
+      "fr-FR": "Date à",
+      "it-IT": "Data a",
+      "nl-NL": "Datum tot",
+      "pt-BR": "Data para",
+      "pt-PT": "Data para",
+      "fi-FI": "Päivämäärä asti"
     }
   },
   {
@@ -257,7 +537,17 @@
       "da": "Planlægninger",
       "de": "Planungen",
       "en-US": "Plannings",
-      "uk-UA": "Планування"
+      "uk-UA": "Планування",
+      "pl-PL": "Planowania",
+      "no-NO": "Planlegginger",
+      "sv-SE": "Planeringar",
+      "es-ES": "Planificaciones",
+      "fr-FR": "Planifications",
+      "it-IT": "Pianificazioni",
+      "nl-NL": "Planningen",
+      "pt-BR": "Planejamentos",
+      "pt-PT": "Planejamentos",
+      "fi-FI": "Suunnitelmat"
     }
   },
   {
@@ -266,7 +556,17 @@
       "da": "Planlægning ikke fundet",
       "de": "Planung nicht gefunden",
       "en-US": "Planning not found",
-      "uk-UA": "Планування не знайдено"
+      "uk-UA": "Планування не знайдено",
+      "pl-PL": "Planowanie nie znalezione",
+      "no-NO": "Planlegging ikke funnet",
+      "sv-SE": "Planeringen hittades inte",
+      "es-ES": "Planificación no encontrada",
+      "fr-FR": "Planification introuvable",
+      "it-IT": "Pianificazione non trovata",
+      "nl-NL": "Planning niet gevonden",
+      "pt-BR": "Planejamento não encontrado",
+      "pt-PT": "Planejamento não encontrado",
+      "fi-FI": "Suunnitelmaa ei löytynyt"
     }
   },
   {
@@ -275,7 +575,17 @@
       "da": "Lokationer tildelt med succes",
       "de": "Standorte erfolgreich zugewiesen",
       "en-US": "Sites assigned successfully",
-      "uk-UA": "Місця призначено успішно"
+      "uk-UA": "Місця призначено успішно",
+      "pl-PL": "Lokalizacje zostały pomyślnie przypisane",
+      "no-NO": "Steder tildelt",
+      "sv-SE": "Platser tilldelade",
+      "es-ES": "Sitios asignados correctamente",
+      "fr-FR": "Sites assignés avec succès",
+      "it-IT": "Siti assegnati con successo",
+      "nl-NL": "Locaties toegewezen",
+      "pt-BR": "Locais atribuídos com sucesso",
+      "pt-PT": "Locais atribuídos com sucesso",
+      "fi-FI": "Sivustot on määritetty onnistuneesti"
     }
   },
   {
@@ -284,7 +594,17 @@
       "da": "Id",
       "de": "Id",
       "en-US": "Id",
-      "uk-UA": "Id"
+      "uk-UA": "Id",
+      "pl-PL": "Id",
+      "no-NO": "Id",
+      "sv-SE": "Id",
+      "es-ES": "Id",
+      "fr-FR": "Id",
+      "it-IT": "Id",
+      "nl-NL": "Id",
+      "pt-BR": "Id",
+      "pt-PT": "Id",
+      "fi-FI": "Id"
     }
   },
   {
@@ -293,7 +613,17 @@
       "da": "Sagsnummer",
       "de": "Fallnummer",
       "en-US": "Case id",
-      "uk-UA": "Кейс id"
+      "uk-UA": "Кейс id",
+      "pl-PL": "Id sprawy",
+      "no-NO": "Saksnummer",
+      "sv-SE": "Ärendenummer",
+      "es-ES": "Id de caso",
+      "fr-FR": "Id de l'affaire",
+      "it-IT": "Id caso",
+      "nl-NL": "Zaak-id",
+      "pt-BR": "Id do caso",
+      "pt-PT": "Id do caso",
+      "fi-FI": "Tapaus-id"
     }
   },
   {
@@ -302,7 +632,17 @@
       "da": "Dato",
       "de": "Hergestellt in",
       "en-US": "Created At",
-      "uk-UA": "Створено в"
+      "uk-UA": "Створено в",
+      "pl-PL": "Utworzono",
+      "no-NO": "Opprettet",
+      "sv-SE": "Skapad",
+      "es-ES": "Creado en",
+      "fr-FR": "Créé à",
+      "it-IT": "Creato a",
+      "nl-NL": "Gemaakt op",
+      "pt-BR": "Criado em",
+      "pt-PT": "Criado em",
+      "fi-FI": "Luotu"
     }
   },
   {
@@ -311,7 +651,17 @@
       "da": "Udført af",
       "de": "Gemacht von",
       "en-US": "Done By",
-      "uk-UA": "Зроблено"
+      "uk-UA": "Зроблено",
+      "pl-PL": "Wykonane przez",
+      "no-NO": "Utført av",
+      "sv-SE": "Utförd av",
+      "es-ES": "Hecho por",
+      "fr-FR": "Fait par",
+      "it-IT": "Fatto da",
+      "nl-NL": "Gedaan door",
+      "pt-BR": "Feito por",
+      "pt-PT": "Feito por",
+      "fi-FI": "Tehty"
     }
   },
   {
@@ -320,7 +670,17 @@
       "da": "Billede",
       "de": "Bild",
       "en-US": "Picture",
-      "uk-UA": "Зображення"
+      "uk-UA": "Зображення",
+      "pl-PL": "Obraz",
+      "no-NO": "Bilde",
+      "sv-SE": "Bild",
+      "es-ES": "Imagen",
+      "fr-FR": "Image",
+      "it-IT": "Immagine",
+      "nl-NL": "Afbeelding",
+      "pt-BR": "Imagem",
+      "pt-PT": "Imagem",
+      "fi-FI": "Kuva"
     }
   },
   {
@@ -329,7 +689,17 @@
       "da": "Billeder",
       "de": "Bilder",
       "en-US": "Pictures",
-      "uk-UA": "Картинки"
+      "uk-UA": "Картинки",
+      "pl-PL": "Obrazy",
+      "no-NO": "Bilder",
+      "sv-SE": "Bilder",
+      "es-ES": "Imágenes",
+      "fr-FR": "Images",
+      "it-IT": "Immagini",
+      "nl-NL": "Afbeeldingen",
+      "pt-BR": "Imagens",
+      "pt-PT": "Imagens",
+      "fi-FI": "Kuvat"
     }
   },
   {
@@ -338,7 +708,17 @@
       "da": "Indlæg",
       "de": "Beiträge",
       "en-US": "Posts",
-      "uk-UA": "Повідомлення"
+      "uk-UA": "Повідомлення",
+      "pl-PL": "Posty",
+      "no-NO": "Innlegg",
+      "sv-SE": "Inlägg",
+      "es-ES": "Publicaciones",
+      "fr-FR": "Messages",
+      "it-IT": "Messaggi",
+      "nl-NL": "Berichten",
+      "pt-BR": "Postagens",
+      "pt-PT": "Postagens",
+      "fi-FI": "Viestit"
     }
   },
   {
@@ -347,7 +727,17 @@
       "da": "indlæg",
       "de": "beiträge",
       "en-US": "posts",
-      "uk-UA": "повідомлення"
+      "uk-UA": "повідомлення",
+      "pl-PL": "posty",
+      "no-NO": "innlegg",
+      "sv-SE": "inlägg",
+      "es-ES": "publicaciones",
+      "fr-FR": "messages",
+      "it-IT": "messaggi",
+      "nl-NL": "berichten",
+      "pt-BR": "postagens",
+      "pt-PT": "postagens",
+      "fi-FI": "viestit"
     }
   },
   {
@@ -356,7 +746,17 @@
       "da": "Sendt til",
       "de": "Gesendet an",
       "en-US": "Sent To",
-      "uk-UA": "Відправлено в"
+      "uk-UA": "Відправлено в",
+      "pl-PL": "Wysłano do",
+      "no-NO": "Sendt til",
+      "sv-SE": "Skickat till",
+      "es-ES": "Enviado a",
+      "fr-FR": "Envoyé à",
+      "it-IT": "Inviato a",
+      "nl-NL": "Verzonden naar",
+      "pt-BR": "Enviado para",
+      "pt-PT": "Enviado para",
+      "fi-FI": "Lähetetty"
     }
   },
   {
@@ -365,7 +765,17 @@
       "da": "Sendt d.",
       "de": "Gesendet an",
       "en-US": "Sent at",
-      "uk-UA": "Відправлено за адресою"
+      "uk-UA": "Відправлено за адресою",
+      "pl-PL": "Wysłano do",
+      "no-NO": "Sendt til",
+      "sv-SE": "Skickat till",
+      "es-ES": "Enviado a",
+      "fr-FR": "Envoyé à",
+      "it-IT": "Inviato a",
+      "nl-NL": "Verzonden naar",
+      "pt-BR": "Enviado para",
+      "pt-PT": "Enviado para",
+      "fi-FI": "Lähetetty"
     }
   },
   {
@@ -374,7 +784,17 @@
       "da": "Kommentar",
       "de": "Kommentar",
       "en-US": "Comment",
-      "uk-UA": "Коментар"
+      "uk-UA": "Коментар",
+      "pl-PL": "Komentarz",
+      "no-NO": "Kommentar",
+      "sv-SE": "Kommentar",
+      "es-ES": "Comentario",
+      "fr-FR": "Commentaire",
+      "it-IT": "Commento",
+      "nl-NL": "Reactie",
+      "pt-BR": "Comentário",
+      "pt-PT": "Comentário",
+      "fi-FI": "Kommentti"
     }
   },
   {
@@ -383,7 +803,17 @@
       "da": "Rapporter",
       "de": "Berichte",
       "en-US": "Reports",
-      "uk-UA": "Звіти"
+      "uk-UA": "Звіти",
+      "pl-PL": "Raporty",
+      "no-NO": "Rapporter",
+      "sv-SE": "Rapporter",
+      "es-ES": "Informes",
+      "fr-FR": "Rapports",
+      "it-IT": "Rapporti",
+      "nl-NL": "Rapporten",
+      "pt-BR": "Relatórios",
+      "pt-PT": "Relatórios",
+      "fi-FI": "Raportit"
     }
   },
   {
@@ -392,7 +822,17 @@
       "da": "Rapport periode",
       "de": "Berichtszeitraum",
       "en-US": "Report period",
-      "uk-UA": "Звітний період"
+      "uk-UA": "Звітний період",
+      "pl-PL": "Okres raportowania",
+      "no-NO": "Rapporteringsperiode",
+      "sv-SE": "Rapporteringsperiod",
+      "es-ES": "Periodo de informe",
+      "fr-FR": "Période de rapport",
+      "it-IT": "Periodo di rapporto",
+      "nl-NL": "Rapportageperiode",
+      "pt-BR": "Período de relatório",
+      "pt-PT": "Período de relatório",
+      "fi-FI": "Raportointiaika"
     }
   },
   {
@@ -401,7 +841,17 @@
       "da": "Fejl under modtagelse af emner, der planlægger tags",
       "de": "Fehler beim Abrufen von Artikelplanungs-Tags",
       "en-US": "Error while obtaining items planning tags",
-      "uk-UA": "Помилка При отриманні тегів планування елементів"
+      "uk-UA": "Помилка При отриманні тегів планування елементів",
+      "pl-PL": "Błąd podczas pobierania tagów planowania elementów",
+      "no-NO": "Feil ved henting av elementplanleggingsmerker",
+      "sv-SE": "Fel vid hämtning av elementplaneringsmärken",
+      "es-ES": "Error al obtener etiquetas de planificación de artículos",
+      "fr-FR": "Erreur lors de l'obtention des balises de planification des articles",
+      "it-IT": "Errore durante l'acquisizione delle etichette di pianificazione degli elementi",
+      "nl-NL": "Fout bij ophalen van items planning labels",
+      "pt-BR": "Erro ao obter tags de planejamento de itens",
+      "pt-PT": "Erro ao obter tags de planejamento de itens",
+      "fi-FI": "Virhe kohteiden suunnittelutunnisteiden hankinnassa"
     }
   },
   {
@@ -410,7 +860,17 @@
       "da": "Varer, der planlægger mærke oprettet med succes",
       "de": "Das Planungs-Tag für Elemente wurde erfolgreich erstellt",
       "en-US": "Items planning tag created successfully",
-      "uk-UA": "Успішно створено тег планування елементів"
+      "uk-UA": "Успішно створено тег планування елементів",
+      "pl-PL": "Tag planowania elementów został pomyślnie utworzony",
+      "no-NO": "Elementplanleggingsmerket ble opprettet",
+      "sv-SE": "Elementplaneringsmärket skapades",
+      "es-ES": "Etiqueta de planificación de artículos creada correctamente",
+      "fr-FR": "La balise de planification des articles a été créée avec succès",
+      "it-IT": "Etichetta di pianificazione degli elementi creata correttamente",
+      "nl-NL": "Items planning label succesvol aangemaakt",
+      "pt-BR": "Tag de planejamento de itens criada com sucesso",
+      "pt-PT": "Tag de planejamento de itens criada com sucesso",
+      "fi-FI": "Kohteiden suunnittelutunniste luotiin onnistuneesti"
     }
   },
   {
@@ -419,7 +879,17 @@
       "da": "Fejl under oprettelse af planlægningsmærke",
       "de": "Fehler beim Erstellen des Artikelplanungs-Tags",
       "en-US": "Error while creating items planning tag",
-      "uk-UA": "Помилка при створенні тега планування елементів"
+      "uk-UA": "Помилка при створенні тега планування елементів",
+      "pl-PL": "Błąd podczas tworzenia tagu planowania elementów",
+      "no-NO": "Feil ved oppretting av elementplanleggingsmerke",
+      "sv-SE": "Fel vid skapande av elementplaneringsmärke",
+      "es-ES": "Error al crear etiqueta de planificación de artículos",
+      "fr-FR": "Erreur lors de la création de la balise de planification des articles",
+      "it-IT": "Errore durante la creazione dell'etichetta di pianificazione degli elementi",
+      "nl-NL": "Fout bij aanmaken items planning label",
+      "pt-BR": "Erro ao criar tag de planejamento de itens",
+      "pt-PT": "Erro ao criar tag de planejamento de itens",
+      "fi-FI": "Virhe kohteiden suunnittelutunnisteen luonnissa"
     }
   },
   {
@@ -428,7 +898,17 @@
       "da": "Varer, der planlægger mærke ikke fundet",
       "de": "Artikelplanungs-Tag nicht gefunden",
       "en-US": "Items planning tag not found",
-      "uk-UA": "Тег планування елементів не знайдено"
+      "uk-UA": "Тег планування елементів не знайдено",
+      "pl-PL": "Tag planowania elementów nie został znaleziony",
+      "no-NO": "Elementplanleggingsmerke ikke funnet",
+      "sv-SE": "Elementplaneringsmärke hittades inte",
+      "es-ES": "Etiqueta de planificación de artículos no encontrada",
+      "fr-FR": "La balise de planification des articles n'a pas été trouvée",
+      "it-IT": "Etichetta di pianificazione degli elementi non trovata",
+      "nl-NL": "Items planning label niet gevonden",
+      "pt-BR": "Tag de planejamento de itens não encontrada",
+      "pt-PT": "Tag de planejamento de itens não encontrada",
+      "fi-FI": "Kohteiden suunnittelutunnistetta ei löytynyt"
     }
   },
   {
@@ -437,7 +917,17 @@
       "da": "Elementer, der planlægger tag, blev fjernet med succes",
       "de": "Das Planungs-Tag für Elemente wurde erfolgreich entfernt",
       "en-US": "Items planning tag removed successfully",
-      "uk-UA": "Тег планування елементів успішно видалено"
+      "uk-UA": "Тег планування елементів успішно видалено",
+      "pl-PL": "Tag planowania elementów został pomyślnie usunięty",
+      "no-NO": "Elementplanleggingsmerke fjernet",
+      "sv-SE": "Elementplaneringsmärket har tagits bort",
+      "es-ES": "Etiqueta de planificación de artículos eliminada correctamente",
+      "fr-FR": "La balise de planification des articles a été supprimée avec succès",
+      "it-IT": "Etichetta di pianificazione degli elementi rimossa correttamente",
+      "nl-NL": "Items planning label succesvol verwijderd",
+      "pt-BR": "Tag de planejamento de itens removida com sucesso",
+      "pt-PT": "Tag de planejamento de itens removida com sucesso",
+      "fi-FI": "Kohteiden suunnittelutunniste poistettiin onnistuneesti"
     }
   },
   {
@@ -446,7 +936,17 @@
       "da": "Fejl under fjernelse af planlægningsmærke",
       "de": "Fehler beim Entfernen des Elementplanungs-Tags",
       "en-US": "Error while removing items planning tag",
-      "uk-UA": "Помилка при видаленні тега планування елементів"
+      "uk-UA": "Помилка при видаленні тега планування елементів",
+      "pl-PL": "Błąd podczas usuwania tagu planowania elementów",
+      "no-NO": "Feil ved fjerning av elementplanleggingsmerke",
+      "sv-SE": "Fel vid borttagning av elementplaneringsmärke",
+      "es-ES": "Error al eliminar etiqueta de planificación de artículos",
+      "fr-FR": "Erreur lors de la suppression de la balise de planification des articles",
+      "it-IT": "Errore durante la rimozione dell'etichetta di pianificazione degli elementi",
+      "nl-NL": "Fout bij verwijderen items planning label",
+      "pt-BR": "Erro ao remover tag de planejamento de itens",
+      "pt-PT": "Erro ao remover tag de planejamento de itens",
+      "fi-FI": "Virhe kohteiden suunnittelutunnisteen poistamisessa"
     }
   },
   {
@@ -455,7 +955,17 @@
       "da": "Varer, der planlægger tag, opdateres",
       "de": "Das Planungs-Tag für Elemente wurde erfolgreich aktualisiert",
       "en-US": "Items planning tag updated successfully",
-      "uk-UA": "Тег планування елементів успішно оновлено"
+      "uk-UA": "Тег планування елементів успішно оновлено",
+      "pl-PL": "Tag planowania elementów został pomyślnie zaktualizowany",
+      "no-NO": "Elementplanleggingsmerke oppdatert",
+      "sv-SE": "Elementplaneringsmärket har uppdaterats",
+      "es-ES": "Etiqueta de planificación de artículos actualizada correctamente",
+      "fr-FR": "La balise de planification des articles a été mise à jour avec succès",
+      "it-IT": "Etichetta di pianificazione degli elementi aggiornata correttamente",
+      "nl-NL": "Items planning label succesvol bijgewerkt",
+      "pt-BR": "Tag de planejamento de itens atualizada com sucesso",
+      "pt-PT": "Tag de planejamento de itens atualizada com sucesso",
+      "fi-FI": "Kohteiden suunnittelutunniste päivitettiin onnistuneesti"
     }
   },
   {
@@ -464,7 +974,17 @@
       "da": "Fejl under opdatering af elementplanlægningskode",
       "de": "Fehler beim Aktualisieren des Artikelplanungs-Tags",
       "en-US": "Error while updating items planning tag",
-      "uk-UA": "Помилка при оновленні тега планування елементів"
+      "uk-UA": "Помилка при оновленні тега планування елементів",
+      "pl-PL": "Błąd podczas aktualizacji tagu planowania elementów",
+      "no-NO": "Feil ved oppdatering av elementplanleggingsmerke",
+      "sv-SE": "Fel vid uppdatering av elementplaneringsmärke",
+      "es-ES": "Error al actualizar etiqueta de planificación de artículos",
+      "fr-FR": "Erreur lors de la mise à jour de la balise de planification des articles",
+      "it-IT": "Errore durante l'aggiornamento dell'etichetta di pianificazione degli elementi",
+      "nl-NL": "Fout bij bijwerken items planning label",
+      "pt-BR": "Erro ao atualizar tag de planejamento de itens",
+      "pt-PT": "Erro ao atualizar tag de planejamento de itens",
+      "fi-FI": "Virhe kohteiden suunnittelutunnisteen päivittämisessä"
     }
   },
   {
@@ -473,7 +993,17 @@
       "da": "Fejl under opnåelse af parring af planlægning",
       "de": "Fehler beim Abrufen von Planungspaarungen",
       "en-US": "Error while obtaining planning pairings",
-      "uk-UA": "Помилка при отриманні планувальних зв'язків"
+      "uk-UA": "Помилка при отриманні планувальних зв'язків",
+      "pl-PL": "Błąd podczas pobierania parowania planowania",
+      "no-NO": "Feil ved henting av planleggingspar",
+      "sv-SE": "Fel vid hämtning av planeringspar",
+      "es-ES": "Error al obtener emparejamientos de planificación",
+      "fr-FR": "Erreur lors de l'obtention des paires de planification",
+      "it-IT": "Errore durante l'ottenimento delle coppie di pianificazione",
+      "nl-NL": "Fout bij verkrijgen planning paren",
+      "pt-BR": "Erro ao obter emparelhamentos de planejamento",
+      "pt-PT": "Erro ao obter emparelhamentos de planejamento",
+      "fi-FI": "Virhe suunnitteluparien hankkimisessa"
     }
   },
   {
@@ -482,7 +1012,17 @@
       "da": "Fejl under opdatering af vareplanlægning",
       "de": "Fehler beim Aktualisieren der Artikelplanung",
       "en-US": "Error while updating items planning",
-      "uk-UA": "Помилка при оновленні елементу планування"
+      "uk-UA": "Помилка при оновленні елементу планування",
+      "pl-PL": "Błąd podczas aktualizacji planowania elementów",
+      "no-NO": "Feil ved oppdatering av elementplanlegging",
+      "sv-SE": "Fel vid uppdatering av elementplanering",
+      "es-ES": "Error al actualizar la planificación de artículos",
+      "fr-FR": "Erreur lors de la mise à jour de la planification des articles",
+      "it-IT": "Errore durante l'aggiornamento della pianificazione degli elementi",
+      "nl-NL": "Fout bij bijwerken items planning",
+      "pt-BR": "Erro ao atualizar planejamento de itens",
+      "pt-PT": "Erro ao atualizar planejamento de itens",
+      "fi-FI": "Virhe kohteiden suunnittelun päivittämisessä"
     }
   },
   {
@@ -491,7 +1031,17 @@
       "da": "Parring blev opdateret",
       "de": "Paarungen erfolgreich aktualisiert",
       "en-US": "Pairings updated successfully",
-      "uk-UA": "Зв'язки успішно оновлені"
+      "uk-UA": "Зв'язки успішно оновлені",
+      "pl-PL": "Parowania zostały pomyślnie zaktualizowane",
+      "no-NO": "Par ble oppdatert",
+      "sv-SE": "Par uppdaterades",
+      "es-ES": "Emparejamientos actualizados correctamente",
+      "fr-FR": "Paires mises à jour avec succès",
+      "it-IT": "Coppie aggiornate correttamente",
+      "nl-NL": "Paren succesvol bijgewerkt",
+      "pt-BR": "Emparelhamentos atualizados com sucesso",
+      "pt-PT": "Emparelhamentos atualizados com sucesso",
+      "fi-FI": "Parit päivitettiin onnistuneesti"
     }
   },
   {
@@ -500,7 +1050,17 @@
       "da": "Parring opdateret",
       "de": "Paarung erfolgreich aktualisiert",
       "en-US": "Pairing updated successfully",
-      "uk-UA": "Зв'язок успішно оновлений"
+      "uk-UA": "Зв'язок успішно оновлений",
+      "pl-PL": "Parowanie zostało pomyślnie zaktualizowane",
+      "no-NO": "Par oppdatert",
+      "sv-SE": "Par uppdaterat",
+      "es-ES": "Emparejamiento actualizado correctamente",
+      "fr-FR": "Paire mise à jour avec succès",
+      "it-IT": "Coppia aggiornata correttamente",
+      "nl-NL": "Paar succesvol bijgewerkt",
+      "pt-BR": "Emparelhamento atualizado com sucesso",
+      "pt-PT": "Emparelhamento atualizado com sucesso",
+      "fi-FI": "Par päivitettiin onnistuneesti"
     }
   },
   {
@@ -509,7 +1069,17 @@
       "da": "Importen blev gennemført",
       "de": "Import erfolgreich abgeschlossen",
       "en-US": "Import completed successfully",
-      "uk-UA": "Імпорт успішно завершено"
+      "uk-UA": "Імпорт успішно завершено",
+      "pl-PL": "Importowanie zakończone pomyślnie",
+      "no-NO": "Import fullført",
+      "sv-SE": "Import slutförd",
+      "es-ES": "Importación completada correctamente",
+      "fr-FR": "Importation terminée avec succès",
+      "it-IT": "Importazione completata correttamente",
+      "nl-NL": "Importeren voltooid",
+      "pt-BR": "Importação concluída com sucesso",
+      "pt-PT": "Importação concluída com sucesso",
+      "fi-FI": "Tuonti suoritettiin onnistuneesti"
     }
   },
   {
@@ -518,7 +1088,17 @@
       "da": "Fejl under import af Excel-fil",
       "de": "Fehler beim Importieren der Excel-Datei",
       "en-US": "Error while importing Excel file",
-      "uk-UA": "Помилка при імпорті файлу Excel"
+      "uk-UA": "Помилка при імпорті файлу Excel",
+      "pl-PL": "Błąd podczas importowania pliku Excel",
+      "no-NO": "Feil ved import av Excel-fil",
+      "sv-SE": "Fel vid import av Excel-fil",
+      "es-ES": "Error al importar el archivo Excel",
+      "fr-FR": "Erreur lors de l'importation du fichier Excel",
+      "it-IT": "Errore durante l'importazione del file Excel",
+      "nl-NL": "Fout bij importeren Excel-bestand",
+      "pt-BR": "Erro ao importar arquivo Excel",
+      "pt-PT": "Erro ao importar arquivo Excel",
+      "fi-FI": "Virhe tuotaessa Excel-tiedostoa"
     }
   },
   {
@@ -527,7 +1107,17 @@
       "da": "Eform-navnet er tomt",
       "de": "Der Eform-Name ist leer",
       "en-US": "Eform name is empty",
-      "uk-UA": "Ім'я ЕФорми порожнє"
+      "uk-UA": "Ім'я ЕФорми порожнє",
+      "pl-PL": "Nazwa eform jest pusta",
+      "no-NO": "Eform-navnet er tomt",
+      "sv-SE": "Eform-namnet är tomt",
+      "es-ES": "El nombre del formulario está vacío",
+      "fr-FR": "Le nom du formulaire est vide",
+      "it-IT": "Il nome del modulo è vuoto",
+      "nl-NL": "Eform-naam is leeg",
+      "pt-BR": "O nome do formulário está vazio",
+      "pt-PT": "O nome do formulário está vazio",
+      "fi-FI": "Eform-nimi on tyhjä"
     }
   },
   {
@@ -536,7 +1126,17 @@
       "da": "Varenavn er tomt",
       "de": "Der Artikelname ist leer",
       "en-US": "Item name is empty",
-      "uk-UA": "Ім'я елемента порожнє"
+      "uk-UA": "Ім'я елемента порожнє",
+      "pl-PL": "Nazwa elementu jest pusta",
+      "no-NO": "Varenavn er tomt",
+      "sv-SE": "Artikelnamnet är tomt",
+      "es-ES": "El nombre del elemento está vacío",
+      "fr-FR": "Le nom de l'élément est vide",
+      "it-IT": "Il nome dell'elemento è vuoto",
+      "nl-NL": "Itemnaam is leeg",
+      "pt-BR": "O nome do item está vazio",
+      "pt-PT": "O nome do item está vazio",
+      "fi-FI": "Tuotteen nimi on tyhjä"
     }
   },
   {
@@ -545,7 +1145,17 @@
       "da": "Mappen blev ikke fundet",
       "de": "Ordner nicht gefunden",
       "en-US": "Folder not found",
-      "uk-UA": "Папка не знайдена"
+      "uk-UA": "Папка не знайдена",
+      "pl-PL": "Folder nie został znaleziony",
+      "no-NO": "Mappen ble ikke funnet",
+      "sv-SE": "Mappen hittades inte",
+      "es-ES": "Carpeta no encontrada",
+      "fr-FR": "Dossier introuvable",
+      "it-IT": "Cartella non trovata",
+      "nl-NL": "Map niet gevonden",
+      "pt-BR": "Pasta não encontrada",
+      "pt-PT": "Pasta não encontrada",
+      "fi-FI": "Kansiota ei löytynyt"
     }
   },
   {
@@ -554,7 +1164,17 @@
       "da": "Eform ikke fundet",
       "de": "Eform nicht gefunden",
       "en-US": "Eform not found",
-      "uk-UA": "ЕФорма не знайдена"
+      "uk-UA": "ЕФорма не знайдена",
+      "pl-PL": "Eform nie został znaleziony",
+      "no-NO": "Eform ikke funnet",
+      "sv-SE": "Eform hittades inte",
+      "es-ES": "Formulario no encontrado",
+      "fr-FR": "Formulaire introuvable",
+      "it-IT": "Modulo non trovato",
+      "nl-NL": "Eform niet gevonden",
+      "pt-BR": "Formulário não encontrado",
+      "pt-PT": "Formulário não encontrado",
+      "fi-FI": "Eformia ei löytynyt"
     }
   },
   {
@@ -563,7 +1183,17 @@
       "da": "Planlægning med navnet {0} findes allerede",
       "de": "Planung mit dem Namen {0} existiert bereits",
       "en-US": "Planning with name {0} already exists",
-      "uk-UA": "Планування з ім'ям {0} вже існує"
+      "uk-UA": "Планування з ім'ям {0} вже існує",
+      "pl-PL": "Planowanie o nazwie {0} już istnieje",
+      "no-NO": "Planlegging med navn {0} finnes allerede",
+      "sv-SE": "Planering med namn {0} finns redan",
+      "es-ES": "Planificación con nombre {0} ya existe",
+      "fr-FR": "Planification avec le nom {0} existe déjà",
+      "it-IT": "Pianificazione con nome {0} esiste già",
+      "nl-NL": "Planning met naam {0} bestaat al",
+      "pt-BR": "Planejamento com nome {0} já existe",
+      "pt-PT": "Planejamento com nome {0} já existe",
+      "fi-FI": "Suunnittelu nimellä {0} on jo olemassa"
     }
   },
   {
@@ -572,7 +1202,17 @@
       "da": "Locale findes ikke",
       "de": "Gebietsschema existiert nicht",
       "en-US": "Locale does not exist",
-      "uk-UA": "Така локаль не існує"
+      "uk-UA": "Така локаль не існує",
+      "pl-PL": "Lokalizacja nie istnieje",
+      "no-NO": "Locale finnes ikke",
+      "sv-SE": "Locale finns inte",
+      "es-ES": "Localización no existe",
+      "fr-FR": "Localisation introuvable",
+      "it-IT": "Localizzazione non esiste",
+      "nl-NL": "Locale bestaat niet",
+      "pt-BR": "Localização não existe",
+      "pt-PT": "Localização não existe",
+      "fi-FI": "Lokaatiota ei ole olemassa"
     }
   },
   {
@@ -581,7 +1221,17 @@
       "da": "Tabel",
       "de": "Tabelle",
       "en-US": "Table",
-      "uk-UA": "Таблиця"
+      "uk-UA": "Таблиця",
+      "pl-PL": "Tabela",
+      "no-NO": "Tabell",
+      "sv-SE": "Tabell",
+      "es-ES": "Tabla",
+      "fr-FR": "Table",
+      "it-IT": "Tabella",
+      "nl-NL": "Tabel",
+      "pt-BR": "Tabela",
+      "pt-PT": "Tabela",
+      "fi-FI": "Taulukko"
     }
   },
   {
@@ -590,7 +1240,17 @@
       "da": "Position",
       "de": "Position",
       "en-US": "Position",
-      "uk-UA": "Позиція"
+      "uk-UA": "Позиція",
+      "pl-PL": "Pozycja",
+      "no-NO": "Posisjon",
+      "sv-SE": "Position",
+      "es-ES": "Posición",
+      "fr-FR": "Position",
+      "it-IT": "Posizione",
+      "nl-NL": "Positie",
+      "pt-BR": "Posição",
+      "pt-PT": "Posição",
+      "fi-FI": "Sijainti"
     }
   },
   {
@@ -599,7 +1259,17 @@
       "da": "Info om mappen er null",
       "de": "Informationen zum Ordner sind null",
       "en-US": "Info about folder is null",
-      "uk-UA": "Інформація про папку порожня"
+      "uk-UA": "Інформація про папку порожня",
+      "pl-PL": "Informacje o folderze są puste",
+      "no-NO": "Info om mappe er null",
+      "sv-SE": "Info om mapp är null",
+      "es-ES": "Información sobre la carpeta es nula",
+      "fr-FR": "Informations sur le dossier est nul",
+      "it-IT": "Info sulla cartella è nulla",
+      "nl-NL": "Info over map is null",
+      "pt-BR": "Informações sobre a pasta é nula",
+      "pt-PT": "Informações sobre a pasta é nula",
+      "fi-FI": "Info-kansio on null"
     }
   },
   {
@@ -608,7 +1278,17 @@
       "da": "Info om eForm er null",
       "de": "Informationen zu eForm sind null",
       "en-US": "Info about eForm is null",
-      "uk-UA": "Інформація про Еформу порожня"
+      "uk-UA": "Інформація про Еформу порожня",
+      "pl-PL": "Informacje o eformie są puste",
+      "no-NO": "Info om eForm er null",
+      "sv-SE": "Info om eForm är null",
+      "es-ES": "Información sobre eForm es nula",
+      "fr-FR": "Informations sur eForm est nul",
+      "it-IT": "Info su eForm è nulla",
+      "nl-NL": "Info over eForm is null",
+      "pt-BR": "Informações sobre eForm é nula",
+      "pt-PT": "Informações sobre eForm é nula",
+      "fi-FI": "Info-eForm on null"
     }
   },
   {
@@ -617,7 +1297,17 @@
       "da": "Sagen blev ikke fundet",
       "de": "Fall nicht gefunden",
       "en-US": "Case not found",
-      "uk-UA": "Кейс не знайдено"
+      "uk-UA": "Кейс не знайдено",
+      "pl-PL": "Sprawa nie została znaleziona",
+      "no-NO": "Saken ble ikke funnet",
+      "sv-SE": "Ärendet hittades inte",
+      "es-ES": "Caso no encontrado",
+      "fr-FR": "Cas non trouvé",
+      "it-IT": "Caso non trovato",
+      "nl-NL": "Zaak niet gevonden",
+      "pt-BR": "Caso não encontrado",
+      "pt-PT": "Caso não encontrado",
+      "fi-FI": "Tapaus ei löytynyt"
     }
   },
   {
@@ -626,7 +1316,17 @@
       "da": "Sagen blev slettet",
       "de": "Fall erfolgreich löschen",
       "en-US": "Case delete successfully",
-      "uk-UA": "Кейс успішно видалений"
+      "uk-UA": "Кейс успішно видалений",
+      "pl-PL": "Sprawa została pomyślnie usunięta",
+      "no-NO": "Saken ble slettet",
+      "sv-SE": "Ärendet har tagits bort",
+      "es-ES": "Caso eliminado correctamente",
+      "fr-FR": "Cas supprimé avec succès",
+      "it-IT": "Caso eliminato correttamente",
+      "nl-NL": "Zaak succesvol verwijderd",
+      "pt-BR": "Caso excluído com sucesso",
+      "pt-PT": "Caso excluído com sucesso",
+      "fi-FI": "Tapaus poistettiin onnistuneesti"
     }
   },
   {
@@ -635,7 +1335,17 @@
       "da": "Fejl under sletning af sag",
       "de": "Fehler beim Löschen des Falls",
       "en-US": "Error while delete case",
-      "uk-UA": "помилка при видаленні кейса"
+      "uk-UA": "помилка при видаленні кейса",
+      "pl-PL": "Błąd podczas usuwania sprawy",
+      "no-NO": "Feil under sletting av sak",
+      "sv-SE": "Fel vid borttagning av ärende",
+      "es-ES": "Error al eliminar caso",
+      "fr-FR": "Erreur lors de la suppression du cas",
+      "it-IT": "Errore durante l'eliminazione del caso",
+      "nl-NL": "Fout bij verwijderen zaak",
+      "pt-BR": "Erro ao excluir caso",
+      "pt-PT": "Erro ao excluir caso",
+      "fi-FI": "Virhe poistettaessa tapausta"
     }
   }
 ]
