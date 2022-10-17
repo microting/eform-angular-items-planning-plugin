@@ -317,7 +317,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 }
 
                 await planning.Create(_dbContext);
-                var languages = await _dbContext.Languages.ToListAsync();
+                var languages = await sdkDbContext.Languages.Where(x => x.IsActive == true).ToListAsync();
                 foreach (var translation in model.TranslationsName)
                 {
                     var languageId = languages.Where(x => x.Name == translation.Language || x.LanguageCode == translation.LocaleName)
