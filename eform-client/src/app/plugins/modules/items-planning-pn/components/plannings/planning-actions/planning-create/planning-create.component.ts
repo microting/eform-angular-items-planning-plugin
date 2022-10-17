@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs';
 import { PlanningFoldersModalComponent } from '../../planning-additions';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { AuthStateService } from 'src/app/common/store';
-import { applicationLanguages } from 'src/app/common/const';
+import {applicationLanguages, applicationLanguagesTranslated} from 'src/app/common/const';
 import { composeFolderName } from 'src/app/common/helpers';
 import {
   SitesService,
@@ -97,7 +97,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   }
 
   initTranslations() {
-    for (const language of applicationLanguages) {
+    for (const language of applicationLanguagesTranslated) {
       this.translationsArray.push(
         new FormGroup({
           id: new FormControl(language.id),
