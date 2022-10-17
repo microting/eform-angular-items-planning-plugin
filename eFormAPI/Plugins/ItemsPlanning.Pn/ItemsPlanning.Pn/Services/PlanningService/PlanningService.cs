@@ -116,9 +116,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     return new OperationDataResult<Paged<PlanningPnModel>>(false,
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
-                var language = sdkDbContext.Languages.Single(x => x.LanguageCode == localeString);
-                var languageIemPlanning = _dbContext.Languages.Single(x => x.Id == language.Id);
-                var planningQueryWithSelect = AddSelectToPlanningQuery(planningsQuery, languageIemPlanning);
+                var language = sdkDbContext.Languages.First(x => x.LanguageCode == localeString);
+                var planningQueryWithSelect = AddSelectToPlanningQuery(planningsQuery, language);
 
 
                 if (pnRequestModel.Sort == "TranslatedName")
