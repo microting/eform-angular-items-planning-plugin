@@ -188,16 +188,9 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         // first pass
                         if (result.Count <= 0)
                         {
-                            if (checkList.ReportH1 != null)
-                            {
-                                reportModel.TextHeaders.Header1 = checkList.ReportH1;
-                            }
-                            else
-                            {
-                                reportModel.TextHeaders.Header1 = checkListTranslation;
-                                // reportModel.TableName = null;
-                                // reportModel.TemplateName = null;
-                            }
+                            reportModel.TextHeaders.Header1 = !string.IsNullOrEmpty(checkList.ReportH1) ? checkList.ReportH1 : checkListTranslation;
+                            // reportModel.TableName = null;
+                            // reportModel.TemplateName = null;
                             reportModel.TextHeaders.Header2 = checkList.ReportH2;
                             reportModel.TextHeaders.Header3 = checkList.ReportH3;
                             reportModel.TextHeaders.Header4 = checkList.ReportH4;
@@ -215,7 +208,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
 
                             if (header1 == null || checkList.ReportH1 != header1)
                             {
-                                reportModel.TextHeaders.Header1 = checkList.ReportH1 ?? "";
+                                reportModel.TextHeaders.Header1 = checkList.ReportH1 ?? checkListTranslation;
                             }
 
                             if (header2 == null || checkList.ReportH2 != header2)

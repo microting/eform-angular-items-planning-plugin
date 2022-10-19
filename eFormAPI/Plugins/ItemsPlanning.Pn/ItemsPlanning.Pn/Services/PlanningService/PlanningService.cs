@@ -116,9 +116,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     return new OperationDataResult<Paged<PlanningPnModel>>(false,
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
-                var language = sdkDbContext.Languages.Single(x => x.LanguageCode == localeString);
-                var languageIemPlanning = _dbContext.Languages.Single(x => x.Id == language.Id);
-                var planningQueryWithSelect = AddSelectToPlanningQuery(planningsQuery, languageIemPlanning);
+                var language = sdkDbContext.Languages.First(x => x.LanguageCode == localeString);
+                var planningQueryWithSelect = AddSelectToPlanningQuery(planningsQuery, language);
 
 
                 if (pnRequestModel.Sort == "TranslatedName")
@@ -318,7 +317,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 }
 
                 await planning.Create(_dbContext);
-                var languages = await _dbContext.Languages.ToListAsync();
+                var languages = await sdkDbContext.Languages.Where(x => x.IsActive == true).ToListAsync();
                 foreach (var translation in model.TranslationsName)
                 {
                     var languageId = languages.Where(x => x.Name == translation.Language || x.LanguageCode == translation.LocaleName)
