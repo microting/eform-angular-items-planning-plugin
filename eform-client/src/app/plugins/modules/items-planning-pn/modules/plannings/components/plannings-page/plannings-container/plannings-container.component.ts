@@ -7,7 +7,7 @@ import {
 import { ItemsPlanningPnClaims } from '../../../../../enums';
 import { debounceTime } from 'rxjs/operators';
 import { Subject, Subscription } from 'rxjs';
-import { PlanningTagsComponent } from '../../planning-additions';
+import {PlanningsBulkImportModalComponent, PlanningTagsComponent} from '../../planning-additions';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import {
   CommonDictionaryModel,
@@ -36,7 +36,6 @@ import {Overlay} from '@angular/cdk/overlay';
 export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('modalCasesColumns', { static: false }) modalCasesColumnsModal;
   @ViewChild('assignSitesModal', { static: false }) assignSitesModal;
-  @ViewChild('modalPlanningsImport', { static: false }) modalPlanningsImport;
   @ViewChild('planningTagsModal') planningTagsModal: PlanningTagsComponent;
 
   descriptionSearchSubject = new Subject();
@@ -55,6 +54,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterView
   deleteMultiplePlanningsSub$: Subscription;
   deletePlanningSub$: Subscription;
   tagsChangedSub$: Subscription;
+  importFinishedSub$: Subscription;
 
   constructor(
     private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
@@ -234,7 +234,8 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterView
   }
 
   openPlanningsImportModal() {
-    this.modalPlanningsImport.show();
+    const importPlanningModal = this.dialog.open(PlanningsBulkImportModalComponent, dialogConfigHelper(this.overlay));
+    this.importFinishedSub$ = importPlanningModal.componentInstance.importFinished.subscribe(_ => this.getAllInitialData());
   }
 
   resetAllPlanningsCheckboxes() {

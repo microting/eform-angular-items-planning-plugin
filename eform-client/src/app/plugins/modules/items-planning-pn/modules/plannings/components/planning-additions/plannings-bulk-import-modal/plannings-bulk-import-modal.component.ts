@@ -1,9 +1,12 @@
-import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild,} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnInit, ViewChild,} from '@angular/core';
 import {FileUploader} from 'ng2-file-upload';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
 import {LoaderService} from 'src/app/common/services/loader.service';
 import {AuthStateService} from 'src/app/common/store';
+import {MatDialogRef} from '@angular/material/dialog';
+import {MtxGridColumn} from '@ng-matero/extensions/grid';
+import {OperationDataResult} from 'src/app/common/models';
 
 @Component({
   selector: 'app-plannings-bulk-import-modal',
@@ -11,27 +14,36 @@ import {AuthStateService} from 'src/app/common/store';
   styleUrls: ['./plannings-bulk-import-modal.component.scss'],
 })
 export class PlanningsBulkImportModalComponent implements OnInit {
-  @ViewChild('frame', { static: true }) frame;
   @ViewChild('xlsxPlannings', { static: false }) xlsxPlannings: ElementRef;
-  @Output() importFinished = new EventEmitter<void>();
+  importFinished: EventEmitter<void> = new EventEmitter<void>();
   xlsxPlanningsFileUploader: FileUploader = new FileUploader({
     url: '/api/items-planning-pn/plannings/import',
     authToken: this.authStateService.bearerToken,
   });
-  errors: { row: number; col: number; message: string }[];
+  errors: { row: number; col: number; message: string }[] = [];
+
+  tableHeaders: MtxGridColumn[] = [
+    {header: this.translateService.stream('Column'), field: 'col'},
+    {header: this.translateService.stream('Row'), field: 'row'},
+    {header: this.translateService.stream('Error'), field: 'message'},
+  ];
 
   constructor(
     private toastrService: ToastrService,
     private translateService: TranslateService,
-    private loaderService: LoaderService,
-    private authStateService: AuthStateService
-  ) {}
+    public loaderService: LoaderService,
+    private authStateService: AuthStateService,
+    public dialogRef: MatDialogRef<PlanningsBulkImportModalComponent>,
+  ) {
+
+    this.xlsxPlanningsFileUploader.clearQueue();
+  }
 
   ngOnInit() {
     this.xlsxPlanningsFileUploader.onSuccessItem = (item, response) => {
-      const model = JSON.parse(response).model;
+      const model = JSON.parse(response).model as OperationDataResult<{errors: []}>
       if (model) {
-        this.errors = JSON.parse(response).model.errors;
+        this.errors = model.model.errors;
         this.xlsxPlanningsFileUploader.clearQueue();
       }
       if (this.errors && this.errors.length > 0) {
@@ -64,18 +76,13 @@ export class PlanningsBulkImportModalComponent implements OnInit {
     };
   }
 
-  show() {
-    this.xlsxPlanningsFileUploader.clearQueue();
-    this.frame.show();
-  }
-
   uploadExcelPlanningsFile() {
     this.xlsxPlanningsFileUploader.queue[0].upload();
     this.loaderService.isLoading.next(true);
   }
 
   excelPlanningsModal() {
-    this.frame.hide();
+    this.dialogRef.close();
     this.xlsxPlanningsFileUploader.clearQueue();
   }
 }
