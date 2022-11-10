@@ -16,10 +16,15 @@ import {
   PaginationModel,
   SiteNameDto,
 } from 'src/app/common/models';
+import {
+  PlanningDeleteComponent,
+} from '../../../components';
 import { FoldersService, SitesService } from 'src/app/common/services';
-import { composeFolderName } from 'src/app/common/helpers';
+import {composeFolderName, dialogConfigHelper} from 'src/app/common/helpers';
 import { PlanningsStateService } from '../../store';
 import { AuthStateService } from 'src/app/common/store';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {Overlay} from '@angular/cdk/overlay';
 
 @AutoUnsubscribe()
 @Component({
@@ -28,7 +33,6 @@ import { AuthStateService } from 'src/app/common/store';
   styleUrls: ['./plannings-container.component.scss'],
 })
 export class PlanningsContainerComponent implements OnInit, OnDestroy {
-  @ViewChild('deletePlanningModal', { static: false }) deletePlanningModal;
   @ViewChild('deleteMultiplePlanningsModal', { static: false })
   deleteMultiplePlanningsModal;
   @ViewChild('modalCasesColumns', { static: false }) modalCasesColumnsModal;
@@ -49,6 +53,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   getAllSites$: Subscription;
   deletePlanningsSub$: Subscription;
   selectedPlanningsCheckboxes = new Array<{planningId: number;}>();
+  deletePlanningSub$: Subscription;
 
   constructor(
     private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
@@ -56,7 +61,9 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
     private foldersService: FoldersService,
     private sitesService: SitesService,
     public planningsStateService: PlanningsStateService,
-    public authStateService: AuthStateService
+    public authStateService: AuthStateService,
+    public dialog: MatDialog,
+    private overlay: Overlay,
   ) {
     this.nameSearchSubject.pipe(debounceTime(500)).subscribe((val) => {
       this.planningsStateService.updateNameFilter(val.toString());
@@ -157,7 +164,8 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   }
 
   showDeletePlanningModal(planning: PlanningModel) {
-    this.deletePlanningModal.show(planning);
+    const planningDeleteModal = this.dialog.open(PlanningDeleteComponent, dialogConfigHelper(this.overlay, planning));
+    this.deletePlanningSub$ = planningDeleteModal.componentInstance.planningDeleted.subscribe(_ => this.planningDeleted());
   }
 
   openEditColumnsModal(planning: PlanningModel) {

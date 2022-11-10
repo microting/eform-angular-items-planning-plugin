@@ -40,6 +40,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MtxSelectModule} from '@ng-matero/extensions/select';
 import {MatInputModule} from '@angular/material/input';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -58,31 +59,32 @@ import {MatChipsModule} from '@angular/material/chips';
     UploadedDataDeleteComponent,
     UploadedDataPdfComponent,
   ],
-  imports: [
-    CommonModule,
-    TranslateModule,
-    RouterModule,
-    OwlDateTimeModule,
-    PlanningsRouting,
-    OwlMomentDateTimeModule,
-    EformSharedModule,
-    FontAwesomeModule,
-    MtxGridModule,
-    MDBBootstrapModule,
-    FormsModule,
-    NgSelectModule,
-    ReactiveFormsModule,
-    FileUploadModule,
-    EformCasesModule,
-    EformSharedTagsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatFormFieldModule,
-    MtxSelectModule,
-    MatInputModule,
-    MatChipsModule,
-  ],
+    imports: [
+        CommonModule,
+        TranslateModule,
+        RouterModule,
+        OwlDateTimeModule,
+        PlanningsRouting,
+        OwlMomentDateTimeModule,
+        EformSharedModule,
+        FontAwesomeModule,
+        MtxGridModule,
+        MDBBootstrapModule,
+        FormsModule,
+        NgSelectModule,
+        ReactiveFormsModule,
+        FileUploadModule,
+        EformCasesModule,
+        EformSharedTagsModule,
+        MatButtonModule,
+        MatIconModule,
+        MatTooltipModule,
+        MatFormFieldModule,
+        MtxSelectModule,
+        MatInputModule,
+        MatChipsModule,
+        MatDialogModule,
+    ],
   providers: [planningsPersistProvider],
 })
 export class PlanningsModule {
