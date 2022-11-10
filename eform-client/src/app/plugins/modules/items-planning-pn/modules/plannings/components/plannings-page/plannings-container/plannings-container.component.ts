@@ -17,6 +17,7 @@ import {
   SiteNameDto,
 } from 'src/app/common/models';
 import {
+  PlanningAssignSitesModalComponent,
   PlanningDeleteComponent,
   PlanningMultipleDeleteComponent
 } from '../../../components';
@@ -35,7 +36,6 @@ import {Overlay} from '@angular/cdk/overlay';
 })
 export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('modalCasesColumns', { static: false }) modalCasesColumnsModal;
-  @ViewChild('assignSitesModal', { static: false }) assignSitesModal;
   @ViewChild('planningTagsModal') planningTagsModal: PlanningTagsComponent;
 
   descriptionSearchSubject = new Subject();
@@ -188,7 +188,9 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterView
   }
 
   openAssignmentModal(planning: PlanningModel) {
-    this.assignSitesModal.show(planning);
+    const planningAssignSitesModal = this.dialog.open(PlanningAssignSitesModalComponent,
+      {...dialogConfigHelper(this.overlay, {sitesDto: this.sitesDto,selectedPlanning: planning}), minWidth: 500});
+    this.deletePlanningSub$ = planningAssignSitesModal.componentInstance.sitesAssigned.subscribe(_ => this.getPlannings());
   }
 
   onDescriptionFilterChanged(description: string) {

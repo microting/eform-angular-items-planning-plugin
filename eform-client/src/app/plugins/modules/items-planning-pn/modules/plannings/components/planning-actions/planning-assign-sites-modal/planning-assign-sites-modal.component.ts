@@ -1,16 +1,13 @@
 import {
   Component,
   EventEmitter,
-  Input,
+  Inject,
   OnDestroy,
   OnInit,
-  Output,
-  ViewChild,
 } from '@angular/core';
 import { SiteNameDto } from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import {
-  PlanningAssignmentSiteModel,
   PlanningAssignSitesModel,
   PlanningModel,
 } from '../../../../../models';
@@ -20,6 +17,9 @@ import {
 } from '../../../../../services';
 import { Subscription } from 'rxjs';
 import { AuthStateService } from 'src/app/common/store';
+import {MtxGridColumn} from '@ng-matero/extensions/grid';
+import {TranslateService} from '@ngx-translate/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @AutoUnsubscribe()
 @Component({
@@ -28,15 +28,18 @@ import { AuthStateService } from 'src/app/common/store';
   styleUrls: ['./planning-assign-sites-modal.component.scss'],
 })
 export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
-  @Input() sitesDto: Array<SiteNameDto> = [];
-  @ViewChild('frame', { static: true }) frame;
-  @Output() sitesAssigned: EventEmitter<void> = new EventEmitter<void>();
+  sitesAssigned: EventEmitter<void> = new EventEmitter<void>();
   assignModel: PlanningAssignSitesModel = new PlanningAssignSitesModel();
-  assignViewModel: PlanningAssignSitesModel = new PlanningAssignSitesModel();
   selectedPlanning: PlanningModel = new PlanningModel();
+  rowSelected: SiteNameDto[] = [];
+  sitesDto: SiteNameDto[] = [];
+  tableHeaders: MtxGridColumn[] = [
+    { header: this.translateService.stream('Microting ID'), field: 'siteUId', },
+    { header: this.translateService.stream('Device user'), field: 'siteName', },
+  ];
+
   pairSingle$: Subscription;
   // getAllSites$: Subscription;
-  matchFound = false;
 
   get userClaims() {
     return this.authStateService.currentUserClaims;
@@ -47,69 +50,36 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
     // private sitesService: SitesService,
     private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
     private itemsPlanningPnPairingService: ItemsPlanningPnPairingService,
-    private authStateService: AuthStateService
-  ) {}
+    private authStateService: AuthStateService,
+    public translateService: TranslateService,
+    public dialogRef: MatDialogRef<PlanningAssignSitesModalComponent>,
+    @Inject(MAT_DIALOG_DATA) model: {sitesDto: SiteNameDto[], selectedPlanning: PlanningModel}
+  ) {
+    this.sitesDto = model.sitesDto;
+    this.selectedPlanning = model.selectedPlanning;
+  }
 
-  ngOnInit() {}
-
-  show(planningModel: PlanningModel) {
-    this.selectedPlanning = planningModel;
+  ngOnInit() {
     this.assignModel = new PlanningAssignSitesModel();
-    this.fillCheckboxes();
-    this.frame.show();
-  }
-
-  addToArray(e: any, assignmentId: number) {
-    const assignmentObject = new PlanningAssignmentSiteModel();
-    assignmentObject.siteId = assignmentId;
-    if (e.target.checked) {
-      assignmentObject.isChecked = true;
-      this.assignModel.assignments.push(assignmentObject);
-    } else {
-      this.assignModel.assignments = this.assignModel.assignments.filter(
-        (x) => x.siteId !== assignmentId
-      );
-    }
-  }
-
-  fillCheckboxes() {
-    this.assignViewModel = new PlanningAssignSitesModel();
-    for (const siteDto of this.sitesDto) {
-      const deployObject = new PlanningAssignmentSiteModel();
-      for (const assignedSite of this.selectedPlanning.assignedSites) {
-        if (assignedSite.siteId === siteDto.id) {
-          this.matchFound = true;
-          deployObject.siteId = siteDto.id;
-          deployObject.isChecked = true;
-          this.assignModel.assignments.push(deployObject);
-        }
-      }
-      this.assignViewModel.planningId = this.selectedPlanning.id;
-      deployObject.siteId = siteDto.id;
-      deployObject.isChecked = this.matchFound === true;
-      this.matchFound = false;
-      this.assignViewModel.assignments = [
-        ...this.assignViewModel.assignments,
-        deployObject,
-      ];
-    }
+    this.rowSelected = this.sitesDto.filter(siteDto => this.selectedPlanning.assignedSites.some(x => x.siteId === siteDto.id));
   }
 
   submitAssignment() {
+    this.assignModel.assignments = this.rowSelected.map(x => ({siteId: x.id, isChecked: true}));
     this.assignModel.planningId = this.selectedPlanning.id;
     this.pairSingle$ = this.itemsPlanningPnPairingService
       .pairSingle(this.assignModel)
       .subscribe((operation) => {
         if (operation && operation.success) {
           this.assignModel = new PlanningAssignSitesModel();
-          this.frame.hide();
+          this.hide();
           this.sitesAssigned.emit();
         }
       });
   }
 
   hide() {
-    this.frame.hide();
+    this.dialogRef.close();
   }
 
   ngOnDestroy(): void {}

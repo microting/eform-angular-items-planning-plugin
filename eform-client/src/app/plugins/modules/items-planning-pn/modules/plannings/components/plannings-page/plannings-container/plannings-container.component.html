@@ -61,11 +61,6 @@
   (paginationChanged)="onPaginationChanged($event)"
 ></app-plannings-table>
 
-<app-planning-assign-sites-modal
-  [sitesDto]="sitesDto"
-  (sitesAssigned)="getPlannings()"
-  #assignSitesModal
-></app-planning-assign-sites-modal>
 <app-planning-tags
   #planningTagsModal
   [availableTags]="availableTags"
