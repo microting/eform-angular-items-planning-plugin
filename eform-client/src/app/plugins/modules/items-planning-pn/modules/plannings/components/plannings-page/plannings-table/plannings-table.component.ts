@@ -13,7 +13,7 @@ import { AuthStateService } from 'src/app/common/store';
 import {Sort} from '@angular/material/sort';
 import {MtxGridColumn} from '@ng-matero/extensions/grid';
 import {TranslateService} from '@ngx-translate/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-plannings-table',
@@ -114,7 +114,7 @@ export class PlanningsTableComponent implements OnInit {
           tooltip: this.translateService.stream('Edit Planning'),
           iif: (rowData: PlanningModel) =>
             this.authStateService.checkClaim(ItemsPlanningPnClaims.editPlanning) && rowData.isLocked || !rowData.isEditable,
-          click: (rowData: PlanningModel) => this.router.navigate(['./edit/' + rowData.id]),
+          click: (rowData: PlanningModel) => this.router.navigate(['./edit/' + rowData.id], {relativeTo: this.route}),
         },
         {
           color: 'warn',
@@ -140,7 +140,8 @@ export class PlanningsTableComponent implements OnInit {
     public planningsStateService: PlanningsStateService,
     public authStateService: AuthStateService,
     private translateService: TranslateService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {}

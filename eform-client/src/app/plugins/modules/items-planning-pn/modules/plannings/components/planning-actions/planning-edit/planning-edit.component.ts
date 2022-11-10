@@ -17,18 +17,18 @@ import {
   EventEmitter,
   OnDestroy,
   OnInit,
-  Output,
-  ViewChild,
 } from '@angular/core';
 import { Location } from '@angular/common';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { debounceTime, switchMap, take } from 'rxjs/operators';
 import { PlanningModel, PlanningUpdateModel } from '../../../../../models';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { composeFolderName } from 'src/app/common/helpers';
+import {composeFolderName, dialogConfigHelper} from 'src/app/common/helpers';
 import { format, set } from 'date-fns';
 import {PlanningFoldersModalComponent} from '../../';
+import {MatDialog} from '@angular/material/dialog';
+import {Overlay} from '@angular/cdk/overlay';
 
 @AutoUnsubscribe()
 @Component({
@@ -37,11 +37,7 @@ import {PlanningFoldersModalComponent} from '../../';
   styleUrls: ['./planning-edit.component.scss'],
 })
 export class PlanningEditComponent implements OnInit, OnDestroy {
-  @ViewChild('frame', { static: false }) frame;
-  @ViewChild('unitImportModal', { static: false }) importUnitModal;
-  @ViewChild('foldersModal', { static: false })
   foldersModal: PlanningFoldersModalComponent;
-  @Output() planningUpdated: EventEmitter<void> = new EventEmitter<void>();
   selectedPlanningModel: PlanningModel = new PlanningModel();
   templateRequestModel: TemplateRequestModel = new TemplateRequestModel();
   templatesModel: TemplateListModel = new TemplateListModel();
@@ -58,6 +54,7 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
   getFoldersTreeSub$: Subscription;
   getFoldersListSub$: Subscription;
   activatedRouteSub$: Subscription;
+  folderSelectedSub$: Subscription;
 
   selectedFolderName: string;
   daysBeforeRedeploymentPushMessage = Array(28)
@@ -71,7 +68,9 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
     private cd: ChangeDetectorRef,
     private tagsService: ItemsPlanningPnTagsService,
     private eFormService: EFormService,
-    private location: Location
+    private location: Location,
+    public dialog: MatDialog,
+    private overlay: Overlay,
   ) {
     this.typeahead
       .pipe(
@@ -165,7 +164,6 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
       .updatePlanning(model)
       .subscribe((data) => {
         if (data && data.success) {
-          this.planningUpdated.emit();
           this.selectedPlanningModel = new PlanningModel();
           this.goBack();
         }
@@ -200,7 +198,10 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
   }
 
   openFoldersModal() {
-    this.foldersModal.show(this.selectedPlanningModel);
+    const foldersModal = this.dialog.open(PlanningFoldersModalComponent,
+      {...dialogConfigHelper(this.overlay, {folders: this.foldersTreeDto, planningModel: this.selectedPlanningModel}), hasBackdrop: true});
+    foldersModal.backdropClick().pipe(take(1)).subscribe(_ => foldersModal.close());
+    this.folderSelectedSub$ = foldersModal.componentInstance.folderSelected.subscribe(x => this.onFolderSelected(x));
   }
 
   onFolderSelected(folderDto: FolderDto) {
