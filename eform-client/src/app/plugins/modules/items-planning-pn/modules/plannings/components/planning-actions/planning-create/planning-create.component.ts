@@ -11,15 +11,15 @@ import {
   ItemsPlanningPnPlanningsService,
   ItemsPlanningPnTagsService,
 } from '../../../../../services';
-import { PlanningCreateModel } from '../../../../../models';
+import {PlanningCreateModel, PlanningModel} from '../../../../../models';
 import { Location } from '@angular/common';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { Subscription } from 'rxjs';
+import {Subscription, take} from 'rxjs';
 import { PlanningFoldersModalComponent } from '../../planning-additions';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { AuthStateService } from 'src/app/common/store';
-import {applicationLanguages, applicationLanguagesTranslated} from 'src/app/common/const';
-import { composeFolderName } from 'src/app/common/helpers';
+import { applicationLanguagesTranslated} from 'src/app/common/const';
+import {composeFolderName, dialogConfigHelper} from 'src/app/common/helpers';
 import {
   SitesService,
   EFormService,
@@ -32,6 +32,8 @@ import {
   FolderDto,
 } from 'src/app/common/models';
 import { format, set } from 'date-fns';
+import {MatDialog} from '@angular/material/dialog';
+import {Overlay} from '@angular/cdk/overlay';
 
 @AutoUnsubscribe()
 @Component({
@@ -59,6 +61,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
     .map((_e, i) => i);
 
   selectedFolderName: string;
+  folderSelectedSub$: Subscription;
 
   get userClaims() {
     return this.authStateService.currentUserClaims;
@@ -72,7 +75,9 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
     private tagsService: ItemsPlanningPnTagsService,
     private cd: ChangeDetectorRef,
     private location: Location,
-    private authStateService: AuthStateService
+    private authStateService: AuthStateService,
+    public dialog: MatDialog,
+    private overlay: Overlay,
   ) {
     this.typeahead
       .pipe(
@@ -160,7 +165,10 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   }
 
   openFoldersModal() {
-    this.foldersModal.show();
+    const foldersModal = this.dialog.open(PlanningFoldersModalComponent,
+      {...dialogConfigHelper(this.overlay, {folders: this.foldersTreeDto, planningModel: this.newPlanningModel}), hasBackdrop: true});
+    foldersModal.backdropClick().pipe(take(1)).subscribe(_ => foldersModal.close());
+    this.folderSelectedSub$ = foldersModal.componentInstance.folderSelected.subscribe(x => this.onFolderSelected(x));
   }
 
   onFolderSelected(folderDto: FolderDto) {

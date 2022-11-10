@@ -1,15 +1,14 @@
 import {
   Component,
   EventEmitter,
-  Input,
+  Inject,
   OnDestroy,
   OnInit,
-  Output,
-  ViewChild,
 } from '@angular/core';
 import { FolderDto, SiteNameDto } from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { PlanningModel } from '../../../../../models';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @AutoUnsubscribe()
 @Component({
@@ -18,25 +17,23 @@ import { PlanningModel } from '../../../../../models';
   styleUrls: ['./planning-folders-modal.component.scss'],
 })
 export class PlanningFoldersModalComponent implements OnInit, OnDestroy {
-  @ViewChild('frame', { static: true }) frame;
-  @Output()
   folderSelected: EventEmitter<FolderDto> = new EventEmitter<FolderDto>();
   selectedPlanning: PlanningModel = new PlanningModel();
   sitesDto: Array<SiteNameDto> = [];
-  @Input() folders: FolderDto[] = [];
+  folders: FolderDto[] = [];
 
-  constructor() {}
+  constructor(
+    public dialogRef: MatDialogRef<PlanningFoldersModalComponent>,
+    @Inject(MAT_DIALOG_DATA) model: {folders: FolderDto[], planningModel?: PlanningModel}) {
+    this.selectedPlanning = model.planningModel;
+    this.folders = model.folders;
+  }
 
   ngOnInit() {}
 
-  show(planningModel?: PlanningModel) {
-    this.selectedPlanning = planningModel;
-    this.frame.show();
-  }
-
   select(folder: FolderDto) {
     this.folderSelected.emit(folder);
-    this.frame.hide();
+    this.dialogRef.close();
   }
 
   ngOnDestroy(): void {}
