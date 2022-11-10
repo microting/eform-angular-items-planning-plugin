@@ -18,6 +18,7 @@ import {
 } from 'src/app/common/models';
 import {
   PlanningDeleteComponent,
+  PlanningMultipleDeleteComponent
 } from '../../../components';
 import { FoldersService, SitesService } from 'src/app/common/services';
 import {composeFolderName, dialogConfigHelper} from 'src/app/common/helpers';
@@ -33,8 +34,6 @@ import {Overlay} from '@angular/cdk/overlay';
   styleUrls: ['./plannings-container.component.scss'],
 })
 export class PlanningsContainerComponent implements OnInit, OnDestroy {
-  @ViewChild('deleteMultiplePlanningsModal', { static: false })
-  deleteMultiplePlanningsModal;
   @ViewChild('modalCasesColumns', { static: false }) modalCasesColumnsModal;
   @ViewChild('assignSitesModal', { static: false }) assignSitesModal;
   @ViewChild('modalPlanningsImport', { static: false }) modalPlanningsImport;
@@ -46,13 +45,14 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   availableTags: CommonDictionaryModel[] = [];
   foldersListDto: FolderDto[] = [];
   sitesDto: SiteNameDto[] = [];
+  selectedPlanningsCheckboxes: number[] = [];
 
   getPlanningsSub$: Subscription;
   getTagsSub$: Subscription;
   getFoldersListSub$: Subscription;
   getAllSites$: Subscription;
   deletePlanningsSub$: Subscription;
-  selectedPlanningsCheckboxes = new Array<{planningId: number;}>();
+  deleteMultiplePlanningsSub$: Subscription;
   deletePlanningSub$: Subscription;
 
   constructor(
@@ -149,15 +149,12 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
       });
   }
 
-  deleteMultiplePlannings() {
-    const planningsIds = this.selectedPlanningsCheckboxes.map((x) => {
-      return x.planningId;
-    });
+  deleteMultiplePlannings(planningMultipleDeleteModal: MatDialogRef<PlanningMultipleDeleteComponent>) {
     this.deletePlanningsSub$ = this.itemsPlanningPnPlanningsService
-      .deletePlannings(planningsIds)
+      .deletePlannings(this.selectedPlanningsCheckboxes)
       .subscribe((data) => {
         if (data && data.success) {
-          this.deleteMultiplePlanningsModal.hide();
+          planningMultipleDeleteModal.close();
           this.getPlannings();
         }
       });
@@ -237,9 +234,10 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   }
 
   showDeleteMultiplePlanningsModal() {
-    this.deleteMultiplePlanningsModal.show(
-      this.selectedPlanningsCheckboxes.length
-    );
+    const planningMultipleDeleteModal = this.dialog
+      .open(PlanningMultipleDeleteComponent, dialogConfigHelper(this.overlay, this.selectedPlanningsCheckboxes.length));
+    this.deleteMultiplePlanningsSub$ = planningMultipleDeleteModal.componentInstance.deleteMultiplePlannings
+      .subscribe(_ => this.deleteMultiplePlannings(planningMultipleDeleteModal));
   }
 
   onPageSizeChanged(newPageSize: number) {
@@ -257,7 +255,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
     this.getPlannings();
   }
 
-  selectedPlanningsChanged(model: Array<{ planningId: number }>) {
+  selectedPlanningsChanged(model: number[]) {
     this.selectedPlanningsCheckboxes = model;
   }
 

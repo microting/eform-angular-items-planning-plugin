@@ -1,30 +1,22 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, ViewChild,} from '@angular/core';
-import {PlanningModel} from '../../../../../models';
+import {Component, EventEmitter, Inject, OnInit,} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-planning-multiple-delete',
   templateUrl: './planning-multiple-delete.component.html',
   styleUrls: ['./planning-multiple-delete.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanningMultipleDeleteComponent implements OnInit {
-  @ViewChild('frame', { static: false }) frame;
-  @Output()
   deleteMultiplePlannings: EventEmitter<void> = new EventEmitter<void>();
-  planningModel: PlanningModel = new PlanningModel();
-  selectedPlanningsCount: number;
-
-  constructor() {}
+  constructor(
+    public dialogRef: MatDialogRef<PlanningMultipleDeleteComponent>,
+    @Inject(MAT_DIALOG_DATA) public selectedPlanningsCount: number,
+  ) {}
 
   ngOnInit() {}
 
-  show(selectedPlanningsCount: number) {
-    this.selectedPlanningsCount = selectedPlanningsCount;
-    this.frame.show();
-  }
-
   hide() {
-    this.frame.hide();
+    this.dialogRef.close();
   }
 
   onDeleteMultiplePlannings() {

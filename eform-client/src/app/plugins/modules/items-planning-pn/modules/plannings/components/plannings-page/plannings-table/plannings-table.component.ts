@@ -6,7 +6,7 @@ import {
   Output,
 } from '@angular/core';
 import { PlanningModel } from '../../../../../models';
-import {Paged, PaginationModel, TableHeaderElementModel} from 'src/app/common/models';
+import {Paged, PaginationModel} from 'src/app/common/models';
 import { ItemsPlanningPnClaims } from '../../../../../enums';
 import { PlanningsStateService } from '../../store';
 import { AuthStateService } from 'src/app/common/store';
@@ -22,13 +22,13 @@ import {Router} from '@angular/router';
 })
 export class PlanningsTableComponent implements OnInit {
   @Input() planningsModel: Paged<PlanningModel> = new Paged<PlanningModel>();
-  @Input() selectedColCheckboxes = new Array<{planningId: number;}>();
+  @Input() selectedColCheckboxes: number[] = [];
   @Input() allPlanningCheckbox = false;
   @Output() sortTable: EventEmitter<string> = new EventEmitter<string>();
   @Output() tagSelected: EventEmitter<number> = new EventEmitter<number>();
   @Output() openAssignmentModal: EventEmitter<PlanningModel> = new EventEmitter<PlanningModel>();
   @Output() showDeletePlanningModal: EventEmitter<PlanningModel> = new EventEmitter<PlanningModel>();
-  @Output() selectedPlanningsChanged: EventEmitter<Array<{planningId: number;}>> = new EventEmitter<Array<{planningId: number;}>>()
+  @Output() selectedPlanningsChanged: EventEmitter<number[]> = new EventEmitter<number[]>();
   @Output() paginationChanged: EventEmitter<PaginationModel> = new EventEmitter<PaginationModel>();
 
   tableHeaders: MtxGridColumn[] = [
@@ -133,7 +133,7 @@ export class PlanningsTableComponent implements OnInit {
   }
 
   get getSelectedPlannings() {
-    return this.planningsModel.entities.filter(x => this.selectedColCheckboxes.some(y => y.planningId === x.id));
+    return this.planningsModel.entities.filter(x => this.selectedColCheckboxes.some(y => y === x.id));
   }
 
   constructor(
@@ -166,7 +166,7 @@ export class PlanningsTableComponent implements OnInit {
   }
 
   updateSelectedPlannings(planningModels: PlanningModel[]) {
-    this.selectedColCheckboxes = planningModels.map(x => ({planningId: x.id}));
+    this.selectedColCheckboxes = planningModels.map(x => x.id);
     this.selectedPlanningsChanged.emit(this.selectedColCheckboxes);
   }
 }

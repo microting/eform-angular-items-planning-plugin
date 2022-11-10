@@ -7,7 +7,6 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  ViewChild,
 } from '@angular/core';
 import {
   SharedTagCreateComponent,
@@ -45,7 +44,7 @@ export class PlanningTagsComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private tagsService: ItemsPlanningPnTagsService,
     public dialog: MatDialog,
-    private overlay: Overlay
+    private overlay: Overlay,
   ) {}
 
   ngOnInit() {}
