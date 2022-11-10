@@ -69,7 +69,6 @@
 <app-planning-tags
   #planningTagsModal
   [availableTags]="availableTags"
-  (tagsChanged)="getTags(); getPlannings()"
 ></app-planning-tags>
 <app-plannings-bulk-import-modal
   (importFinished)="getAllInitialData()"

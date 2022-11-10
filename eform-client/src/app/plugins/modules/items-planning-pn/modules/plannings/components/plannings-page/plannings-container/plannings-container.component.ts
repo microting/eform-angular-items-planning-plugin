@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { PlanningModel } from '../../../../../models';
 import {
   ItemsPlanningPnPlanningsService,
@@ -33,7 +33,7 @@ import {Overlay} from '@angular/cdk/overlay';
   templateUrl: './plannings-container.component.html',
   styleUrls: ['./plannings-container.component.scss'],
 })
-export class PlanningsContainerComponent implements OnInit, OnDestroy {
+export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('modalCasesColumns', { static: false }) modalCasesColumnsModal;
   @ViewChild('assignSitesModal', { static: false }) assignSitesModal;
   @ViewChild('modalPlanningsImport', { static: false }) modalPlanningsImport;
@@ -54,6 +54,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
   deletePlanningsSub$: Subscription;
   deleteMultiplePlanningsSub$: Subscription;
   deletePlanningSub$: Subscription;
+  tagsChangedSub$: Subscription;
 
   constructor(
     private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
@@ -81,6 +82,13 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getAllInitialData();
+  }
+
+  ngAfterViewInit() {
+    this.tagsChangedSub$ = this.planningTagsModal.tagsChanged.subscribe(() => {
+      this.getTags();
+      this.getPlannings();
+    })
   }
 
   getAllInitialData() {
