@@ -1,0 +1,29 @@
+<h3 mat-dialog-title>{{'Assign Sites' | translate}}</h3>
+<div mat-dialog-content class="d-flex flex-column">
+  <mtx-grid
+    class="mt-2"
+    [data]="sitesDto"
+    [columns]="tableHeaders"
+    [showPaginator]="false"
+    [multiSelectable]="true"
+    [rowSelectable]="true"
+    [rowSelected]="rowSelected"
+    (rowSelectionChange)="rowSelected = $event"
+  >
+  </mtx-grid>
+</div>
+<div mat-dialog-actions class="d-flex flex-row justify-content-end">
+  <button
+    mat-raised-button
+    color="accent"
+    id="changeAssignmentsSave"
+    (click)="submitAssignment()">
+    {{'Save' | translate}}
+  </button>
+  <button
+    mat-raised-button
+    id="changeAssignmentsCancel"
+    (click)="hide()">
+    {{'Close' | translate}}
+  </button>
+</div>

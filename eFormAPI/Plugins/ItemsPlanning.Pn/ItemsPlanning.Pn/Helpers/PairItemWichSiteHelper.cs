@@ -193,6 +193,12 @@ namespace ItemsPlanning.Pn.Helpers
                 {
                     mainElement.Repeated = 0;
                 }
+
+                if (planning.RepeatEvery == -1)
+                {
+                    mainElement.Repeated = -1;
+                }
+
                 // mainElement.PushMessageBody = mainElement.Label;
                 // mainElement.PushMessageTitle = folder.Name;
                 // if (folder.ParentId != null)

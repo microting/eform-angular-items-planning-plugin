@@ -1,0 +1,54 @@
+<div class="d-flex flex-row need-wrapper">
+  <mat-form-field>
+    <mat-label>{{'Tags' | translate}}</mat-label>
+    <mtx-select
+      class="custom"
+      dropdownPosition="bottom"
+      [items]="availableTags"
+      [ngModel]="planningsStateService.getTagIds() | async"
+      (add)="saveTag($event)"
+      (remove)="removeSavedTag($event)"
+      [clearable]="false"
+      [bindLabel]="'name'"
+      [bindValue]="'id'"
+      id="tagSelector"
+      [multiple]="true"
+    ></mtx-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>{{'Device users' | translate}}</mat-label>
+    <mtx-select
+      class="custom"
+      dropdownPosition="bottom"
+      [items]="sites"
+      [ngModel]="planningsStateService.getDeviceUserIds() | async"
+      (add)="saveSite($event)"
+      (remove)="removeSavedSite($event)"
+      [clearable]="false"
+      [bindLabel]="'siteName'"
+      [bindValue]="'id'"
+      id="deviceUsersSelector"
+      [multiple]="true"
+    ></mtx-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>{{'Name' | translate}}</mat-label>
+    <input
+      matInput
+      type="text"
+      [ngModel]="planningsStateService.getNameFilter() | async"
+      (ngModelChange)="onNameFilterChanged($event)"
+      id="nameFilterInput"
+    >
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>{{'Description' | translate}}</mat-label>
+    <input
+      matInput
+      type="text"
+      [ngModel]="planningsStateService.getDescriptionFilter() | async"
+      (ngModelChange)="onDescriptionFilterChanged($event)"
+      id="descriptionFilterInput"
+    >
+  </mat-form-field>
+</div>

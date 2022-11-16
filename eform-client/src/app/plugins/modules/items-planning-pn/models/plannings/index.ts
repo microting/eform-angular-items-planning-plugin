@@ -10,3 +10,4 @@ export * from './plannings-request.model';
 export * from './planning-reiteration.model';
 export * from './planning-assign-sites.model';
 export * from './planning-results-settings.model';
+export * from './planning-cases';
