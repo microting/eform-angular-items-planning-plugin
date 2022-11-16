@@ -1,6 +1,7 @@
 <h3 mat-dialog-title>{{'Assign Sites' | translate}}</h3>
 <div mat-dialog-content class="d-flex flex-column">
   <mtx-grid
+    id="pairingModalTableBody"
     class="mt-2"
     [data]="sitesDto"
     [columns]="tableHeaders"

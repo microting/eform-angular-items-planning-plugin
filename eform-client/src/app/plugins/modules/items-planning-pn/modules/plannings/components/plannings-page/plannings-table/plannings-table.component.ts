@@ -32,13 +32,13 @@ export class PlanningsTableComponent implements OnInit {
   @Output() paginationChanged: EventEmitter<PaginationModel> = new EventEmitter<PaginationModel>();
 
   tableHeaders: MtxGridColumn[] = [
-    {header: this.translateService.stream('Id'), field: 'id', sortProp: {id: 'Id'}, sortable: true},
-    {header: this.translateService.stream('TranslatedName'), field: 'translatedName', sortProp: {id: 'TranslatedName'}, sortable: true},
-    {header: this.translateService.stream('Description'), field: 'description', sortProp: {id: 'Description'}, sortable: true},
-    {header: this.translateService.stream('SdkFolderName'), field: 'folder.eFormSdkFolderName', sortProp: {id: 'SdkFolderName'}, sortable: true},
-    {header: this.translateService.stream('RelatedEFormName'), field: 'planningRelatedEformName', sortProp: {id: 'RelatedEFormName'}, sortable: true},
-    {header: this.translateService.stream('Tags'), field: 'tags'},
-    {header: this.translateService.stream('RepeatEvery'), field: 'reiteration.repeatEvery', sortProp: {id: 'RepeatEvery'}, sortable: true},
+    {header: this.translateService.stream('Id'), field: 'id', sortProp: {id: 'Id'}, sortable: true, class: 'planningId'},
+    {header: this.translateService.stream('TranslatedName'), field: 'translatedName', sortProp: {id: 'TranslatedName'}, sortable: true, class: 'planningName'},
+    {header: this.translateService.stream('Description'), field: 'description', sortProp: {id: 'Description'}, sortable: true, class: 'planningDescription'},
+    {header: this.translateService.stream('SdkFolderName'), field: 'folder.eFormSdkFolderName', sortProp: {id: 'SdkFolderName'}, sortable: true, class: 'planningFolderName'},
+    {header: this.translateService.stream('RelatedEFormName'), field: 'planningRelatedEformName', sortProp: {id: 'RelatedEFormName'}, sortable: true, class: 'planningRelatedEformName'},
+    {header: this.translateService.stream('Tags'), field: 'tags', class: 'planningTags'},
+    {header: this.translateService.stream('RepeatEvery'), field: 'reiteration.repeatEvery', sortProp: {id: 'RepeatEvery'}, sortable: true, class: 'planningRepeatEvery'},
     {
       header: this.translateService.stream('RepeatType'),
       field: 'reiteration.repeatType',
@@ -51,7 +51,8 @@ export class PlanningsTableComponent implements OnInit {
           case 3: return this.translateService.instant('Month');
           default: return `--`;
         }
-      }
+      },
+      class: 'planningRepeatType'
     },
     {
       header: this.translateService.stream('DayOfWeek'),
@@ -69,7 +70,8 @@ export class PlanningsTableComponent implements OnInit {
           case 7: return this.translateService.instant('Sunday');
           default: return `--`;
         }
-      }
+      },
+      class: 'planningDayOfWeek'
     },
     {
       header: this.translateService.stream('LastExecutedTime'),
@@ -99,14 +101,16 @@ export class PlanningsTableComponent implements OnInit {
           icon: 'link',
           tooltip: this.translateService.stream('Click to edit pairing with user(s)'),
           click: (rowData: PlanningModel) => this.onOpenAssignmentModal(rowData),
-          iif: (rowData: PlanningModel) => rowData?.assignedSites?.length > 0
+          iif: (rowData: PlanningModel) => rowData?.assignedSites?.length > 0,
+          class: 'planningAssignmentBtn'
         },
         {
           type: 'icon',
           icon: 'link',
           tooltip: this.translateService.stream('Click to edit pairing with user(s)'),
           click: (rowData: PlanningModel) => this.onOpenAssignmentModal(rowData),
-          iif: (rowData: PlanningModel) => !(rowData?.assignedSites?.length > 0)
+          iif: (rowData: PlanningModel) => !(rowData?.assignedSites?.length > 0),
+          class: 'planningAssignmentBtn'
         },
         {
           type: 'icon',
@@ -115,6 +119,7 @@ export class PlanningsTableComponent implements OnInit {
           iif: (rowData: PlanningModel) =>
             this.authStateService.checkClaim(ItemsPlanningPnClaims.editPlanning) && rowData.isLocked || !rowData.isEditable,
           click: (rowData: PlanningModel) => this.router.navigate(['./edit/' + rowData.id], {relativeTo: this.route}),
+          class: 'updatePlanningBtn'
         },
         {
           color: 'warn',
@@ -122,7 +127,8 @@ export class PlanningsTableComponent implements OnInit {
           icon: 'delete',
           tooltip: this.translateService.stream('Delete Planning'),
           click: (rowData: PlanningModel) => this.onShowDeletePlanningModal(rowData),
-          iif: (rowData: PlanningModel) => rowData.isLocked
+          iif: (rowData: PlanningModel) => rowData.isLocked,
+          class: 'deletePlanningBtn'
         },
       ]
     },
