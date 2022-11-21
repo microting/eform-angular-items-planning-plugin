@@ -117,7 +117,7 @@ export class PlanningsTableComponent implements OnInit {
           icon: 'edit',
           tooltip: this.translateService.stream('Edit Planning'),
           iif: (rowData: PlanningModel) =>
-            this.authStateService.checkClaim(ItemsPlanningPnClaims.editPlanning) && rowData.isLocked || !rowData.isEditable,
+            this.authStateService.checkClaim(ItemsPlanningPnClaims.editPlanning) && rowData.isLocked || rowData.isEditable,
           click: (rowData: PlanningModel) => this.router.navigate(['./edit/' + rowData.id], {relativeTo: this.route}),
           class: 'updatePlanningBtn'
         },
@@ -127,7 +127,7 @@ export class PlanningsTableComponent implements OnInit {
           icon: 'delete',
           tooltip: this.translateService.stream('Delete Planning'),
           click: (rowData: PlanningModel) => this.onShowDeletePlanningModal(rowData),
-          iif: (rowData: PlanningModel) => rowData.isLocked,
+          iif: (rowData: PlanningModel) => !rowData.isLocked,
           class: 'deletePlanningBtn'
         },
       ]
