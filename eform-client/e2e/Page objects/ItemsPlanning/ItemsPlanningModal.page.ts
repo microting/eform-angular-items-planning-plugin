@@ -314,9 +314,6 @@ export class ItemsPlanningModalPage extends Page {
       }
     }
     if (planning.repeatEvery) {
-      console.log('repeatEvery');
-      //const ele = await this.createRepeatEvery();
-      //await ele.setValue(planning.repeatEvery);
       await (await $('input.createRepeatEvery')).setValue(planning.repeatEvery);
     }
     if (planning.repeatType) {

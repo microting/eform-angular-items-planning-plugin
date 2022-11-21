@@ -13,7 +13,6 @@ exports.config = {
     //
     specs: [
       'e2e/Tests/items-planning-settings/application-settings.plugins-page.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.settings.spec.ts',
       'e2e/Tests/items-planning-general/items-planning.sorting.spec.ts',
       'e2e/Tests/items-planning-general/items-planning.multiple-delete.spec.ts',
     ],

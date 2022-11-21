@@ -30,7 +30,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public async clickIdTableHeader() {
-    await (await $('#idTableHeader')).click();
+    await (await $('th.planningId')).click();
     await (await $('#spinner-animation')).waitForDisplayed({
       timeout: 90000,
       reverse: true,
@@ -38,7 +38,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public async clickNameTableHeader() {
-    await (await $('#nameTableHeader')).click();
+    await (await $('th.planningName')).click();
     await (await $('#spinner-animation')).waitForDisplayed({
       timeout: 90000,
       reverse: true,
@@ -46,7 +46,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public async clickDescriptionTableHeader() {
-    await (await $('#descriptionTableHeader')).click();
+    await (await $('th.planningDescription')).click();
     await (await $('#spinner-animation')).waitForDisplayed({
       timeout: 90000,
       reverse: true,
@@ -106,7 +106,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public async selectAllPlanningsCheckbox() {
-    const ele = await $('#selectAllPlanningsCheckbox');
+    const ele = await $('th.mat-column-MtxGridCheckboxColumnDef mat-checkbox');
     // ele.waitForDisplayed({ timeout: 40000 });
     // ele.waitForClickable({ timeout: 40000 });
     return ele;
