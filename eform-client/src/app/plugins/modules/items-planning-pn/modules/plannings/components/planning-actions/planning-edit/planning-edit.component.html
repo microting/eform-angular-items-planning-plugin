@@ -53,7 +53,8 @@
           name="editPlanningItemDescription"
         >
       </mat-form-field>
-      <mat-form-field class="pl-2 pr-2" *ngIf="foldersTreeDto.length > 0" (click)="openFoldersModal()">
+      <mat-form-field class="pl-2 pr-2" *ngIf="foldersTreeDto.length > 0" (click)="openFoldersModal()"
+      id="editFolderSelector">
         <mat-label>{{'Folders' | translate}}</mat-label>
         <input
           matInput

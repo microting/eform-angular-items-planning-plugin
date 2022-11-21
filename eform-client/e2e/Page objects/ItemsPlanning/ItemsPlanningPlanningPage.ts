@@ -272,7 +272,8 @@ export class PlanningRowObject {
     } else {
       await (await itemsPlanningModalPage.planningEditCancelBtn()).click();
     }
-    await (await itemsPlanningPlanningPage.planningId()).waitForDisplayed();
+    await browser.pause(500);
+    //await (await itemsPlanningPlanningPage.planningId()).waitForDisplayed();
   }
 
   public static async closeDelete(clickCancel = false) {
