@@ -98,7 +98,7 @@ namespace ItemsPlanning.Pn
             services.AddTransient<IPlanningExcelService, PlanningExcelService>();
             services.AddTransient<IPlanningImportService, PlanningImportService>();
             services.AddControllers();
-            FixBrokenPlanningCases(services);
+            //FixBrokenPlanningCases(services);
         }
 
         public void AddPluginConfig(IConfigurationBuilder builder, string connectionString)
