@@ -249,7 +249,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         }
                     }
                     // Delete planning case
-                    await planningCase.Delete(_dbContext);
+                    //await planningCase.Delete(_dbContext);
                 }
                 // for create
                 var assignmentsIds = planning.PlanningSites
@@ -377,7 +377,8 @@ namespace ItemsPlanning.Pn.Services.PairingService
                                     await sdkCore.CaseDelete(checkListSite.MicrotingUid);
                                 }
                             }
-                            await planningCaseSite.Delete(_dbContext);
+                            // We don't delete the planningCaseSite, because we need it to be still report results
+                            //await planningCaseSite.Delete(_dbContext);
                         }
 
                         // var planningCases = await _dbContext.PlanningCases
