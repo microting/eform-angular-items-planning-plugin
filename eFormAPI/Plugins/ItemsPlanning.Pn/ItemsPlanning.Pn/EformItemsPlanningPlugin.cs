@@ -98,7 +98,7 @@ namespace ItemsPlanning.Pn
             services.AddTransient<IPlanningExcelService, PlanningExcelService>();
             services.AddTransient<IPlanningImportService, PlanningImportService>();
             services.AddControllers();
-            // FixBrokenPlanningCases(services);
+            FixBrokenPlanningCases(services);
         }
 
         public void AddPluginConfig(IConfigurationBuilder builder, string connectionString)
@@ -480,7 +480,7 @@ namespace ItemsPlanning.Pn
 
             var itemsPlanningContext = serviceProvider.GetRequiredService<ItemsPlanningPnDbContext>();
 
-            var cases = await sdkDbContext.Cases.Where(x => x.DoneAt > new DateTime(2022,7,16, 0,0,0)).ToListAsync();
+            var cases = await sdkDbContext.Cases.Where(x => x.DoneAt > new DateTime(2022,11,21, 0,0,0)).ToListAsync();
 
             foreach (var dbCase in cases)
             {
@@ -525,6 +525,55 @@ namespace ItemsPlanning.Pn
                                 catch (Exception e)
                                 {
                                     Console.WriteLine(e);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var plannings = await itemsPlanningContext.Plannings
+                                .Where(x => x.RelatedEFormId == dbCase.CheckListId).ToListAsync();
+
+                            if (plannings.Count == 1)
+                            {
+                                planningCaseSite = new PlanningCaseSite
+                                {
+                                    MicrotingCheckListSitId = checkListSite.Id,
+                                    PlanningId = plannings[0].Id,
+                                    MicrotingSdkCaseId = dbCase.Id,
+                                    MicrotingSdkCaseDoneAt = dbCase.DoneAt,
+                                };
+                                await planningCaseSite.Create(itemsPlanningContext);
+                                var site = await sdkDbContext.Sites.SingleOrDefaultAsync(x => x.Id == dbCase.SiteId);
+                                if (site != null)
+                                {
+                                    var language =
+                                        await sdkDbContext.Languages.SingleAsync(x => x.Id == site.LanguageId);
+                                    var theCase =
+                                        await core.CaseRead((int)dbCase.MicrotingUid!, (int)dbCase.MicrotingCheckUid!,
+                                            language);
+                                    try
+                                    {
+                                        planningCase = new PlanningCase
+                                        {
+                                            Status = 100,
+                                            MicrotingSdkCaseDoneAt = theCase.DoneAt,
+                                            MicrotingSdkCaseId = dbCase.Id,
+                                            DoneByUserId = theCase.DoneById,
+                                            DoneByUserName = site.Name,
+                                            WorkflowState = Constants.WorkflowStates.Processed,
+                                            MicrotingSdkeFormId = (int)dbCase.CheckListId!,
+                                            PlanningId = plannings.First().Id
+                                        };
+                                        await planningCase.Create(itemsPlanningContext);
+                                        planningCase = await SetFieldValue(itemsPlanningContext, core, planningCase,
+                                            theCase.Id,
+                                            language);
+                                        await planningCase.Update(itemsPlanningContext);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine(e);
+                                    }
                                 }
                             }
                         }
