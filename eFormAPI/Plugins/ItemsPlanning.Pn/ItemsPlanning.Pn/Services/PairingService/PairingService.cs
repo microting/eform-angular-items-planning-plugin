@@ -215,6 +215,43 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 foreach (var planningSite in forRemove)
                 {
                     await planningSite.Delete(_dbContext);
+
+                    // var planningCaseList = await _dbContext.PlanningCases
+                    //     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    //     .Where(x => x.PlanningId == planningSite.PlanningId)
+                    //     .Where(x => x.MicrotingSdkSiteId == planningSite.SiteId)
+                    //     .ToListAsync();
+                    //
+                    // foreach (var planningCase in planningCaseList)
+                    // {
+                        var planningCaseSites = await _dbContext.PlanningCaseSites
+                            .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Where(x => x.PlanningId == planningSite.PlanningId)
+                            .Where(x => x.MicrotingSdkSiteId == planningSite.SiteId)
+                            .ToListAsync();
+                        foreach (var planningCaseSite in planningCaseSites)
+                        {
+                            var theCase =
+                                await sdkDbContext.Cases.SingleOrDefaultAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
+                            if (theCase != null)
+                            {
+                                if (theCase.MicrotingUid != null)
+                                    await sdkCore.CaseDelete((int) theCase.MicrotingUid);
+                            }
+                            else
+                            {
+                                var checkListSite =
+                                    await sdkDbContext.CheckListSites.SingleOrDefaultAsync(x =>
+                                        x.Id == planningCaseSite.MicrotingCheckListSitId);
+                                if (checkListSite != null)
+                                {
+                                    await sdkCore.CaseDelete(checkListSite.MicrotingUid);
+                                }
+                            }
+                        // }
+                        // Delete planning case
+                        //await planningCase.Delete(_dbContext);
+                    }
                 }
 
                 var planningCases = await _dbContext.PlanningCases
@@ -222,35 +259,35 @@ namespace ItemsPlanning.Pn.Services.PairingService
                     .Where(x => assignmentsRequestIds.Contains(x.DoneByUserId))
                     .ToListAsync();
 
-                foreach (var planningCase in planningCases)
-                {
-                    var planningCaseSites = await _dbContext.PlanningCaseSites
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Where(x => x.PlanningCaseId == planningCase.Id)
-                        .ToListAsync();
-                    foreach (var planningCaseSite in planningCaseSites.Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0))
-                    {
-                        var theCase =
-                            await sdkDbContext.Cases.SingleOrDefaultAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
-                        if (theCase != null)
-                        {
-                            if (theCase.MicrotingUid != null)
-                                await sdkCore.CaseDelete((int) theCase.MicrotingUid);
-                        }
-                        else
-                        {
-                            var checkListSite =
-                                await sdkDbContext.CheckListSites.SingleOrDefaultAsync(x =>
-                                    x.Id == planningCaseSite.MicrotingCheckListSitId);
-                            if (checkListSite != null)
-                            {
-                                await sdkCore.CaseDelete(checkListSite.MicrotingUid);
-                            }
-                        }
-                    }
-                    // Delete planning case
-                    //await planningCase.Delete(_dbContext);
-                }
+                // foreach (var planningCase in planningCases)
+                // {
+                //     var planningCaseSites = await _dbContext.PlanningCaseSites
+                //         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                //         .Where(x => x.PlanningCaseId == planningCase.Id)
+                //         .ToListAsync();
+                //     foreach (var planningCaseSite in planningCaseSites.Where(planningCaseSite => planningCaseSite.MicrotingSdkCaseId != 0))
+                //     {
+                //         var theCase =
+                //             await sdkDbContext.Cases.SingleOrDefaultAsync(x => x.Id == planningCaseSite.MicrotingSdkCaseId);
+                //         if (theCase != null)
+                //         {
+                //             if (theCase.MicrotingUid != null)
+                //                 await sdkCore.CaseDelete((int) theCase.MicrotingUid);
+                //         }
+                //         else
+                //         {
+                //             var checkListSite =
+                //                 await sdkDbContext.CheckListSites.SingleOrDefaultAsync(x =>
+                //                     x.Id == planningCaseSite.MicrotingCheckListSitId);
+                //             if (checkListSite != null)
+                //             {
+                //                 await sdkCore.CaseDelete(checkListSite.MicrotingUid);
+                //             }
+                //         }
+                //     }
+                //     // Delete planning case
+                //     //await planningCase.Delete(_dbContext);
+                // }
                 // for create
                 var assignmentsIds = planning.PlanningSites
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
