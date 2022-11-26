@@ -167,7 +167,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 // Build result
                 var result = new PairingsModel()
                 {
-                    DeviceUsers = deviceUsers.Select(x => x.Name).ToList(),
+                    DeviceUsers = deviceUsers.Select(x => new CommonDictionaryModel { Name = x.Name, Id = x.Id}).ToList(),
                     Pairings = pairing,
                 };
 

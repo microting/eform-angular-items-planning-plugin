@@ -1,5 +1,6 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild,} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit,} from '@angular/core';
 import {PairingUpdateModel} from '../../../../models';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-pairing-grid-update',
@@ -7,25 +8,23 @@ import {PairingUpdateModel} from '../../../../models';
   styleUrls: ['./pairing-grid-update.component.scss'],
 })
 export class PairingGridUpdateComponent implements OnInit {
-  @ViewChild('frame', { static: false }) frame;
-  @Output() updatePairings: EventEmitter<void> = new EventEmitter<void>();
+  updatePairings: EventEmitter<void> = new EventEmitter<void>();
   pairingsForDeploy: PairingUpdateModel[] = [];
   pairingsForRetract: PairingUpdateModel[] = [];
 
-  constructor() {
-
-  }
-
-  ngOnInit() {}
-
-  show(model: PairingUpdateModel[]) {
+  constructor(
+    public dialogRef: MatDialogRef<PairingGridUpdateComponent>,
+    @Inject(MAT_DIALOG_DATA) model: PairingUpdateModel[],
+  ) {
     this.pairingsForDeploy = model.filter(x => x.paired === true);
     this.pairingsForRetract = model.filter(x => x.paired === false);
-    this.frame.show();
+  }
+
+  ngOnInit() {
   }
 
   hide() {
-    this.frame.hide();
+    this.dialogRef.close();
   }
 
   update() {

@@ -1,62 +1,20 @@
-<eform-subheader>
-  <div class="p-3">
-    <button
-      mdbBtn
-      id="savePairingGridBtn"
-      class="btn-success btn-small-height"
-      [disabled]="pairingsForUpdate.length === 0"
-      mdbTooltip="{{ 'Update pairing' | translate }}"
-      (click)="showUpdatePairingsModal()"
-    >
-      {{ 'Save' | translate }}
-    </button>
-  </div>
-</eform-subheader>
+<eform-new-subheader>
+  <button
+    mat-raised-button
+    id="savePairingGridBtn"
+    color="accent"
+    [disabled]="pairingsForUpdate.length === 0"
+    matTooltip="{{ 'Update pairing' | translate }}"
+    (click)="showUpdatePairingsModal()"
+  >
+    {{ 'Save' | translate }}
+  </button>
+</eform-new-subheader>
 
-<div class="container-fluid">
-  <div class="row pl-1">
-    <div class="col-md-4 col-sm-4 ng-select-wrapper">
-      <ng-select
-        class="custom"
-        dropdownPosition="'bottom'"
-        [placeholder]="'Tags' | translate"
-        [items]="availableTags"
-        [ngModel]="pairingStateService.getTagIds() | async"
-        (add)="saveTag($event)"
-        (remove)="removeSavedTag($event.value)"
-        [clearable]="false"
-        [bindLabel]="'name'"
-        [bindValue]="'id'"
-        id="tagSelector"
-        [multiple]="true"
-      ></ng-select>
-    </div>
-    <div class="col-md-4 col-sm-4 ng-select-wrapper">
-      <ng-select
-        class="custom"
-        dropdownPosition="'bottom'"
-        [placeholder]="'Sites' | translate"
-        [items]="sitesDto"
-        [ngModel]="pairingStateService.getSiteIds() | async"
-        (add)="saveSite($event)"
-        (remove)="removeSavedSite($event.value)"
-        [clearable]="false"
-        [bindLabel]="'siteName'"
-        [bindValue]="'id'"
-        id="siteSelector"
-        [multiple]="true"
-      ></ng-select>
-    </div>
-  </div>
-  <app-pairing-grid-table
-    [pairingsModel]="pairings"
-    (pairingChanged)="onPairingChanged($event)"
-    [selectedColCheckboxes]="selectedColCheckboxes"
-    [selectedRowCheckboxes]="selectedRowCheckboxes"
-  ></app-pairing-grid-table>
-</div>
-
-<app-pairing-grid-update
-  #updatePairingsModal
-  (updatePairings)="updatePairings()"
-></app-pairing-grid-update>
+<app-pairing-grid-table
+  [pairingsModel]="pairings"
+  (pairingChanged)="onPairingChanged($event)"
+  (changedFilters)="onFiltersChanged()"
+  [selectedColCheckboxes]="selectedColCheckboxes"
+  [selectedRowCheckboxes]="selectedRowCheckboxes"
+></app-pairing-grid-table>
