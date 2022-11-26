@@ -1,12 +1,12 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   OnInit,
-  Output,
-  ViewChild,
 } from '@angular/core';
-import { ItemsPlanningPnPlanningsService } from '../../../../services';
-import { ReportEformItemModel } from '../../../../models';
+import {ItemsPlanningPnPlanningsService} from '../../../../services';
+import {ReportEformItemModel} from '../../../../models';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-planning-case-delete',
@@ -14,18 +14,20 @@ import { ReportEformItemModel } from '../../../../models';
   styleUrls: ['./planning-case-delete.component.scss'],
 })
 export class PlanningCaseDeleteComponent implements OnInit {
-  @ViewChild('frame', { static: false }) frame;
-  @Output() planningCaseDeleted: EventEmitter<void> = new EventEmitter<void>();
-  reportEformItemModel: ReportEformItemModel = new ReportEformItemModel();
+  planningCaseDeleted: EventEmitter<void> = new EventEmitter<void>();
+
   constructor(
-    private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService
-  ) {}
+    private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
+    public dialogRef: MatDialogRef<PlanningCaseDeleteComponent>,
+    @Inject(MAT_DIALOG_DATA) public reportEformItemModel: ReportEformItemModel
+  ) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
-  show(reportEformItemModel: ReportEformItemModel) {
-    this.reportEformItemModel = reportEformItemModel;
-    this.frame.show();
+  hide(result = false) {
+    this.dialogRef.close(result);
   }
 
   deletePlanning() {
@@ -34,7 +36,7 @@ export class PlanningCaseDeleteComponent implements OnInit {
       .subscribe((data) => {
         if (data && data.success) {
           this.planningCaseDeleted.emit();
-          this.frame.hide();
+          this.hide(true);
         }
       });
   }
