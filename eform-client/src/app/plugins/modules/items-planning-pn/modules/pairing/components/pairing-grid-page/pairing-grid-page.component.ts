@@ -1,17 +1,17 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
   ItemsPlanningPnPairingService,
-  ItemsPlanningPnPlanningsService,
-  ItemsPlanningPnTagsService,
 } from '../../../../services';
-import { SitesService } from 'src/app/common/services/advanced';
-import { Subscription } from 'rxjs';
-import { CommonDictionaryModel, SiteNameDto } from 'src/app/common/models';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
-import { PairingsModel, PairingUpdateModel } from '../../../../models/pairings';
+import {Subscription} from 'rxjs';
+import {CommonDictionaryModel, SiteNameDto} from 'src/app/common/models';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
+import {PairingsModel, PairingUpdateModel} from '../../../../models/pairings';
 import * as R from 'ramda';
-import { PairingGridUpdateComponent } from '../';
-import { PairingStateService } from '../store';
+import {PairingGridUpdateComponent} from '../';
+import {PairingStateService} from '../store';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {Overlay} from '@angular/cdk/overlay';
+import {dialogConfigHelper} from 'src/app/common/helpers';
 
 @AutoUnsubscribe()
 @Component({
@@ -20,54 +20,31 @@ import { PairingStateService } from '../store';
   styleUrls: ['./pairing-grid-page.component.scss'],
 })
 export class PairingGridPageComponent implements OnInit, OnDestroy {
-  @ViewChild('updatePairingsModal')
-  updatePairingsModal: PairingGridUpdateComponent;
-  getAllSites$: Subscription;
-  getAllPairings$: Subscription;
-  getTagsSub$: Subscription;
-  updatePairings$: Subscription;
   sitesDto: SiteNameDto[] = [];
   pairings: PairingsModel = new PairingsModel();
   availableTags: CommonDictionaryModel[] = [];
-  selectedColCheckboxes = new Array<{ colNumber: number; checked: boolean }>();
-  selectedRowCheckboxes = new Array<{ rowNumber: number; checked: boolean }>();
-
+  selectedColCheckboxes = new Array<{ colNumber: number; checked: boolean, siteName: CommonDictionaryModel }>();
+  selectedRowCheckboxes = new Array<{ rowNumber: number; checked: boolean, planningId: number }>();
   pairingsForUpdate: PairingUpdateModel[] = [];
+
+  getAllPairings$: Subscription;
+  updatePairings$: Subscription;
+  updatePairingsSub$: Subscription;
 
   constructor(
     private pairingService: ItemsPlanningPnPairingService,
-    private planningService: ItemsPlanningPnPlanningsService,
-    private sitesService: SitesService,
-    private tagsService: ItemsPlanningPnTagsService,
-    public pairingStateService: PairingStateService
-  ) {}
+    public pairingStateService: PairingStateService,
+    public dialog: MatDialog,
+    private overlay: Overlay,
+  ) {
+  }
 
   ngOnInit(): void {
     this.getAllInitialData();
   }
 
   getAllInitialData() {
-    this.getAllSites();
     this.getAllPairings();
-    this.getTags();
-  }
-
-  getAllSites() {
-    this.getAllSites$ = this.sitesService
-      .getAllSitesForPairing()
-      .subscribe((operation) => {
-        if (operation && operation.success) {
-          this.sitesDto = operation.model;
-        }
-      });
-  }
-
-  getTags() {
-    this.getTagsSub$ = this.tagsService.getPlanningsTags().subscribe((data) => {
-      if (data && data.success) {
-        this.availableTags = data.model;
-      }
-    });
   }
 
   getAllPairings() {
@@ -83,38 +60,19 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  updatePairings() {
+  updatePairings(updatePairingsModal: MatDialogRef<PairingGridUpdateComponent>) {
     this.updatePairings$ = this.pairingService
       .updatePairings(this.pairingsForUpdate)
       .subscribe((operation) => {
         if (operation && operation.success) {
-          this.updatePairingsModal.hide();
+          updatePairingsModal.close();
           this.getAllPairings();
         }
       });
   }
 
-  saveTag(e: CommonDictionaryModel) {
-    this.pairingStateService.addOrRemoveTagId(e.id);
-    this.getAllPairings();
+  ngOnDestroy(): void {
   }
-
-  removeSavedTag(e: CommonDictionaryModel) {
-    this.pairingStateService.addOrRemoveTagId(e.id);
-    this.getAllPairings();
-  }
-
-  saveSite(e: CommonDictionaryModel) {
-    this.pairingStateService.addOrRemoveSiteIds(e.id);
-    this.getAllPairings();
-  }
-
-  removeSavedSite(e: CommonDictionaryModel) {
-    this.pairingStateService.addOrRemoveSiteIds(e.id);
-    this.getAllPairings();
-  }
-
-  ngOnDestroy(): void {}
 
   onPairingChanged(model: PairingUpdateModel) {
     const foundIndexObject = this.pairingsForUpdate.findIndex(
@@ -159,30 +117,19 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
   }
 
   showUpdatePairingsModal() {
-    this.updatePairingsModal.show(this.pairingsForUpdate);
+    const updatePairingsModal = this.dialog.open(PairingGridUpdateComponent, dialogConfigHelper(this.overlay, this.pairingsForUpdate));
+    this.updatePairingsSub$ = updatePairingsModal.componentInstance.updatePairings.subscribe(_ => this.updatePairings(updatePairingsModal));
   }
 
   setSelectedColCheckboxes() {
-    this.selectedColCheckboxes.splice(
-      0,
-      this.selectedColCheckboxes.length || 0
-    );
-    if (this.pairings.pairings[0]) {
-      for (let i = 0; i < this.pairings.pairings[0].pairingValues.length; i++) {
-        this.selectedColCheckboxes.push({ checked: false, colNumber: i });
-      }
-    }
+    this.selectedColCheckboxes = this.pairings.deviceUsers.map((x, i) => ({checked: false, colNumber: i, siteName: {...x}}));
   }
 
   setSelectedRowCheckboxes() {
-    this.selectedRowCheckboxes.splice(
-      0,
-      this.selectedRowCheckboxes.length || 0
-    );
-    if (this.pairings.pairings) {
-      for (let i = 0; i < this.pairings.pairings.length; i++) {
-        this.selectedRowCheckboxes.push({ checked: false, rowNumber: i });
-      }
-    }
+    this.selectedRowCheckboxes = this.pairings.pairings.map((x, i) => ({checked: false, rowNumber: i, planningId: x.planningId}));
+  }
+
+  onFiltersChanged() {
+    this.getAllPairings();
   }
 }

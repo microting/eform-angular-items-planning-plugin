@@ -1,109 +1,90 @@
-<div class="row p-1 mt-4 table-responsive no-gutters">
-  <table
-    *ngIf="
-      pairingsModel.deviceUsers &&
-      pairingsModel.pairings &&
-      pairingsModel.deviceUsers.length > 0 &&
-      pairingsModel.pairings.length > 0
-    "
-    mdbTable
-    striped="true"
-    hover="true"
-    small="true"
-    class="z-depth-1 text-center"
-  >
-    <thead>
-      <tr>
-        <th scope="col" class=""></th>
-        <th
-          class=""
-          scope="col"
-          id="deviceUserTableHeader{{ i }}"
-          *ngFor="let deviceUser of pairingsModel.deviceUsers; let i = index"
-        >
-          <div class="d-flex flex-column">
-            <div>{{ deviceUser }}</div>
-            <div>
-              <div class="mat-checkbox" *ngIf="selectedColCheckboxes[i]">
-                <input
-                  id="deviceUserColumnCheckbox{{ i }}"
-                  name="deviceUserColumnCheckbox{{ i }}"
-                  (click)="selectDeviceUserColumn($event, i)"
-                  [value]="selectedColCheckboxes[i].checked"
-                  [checked]="selectedColCheckboxes[i].checked"
-                  type="checkbox"
-                />
-                <label for="deviceUserColumnCheckbox{{ i }}"></label>
-              </div>
-            </div>
-          </div>
-        </th>
-      </tr>
-    </thead>
-    <tbody id="tableBody">
-      <tr *ngFor="let pairing of pairingsModel.pairings; let i = index">
-        <td id="planningName">
-          <div class="d-flex justify-content-between">
-            <div class="text-center">
-              {{ pairing.planningId }} - {{ pairing.planningName }}
-            </div>
-            <div
-              class="d-flex justify-content-center justify-center align-items-center"
-            >
-              <div class="mat-checkbox" *ngIf="selectedRowCheckboxes[i]">
-                <input
-                  id="planningRowCheckbox{{ i }}"
-                  name="planningRowCheckbox{{ i }}"
-                  (click)="selectPlanningRow($event, i)"
-                  type="checkbox"
-                  [value]="selectedRowCheckboxes[i].checked"
-                  [checked]="selectedRowCheckboxes[i].checked"
-                />
-                <label
-                  for="planningRowCheckbox{{ i }}"
-                  id="planningRowLabelCheckbox{{ i }}"
-                ></label>
-              </div>
-            </div>
-          </div>
-        </td>
-        <td *ngFor="let planningValue of pairing.pairingValues; let j = index">
-          <div
-            class="mat-checkbox"
-            [style.margin-bottom]="planningValue.latestCaseStatus ? '15px' : 0"
-          >
-            <input
-              id="deviceUserCheckbox{{ j }}_planning{{ i }}"
-              name="deviceUserCheckbox{{ j }}_planning{{ i }}"
-              (click)="
-                checked($event, pairing.planningId, planningValue.deviceUserId)
-              "
-              [value]="planningValue.paired"
-              [checked]="planningValue.paired"
-              type="checkbox"
-            />
-            <label
-              id="deviceUserCheckboxLabel{{ j }}_planning{{ i }}"
-              for="deviceUserCheckbox{{ j }}_planning{{ i }}"
-            ></label
-            ><status-bar-compact
-              style="float: right"
-              *ngIf="planningValue.latestCaseStatus"
-              [status]="planningValue.latestCaseStatus"
-            ></status-bar-compact>
-            <div *ngIf="authStateService.isAdmin">
-              <small style="color: var(--blue-400)"
-                >({{
-                  planningValue.deviceUserId +
-                    (planningValue.planningCaseSiteId
-                      ? '/' + planningValue.planningCaseSiteId
-                      : '')
-                }})</small
-              >
-            </div>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<ng-template #toolbarTpl>
+  <div class="d-grid justify-content-start need-wrapper" style="grid-template-columns: 1fr 2fr;">
+    <mat-form-field>
+      <mat-label>{{ 'Tags' | translate }}</mat-label>
+      <mtx-select
+        class="custom"
+        dropdownPosition="bottom"
+        [items]="availableTags"
+        [ngModel]="pairingStateService.getTagIds() | async"
+        (add)="saveTag($event)"
+        (remove)="removeSavedTag($event.value)"
+        [clearable]="false"
+        [bindLabel]="'name'"
+        [bindValue]="'id'"
+        id="tagSelector"
+        [multiple]="true"
+      ></mtx-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>{{ 'Sites' | translate }}</mat-label>
+      <mtx-select
+        class="custom"
+        dropdownPosition="bottom"
+        [items]="sitesDto"
+        [ngModel]="pairingStateService.getSiteIds() | async"
+        (add)="saveSite($event)"
+        (remove)="removeSavedSite($event.value)"
+        [clearable]="false"
+        [bindLabel]="'siteName'"
+        [bindValue]="'id'"
+        id="siteSelector"
+        [multiple]="true"
+      ></mtx-select>
+    </mat-form-field>
+  </div>
+</ng-template>
+
+<mtx-grid
+  [data]="pairingsModel.deviceUsers && pairingsModel.pairings &&
+      pairingsModel.deviceUsers.length > 0 && pairingsModel.pairings.length > 0 ?
+      pairingsModel.pairings : []"
+  [columns]="tableHeaders"
+  [showPaginator]="false"
+  [pageOnFront]="false"
+  [rowStriped]="true"
+  [showToolbar]="true"
+  [toolbarTemplate]="toolbarTpl"
+  [showColumnMenuButton]="false"
+  [headerTemplate]="headerTpl"
+></mtx-grid>
+
+<ng-template #headerTpl let-col="colDef" let-i="index">
+  <div class="d-flex flex-column" *ngIf="col && col.field != 'firstCell'">
+    <mat-checkbox
+      [ngModel]="getIsSelectedColCheckboxByIndex(col.field)"
+      (ngModelChange)="selectDeviceUserColumn($event, col.field)"
+    >{{col.header}}</mat-checkbox>
+  </div>
+</ng-template>
+
+<ng-template #firstCellTpl let-row let-index="index" let-col="colDef">
+  <div id="planningName">
+    <mat-checkbox
+      [ngModel]="getIsSelectedRowCheckboxByIndex(row.planningId)"
+      (ngModelChange)="selectPlanningRow($event, row.planningId)"
+      id="planningRowCheckbox{{ index }}"
+    >{{ row.planningId }} - {{ row.planningName }}</mat-checkbox>
+  </div>
+</ng-template>
+
+<ng-template #otherCellsTpl let-row let-index="index" let-col="colDef">
+  <div class="d-flex">
+    <mat-checkbox
+      [ngModel]="getIsPaired(row, col.field)"
+      (ngModelChange)="checked($event, getPairingByIndex(index).planningId, getPairingValueByIndex(row, col.field).deviceUserId)"
+      id="deviceUserCheckbox{{ index }}_planning{{ col.index }}"
+      [ngClass]="{'mr-2' : getLatestCaseStatus(row, col.field)}"
+    >
+    </mat-checkbox>
+    <status-bar-compact
+      style="float: right"
+      *ngIf="getLatestCaseStatus(row, col.field)"
+      [status]="getLatestCaseStatus(row, col.field)"
+    ></status-bar-compact>
+  </div>
+  <div *ngIf="authStateService.isAdmin">
+    <small [ngClass]="getIsPaired(row, col.field) ? 'text-accent' : 'text-primary'"
+           class="mt-2">{{getTextAfterCheckbox(row, col.field)}}</small>
+  </div>
+</ng-template>

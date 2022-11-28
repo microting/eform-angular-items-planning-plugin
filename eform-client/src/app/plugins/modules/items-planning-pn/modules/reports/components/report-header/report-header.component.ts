@@ -6,7 +6,7 @@ import {
   Output,
   OnDestroy,
 } from '@angular/core';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReportPnGenerateModel } from '../../../../models';
 import { DateTimeAdapter } from '@danielmoncada/angular-datetime-picker';
@@ -15,6 +15,9 @@ import { AuthStateService } from 'src/app/common/store';
 import { PlanningsReportQuery, PlanningsReportStateService } from '../store';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { Subscription } from 'rxjs';
+import {MatIconRegistry} from '@angular/material/icon';
+import {DomSanitizer} from '@angular/platform-browser';
+import {ExcelIcon, WordIcon} from 'src/app/common/const';
 
 @AutoUnsubscribe()
 @Component({
@@ -39,9 +42,17 @@ export class ReportHeaderComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private planningsReportStateService: PlanningsReportStateService,
     private planningsReportQuery: PlanningsReportQuery,
-    authStateService: AuthStateService
+    authStateService: AuthStateService,
+    iconRegistry: MatIconRegistry,
+    sanitizer: DomSanitizer,
   ) {
+    iconRegistry.addSvgIconLiteral('file-word', sanitizer.bypassSecurityTrustHtml(WordIcon));
+    iconRegistry.addSvgIconLiteral('file-excel', sanitizer.bypassSecurityTrustHtml(ExcelIcon));
     dateTimeAdapter.setLocale(authStateService.currentUserLocale);
+  }
+
+  get dateRange() {
+    return this.generateForm.get('dateRange');
   }
 
   ngOnInit() {
@@ -53,11 +64,11 @@ export class ReportHeaderComponent implements OnInit, OnDestroy {
       tagIds: [this.planningsReportQuery.pageSetting.filters.tagIds],
     });
     this.valueChangesSub$ = this.generateForm.valueChanges.subscribe(
-      (value: { tagIds: number[]; dateRange: Date[] }) => {
+      (value: { tagIds: number[]; dateRange: string[] }) => {
         if (value.dateRange.length) {
           const template = `yyyy-MM-dd'T00:00:00.000Z'`;
-          const dateFrom = format(value.dateRange[0], template);
-          const dateTo = format(value.dateRange[1], template);
+          const dateFrom = format(parseISO(value.dateRange[0]), template);
+          const dateTo = format(parseISO(value.dateRange[1]), template);
           this.planningsReportStateService.updateDateRange([dateFrom, dateTo]);
         }
       }
