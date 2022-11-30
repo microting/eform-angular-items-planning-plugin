@@ -45,11 +45,11 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18.1'
     - name: Extract branch name
       id: extract_branch
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
