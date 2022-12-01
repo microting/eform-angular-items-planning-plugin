@@ -110,7 +110,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         PlanningId = x.Id,
                         PlanningName = x.NameTranslations
                         .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Where(y => y.Language.Id == language.Id)
+                        .Where(y => y.LanguageId == language.Id)
                         .Select(y => y.Name)
                         .FirstOrDefault(),
                         PairingValues = x.PlanningSites

@@ -647,7 +647,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     }).ToList(),
                 TranslatedName = x.NameTranslations
                     .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
-                    .Where(y => y.Language.Id == languageIemPlanning.Id)
+                    .Where(y => y.LanguageId == languageIemPlanning.Id)
                     .Select(y => y.Name)
                     .FirstOrDefault(),
                 Reiteration = new PlanningReiterationModel

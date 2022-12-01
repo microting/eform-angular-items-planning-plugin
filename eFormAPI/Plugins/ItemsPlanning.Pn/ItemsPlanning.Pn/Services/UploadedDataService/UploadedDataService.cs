@@ -210,9 +210,9 @@ namespace ItemsPlanning.Pn.Services.UploadedDataService
             var filePath = Path.Combine(core.Result.GetSdkSetting(Settings.fileLocationPdf) + "pdfFiles/", fileName);
             const string fileType = "application/pdf";
 
-            if (core.Result.GetSdkSetting(Settings.swiftEnabled).ToString().ToLower() == "true")
+            if (core.Result.GetSdkSetting(Settings.s3Enabled).ToString().ToLower() == "true")
             {
-                var ss = await core.Result.GetFileFromSwiftStorage(fileName);
+                var ss = await core.Result.GetFileFromS3Storage(fileName);
 
                 if (ss == null)
                 {
