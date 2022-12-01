@@ -1,0 +1,67 @@
+<eform-new-subheader>
+  <button
+    mat-icon-button
+    id="importPlanningsBtn"
+    matTooltip="{{ 'Import plannings' | translate }}"
+    *ngIf="authStateService.isAdmin"
+    (click)="openPlanningsImportModal()"
+  >
+    <mat-icon>file_upload</mat-icon>
+  </button>
+  <button
+    mat-icon-button
+    id="planningManageTagsBtn"
+    (click)="openTagsModal()"
+    matTooltip="{{ 'Manage tags' | translate }}"
+  >
+    <mat-icon>discount</mat-icon>
+  </button>
+  <button
+    mat-raised-button
+    *ngIf="authStateService.checkClaim(itemsPlanningPnClaims.createPlannings)"
+    id="planningCreateBtn"
+    color="accent"
+    matTooltip="{{ 'Create Planning' | translate }}"
+    [routerLink]="['./create']"
+  >
+    {{ 'New planning' | translate }}
+  </button>
+</eform-new-subheader>
+
+<app-plannings-header
+  [availableTags]="availableTags"
+  [sites]="sitesDto"
+  (descriptionFilterChanged)="onDescriptionFilterChanged($event)"
+  (nameFilterChanged)="onNameFilterChanged($event)"
+  (savedSiteRemoved)="removeSavedDeviceUser($event)"
+  (siteSaved)="saveDeviceUser($event)"
+  (savedTagRemoved)="removeSavedTag($event)"
+  (tagSaved)="saveTag($event)"
+></app-plannings-header>
+<button
+  mat-raised-button
+  [disabled]="
+    !selectedPlanningsCheckboxes || selectedPlanningsCheckboxes.length === 0
+  "
+  id="deleteMultiplePluginsBtn"
+  color="warn"
+  matTooltip="{{ 'Delete selected' | translate }}"
+  (click)="showDeleteMultiplePlanningsModal()"
+>
+  {{ 'Delete Planning' | translate }}
+</button>
+<app-plannings-table
+  [planningsModel]="planningsModel"
+  [selectedColCheckboxes]="selectedPlanningsCheckboxes"
+  (openAssignmentModal)="openAssignmentModal($event)"
+  (showDeletePlanningModal)="showDeletePlanningModal($event)"
+  (sortTable)="sortTable($event)"
+  (tagSelected)="tagSelected($event)"
+  (selectedPlanningsChanged)="selectedPlanningsChanged($event)"
+  (paginationChanged)="onPaginationChanged($event)"
+></app-plannings-table>
+
+<app-planning-tags
+  #planningTagsModal
+  [availableTags]="availableTags"
+></app-planning-tags>

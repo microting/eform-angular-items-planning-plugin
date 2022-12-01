@@ -1,0 +1,267 @@
+<eform-new-subheader [forceStaticTitle]="true" [title]="'New planning' | translate">
+  <button
+    mat-raised-button
+    id="planningCreateSaveBtn"
+    color="accent"
+    [disabled]="saveButtonDisabled"
+    (click)="createPlanning()"
+  >
+    {{ 'Create' | translate }}
+  </button>
+  <button
+    mat-raised-button
+    id="planningCreateCancelBtn"
+    (click)="goBack()"
+  >
+    {{ 'Cancel' | translate }}
+  </button>
+</eform-new-subheader>
+
+<mat-card>
+  <mat-card-title><h4>{{ 'Name' | translate }}</h4></mat-card-title>
+  <mat-card-content>
+    <div class="d-grid grid-4-columns">
+      <ng-container
+        *ngFor="let translationControls of translationsArray.controls;let translationIndex = index;">
+        <ng-container [formGroup]="translationControls">
+          <mat-form-field class="pl-2 pr-2">
+            <mat-label>{{translationControls.get('language').value}}</mat-label>
+            <input
+              matInput
+              type="text"
+              id="createPlanningNameTranslation_{{ translationIndex }}"
+              name="createPlanningNameTranslation_{{translationIndex}}"
+              formControlName="name"
+            >
+          </mat-form-field>
+        </ng-container>
+      </ng-container>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="mt-2">
+  <mat-card-content>
+    <div class="d-grid grid-4-columns">
+      <mat-form-field class="pl-2 pr-2"
+      id="createPlanningItemDescription">
+        <mat-label>{{'Description' | translate}}</mat-label>
+        <input
+          matInput
+          type="text"
+          [(ngModel)]="newPlanningModel.description"
+          id="createPlanningItemDescription"
+          name="createPlanningItemDescription"
+        >
+      </mat-form-field>
+      <mat-form-field
+        id="createFolderSelector"
+        class="pl-2 pr-2" *ngIf="foldersTreeDto.length > 0" (click)="openFoldersModal()">
+        <mat-label>{{'Folders' | translate}}</mat-label>
+        <input
+          matInput
+          id="createFolderSelectorInput"
+          [ngModel]="selectedFolderName"
+          [disabled]="true"
+          name="folderSelectorInput"
+        >
+      </mat-form-field>
+      <mat-form-field class="pl-2 pr-2"
+      id="createPlanningSelector">
+        <mat-label>{{'Selected template' | translate}}</mat-label>
+        <mtx-select
+          [items]="templatesModel.templates"
+          bindLabel="label"
+          bindValue="id"
+          [typeahead]="typeahead"
+          [(ngModel)]="newPlanningModel.boundEform.relatedEFormId"
+          id="createPlanningSelector"
+        ></mtx-select>
+      </mat-form-field>
+      <mat-form-field class="pl-2 pr-2"
+      id="createPlanningTagsSelector">
+        <mat-label>{{'Tags' | translate}}</mat-label>
+        <mtx-select
+          class="custom"
+          dropdownPosition="bottom"
+          [(ngModel)]="newPlanningModel.tagsIds"
+          [bindValue]="'id'"
+          [bindLabel]="'name'"
+          [items]="availableTags"
+          id="createPlanningTagsSelector"
+          [multiple]="true"
+        ></mtx-select>
+      </mat-form-field>
+
+      <mat-form-field class="pl-2 pr-2"
+      id="createRepeatEvery">
+        <mat-label>{{'RepeatEvery' | translate}}</mat-label>
+        <input
+          matInput
+          [(ngModel)]="newPlanningModel.reiteration.repeatEvery"
+          type="text"
+          class="createRepeatEvery"
+          name="createRepeatEvery"
+        >
+      </mat-form-field>
+      <div class="d-grid" [class.grid-2-columns]="newPlanningModel.reiteration.repeatType > 1">
+        <mat-form-field class="pl-2 pr-2"
+        id="createRepeatType">
+          <mat-label>{{'Repeat Type' | translate}}</mat-label>
+          <mtx-select
+            [items]="[
+            { id: 1, name: 'Day' | translate },
+            { id: 2, name: 'Week' | translate },
+            { id: 3, name: 'Month' | translate }
+            ]"
+            bindLabel="name"
+            bindValue="id"
+            [typeahead]="typeahead"
+            [(ngModel)]="newPlanningModel.reiteration.repeatType"
+            id="createRepeatType"
+          ></mtx-select>
+        </mat-form-field>
+        <mat-form-field class="pl-2 pr-2" *ngIf="newPlanningModel.reiteration.repeatType == 2"
+        id="createDayOfWeek">
+          <mat-label>{{'Day of week' | translate}}</mat-label>
+          <mtx-select
+            [items]="[
+            { id: 1, name: 'Monday' | translate },
+            { id: 2, name: 'Tuesday' | translate },
+            { id: 3, name: 'Wednesday' | translate },
+            { id: 4, name: 'Thursday' | translate },
+            { id: 5, name: 'Friday' | translate },
+            { id: 6, name: 'Saturday' | translate },
+            { id: 0, name: 'Sunday' | translate }
+            ]"
+            bindLabel="name"
+            bindValue="id"
+            [typeahead]="typeahead"
+            [(ngModel)]="newPlanningModel.reiteration.dayOfWeek"
+            id="createDayOfWeek"
+          ></mtx-select>
+        </mat-form-field>
+        <mat-form-field class="pl-2 pr-2" *ngIf="newPlanningModel.reiteration.repeatType == 3"
+        id="createDayOfMonth">
+          <mat-label>{{'Day of month' | translate}}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="newPlanningModel.reiteration.dayOfMonth"
+            type="text"
+            id="createDayOfMonth"
+            name="createDayOfMonth"
+          />
+        </mat-form-field>
+      </div>
+      <mat-form-field class="pl-2 pr-2" [owlDateTimeTrigger]="dt2"
+      id="createStartFrom">
+        <mat-label>{{'Start from' | translate}}</mat-label>
+        <input
+          matInput
+          [owlDateTime]="dt2"
+          [max]="newPlanningModel.reiteration.internalRepeatUntil"
+          [ngModel]="newPlanningModel.reiteration.startDate"
+          (ngModelChange)="updateStartDate($event)"
+          type="text"
+          id="createStartFrom"
+          name="createStartFrom"
+        >
+        <owl-date-time [pickerType]="'calendar'" #dt2></owl-date-time>
+      </mat-form-field>
+      <mat-form-field class="pl-2 pr-2" [owlDateTimeTrigger]="dt1"
+      id="createRepeatUntil">
+        <mat-label>{{'RepeatUntil' | translate}}</mat-label>
+        <input
+          matInput
+          [owlDateTime]="dt1"
+          [min]="newPlanningModel.reiteration.startDate"
+          [(ngModel)]="newPlanningModel.reiteration.internalRepeatUntil"
+          (ngModelChange)="updateEndDate($event)"
+          type="text"
+          id="createRepeatUntil"
+          name="createRepeatUntil"
+        >
+        <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
+      </mat-form-field>
+
+      <mat-form-field class="pl-2 pr-2">
+        <mat-label>{{'Number' | translate}}</mat-label>
+        <input
+          matInput
+          [(ngModel)]="newPlanningModel.planningNumber"
+          type="text"
+          id="createItemNumber"
+          name="createItemNumber"
+        >
+      </mat-form-field>
+      <mat-form-field class="pl-2 pr-2">
+        <mat-label>{{'Location code' | translate}}</mat-label>
+        <input
+          matInput
+          [(ngModel)]="newPlanningModel.locationCode"
+          type="text"
+          id="createItemLocationCode"
+          name="createItemLocationCode"
+        >
+      </mat-form-field>
+      <mat-form-field class="pl-2 pr-2">
+        <mat-label>{{'Build year' | translate}}</mat-label>
+        <input
+          matInput
+          [(ngModel)]="newPlanningModel.buildYear"
+          type="text"
+          id="createItemBuildYear"
+          name="createItemBuildYear"
+        >
+      </mat-form-field>
+      <mat-form-field class="pl-2 pr-2">
+        <mat-label>{{'Type' | translate}}</mat-label>
+        <input
+          matInput
+          [(ngModel)]="newPlanningModel.type"
+          type="text"
+          id="createItemType"
+          name="createItemType"
+        >
+      </mat-form-field>
+
+      <mat-form-field class="pl-2 pr-2">
+        <mat-label>{{'pushMessageEnabled' | translate}}</mat-label>
+        <mtx-select
+          [items]="[
+          { name: 'Enabled' | translate, value: true },
+          { name: 'Disabled' | translate, value: false }
+          ]"
+          [(ngModel)]="newPlanningModel.reiteration.pushMessageEnabled"
+          id="pushMessageEnabledCreate"
+          [bindLabel]="'name'"
+          [bindValue]="'value'"
+          [clearable]="false"
+        ></mtx-select>
+      </mat-form-field>
+      <mat-form-field class="pl-2 pr-2">
+        <mat-label>{{'daysBeforeRedeploymentPushMessage' | translate}}</mat-label>
+        <mtx-select
+          [items]="daysBeforeRedeploymentPushMessage"
+          [(ngModel)]="newPlanningModel.reiteration.daysBeforeRedeploymentPushMessage"
+          [clearable]="false"
+          id="createDaysBeforeRedeploymentPushMessage"
+        ></mtx-select>
+      </mat-form-field>
+      <mat-form-field class="pl-2 pr-2">
+        <mat-label>{{'pushMessageOnDeployment' | translate}}</mat-label>
+        <mtx-select
+          [items]="[
+          { name: 'Enabled' | translate, value: true },
+          { name: 'Disabled' | translate, value: false }
+          ]"
+          [(ngModel)]="newPlanningModel.reiteration.pushMessageOnDeployment"
+          id="pushMessageOnDeployment"
+          [bindLabel]="'name'"
+          [bindValue]="'value'"
+          [clearable]="false"
+        ></mtx-select>
+      </mat-form-field>
+    </div>
+  </mat-card-content>
+</mat-card>

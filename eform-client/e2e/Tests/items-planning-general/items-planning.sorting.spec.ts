@@ -29,7 +29,7 @@ describe('Items planning plannings - Sorting', function () {
   });
   it('should be able to sort by ID', async () => {
     await browser.pause(1000);
-    let list = (await $$('#planningId'));
+    let list = (await $$('td.planningId'));
     const planningBefore = await Promise.all(list.map((item) => {
       return item.getText();
     }));
@@ -38,27 +38,28 @@ describe('Items planning plannings - Sorting', function () {
     for (let i = 0; i < 2; i++) {
       await itemsPlanningPlanningPage.clickIdTableHeader();
 
-      list = await $$('#planningId');
+      list = await $$('td.planningId');
       const planningAfter = await Promise.all(list.map((item) => {
         return item.getText();
       }));
 
       // get current direction of sorting
-      const sortIcon = await (await $('#idTableHeader i')).getText();
+
+      const sortIcon = await (await $('th.planningId')).$('.ng-trigger-leftPointer').getAttribute('style');
       let sorted;
-      if (sortIcon === 'expand_more') {
+      if (sortIcon === 'transform: rotate(45deg);') {
         sorted = planningBefore.sort().reverse();
       } else if (sortIcon === 'expand_less') {
-        sorted = planningBefore.sort();
-      } else {
         sorted = planningBefore;
+      } else {
+        sorted = planningBefore.sort();
       }
       expect(sorted, 'Sort by ID incorrect').deep.equal(planningAfter);
     }
     await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
   });
   it('should be able to sort by Name', async () => {
-    let list = await $$('#planningName');
+    let list = await $$('td.planningName');
     const planningBefore = await Promise.all(list.map((item) => {
       return item.getText();
     }));
@@ -67,20 +68,20 @@ describe('Items planning plannings - Sorting', function () {
     for (let i = 0; i < 2; i++) {
       await itemsPlanningPlanningPage.clickNameTableHeader();
 
-      list = await $$('#planningName');
+      list = await $$('td.planningName');
       const planningAfter = await Promise.all(list.map((item) => {
         return item.getText();
       }));
 
       // get current direction of sorting
-      const sortIcon = await (await $('#nameTableHeader i')).getText();
+      const sortIcon = await (await $('th.planningName')).$('.ng-trigger-leftPointer').getAttribute('style');
       let sorted;
-      if (sortIcon === 'expand_more') {
+      if (sortIcon === 'transform: rotate(45deg);') {
         sorted = planningBefore.sort().reverse();
       } else if (sortIcon === 'expand_less') {
-        sorted = planningBefore.sort();
-      } else {
         sorted = planningBefore;
+      } else {
+        sorted = planningBefore.sort();
       }
 
       await (await $('#spinner-animation')).waitForDisplayed({
@@ -92,7 +93,7 @@ describe('Items planning plannings - Sorting', function () {
     await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
   });
   it('should be able to sort by Description', async () => {
-    let list = await $$('#planningDescription');
+    let list = await $$('td.planningDescription');
     const planningBefore = await Promise.all(list.map((item) => {
       return item.getText();
     }));
@@ -101,20 +102,20 @@ describe('Items planning plannings - Sorting', function () {
     for (let i = 0; i < 2; i++) {
       await itemsPlanningPlanningPage.clickDescriptionTableHeader();
 
-      list = await $$('#planningDescription');
+      list = await $$('td.planningDescription');
       const planningAfter = await Promise.all(list.map((item) => {
         return item.getText();
       }));
 
       // get current direction of sorting
-      const sortIcon = await (await $('#descriptionTableHeader i')).getText();
+      const sortIcon = await (await $('th.planningDescription')).$('.ng-trigger-leftPointer').getAttribute('style');
       let sorted;
-      if (sortIcon === 'expand_more') {
+      if (sortIcon === 'transform: rotate(45deg);') {
         sorted = planningBefore.sort().reverse();
       } else if (sortIcon === 'expand_less') {
-        sorted = planningBefore.sort();
-      } else {
         sorted = planningBefore;
+      } else {
+        sorted = planningBefore.sort();
       }
 
       expect(sorted, 'Sort by Description incorrect').deep.equal(planningAfter);

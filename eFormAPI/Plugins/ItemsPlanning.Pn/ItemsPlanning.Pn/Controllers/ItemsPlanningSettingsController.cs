@@ -27,7 +27,6 @@ using Microsoft.AspNetCore.Http;
 using Microting.eForm.Dto;
 using Microting.eFormApi.BasePn.Abstractions;
 using Microting.eFormApi.BasePn.Infrastructure.Helpers;
-using OpenStack.NetCoreSwiftClient.Extensions;
 
 namespace ItemsPlanning.Pn.Controllers
 {

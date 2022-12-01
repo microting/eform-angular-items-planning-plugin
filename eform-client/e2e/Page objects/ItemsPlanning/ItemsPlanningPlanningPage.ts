@@ -12,7 +12,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
 
   public async rowNum(): Promise<number> {
     await browser.pause(500);
-    return (await $$('#tableBody > tr')).length;
+    return (await $$('tbody > tr')).length;
   }
 
   public async planningDeleteDeleteBtn(): Promise<WebdriverIO.Element> {
@@ -30,7 +30,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public async clickIdTableHeader() {
-    await (await $('#idTableHeader')).click();
+    await (await $('th.planningId')).click();
     await (await $('#spinner-animation')).waitForDisplayed({
       timeout: 90000,
       reverse: true,
@@ -38,7 +38,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public async clickNameTableHeader() {
-    await (await $('#nameTableHeader')).click();
+    await (await $('th.planningName')).click();
     await (await $('#spinner-animation')).waitForDisplayed({
       timeout: 90000,
       reverse: true,
@@ -46,7 +46,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public async clickDescriptionTableHeader() {
-    await (await $('#descriptionTableHeader')).click();
+    await (await $('th.planningDescription')).click();
     await (await $('#spinner-animation')).waitForDisplayed({
       timeout: 90000,
       reverse: true,
@@ -106,7 +106,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public async selectAllPlanningsCheckbox() {
-    const ele = await $('#selectAllPlanningsCheckbox');
+    const ele = await $('th.mat-column-MtxGridCheckboxColumnDef mat-checkbox');
     // ele.waitForDisplayed({ timeout: 40000 });
     // ele.waitForClickable({ timeout: 40000 });
     return ele;
@@ -272,7 +272,8 @@ export class PlanningRowObject {
     } else {
       await (await itemsPlanningModalPage.planningEditCancelBtn()).click();
     }
-    await (await itemsPlanningPlanningPage.planningId()).waitForDisplayed();
+    await browser.pause(500);
+    //await (await itemsPlanningPlanningPage.planningId()).waitForDisplayed();
   }
 
   public static async closeDelete(clickCancel = false) {
@@ -289,29 +290,27 @@ export class PlanningRowObject {
   }
 
   async getRow(rowNum: number): Promise<PlanningRowObject> {
-    const row = (await $$('#tableBody tr'))[rowNum - 1];
-    if (row) {
-      this.id = +(await (await row.$('#planningId')).getText());
-      this.name = await (await row.$('#planningName')).getText();
-      this.description = await (await row.$('#planningDescription')).getText();
-      this.folderName = await row.$('#planningFolderName').getText();
-      this.eFormName = await (await row.$('#planningRelatedEformName')).getText();
-      const list = await row.$$('#planningTags');
-      this.tags = await Promise.all(list.map((element) => element.getText()));
-      this.repeatEvery = +await ((await row.$('#planningRepeatEvery')).getText());
-      this.repeatType = await (await row.$('#planningRepeatType')).getText();
-      // const date = row.$('#planningRepeatUntil').getText();
-      // this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
-      this.pairingBtn = await row.$('#planningAssignmentBtn');
-      this.updateBtn = await row.$('#updatePlanningBtn');
-      this.deleteBtn = await row.$('#deletePlanningBtn');
-      try {
-        this.checkboxDelete = await $(`#planningCheckbox${rowNum - 1}`);
-      } catch (e) {}
-      try {
-        this.checkboxDeleteForClick = await this.checkboxDelete.$('..');
-      } catch (e) {}
-    }
+    rowNum = rowNum - 1;
+    this.id = +(await (await $$('td.planningId')[rowNum]).getText());
+    this.name = await (await $$('td.planningName')[rowNum]).getText();
+    this.description = await (await $$('td.planningDescription')[rowNum]).getText();
+    this.folderName = await $$('td.planningFolderName')[rowNum].getText();
+    this.eFormName = await (await $$('td.planningRelatedEformName')[rowNum]).getText();
+    const list = await $$('td.planningTags');
+    this.tags = await Promise.all(list.map((element) => element.getText()));
+    this.repeatEvery = +await ((await $$('td.planningRepeatEvery')[rowNum]).getText());
+    this.repeatType = await (await $$('td.planningRepeatType')[rowNum]).getText();
+    // const date = row.$('#planningRepeatUntil').getText();
+    // this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
+    this.pairingBtn = await $$('button.planningAssignmentBtn')[rowNum];
+    this.updateBtn = await $$('button.updatePlanningBtn')[rowNum];
+    this.deleteBtn = await $$('button.deletePlanningBtn')[rowNum];
+    // try {
+    //   this.checkboxDelete = await $(`#planningCheckbox${rowNum - 1}`);
+    // } catch (e) {}
+    // try {
+    //   this.checkboxDeleteForClick = await this.checkboxDelete.$('..');
+    // } catch (e) {}
     return this;
   }
 
@@ -559,18 +558,19 @@ export class PlanningRowObject {
 
   async readPairing(): Promise<{ workerName: string; workerValue: boolean }[]> {
     await this.pairingBtn.click();
+    await browser.pause(500);
     const changeAssignmentsCancel = await $('#changeAssignmentsCancel');
     await changeAssignmentsCancel.waitForClickable({
       timeout: 40000,
     });
     let pairings: { workerName: string; workerValue: boolean }[] = [];
-    const pairingTable = await $$('#pairingModalTableBody > tr');
+    const pairingTable = await $$('#pairingModalTableBody  tr.mat-row');
     for (let i = 0; i < pairingTable.length; i++) {
-      const workerName = await (await pairingTable[i].$$('td')[1]).getText();
+      const workerName = await (await pairingTable[i].$$('td > mtx-grid-cell > span')[1]).getText();
       const workerValue =
         (await (
-          await (await pairingTable[i].$$('td')[2]).$('input')
-        ).getValue()) === 'true';
+          await (await pairingTable[i].$$('td')[0]).$('mat-checkbox')
+        ).getAttribute('ng-reflect-checked')) === 'true';
       pairings = [...pairings, { workerName, workerValue }];
     }
     await changeAssignmentsCancel.click();

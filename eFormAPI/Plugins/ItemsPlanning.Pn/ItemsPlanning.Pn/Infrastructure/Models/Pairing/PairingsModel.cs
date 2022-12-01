@@ -25,11 +25,12 @@ SOFTWARE.
 namespace ItemsPlanning.Pn.Infrastructure.Models.Pairing
 {
     using System.Collections.Generic;
+    using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
 
     public class PairingsModel
     {
-        public List<string> DeviceUsers { get; set; }
-            = new List<string>();
+        public List<CommonDictionaryModel> DeviceUsers { get; set; }
+            = new List<CommonDictionaryModel>();
 
         public List<PairingModel> Pairings { get; set; }
             = new List<PairingModel>();

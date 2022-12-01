@@ -1,0 +1,48 @@
+<mtx-grid
+  [data]="planningsModel.entities"
+  [columns]="tableHeaders"
+  [cellTemplate]="{planningRelatedEformName: planningRelatedEformNameTpl, pushMessageSent: pushMessageSentTpl, tags: tagsTpl}"
+  [showPaginator]="true"
+  [paginationTemplate]="paginatorTpl"
+  [pageOnFront]="false"
+  [rowStriped]="true"
+  [showToolbar]="false"
+  [showColumnMenuButton]="false"
+  [sortActive]="planningsStateService.getActiveSort() | async"
+  [sortDirection]="planningsStateService.getActiveSortDirection() | async"
+  (sortChange)="onSortTable($event)"
+  [multiSelectable]="true"
+  [rowSelected]="getSelectedPlannings"
+  [rowSelectable]="true"
+  (rowSelectionChange)="updateSelectedPlannings($event)"
+></mtx-grid>
+<ng-template #planningRelatedEformNameTpl let-row>
+  <span>
+    {{ row.boundEform.relatedEFormName }}
+    <mat-icon
+      matTooltip="{{ 'Eform was deleted' | translate }}"
+      class="text-warn"
+      *ngIf="row.boundEform.isEformRemoved"
+    >warning</mat-icon>
+  </span>
+</ng-template>
+<ng-template #pushMessageSentTpl let-row>
+  <mat-icon *ngIf="row.pushMessageSent">done</mat-icon>
+  <mat-icon *ngIf="!row.pushMessageSent">close</mat-icon>
+</ng-template>
+<ng-template #tagsTpl let-row>
+  <div id="planningTags">
+    <mat-chip-list>
+      <mat-chip *ngFor="let tag of row.tags" color="primary" (click)="onTagSelected(tag.id)">
+        <mat-icon>discount</mat-icon>
+        <span>{{ tag.name }}</span>
+      </mat-chip>
+    </mat-chip-list>
+  </div>
+</ng-template>
+<ng-template #paginatorTpl>
+  <eform-pagination
+    [pagination]="planningsStateService.getPagination() | async"
+    (paginationChanged)="onPaginationChanged($event)"
+  ></eform-pagination>
+</ng-template>

@@ -51,6 +51,7 @@ describe('Items planning - Add', function () {
   it('should create planning with all fields', async () => {
     const rowNumBeforeCreatePlanning = await itemsPlanningPlanningPage.rowNum();
     await itemsPlanningModalPage.createPlanning(planningData);
+    await browser.pause(500);
     expect(rowNumBeforeCreatePlanning + 1, 'Planning not created').eq(
       await itemsPlanningPlanningPage.rowNum()
     );

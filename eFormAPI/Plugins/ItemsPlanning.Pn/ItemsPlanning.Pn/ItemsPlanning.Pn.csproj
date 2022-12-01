@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ServerGarbageCollection>false</ServerGarbageCollection>
     </PropertyGroup>
 
@@ -24,13 +24,13 @@
 
     <ItemGroup>
       <PackageReference Include="ExcelDataReader" Version="3.6.0" />
-      <PackageReference Include="Magick.NET-Q16-x64" Version="12.2.0" />
+      <PackageReference Include="Magick.NET-Q16-x64" Version="12.2.1" />
       <PackageReference Include="ClosedXML" Version="0.97.0" />
-      <PackageReference Include="Microting.eForm" Version="5.5.73" />
-      <PackageReference Include="Microting.eFormApi.BasePn" Version="3.1.100" />
+      <PackageReference Include="Microting.eForm" Version="7.0.1" />
+      <PackageReference Include="Microting.eFormApi.BasePn" Version="7.0.1" />
       <PackageReference Include="McMaster.NETCore.Plugins" Version="1.4.0" />
       <PackageReference Include="Microting.HtmlToOpenXml.dll" Version="2.3.1" />
-      <PackageReference Include="Microting.ItemsPlanningBase" Version="3.0.160" />
+      <PackageReference Include="Microting.ItemsPlanningBase" Version="7.0.2" />
     </ItemGroup>
 
     <ItemGroup>

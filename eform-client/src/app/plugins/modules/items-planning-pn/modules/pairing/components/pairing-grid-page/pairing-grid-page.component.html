@@ -1,0 +1,20 @@
+<eform-new-subheader>
+  <button
+    mat-raised-button
+    id="savePairingGridBtn"
+    color="accent"
+    [disabled]="pairingsForUpdate.length === 0"
+    matTooltip="{{ 'Update pairing' | translate }}"
+    (click)="showUpdatePairingsModal()"
+  >
+    {{ 'Save' | translate }}
+  </button>
+</eform-new-subheader>
+
+<app-pairing-grid-table
+  [pairingsModel]="pairings"
+  (pairingChanged)="onPairingChanged($event)"
+  (changedFilters)="onFiltersChanged()"
+  [selectedColCheckboxes]="selectedColCheckboxes"
+  [selectedRowCheckboxes]="selectedRowCheckboxes"
+></app-pairing-grid-table>

@@ -1,5 +1,7 @@
+import {CommonDictionaryModel} from 'src/app/common/models';
+
 export class PairingsModel {
-  deviceUsers: string[];
+  deviceUsers: CommonDictionaryModel[];
   pairings: PairingModel[];
 }
 
@@ -14,4 +16,5 @@ export class PairingValueModel {
   paired: boolean;
   latestCaseStatus: number | null;
   planningCaseSiteId: number | null;
+  deviceUserName: string | null;
 }

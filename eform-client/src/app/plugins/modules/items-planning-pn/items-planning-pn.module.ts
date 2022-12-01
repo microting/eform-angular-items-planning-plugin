@@ -9,32 +9,9 @@ import {EformCasesModule} from 'src/app/common/modules/eform-cases/eform-cases.m
 import { ItemsPlanningPnLayoutComponent } from './layouts';
 import {
   ItemsPlanningSettingsComponent,
-  PairingGridPageComponent,
-  PairingGridTableComponent,
-  PairingGridUpdateComponent,
-  PlanningAssignSitesModalComponent,
-  PlanningCaseDeleteComponent,
-  PlanningCasePageComponent,
-  PlanningCreateComponent,
-  PlanningDeleteComponent,
-  PlanningEditComponent,
-  PlanningFoldersModalComponent,
-  PlanningMultipleDeleteComponent,
-  PlanningsBulkImportModalComponent,
-  PlanningsContainerComponent,
-  PlanningsHeaderComponent,
-  PlanningsTableComponent,
-  PlanningTagsComponent,
-  ReportContainerComponent,
-  ReportHeaderComponent,
-  ReportImagesComponent,
-  ReportPostsComponent,
-  ReportTableComponent,
-  UploadedDataDeleteComponent,
-  UploadedDataPdfComponent,
 } from './components';
 import { RouterModule } from '@angular/router';
-import { ItemsPlanningPnRouting } from './items-planning-pn.routing.module';
+import { ItemsPlanningPnRouting } from './items-planning-pn.routing';
 import {
   ItemsPlanningPnCasesService,
   ItemsPlanningPnPairingService,
@@ -48,7 +25,6 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { EformSharedModule } from 'src/app/common/modules/eform-shared/eform-shared.module';
 import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/eform-shared-tags.module';
-import { planningsStoreProviders } from './store-providers.config';
 
 @NgModule({
   imports: [
@@ -69,30 +45,7 @@ import { planningsStoreProviders } from './store-providers.config';
   ],
   declarations: [
     ItemsPlanningPnLayoutComponent,
-    PlanningsContainerComponent,
-    PlanningCreateComponent,
-    PlanningCasePageComponent,
-    PlanningEditComponent,
-    PlanningDeleteComponent,
-    PlanningAssignSitesModalComponent,
-    PlanningFoldersModalComponent,
-    PlanningTagsComponent,
-    PlanningsBulkImportModalComponent,
-    PairingGridPageComponent,
-    PairingGridTableComponent,
-    PairingGridUpdateComponent,
     ItemsPlanningSettingsComponent,
-    ReportContainerComponent,
-    ReportHeaderComponent,
-    ReportTableComponent,
-    ReportPostsComponent,
-    ReportImagesComponent,
-    UploadedDataPdfComponent,
-    UploadedDataDeleteComponent,
-    PlanningsHeaderComponent,
-    PlanningsTableComponent,
-    PlanningMultipleDeleteComponent,
-    PlanningCaseDeleteComponent,
   ],
   providers: [
     ItemsPlanningPnSettingsService,
@@ -102,7 +55,6 @@ import { planningsStoreProviders } from './store-providers.config';
     ItemsPlanningPnUploadedDataService,
     ItemsPlanningPnTagsService,
     ItemsPlanningPnPairingService,
-    ...planningsStoreProviders,
     // SharedPnService, // need for planning case components
   ],
 })

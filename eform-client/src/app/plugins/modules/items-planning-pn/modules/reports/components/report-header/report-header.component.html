@@ -1,0 +1,69 @@
+<form [formGroup]="generateForm">
+  <div class="form-items need-wrapper">
+    <mat-form-field>
+      <mat-label>{{'Select tags' | translate}}</mat-label>
+      <mtx-select
+        class="custom"
+        dropdownPosition="bottom"
+        [items]="availableTags"
+        formControlName="tagIds"
+        [clearable]="false"
+        [bindLabel]="'name'"
+        [bindValue]="'id'"
+        (add)="addOrDeleteTagId($event)"
+        (remove)="addOrDeleteTagId($event.value)"
+        id="tagSelector"
+        [multiple]="true">
+      </mtx-select>
+    </mat-form-field>
+    <mat-form-field [owlDateTimeTrigger]="dateRangePicker">
+      <mat-label>{{ 'Select date range' | translate }}</mat-label>
+      <mat-icon matPrefix>calendar_today</mat-icon>
+      <input
+        matInput
+        formControlName="dateRange"
+        name="dateRange"
+        required
+        type="text"
+        [owlDateTime]="dateRangePicker"
+        [selectMode]="'range'"
+        id="dateFormInput"
+      >
+      <mat-error class="text-warn" *ngIf="dateRange.errors?.['required']">
+        {{'Date is required'| translate}}*
+      </mat-error>
+    </mat-form-field>
+    <div class="buttons">
+      <button
+        mat-raised-button
+        color="accent"
+        [disabled]="generateForm.invalid"
+        (click)="onSubmit()"
+      >
+        {{ 'Generate' | translate }}
+      </button>
+      <button
+        mat-icon-button
+        color="primary"
+        [disabled]="generateForm.invalid"
+        (click)="onSave()"
+      >
+        <mat-icon svgIcon="file-word"></mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        color="accent"
+        [disabled]="generateForm.invalid"
+        (click)="onExcelSave()"
+      >
+        <mat-icon svgIcon="file-excel"></mat-icon>
+      </button>
+    </div>
+  </div>
+</form>
+
+<owl-date-time
+  [pickerType]="'calendar'"
+  [firstDayOfWeek]="1"
+  #dateRangePicker
+></owl-date-time>

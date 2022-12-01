@@ -43,7 +43,7 @@ export class ItemsPlanningModalPage extends Page {
     } else {
       await (await this.editFolderName()).click();
     }
-    const treeViewport = await $('tree-viewport');
+    const treeViewport = await $('app-eform-tree-view-picker');
     await treeViewport.waitForDisplayed({ timeout: 20000 });
     await (await $(`#folderTreeName=${nameFolder}`)).click();
     await treeViewport.waitForDisplayed({ timeout: 2000, reverse: true });
@@ -289,9 +289,9 @@ export class ItemsPlanningModalPage extends Page {
     for (let i = 0; i < planning.name.length; i++) {
       await (await this.createPlanningItemName(i)).setValue(planning.name[i]);
     }
-    // if (planning.folderName) {
-    await this.selectFolder(planning.folderName);
-    // }
+    if (planning.folderName) {
+      await this.selectFolder(planning.folderName);
+    }
     // if (planning.eFormName) {
     await (await (await this.createPlanningSelector()).$('input')).setValue(
       planning.eFormName
@@ -314,7 +314,7 @@ export class ItemsPlanningModalPage extends Page {
       }
     }
     if (planning.repeatEvery) {
-      await (await this.createRepeatEvery()).setValue(planning.repeatEvery);
+      await (await $('input.createRepeatEvery')).setValue(planning.repeatEvery);
     }
     if (planning.repeatType) {
       await (await $('#createRepeatType input')).setValue(planning.repeatType);
@@ -356,7 +356,7 @@ export class ItemsPlanningModalPage extends Page {
       // );
     }
     if (planning.description) {
-      await (await this.createPlanningItemDescription()).setValue(
+      await (await (await this.createPlanningItemDescription()).$('input')).setValue(
         planning.description
       );
     }
@@ -409,7 +409,7 @@ export class ItemsPlanningModalPage extends Page {
       timeout: 90000,
       reverse: true,
     });
-    await (await this.planningId()).waitForDisplayed();
+    //await (await this.planningId()).waitForDisplayed();
   }
 
   public async addNewItem() {
