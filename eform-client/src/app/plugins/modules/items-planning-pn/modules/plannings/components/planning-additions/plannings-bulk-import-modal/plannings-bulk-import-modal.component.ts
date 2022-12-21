@@ -57,7 +57,7 @@ export class PlanningsBulkImportModalComponent implements OnInit {
         this.importFinished.emit();
         this.excelPlanningsModal();
       }
-      this.loaderService.isLoading.next(false);
+      this.loaderService.setLoading(false);
       this.xlsxPlannings.nativeElement.value = '';
     };
     this.xlsxPlanningsFileUploader.onErrorItem = () => {
@@ -78,7 +78,7 @@ export class PlanningsBulkImportModalComponent implements OnInit {
 
   uploadExcelPlanningsFile() {
     this.xlsxPlanningsFileUploader.queue[0].upload();
-    this.loaderService.isLoading.next(true);
+    this.loaderService.setLoading(true);
   }
 
   excelPlanningsModal() {
