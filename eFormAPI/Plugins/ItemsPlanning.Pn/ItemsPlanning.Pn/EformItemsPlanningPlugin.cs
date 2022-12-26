@@ -27,6 +27,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using eFormCore;
 using ItemsPlanning.Pn.Services.ItemsPlanningCaseService;
+using Microting.eForm.Dto;
 using Microting.eForm.Infrastructure.Constants;
 using Microting.eForm.Infrastructure.Data.Entities;
 using Microting.eFormApi.BasePn.Abstractions;
@@ -144,18 +145,8 @@ namespace ItemsPlanning.Pn
         {
             var serviceProvider = appBuilder.ApplicationServices;
 
-            string rabbitMqHost = "localhost";
-
-            if (_connectionString.Contains("frontend"))
-            {
-                var dbPrefix = Regex.Match(_connectionString, @"atabase=(\d*)_").Groups[1].Value;
-                rabbitMqHost = $"frontend-{dbPrefix}-rabbitmq";
-            }
-
             IRebusService rebusService = serviceProvider.GetService<IRebusService>();
-            rebusService!.Start(_connectionString, "admin", "password", rabbitMqHost).GetAwaiter().GetResult();
-
-            //_bus = rebusService.GetBus();
+            rebusService!.Start(_connectionString, "admin", "password", "localhost").GetAwaiter().GetResult();
         }
 
         public List<PluginMenuItemModel> GetNavigationMenu(IServiceProvider serviceProvider)
