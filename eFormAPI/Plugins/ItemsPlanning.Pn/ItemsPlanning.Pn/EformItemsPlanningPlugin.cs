@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using eFormCore;
 using ItemsPlanning.Pn.Services.ItemsPlanningCaseService;
 using Microting.eForm.Dto;
+using Microting.eForm.Dto;
 using Microting.eForm.Infrastructure.Constants;
 using Microting.eForm.Infrastructure.Data.Entities;
 using Microting.eFormApi.BasePn.Abstractions;
@@ -145,14 +146,8 @@ namespace ItemsPlanning.Pn
         {
             var serviceProvider = appBuilder.ApplicationServices;
 
-            var sdkCore = serviceProvider.GetService<Core>();
-
-            var rabbitMqHost = sdkCore.GetSdkSetting(Settings.rabbitMqHost).GetAwaiter().GetResult();
-
             IRebusService rebusService = serviceProvider.GetService<IRebusService>();
-            rebusService!.Start(_connectionString, "admin", "password", rabbitMqHost).GetAwaiter().GetResult();
-
-            //_bus = rebusService.GetBus();
+            rebusService!.Start(_connectionString, "admin", "password", "localhost").GetAwaiter().GetResult();
         }
 
         public List<PluginMenuItemModel> GetNavigationMenu(IServiceProvider serviceProvider)

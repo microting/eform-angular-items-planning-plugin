@@ -22,6 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System;
+using System.Text.RegularExpressions;
+using Microting.eForm.Dto;
+
 namespace ItemsPlanning.Pn.Services.RebusService
 {
     using System.Threading.Tasks;
@@ -49,15 +53,33 @@ namespace ItemsPlanning.Pn.Services.RebusService
 
         public async Task Start(string connectionString, string rabbitMqUser, string rabbitMqPassword, string rabbitMqHost)
         {
+            Console.WriteLine($"rabbitMqUser: {rabbitMqUser}");
+            Console.WriteLine($"rabbitMqPassword: {rabbitMqPassword}");
+            Console.WriteLine($"rabbitMqHost: {rabbitMqHost}");
+            Core core = await _coreHelper.GetCore();
             _connectionString = connectionString;
+
+            if (connectionString.Contains("frontend"))
+            {
+                var dbPrefix = Regex.Match(_connectionString, @"atabase=(\d*)_").Groups[1].Value;
+                rabbitMqHost = $"frontend-{dbPrefix}-rabbitmq";
+            }
+
+            var rabbitmqHost = core.GetSdkSetting(Settings.rabbitMqHost).GetAwaiter().GetResult();
+            Console.WriteLine($"rabbitmqHost: {rabbitmqHost}");
+
+            if (!string.IsNullOrEmpty(rabbitmqHost))
+            {
+                rabbitMqHost = rabbitmqHost;
+            }
+
             _container = new WindsorContainer();
             _container.Install(
                 new RebusHandlerInstaller()
                 , new RebusInstaller(connectionString, 1, 1, rabbitMqUser, rabbitMqPassword, rabbitMqHost)
             );
 
-            Core _core = await _coreHelper.GetCore();
-            _container.Register(Component.For<Core>().Instance(_core));
+            _container.Register(Component.For<Core>().Instance(core));
             _container.Register(Component.For<ItemsPlanningPnDbContext>().Instance(GetContext()));
             _bus = _container.Resolve<IBus>();
         }
