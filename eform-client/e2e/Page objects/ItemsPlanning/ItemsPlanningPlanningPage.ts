@@ -569,8 +569,8 @@ export class PlanningRowObject {
       const workerName = await (await pairingTable[i].$$('td > mtx-grid-cell > span')[1]).getText();
       const workerValue =
         (await (
-          await (await pairingTable[i].$$('td')[0]).$('mat-checkbox')
-        ).getAttribute('ng-reflect-checked')) === 'true';
+          await (await pairingTable[i].$$('td')[0]).$('.mat-checkbox-input')
+        ).getAttribute('aria-checked')) === 'true';
       pairings = [...pairings, { workerName, workerValue }];
     }
     await changeAssignmentsCancel.click();
