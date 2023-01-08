@@ -162,6 +162,11 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         foreach (var site in sites.Where(site => site.Id == assignedSite.SiteId))
                         {
                             assignedSite.Name = site.Name;
+                            assignedSite.Status = _dbContext.PlanningCaseSites
+                                .Where(x => x.PlanningId == planning.Id
+                                            && x.MicrotingSdkSiteId == site.Id
+                                            && x.WorkflowState != Constants.WorkflowStates.Removed)
+                                .Select(x => x.Status).FirstOrDefault();
                         }
                     }
 
@@ -419,6 +424,11 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     foreach (var site in sites.Where(site => site.Id == assignedSite.SiteId))
                     {
                         assignedSite.Name = site.Name;
+                        assignedSite.Status = _dbContext.PlanningCaseSites
+                            .Where(x => x.PlanningId == planning.Id
+                                        && x.MicrotingSdkSiteId == site.Id
+                                        && x.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Select(x => x.Status).FirstOrDefault();
                     }
                 }
 
@@ -677,7 +687,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     .Select(y => new PlanningAssignedSitesModel
                     {
                         Id = y.Id,
-                        SiteId = y.SiteId,
+                        SiteId = y.SiteId
                     }).ToList(),
                 Tags = x.PlanningsTags
                     .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)

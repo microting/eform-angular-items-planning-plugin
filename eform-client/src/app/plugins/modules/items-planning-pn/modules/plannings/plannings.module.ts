@@ -44,6 +44,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MtxButtonModule} from '@ng-matero/extensions/button';
 import {MtxProgressModule} from '@ng-matero/extensions/progress';
 import {MatCardModule} from '@angular/material/card';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -90,6 +91,7 @@ import {MatCardModule} from '@angular/material/card';
         MtxButtonModule,
         MtxProgressModule,
         MatCardModule,
+        MatCheckboxModule,
     ],
   providers: [planningsPersistProvider],
 })

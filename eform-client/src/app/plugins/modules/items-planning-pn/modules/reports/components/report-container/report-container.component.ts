@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild, ViewChildren} from '@angular/core';
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
-import {CasePostNewComponent} from 'src/app/common/modules/eform-cases/components';
+// import {CasePostNewComponent} from 'src/app/common/modules/eform-cases/components';
 import {
   ReportEformPnModel,
   ReportPnGenerateModel,
@@ -36,7 +36,7 @@ import {ViewportScroller} from '@angular/common';
 })
 export class ReportContainerComponent implements OnInit, OnDestroy {
   @ViewChildren(CollapseComponent) collapses: CollapseComponent[];
-  @ViewChild('newPostModal') newPostModal: CasePostNewComponent;
+  // @ViewChild('newPostModal') newPostModal: CasePostNewComponent;
   reportsModel: ReportEformPnModel[] = [];
   range: Date[] = [];
   casePostsListModel: CasePostsListModel = new CasePostsListModel();

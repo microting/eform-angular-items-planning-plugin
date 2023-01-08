@@ -35,4 +35,5 @@ export class PlanningAssignedSitesModel {
   siteId: number;
   name: string;
   siteUId: number;
+  status: number;
 }

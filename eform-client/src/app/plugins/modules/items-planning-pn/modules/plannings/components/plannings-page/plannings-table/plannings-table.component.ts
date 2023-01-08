@@ -33,11 +33,15 @@ export class PlanningsTableComponent implements OnInit {
 
   tableHeaders: MtxGridColumn[] = [
     {header: this.translateService.stream('Id'), field: 'id', sortProp: {id: 'Id'}, sortable: true, class: 'planningId'},
+    // tslint:disable-next-line:max-line-length
     {header: this.translateService.stream('TranslatedName'), field: 'translatedName', sortProp: {id: 'TranslatedName'}, sortable: true, class: 'planningName'},
     {header: this.translateService.stream('Description'), field: 'description', sortProp: {id: 'Description'}, sortable: true, class: 'planningDescription'},
+    // tslint:disable-next-line:max-line-length
     {header: this.translateService.stream('SdkFolderName'), field: 'folder.eFormSdkFolderName', sortProp: {id: 'SdkFolderName'}, sortable: true, class: 'planningFolderName'},
+    // tslint:disable-next-line:max-line-length
     {header: this.translateService.stream('RelatedEFormName'), field: 'planningRelatedEformName', sortProp: {id: 'RelatedEFormName'}, sortable: true, class: 'planningRelatedEformName'},
     {header: this.translateService.stream('Tags'), field: 'tags', class: 'planningTags'},
+    // tslint:disable-next-line:max-line-length
     {header: this.translateService.stream('RepeatEvery'), field: 'reiteration.repeatEvery', sortProp: {id: 'RepeatEvery'}, sortable: true, class: 'planningRepeatEvery'},
     {
       header: this.translateService.stream('RepeatType'),
@@ -169,7 +173,7 @@ export class PlanningsTableComponent implements OnInit {
   }
 
   onPaginationChanged(paginationModel: PaginationModel) {
-    this.paginationChanged.emit(paginationModel)
+    this.paginationChanged.emit(paginationModel);
   }
 
   updateSelectedPlannings(planningModels: PlanningModel[]) {
