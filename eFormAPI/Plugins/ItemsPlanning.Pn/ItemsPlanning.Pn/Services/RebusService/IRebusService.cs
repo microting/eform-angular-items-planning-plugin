@@ -29,7 +29,7 @@ namespace ItemsPlanning.Pn.Services.RebusService
 
     public interface IRebusService
     {
-        Task Start(string connectionString, string rabbitMqUser, string rabbitMqPassword, string rabbitMqHost);
+        Task Start(string connectionString);
         IBus GetBus();
     }
 }

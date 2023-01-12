@@ -146,7 +146,7 @@ namespace ItemsPlanning.Pn
             var serviceProvider = appBuilder.ApplicationServices;
 
             IRebusService rebusService = serviceProvider.GetService<IRebusService>();
-            rebusService!.Start(_connectionString, "admin", "password", "localhost").GetAwaiter().GetResult();
+            rebusService!.Start(_connectionString).GetAwaiter().GetResult();
         }
 
         public List<PluginMenuItemModel> GetNavigationMenu(IServiceProvider serviceProvider)
