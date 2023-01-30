@@ -256,6 +256,8 @@ export class PlanningRowObject {
   public repeatEvery: number;
   public repeatType: string;
   public repeatUntil: Date;
+  public nextExecution: string;
+  public lastExecution: string;
   public updateBtn: WebdriverIO.Element;
   public deleteBtn: WebdriverIO.Element;
   public pairingBtn: WebdriverIO.Element;
@@ -305,6 +307,8 @@ export class PlanningRowObject {
     this.pairingBtn = await $$('button.planningAssignmentBtn')[rowNum];
     this.updateBtn = await $$('button.updatePlanningBtn')[rowNum];
     this.deleteBtn = await $$('button.deletePlanningBtn')[rowNum];
+    this.lastExecution = await (await $$('td.mat-column-lastExecutedTime')[rowNum]).getText();
+    this.nextExecution = await (await $$('td.mat-column-nextExecutionTime')[rowNum]).getText();
     // try {
     //   this.checkboxDelete = await $(`#planningCheckbox${rowNum - 1}`);
     // } catch (e) {}
