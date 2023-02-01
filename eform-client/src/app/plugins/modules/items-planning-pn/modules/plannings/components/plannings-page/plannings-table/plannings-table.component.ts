@@ -33,6 +33,12 @@ export class PlanningsTableComponent implements OnInit {
 
   tableHeaders: MtxGridColumn[] = [
     {header: this.translateService.stream('Id'), field: 'id', sortProp: {id: 'Id'}, sortable: true, class: 'planningId'},
+    {header: this.translateService.stream('CreatedAt'), field: 'createdAt', sortProp: {id: 'CreatedAt'}, sortable: true,
+      type: 'date',
+      typeParameter: {format: 'dd.MM.y HH:mm:ss'},},
+    {header: this.translateService.stream('UpdatedAt'), field: 'updatedAt', sortProp: {id: 'UpdatedAt'}, sortable: true,
+      type: 'date',
+      typeParameter: {format: 'dd.MM.y HH:mm:ss'},},
     // tslint:disable-next-line:max-line-length
     {header: this.translateService.stream('TranslatedName'), field: 'translatedName', sortProp: {id: 'TranslatedName'}, sortable: true, class: 'planningName'},
     {header: this.translateService.stream('Description'), field: 'description', sortProp: {id: 'Description'}, sortable: true, class: 'planningDescription'},

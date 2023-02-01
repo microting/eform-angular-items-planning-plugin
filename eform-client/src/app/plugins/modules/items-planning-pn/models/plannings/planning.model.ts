@@ -29,6 +29,8 @@ export class PlanningModel {
   isLocked: boolean;
   isEditable: boolean;
   isHidden: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export class PlanningAssignedSitesModel {
