@@ -35,6 +35,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
       timeout: 90000,
       reverse: true,
     });
+    await browser.pause(500);
   }
 
   public async clickNameTableHeader() {
@@ -43,6 +44,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
       timeout: 90000,
       reverse: true,
     });
+    await browser.pause(500);
   }
 
   public async clickDescriptionTableHeader() {
@@ -51,6 +53,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
       timeout: 90000,
       reverse: true,
     });
+    await browser.pause(500);
   }
 
   public async itemPlanningButton() {
