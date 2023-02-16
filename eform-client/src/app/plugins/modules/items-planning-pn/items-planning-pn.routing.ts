@@ -2,9 +2,6 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {AdminGuard, PermissionGuard} from 'src/app/common/guards';
 import {ItemsPlanningPnLayoutComponent} from './layouts';
-import {
-  ItemsPlanningSettingsComponent,
-} from './components';
 import {ItemsPlanningPnClaims} from './enums';
 
 export const routes: Routes = [
@@ -22,11 +19,6 @@ export const routes: Routes = [
           import('./modules/plannings/plannings.module').then(
             (m) => m.PlanningsModule
           ),
-      },
-      {
-        path: 'settings',
-        canActivate: [AdminGuard],
-        component: ItemsPlanningSettingsComponent,
       },
       {
         path: 'reports',

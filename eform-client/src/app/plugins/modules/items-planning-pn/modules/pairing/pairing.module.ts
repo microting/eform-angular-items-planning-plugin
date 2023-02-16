@@ -13,7 +13,6 @@ import {
 } from './components';
 import {PairingRouting} from './pairing.routing';
 import {EformSharedModule} from 'src/app/common/modules/eform-shared/eform-shared.module';
-import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {MtxGridModule} from '@ng-matero/extensions/grid';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {EformCasesModule} from 'src/app/common/modules/eform-cases/eform-cases.module';
@@ -40,7 +39,6 @@ import {MatDialogModule} from '@angular/material/dialog';
         PairingRouting,
         OwlMomentDateTimeModule,
         EformSharedModule,
-        FontAwesomeModule,
         MtxGridModule,
         FormsModule,
         ReactiveFormsModule,

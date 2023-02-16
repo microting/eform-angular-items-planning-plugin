@@ -25,7 +25,6 @@ import {PlanningsReportQuery} from '../store';
 import {AuthStateService} from 'src/app/common/store';
 import {Gallery, GalleryItem, ImageItem} from '@ngx-gallery/core';
 import {Lightbox} from '@ngx-gallery/lightbox';
-import {CollapseComponent} from 'angular-bootstrap-md';
 import {ViewportScroller} from '@angular/common';
 
 @AutoUnsubscribe()
@@ -35,7 +34,6 @@ import {ViewportScroller} from '@angular/common';
   styleUrls: ['./report-container.component.scss'],
 })
 export class ReportContainerComponent implements OnInit, OnDestroy {
-  @ViewChildren(CollapseComponent) collapses: CollapseComponent[];
   // @ViewChild('newPostModal') newPostModal: CasePostNewComponent;
   reportsModel: ReportEformPnModel[] = [];
   range: Date[] = [];
@@ -238,11 +236,11 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
 
   toggleCollapse(i: number) {
     this.isDescriptionBlockCollapsed[i] = !this.isDescriptionBlockCollapsed[i];
-    this.collapses.forEach((collapse: CollapseComponent, index) => {
-      if(index === i) {
-        collapse.toggle();
-      }
-    });
+    // this.collapses.forEach((collapse: CollapseComponent, index) => {
+    //   if(index === i) {
+    //     collapse.toggle();
+    //   }
+    // });
   }
 
   ngOnDestroy(): void {

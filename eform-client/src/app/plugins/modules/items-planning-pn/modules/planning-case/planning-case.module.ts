@@ -5,7 +5,6 @@ import {GallerizeModule} from '@ngx-gallery/gallerize';
 import {LightboxModule} from '@ngx-gallery/lightbox';
 import {GalleryModule} from '@ngx-gallery/core';
 import {FormsModule} from '@angular/forms';
-import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {PlanningCaseRouting} from './planning-case.routing';
 import {CasesModule} from 'src/app/modules';
 import {EformImportedModule} from 'src/app/common/modules/eform-imported/eform-imported.module';
@@ -34,7 +33,6 @@ import {MatButtonModule} from '@angular/material/button';
     LightboxModule,
     GalleryModule,
     FormsModule,
-    FontAwesomeModule,
     CasesModule,
     EformCasesModule,
     OwlDateTimeModule,

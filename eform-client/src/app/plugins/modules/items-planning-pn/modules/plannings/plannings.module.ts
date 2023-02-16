@@ -19,14 +19,10 @@ import {
   PlanningsHeaderComponent,
   PlanningsTableComponent,
   PlanningTagsComponent,
-  UploadedDataDeleteComponent,
-  UploadedDataPdfComponent,
 } from './components';
 import {PlanningsRouting} from './plannings.routing';
 import {EformSharedModule} from 'src/app/common/modules/eform-shared/eform-shared.module';
-import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {MtxGridModule} from '@ng-matero/extensions/grid';
-import {MDBBootstrapModule} from 'angular-bootstrap-md';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgSelectModule} from '@ng-select/ng-select';
 import {FileUploadModule} from 'ng2-file-upload';
@@ -60,8 +56,6 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     PlanningsHeaderComponent,
     PlanningsTableComponent,
     PlanningTagsComponent,
-    UploadedDataDeleteComponent,
-    UploadedDataPdfComponent,
   ],
     imports: [
         CommonModule,
@@ -71,9 +65,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
         PlanningsRouting,
         OwlMomentDateTimeModule,
         EformSharedModule,
-        FontAwesomeModule,
         MtxGridModule,
-        MDBBootstrapModule,
         FormsModule,
         NgSelectModule,
         ReactiveFormsModule,
