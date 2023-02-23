@@ -35,6 +35,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
       timeout: 90000,
       reverse: true,
     });
+    await browser.pause(500);
   }
 
   public async clickNameTableHeader() {
@@ -43,6 +44,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
       timeout: 90000,
       reverse: true,
     });
+    await browser.pause(500);
   }
 
   public async clickDescriptionTableHeader() {
@@ -51,6 +53,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
       timeout: 90000,
       reverse: true,
     });
+    await browser.pause(500);
   }
 
   public async itemPlanningButton() {
@@ -256,6 +259,9 @@ export class PlanningRowObject {
   public repeatEvery: number;
   public repeatType: string;
   public repeatUntil: Date;
+  public planningDayOfWeek: string;
+  public nextExecution: string;
+  public lastExecution: string;
   public updateBtn: WebdriverIO.Element;
   public deleteBtn: WebdriverIO.Element;
   public pairingBtn: WebdriverIO.Element;
@@ -305,6 +311,9 @@ export class PlanningRowObject {
     this.pairingBtn = await $$('button.planningAssignmentBtn')[rowNum];
     this.updateBtn = await $$('button.updatePlanningBtn')[rowNum];
     this.deleteBtn = await $$('button.deletePlanningBtn')[rowNum];
+    this.lastExecution = await (await $$('td.mat-column-lastExecutedTime')[rowNum]).getText();
+    this.nextExecution = await (await $$('td.mat-column-nextExecutionTime')[rowNum]).getText();
+    this.planningDayOfWeek = await (await $$('td.planningDayOfWeek')[rowNum]).getText();
     // try {
     //   this.checkboxDelete = await $(`#planningCheckbox${rowNum - 1}`);
     // } catch (e) {}
@@ -566,11 +575,11 @@ export class PlanningRowObject {
     let pairings: { workerName: string; workerValue: boolean }[] = [];
     const pairingTable = await $$('#pairingModalTableBody  tr.mat-row');
     for (let i = 0; i < pairingTable.length; i++) {
-      const workerName = await (await pairingTable[i].$$('td > mtx-grid-cell > span')[1]).getText();
+      const workerName = await (await pairingTable[i].$$('td.mat-cell')[1]).getText();
       const workerValue =
         (await (
-          await (await pairingTable[i].$$('td')[0]).$('mat-checkbox')
-        ).getAttribute('ng-reflect-checked')) === 'true';
+          await (await pairingTable[i].$$('td')[2]).$('.mat-checkbox-input')
+        ).getAttribute('aria-checked')) === 'true';
       pairings = [...pairings, { workerName, workerValue }];
     }
     await changeAssignmentsCancel.click();

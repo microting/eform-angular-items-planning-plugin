@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microting.ItemsPlanningBase.Infrastructure.Enums;
+
 namespace ItemsPlanning.Pn.Services.PlanningService
 {
     using System;
@@ -138,7 +140,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     .ToList();
 
                 // add select and take objects from db
-                var sql = planningQueryWithSelect.ToQueryString();
+                //var sql = planningQueryWithSelect.ToQueryString();
                 List<PlanningPnModel> plannings = await planningQueryWithSelect.ToListAsync();
 
                 // get site names
@@ -162,6 +164,11 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         foreach (var site in sites.Where(site => site.Id == assignedSite.SiteId))
                         {
                             assignedSite.Name = site.Name;
+                            assignedSite.Status = _dbContext.PlanningCaseSites
+                                .Where(x => x.PlanningId == planning.Id
+                                            && x.MicrotingSdkSiteId == site.Id
+                                            && x.WorkflowState != Constants.WorkflowStates.Removed)
+                                .Select(x => x.Status).FirstOrDefault();
                         }
                     }
 
@@ -419,6 +426,11 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     foreach (var site in sites.Where(site => site.Id == assignedSite.SiteId))
                     {
                         assignedSite.Name = site.Name;
+                        assignedSite.Status = _dbContext.PlanningCaseSites
+                            .Where(x => x.PlanningId == planning.Id
+                                        && x.MicrotingSdkSiteId == site.Id
+                                        && x.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Select(x => x.Status).FirstOrDefault();
                     }
                 }
 
@@ -637,6 +649,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 IsLocked = x.IsLocked,
                 IsEditable = x.IsEditable,
                 IsHidden = x.IsHidden,
+                CreatedAt = x.CreatedAt,
+                UpdatedAt = x.UpdatedAt,
                 TranslationsName = x.NameTranslations.Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                     .Select(y => new PlanningNameTranslations
                     {
@@ -655,8 +669,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     RepeatEvery = x.RepeatEvery,
                     RepeatType = x.RepeatType,
                     RepeatUntil = x.RepeatUntil,
-                    DayOfWeek = x.DayOfWeek,
-                    DayOfMonth = (int)x.DayOfMonth,
+                    DayOfWeek = x.RepeatType == RepeatType.Day ? null : x.DayOfWeek,
+                    DayOfMonth = x.RepeatType == RepeatType.Day ? null : x.RepeatType == RepeatType.Week ? null : (int)x.DayOfMonth,
                     StartDate = x.StartDate,
                     PushMessageEnabled = x.DaysBeforeRedeploymentPushMessageRepeat,
                     DaysBeforeRedeploymentPushMessage = x.DaysBeforeRedeploymentPushMessage,
@@ -677,7 +691,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     .Select(y => new PlanningAssignedSitesModel
                     {
                         Id = y.Id,
-                        SiteId = y.SiteId,
+                        SiteId = y.SiteId
                     }).ToList(),
                 Tags = x.PlanningsTags
                     .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)

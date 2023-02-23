@@ -8,6 +8,7 @@ import {
 import { SiteNameDto } from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import {
+  PlanningAssignedSitesModel,
   PlanningAssignSitesModel,
   PlanningModel,
 } from '../../../../../models';
@@ -55,6 +56,7 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<PlanningAssignSitesModalComponent>,
     @Inject(MAT_DIALOG_DATA) model: {sitesDto: SiteNameDto[], selectedPlanning: PlanningModel}
   ) {
+    // debugger;
     this.sitesDto = model.sitesDto;
     this.selectedPlanning = model.selectedPlanning;
   }
@@ -62,6 +64,49 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.assignModel = new PlanningAssignSitesModel();
     this.rowSelected = this.sitesDto.filter(siteDto => this.selectedPlanning.assignedSites.some(x => x.siteId === siteDto.id));
+  }
+
+  getAssignmentBySiteId(siteId: number): string {
+    const assignedSite = this.selectedPlanning.assignedSites.find(
+      (x) => x.siteId === siteId
+    );
+    return !assignedSite ? 'false' : 'true';
+  }
+
+  addToArray(e: any, siteId: number) {
+    const assignmentObject = new PlanningAssignedSitesModel();
+    const site = this.sitesDto.find(
+      (x) => x.id === siteId
+    );
+    if (e.checked) {
+      assignmentObject.siteId = site.id;
+      assignmentObject.siteUId = site.siteUId;
+      assignmentObject.name = site.siteName;
+      this.selectedPlanning.assignedSites = [
+        ...this.selectedPlanning.assignedSites,
+        assignmentObject,
+      ];
+    } else {
+      this.selectedPlanning.assignedSites = this.selectedPlanning.assignedSites.filter(
+        (x) => x.siteId !== siteId
+      );
+    }
+    this.rowSelected = this.sitesDto.filter(siteDto => this.selectedPlanning.assignedSites.some(x => x.siteId === siteDto.id));
+  }
+
+  getLatestCaseStatus(siteId: number) {
+    const assignedSite = this.selectedPlanning.assignedSites.find(
+      (x) => x.siteId === siteId
+    );
+    if (assignedSite) {
+      if (assignedSite.status !== undefined) {
+        return assignedSite.status;
+      } else {
+        return 0;
+      }
+    } else {
+      return 0;
+    }
   }
 
   submitAssignment() {

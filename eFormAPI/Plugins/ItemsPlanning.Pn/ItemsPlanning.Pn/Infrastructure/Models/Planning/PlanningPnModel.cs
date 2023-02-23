@@ -77,5 +77,9 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
         public bool IsEditable { get; set; }
 
         public bool IsHidden { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
     }
 }

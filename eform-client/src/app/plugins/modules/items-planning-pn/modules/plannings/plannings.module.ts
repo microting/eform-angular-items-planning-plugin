@@ -19,14 +19,10 @@ import {
   PlanningsHeaderComponent,
   PlanningsTableComponent,
   PlanningTagsComponent,
-  UploadedDataDeleteComponent,
-  UploadedDataPdfComponent,
 } from './components';
 import {PlanningsRouting} from './plannings.routing';
 import {EformSharedModule} from 'src/app/common/modules/eform-shared/eform-shared.module';
-import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {MtxGridModule} from '@ng-matero/extensions/grid';
-import {MDBBootstrapModule} from 'angular-bootstrap-md';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgSelectModule} from '@ng-select/ng-select';
 import {FileUploadModule} from 'ng2-file-upload';
@@ -44,6 +40,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MtxButtonModule} from '@ng-matero/extensions/button';
 import {MtxProgressModule} from '@ng-matero/extensions/progress';
 import {MatCardModule} from '@angular/material/card';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -59,8 +56,6 @@ import {MatCardModule} from '@angular/material/card';
     PlanningsHeaderComponent,
     PlanningsTableComponent,
     PlanningTagsComponent,
-    UploadedDataDeleteComponent,
-    UploadedDataPdfComponent,
   ],
     imports: [
         CommonModule,
@@ -70,9 +65,7 @@ import {MatCardModule} from '@angular/material/card';
         PlanningsRouting,
         OwlMomentDateTimeModule,
         EformSharedModule,
-        FontAwesomeModule,
         MtxGridModule,
-        MDBBootstrapModule,
         FormsModule,
         NgSelectModule,
         ReactiveFormsModule,
@@ -90,6 +83,7 @@ import {MatCardModule} from '@angular/material/card';
         MtxButtonModule,
         MtxProgressModule,
         MatCardModule,
+        MatCheckboxModule,
     ],
   providers: [planningsPersistProvider],
 })

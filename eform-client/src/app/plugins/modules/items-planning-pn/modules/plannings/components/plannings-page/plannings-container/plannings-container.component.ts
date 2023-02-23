@@ -88,7 +88,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterView
     this.tagsChangedSub$ = this.planningTagsModal.tagsChanged.subscribe(() => {
       this.getTags();
       this.getPlannings();
-    })
+    });
   }
 
   getAllInitialData() {
@@ -189,7 +189,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterView
 
   openAssignmentModal(planning: PlanningModel) {
     const planningAssignSitesModal = this.dialog.open(PlanningAssignSitesModalComponent,
-      {...dialogConfigHelper(this.overlay, {sitesDto: this.sitesDto,selectedPlanning: planning}), minWidth: 500});
+      {...dialogConfigHelper(this.overlay, {sitesDto: this.sitesDto, selectedPlanning: planning}), minWidth: 500});
     this.deletePlanningSub$ = planningAssignSitesModal.componentInstance.sitesAssigned.subscribe(_ => this.getPlannings());
   }
 

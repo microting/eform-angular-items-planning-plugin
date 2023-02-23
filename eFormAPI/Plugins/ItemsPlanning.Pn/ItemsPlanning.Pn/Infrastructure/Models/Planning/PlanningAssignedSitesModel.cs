@@ -31,5 +31,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
         public string Name { get; set; }
 
         public int SiteId { get; set; }
+
+        public int Status { get; set; }
     }
 }
