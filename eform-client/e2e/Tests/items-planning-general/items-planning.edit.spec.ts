@@ -10,7 +10,6 @@ import {
 } from '../../Helpers/helper-functions';
 import myEformsPage from '../../Page objects/MyEforms.page';
 import foldersPage from '../../Page objects/Folders.page';
-import { format, parse } from 'date-fns';
 
 const expect = require('chai').expect;
 let planningData: PlanningCreateUpdate = {

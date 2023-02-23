@@ -43,8 +43,7 @@
 <mat-card class="mt-2">
   <mat-card-content>
     <div class="d-grid grid-4-columns">
-      <mat-form-field class="pl-2 pr-2"
-      id="createPlanningItemDescription">
+      <mat-form-field class="pl-2 pr-2">
         <mat-label>{{'Description' | translate}}</mat-label>
         <input
           matInput
@@ -66,8 +65,7 @@
           name="folderSelectorInput"
         >
       </mat-form-field>
-      <mat-form-field class="pl-2 pr-2"
-      id="createPlanningSelector">
+      <mat-form-field class="pl-2 pr-2">
         <mat-label>{{'Selected template' | translate}}</mat-label>
         <mtx-select
           [items]="templatesModel.templates"
@@ -78,8 +76,7 @@
           id="createPlanningSelector"
         ></mtx-select>
       </mat-form-field>
-      <mat-form-field class="pl-2 pr-2"
-      id="createPlanningTagsSelector">
+      <mat-form-field class="pl-2 pr-2">
         <mat-label>{{'Tags' | translate}}</mat-label>
         <mtx-select
           class="custom"
@@ -105,8 +102,7 @@
         >
       </mat-form-field>
       <div class="d-grid" [class.grid-2-columns]="newPlanningModel.reiteration.repeatType > 1">
-        <mat-form-field class="pl-2 pr-2"
-        id="createRepeatType">
+        <mat-form-field class="pl-2 pr-2">
           <mat-label>{{'Repeat Type' | translate}}</mat-label>
           <mtx-select
             [items]="[
@@ -121,8 +117,7 @@
             id="createRepeatType"
           ></mtx-select>
         </mat-form-field>
-        <mat-form-field class="pl-2 pr-2" *ngIf="newPlanningModel.reiteration.repeatType == 2"
-        id="createDayOfWeek">
+        <mat-form-field class="pl-2 pr-2" *ngIf="newPlanningModel.reiteration.repeatType == 2">
           <mat-label>{{'Day of week' | translate}}</mat-label>
           <mtx-select
             [items]="[
@@ -141,8 +136,7 @@
             id="createDayOfWeek"
           ></mtx-select>
         </mat-form-field>
-        <mat-form-field class="pl-2 pr-2" *ngIf="newPlanningModel.reiteration.repeatType == 3"
-        id="createDayOfMonth">
+        <mat-form-field class="pl-2 pr-2" *ngIf="newPlanningModel.reiteration.repeatType == 3">
           <mat-label>{{'Day of month' | translate}}</mat-label>
           <input
             matInput
@@ -153,8 +147,7 @@
           />
         </mat-form-field>
       </div>
-      <mat-form-field class="pl-2 pr-2" [owlDateTimeTrigger]="dt2"
-      id="createStartFrom">
+      <mat-form-field class="pl-2 pr-2" [owlDateTimeTrigger]="dt2">
         <mat-label>{{'Start from' | translate}}</mat-label>
         <input
           matInput
@@ -168,14 +161,13 @@
         >
         <owl-date-time [pickerType]="'calendar'" #dt2></owl-date-time>
       </mat-form-field>
-      <mat-form-field class="pl-2 pr-2" [owlDateTimeTrigger]="dt1"
-      id="createRepeatUntil">
+      <mat-form-field class="pl-2 pr-2" [owlDateTimeTrigger]="dt1">
         <mat-label>{{'RepeatUntil' | translate}}</mat-label>
         <input
           matInput
           [owlDateTime]="dt1"
           [min]="newPlanningModel.reiteration.startDate"
-          [(ngModel)]="newPlanningModel.reiteration.internalRepeatUntil"
+          [ngModel]="newPlanningModel.reiteration.internalRepeatUntil"
           (ngModelChange)="updateEndDate($event)"
           type="text"
           id="createRepeatUntil"

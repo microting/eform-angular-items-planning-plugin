@@ -21,6 +21,7 @@ import { AuthStateService } from 'src/app/common/store';
 import {MtxGridColumn} from '@ng-matero/extensions/grid';
 import {TranslateService} from '@ngx-translate/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @AutoUnsubscribe()
 @Component({
@@ -35,8 +36,10 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
   rowSelected: SiteNameDto[] = [];
   sitesDto: SiteNameDto[] = [];
   tableHeaders: MtxGridColumn[] = [
-    { header: this.translateService.stream('Microting ID'), field: 'siteUId', },
+    { header: this.translateService.stream('Microting ID'), field: 'id', },
     { header: this.translateService.stream('Device user'), field: 'siteName', },
+    { header: this.translateService.stream('Select'), field: 'select', },
+    { header: this.translateService.stream('Status'), field: 'status', },
   ];
 
   pairSingle$: Subscription;
@@ -66,19 +69,19 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
     this.rowSelected = this.sitesDto.filter(siteDto => this.selectedPlanning.assignedSites.some(x => x.siteId === siteDto.id));
   }
 
-  getAssignmentBySiteId(siteId: number): string {
+  getAssignmentBySiteId(siteId: number): boolean {
     const assignedSite = this.selectedPlanning.assignedSites.find(
       (x) => x.siteId === siteId
     );
-    return !assignedSite ? 'false' : 'true';
+    return !!assignedSite;
   }
 
-  addToArray(e: any, siteId: number) {
+  addToArray(checked: MatCheckboxChange, siteId: number) {
     const assignmentObject = new PlanningAssignedSitesModel();
     const site = this.sitesDto.find(
       (x) => x.id === siteId
     );
-    if (e.checked) {
+    if (checked.checked) {
       assignmentObject.siteId = site.id;
       assignmentObject.siteUId = site.siteUId;
       assignmentObject.name = site.siteName;

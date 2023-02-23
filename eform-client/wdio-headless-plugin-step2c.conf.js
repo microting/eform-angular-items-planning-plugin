@@ -13,9 +13,9 @@ exports.config = {
     //
     specs: [
       'e2e/Tests/items-planning-settings/application-settings.plugins-page.spec.ts',
-      //'e2e/Tests/items-planning-general/items-planning.pairing.spec.ts', // TODO: uncomment this line when the test is fixed
-      //'e2e/Tests/items-planning-general/items-planning.tags.spec.ts', // TODO: uncomment this line when the test is fixed
-      // 'e2e/Tests/items-planning-general/items-planning.import.spec.ts' // Disabled until async is implemented completely.
+      'e2e/Tests/items-planning-general/items-planning.pairing.spec.ts',
+      'e2e/Tests/items-planning-general/items-planning.tags.spec.ts',
+      'e2e/Tests/items-planning-general/items-planning.import.spec.ts'
     ],
     suites: {
         settings: [

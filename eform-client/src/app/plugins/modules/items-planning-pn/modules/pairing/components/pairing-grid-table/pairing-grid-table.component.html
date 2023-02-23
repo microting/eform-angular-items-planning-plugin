@@ -69,7 +69,7 @@
 </ng-template>
 
 <ng-template #otherCellsTpl let-row let-index="index" let-col="colDef">
-  <div class="d-flex">
+  <div class="d-flex column{{col.index}}-row{{index}}">
     <mat-checkbox
       [ngModel]="getIsPaired(row, col.field)"
       (ngModelChange)="checked($event, getPairingByIndex(index).planningId, getPairingValueByIndex(row, col.field).deviceUserId)"

@@ -171,11 +171,16 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     return masResult;
   }
 
-  public async clearTable() {
-    await browser.pause(2000);
-    const rowCount = await itemsPlanningPlanningPage.rowNum();
-    for (let i = 1; i <= rowCount; i++) {
-      await (await this.getFirstPlanningRowObject()).delete();
+  public async clearTable(deleteWithMultipleDelete: boolean = true) {
+    if (deleteWithMultipleDelete) {
+      await this.selectAllPlanningsForDelete();
+      await this.multipleDelete();
+    } else {
+      await browser.pause(2000);
+      const rowCount = await this.rowNum();
+      for (let i = 1; i <= rowCount; i++) {
+        await (await this.getFirstPlanningRowObject()).delete();
+      }
     }
   }
 
@@ -250,6 +255,7 @@ export default itemsPlanningPlanningPage;
 export class PlanningRowObject {
   constructor() {}
 
+  public row: WebdriverIO.Element;
   public id: number;
   public name: string;
   public description: string;
@@ -271,10 +277,7 @@ export class PlanningRowObject {
   public static async closeEdit(clickCancel = false) {
     if (!clickCancel) {
       await (await itemsPlanningModalPage.planningEditSaveBtn()).click();
-      await (await $('#spinner-animation')).waitForDisplayed({
-        timeout: 90000,
-        reverse: true,
-      });
+      await itemsPlanningModalPage.waitForSpinnerHide();
     } else {
       await (await itemsPlanningModalPage.planningEditCancelBtn()).click();
     }
@@ -297,29 +300,33 @@ export class PlanningRowObject {
 
   async getRow(rowNum: number): Promise<PlanningRowObject> {
     rowNum = rowNum - 1;
-    this.id = +(await (await $$('td.planningId')[rowNum]).getText());
-    this.name = await (await $$('td.planningName')[rowNum]).getText();
-    this.description = await (await $$('td.planningDescription')[rowNum]).getText();
-    this.folderName = await $$('td.planningFolderName')[rowNum].getText();
-    this.eFormName = await (await $$('td.planningRelatedEformName')[rowNum]).getText();
-    const list = await $$('td.planningTags');
-    this.tags = await Promise.all(list.map((element) => element.getText()));
-    this.repeatEvery = +await ((await $$('td.planningRepeatEvery')[rowNum]).getText());
-    this.repeatType = await (await $$('td.planningRepeatType')[rowNum]).getText();
-    // const date = row.$('#planningRepeatUntil').getText();
-    // this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
-    this.pairingBtn = await $$('button.planningAssignmentBtn')[rowNum];
-    this.updateBtn = await $$('button.updatePlanningBtn')[rowNum];
-    this.deleteBtn = await $$('button.deletePlanningBtn')[rowNum];
-    this.lastExecution = await (await $$('td.mat-column-lastExecutedTime')[rowNum]).getText();
-    this.nextExecution = await (await $$('td.mat-column-nextExecutionTime')[rowNum]).getText();
-    this.planningDayOfWeek = await (await $$('td.planningDayOfWeek')[rowNum]).getText();
-    // try {
-    //   this.checkboxDelete = await $(`#planningCheckbox${rowNum - 1}`);
-    // } catch (e) {}
-    // try {
-    //   this.checkboxDeleteForClick = await this.checkboxDelete.$('..');
-    // } catch (e) {}
+    this.row = await $$('tbody > tr')[rowNum];
+    if (this.row) {
+      this.checkboxDelete = await this.row.$('.mat-column-MtxGridCheckboxColumnDef mat-checkbox');
+      this.checkboxDeleteForClick = await this.row.$('.mat-column-MtxGridCheckboxColumnDef mat-checkbox label');
+      this.id = +(await (await this.row.$('.mat-column-id span')).getText());
+      this.name = (await (await this.row.$('.mat-column-translatedName span')).getText());
+      this.description = (await (await this.row.$('.mat-column-description span')).getText());
+      this.folderName = (await (await this.row.$('.mat-column-folder-eFormSdkFolderName span')).getText());
+      this.eFormName = (await (await this.row.$('.mat-column-planningRelatedEformName span')).getText());
+
+      const tags = (await (await this.row.$('.mat-column-tags')).getText()).split('discount');
+      if(tags.length > 0) {
+        tags[tags.length - 1] = tags[tags.length - 1].replace('edit', '');
+        this.tags = tags.filter(x => x); // delete empty strings
+      }
+
+      this.repeatEvery = +(await (await this.row.$('.mat-column-reiteration-repeatEvery span')).getText());
+      this.repeatType = (await (await this.row.$('.mat-column-reiteration-repeatType span')).getText());
+      this.planningDayOfWeek = (await (await this.row.$('.mat-column-reiteration-dayOfWeek span')).getText());
+      this.lastExecution = (await (await this.row.$('.mat-column-lastExecutedTime span')).getText());
+      this.nextExecution = (await (await this.row.$('.mat-column-nextExecutionTime span')).getText());
+      // const date = row.$('#planningRepeatUntil').getText();
+      // this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
+      this.pairingBtn = await this.row.$$('.mat-column-actions button')[0];
+      this.updateBtn = await this.row.$$('.mat-column-actions button')[1];
+      this.deleteBtn = await this.row.$$('.mat-column-actions button')[2];
+    }
     return this;
   }
 
