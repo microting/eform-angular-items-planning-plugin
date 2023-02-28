@@ -69,22 +69,24 @@
 </ng-template>
 
 <ng-template #otherCellsTpl let-row let-index="index" let-col="colDef">
-  <div class="d-flex column{{col.index}}-row{{index}}">
-    <mat-checkbox
-      [ngModel]="getIsPaired(row, col.field)"
-      (ngModelChange)="checked($event, getPairingByIndex(index).planningId, getPairingValueByIndex(row, col.field).deviceUserId)"
-      id="deviceUserCheckbox{{ index }}_planning{{ col.index }}"
-      [ngClass]="{'mr-2' : getLatestCaseStatus(row, col.field)}"
-    >
-    </mat-checkbox>
+  <div class="d-flex align-items-center column{{col.index}}-row{{index}}">
+    <div class="d-flex flex-column">
+      <mat-checkbox
+        [ngModel]="getIsPaired(row, col.field)"
+        (ngModelChange)="checked($event, getPairingByIndex(index).planningId, getPairingValueByIndex(row, col.field).deviceUserId)"
+        id="deviceUserCheckbox{{ index }}_planning{{ col.index }}"
+        [ngClass]="{'mr-2' : getLatestCaseStatus(row, col.field)}"
+      >
+      </mat-checkbox>
+      <div *ngIf="authStateService.isAdmin">
+        <small [ngClass]="getIsPaired(row, col.field) ? 'text-accent' : 'text-primary'"
+               class="mt-2">{{getTextAfterCheckbox(row, col.field)}}</small>
+      </div>
+    </div>
     <status-bar-compact
       style="float: right"
-      *ngIf="getLatestCaseStatus(row, col.field)"
+      *ngIf="getLatestCaseStatus(row, col.field) !== null"
       [status]="getLatestCaseStatus(row, col.field)"
     ></status-bar-compact>
-  </div>
-  <div *ngIf="authStateService.isAdmin">
-    <small [ngClass]="getIsPaired(row, col.field) ? 'text-accent' : 'text-primary'"
-           class="mt-2">{{getTextAfterCheckbox(row, col.field)}}</small>
   </div>
 </ng-template>

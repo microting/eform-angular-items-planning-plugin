@@ -161,7 +161,7 @@ export class PairingGridTableComponent implements OnInit, OnDestroy, OnChanges {
     if (pairingValue) {
       return pairingValue.latestCaseStatus;
     }
-    return 0;
+    return null;
   }
 
   getPairingByIndex(index: number) {
