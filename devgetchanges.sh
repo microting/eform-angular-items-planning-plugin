@@ -15,11 +15,13 @@ rm -fR Documents/workspace/microting/eform-angular-items-planning-plugin/eform-c
 rm -fR Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-general/
 rm -fR Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/wdio-headless-plugin-step2.conf.js
 rm -fR Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Page\ objects/ItemsPlanning
+rm -fR Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Assets
 
 # Test files cp
 cp -a Documents/workspace/microting/eform-angular-frontend/eform-client/e2e/Tests/items-planning-settings Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-settings
 cp -a Documents/workspace/microting/eform-angular-frontend/eform-client/e2e/Tests/items-planning-general Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-general
 cp -a Documents/workspace/microting/eform-angular-frontend/eform-client/e2e/Page\ objects/ItemsPlanning Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Page\ objects/ItemsPlanning
+cp -a Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/e2e/Assets Documents/workspace/microting/eform-angular-frontend/eform-client/e2e/Assets
 cp -a Documents/workspace/microting/eform-angular-frontend/eform-client/wdio-headless-plugin-step2a.conf.js Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/wdio-headless-plugin-step2a.conf.js
 cp -a Documents/workspace/microting/eform-angular-frontend/eform-client/wdio-headless-plugin-step2b.conf.js Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/wdio-headless-plugin-step2b.conf.js
 cp -a Documents/workspace/microting/eform-angular-frontend/eform-client/wdio-headless-plugin-step2c.conf.js Documents/workspace/microting/eform-angular-items-planning-plugin/eform-client/wdio-headless-plugin-step2c.conf.js
