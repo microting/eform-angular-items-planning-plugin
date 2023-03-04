@@ -14,11 +14,14 @@ jobs:
       - uses: actions/checkout@v3
         with:
           path: eform-angular-items-planning-plugin
+      - name: Extract branch
+        id: extract_branch
+        run: echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
       - name: 'Preparing Frontend checkout'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: microting/eform-angular-frontend
-          ref: ${{ steps.extract_branch.outputs.branch }}
+          ref: ${{ steps.extract_branch.outputs.BRANCH }}
           path: eform-angular-frontend
       - name: Copy dependencies
         run: |
@@ -34,7 +37,7 @@ jobs:
           docker build . -t microtingas/frontend-container:latest --build-arg GITVERSION=1.0.0 --build-arg PLUGINVERSION=1.0.0
         shell: bash
       - run: docker save microtingas/frontend-container:latest -o items-planning-container.tar
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: items-planning-container
           path: items-planning-container.tar
@@ -57,8 +60,8 @@ jobs:
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:latest
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:latest
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
@@ -74,12 +77,12 @@ jobs:
         node-version: '18.12.1'
     - name: Extract branch name
       id: extract_branch
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      run: echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
         repository: microting/eform-angular-frontend
-        ref: ${{ steps.extract_branch.outputs.branch }}
+        ref: ${{ steps.extract_branch.outputs.BRANCH }}
         path: eform-angular-frontend
     - name: Cache node_modules
       id: cache
@@ -145,8 +148,8 @@ jobs:
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:latest
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:latest
     - name: Sleep 15
       run: sleep 15        
     - name: Setup .NET Core
