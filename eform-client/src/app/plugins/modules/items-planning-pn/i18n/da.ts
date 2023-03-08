@@ -80,8 +80,7 @@ export const da = {
   Edit: 'Rediger',
   'View images': 'Vis billeder',
   Id: 'Id',
-  pushMessageEnabled:
-    'Push beskeder slået til',
+  pushMessageEnabled: 'Push beskeder slået til',
   daysBeforeRedeploymentPushMessage: 'Push besked sendes antal dage før ny periodestart',
   Enabled: 'Aktiveret',
   Disabled: 'Deaktiveret',
@@ -92,4 +91,12 @@ export const da = {
   PushMessageSent: 'Push påmindelse udsendt',
   'Select date': 'Vælg dato',
   'Date is required': 'Dato er påkrævet',
+  'Device users': 'Enhedsbrugere',
+  'Import plannings': 'Import planlægning',
+  'Upload excel file': 'Upload Excel-fil',
+  Upload: 'Upload',
+  Pending: 'Afventer',
+  Error: 'Fejl',
+  'Edit tag': 'Rediger tag',
+  'Delete tag': 'Slet tag',
 };

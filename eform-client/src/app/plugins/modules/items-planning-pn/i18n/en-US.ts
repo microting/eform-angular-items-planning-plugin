@@ -60,7 +60,7 @@ export const enUS = {
   Pairing: 'Pairing',
   'Eform was deleted': 'Eform was deleted',
   Table: 'Table',
-  'Select Tags': 'Select tags',
+  'Select tags': 'Select tags',
   Id: 'Id',
   pushMessageEnabled:
     'Push message enabled',
@@ -71,5 +71,14 @@ export const enUS = {
   pushMessageOnDeployment: 'Push message send to paired devices upon deployment',
   LastExecutedTime: 'Last deployment',
   NextExecutionTime: 'Next deployment',
-  PushMessageSent: 'Push reminder sent'
+  PushMessageSent: 'Push reminder sent',
+  DayOfWeek: 'Day of week',
+  'Device users': 'Device users',
+  'Import plannings': 'Import plannings',
+  'Upload excel file': 'Upload excel file',
+  Upload: 'Upload',
+  Pending: 'Pending',
+  Error: 'Error',
+  'Edit tag': 'Edit tag',
+  'Delete tag': 'Delete tag',
 };
