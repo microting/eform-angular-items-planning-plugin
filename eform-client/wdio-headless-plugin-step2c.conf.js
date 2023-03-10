@@ -13,8 +13,8 @@ exports.config = {
     //
     specs: [
       'e2e/Tests/items-planning-settings/application-settings.plugins-page.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.pairing.spec.ts',
       'e2e/Tests/items-planning-general/items-planning.tags.spec.ts',
+      'e2e/Tests/items-planning-general/items-planning.pairing.spec.ts',
       'e2e/Tests/items-planning-general/items-planning.import.spec.ts'
     ],
     suites: {
