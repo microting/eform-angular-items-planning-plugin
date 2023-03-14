@@ -580,7 +580,7 @@ export class PlanningRowObject {
       timeout: 40000,
     });
     let pairings: { workerName: string; workerValue: boolean }[] = [];
-    const pairingTable = await $$('#pairingModalTableBody  tr.mat-row');
+    const pairingTable = await $$('#pairingModalTableBody tr.mat-row');
     for (let i = 0; i < pairingTable.length; i++) {
       const workerName = await (await pairingTable[i].$$('td.mat-cell')[1]).getText();
       const workerValue =
