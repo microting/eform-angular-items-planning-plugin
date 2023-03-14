@@ -4,21 +4,20 @@ import {
   EventEmitter,
   OnDestroy,
   OnInit,
-  ViewChild,
 } from '@angular/core';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import {debounceTime, switchMap} from 'rxjs/operators';
 import {
   ItemsPlanningPnPlanningsService,
   ItemsPlanningPnTagsService,
 } from '../../../../../services';
-import {PlanningCreateModel, PlanningModel} from '../../../../../models';
-import { Location } from '@angular/common';
-import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
+import {PlanningCreateModel} from '../../../../../models';
+import {Location} from '@angular/common';
+import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {Subscription, take} from 'rxjs';
-import { PlanningFoldersModalComponent } from '../../planning-additions';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import { AuthStateService } from 'src/app/common/store';
-import { applicationLanguagesTranslated} from 'src/app/common/const';
+import {PlanningFoldersModalComponent} from '../../planning-additions';
+import {FormArray, FormControl, FormGroup} from '@angular/forms';
+import {AuthStateService} from 'src/app/common/store';
+import {applicationLanguagesTranslated} from 'src/app/common/const';
 import {composeFolderName, dialogConfigHelper} from 'src/app/common/helpers';
 import {
   SitesService,
@@ -31,7 +30,7 @@ import {
   CommonDictionaryModel,
   FolderDto,
 } from 'src/app/common/models';
-import { format, set } from 'date-fns';
+import {format, set} from 'date-fns';
 import {MatDialog} from '@angular/material/dialog';
 import {Overlay} from '@angular/cdk/overlay';
 
@@ -42,12 +41,10 @@ import {Overlay} from '@angular/cdk/overlay';
   styleUrls: ['./planning-create.component.scss'],
 })
 export class PlanningCreateComponent implements OnInit, OnDestroy {
-  @ViewChild('foldersModal', { static: false })
-  foldersModal: PlanningFoldersModalComponent;
+  typeahead = new EventEmitter<string>();
   newPlanningModel: PlanningCreateModel = new PlanningCreateModel();
   templateRequestModel: TemplateRequestModel = new TemplateRequestModel();
   templatesModel: TemplateListModel = new TemplateListModel();
-  typeahead = new EventEmitter<string>();
   createSub$: Subscription;
   getTagsSub$: Subscription;
   getFoldersListSub$: Subscription;
@@ -59,6 +56,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   daysBeforeRedeploymentPushMessage = Array(27)
     .fill(0)
     .map((_e, i) => i);
+  private standartDateTimeFormat = `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`;
 
   selectedFolderName: string;
   folderSelectedSub$: Subscription;
@@ -142,7 +140,8 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+  }
 
   loadFoldersTree() {
     this.foldersService.getAllFolders().subscribe((operation) => {
@@ -193,7 +192,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
     });
     this.newPlanningModel.reiteration.startDate = format(
       date,
-      `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`
+      this.standartDateTimeFormat
     );
   }
 
@@ -207,7 +206,7 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
     });
     this.newPlanningModel.reiteration.repeatUntil = format(
       date,
-      `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`
+      this.standartDateTimeFormat
     );
   }
 }

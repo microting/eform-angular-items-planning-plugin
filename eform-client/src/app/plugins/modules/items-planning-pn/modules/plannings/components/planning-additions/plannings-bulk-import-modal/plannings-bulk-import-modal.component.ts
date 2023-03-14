@@ -42,7 +42,7 @@ export class PlanningsBulkImportModalComponent implements OnInit {
   ngOnInit() {
     this.xlsxPlanningsFileUploader.onSuccessItem = (item, response) => {
       const model = JSON.parse(response).model as OperationDataResult<{errors: []}>
-      if (model) {
+      if (model && model.model) {
         this.errors = model.model.errors;
         this.xlsxPlanningsFileUploader.clearQueue();
       }

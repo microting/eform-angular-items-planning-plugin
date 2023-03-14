@@ -6,7 +6,7 @@
     (click)="xlsxPlannings.click()"
     [loading]="loaderService.isLoading | async"
     class="mb-2"
-  >{{ xlsxPlanningsFileUploader?.queue?.length == 0 ? 'Upload' : 'Pending' | translate }}</button>
+  >{{ (xlsxPlanningsFileUploader?.queue?.length == 0 ? 'Upload' : 'Pending') | translate }}</button>
   <mtx-progress
     type="info"
     [value]="xlsxPlanningsFileUploader.progress"

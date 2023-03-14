@@ -74,7 +74,9 @@ describe('Items planning plugin - Pairing', function () {
     const pairingColObject = await itemsPlanningPairingPage.getDeviceUserByIndex(1);
     await pairingColObject.pairWhichAllPlannings(pair);
     for (let i = 0; i < pairingColObject.pairCheckboxesForClick.length; i++) {
-      expect(await pairingColObject.pairCheckboxes[i].getValue()).eq(pair.toString());
+      expect(await (await pairingColObject.pairCheckboxes[i].$('input')).getProperty('checked'),
+        `Checkbox ${pairingColObject.pairCheckboxes[i].selector} not equal ${pair}. Value checkbox: ${await (await pairingColObject.pairCheckboxes[i].$('input')).getProperty('checked')}`
+      ).eq(pair);
     }
   });
   it('should unpair one device user which all plannings', async () => {
@@ -82,7 +84,10 @@ describe('Items planning plugin - Pairing', function () {
     const pairingColObject = await itemsPlanningPairingPage.getDeviceUserByIndex(1);
     await pairingColObject.pairWhichAllPlannings(pair, true);
     for (let i = 0; i < pairingColObject.pairCheckboxesForClick.length; i++) {
-      expect(await pairingColObject.pairCheckboxes[i].getValue()).eq(pair.toString());
+      expect(
+        await (await pairingColObject.pairCheckboxes[i].$('input')).getProperty('checked'),
+        `Checkbox ${pairingColObject.pairCheckboxes[i].selector} not equal ${pair}. Value checkbox: ${await (await pairingColObject.pairCheckboxes[i].$('input')).getProperty('checked')}`
+      ).eq(pair);
     }
   });
   it('should pair one planning which all device user', async () => {
@@ -90,7 +95,9 @@ describe('Items planning plugin - Pairing', function () {
     const pairingRowObject = await itemsPlanningPairingPage.getPlanningByIndex(1);
     await pairingRowObject.pairWhichAllDeviceUsers(pair);
     for (let i = 0; i < pairingRowObject.pairCheckboxesForClick.length; i++) {
-      expect(await pairingRowObject.pairCheckboxes[i].getValue()).eq(pair.toString());
+      expect(await (await pairingRowObject.pairCheckboxes[i].$('input')).getProperty('checked'),
+        `Checkbox ${pairingRowObject.pairCheckboxes[i].selector} not equal ${pair}. Value checkbox: ${await (await pairingRowObject.pairCheckboxes[i].$('input')).getProperty('checked')}`
+      ).eq(pair);
     }
   });
   it('should unpair one planning which all device user', async () => {
@@ -98,7 +105,9 @@ describe('Items planning plugin - Pairing', function () {
     const pairingRowObject = await itemsPlanningPairingPage.getPlanningByIndex(1);
     await pairingRowObject.pairWhichAllDeviceUsers(pair, true);
     for (let i = 0; i < pairingRowObject.pairCheckboxesForClick.length; i++) {
-      expect(await pairingRowObject.pairCheckboxes[i].getValue()).eq(pair.toString());
+      expect(await (await pairingRowObject.pairCheckboxes[i].$('input')).getProperty('checked'),
+        `Checkbox ${pairingRowObject.pairCheckboxes[i].selector} not equal ${pair}. Value checkbox: ${await (await pairingRowObject.pairCheckboxes[i].$('input')).getProperty('checked')}`
+      ).eq(pair);
     }
   });
   it('should pair one planning which one device user', async () => {
@@ -106,20 +115,23 @@ describe('Items planning plugin - Pairing', function () {
     const indexDeviceForPair = 1;
     const pairingRowObject = await itemsPlanningPairingPage.getPlanningByIndex(1);
     await pairingRowObject.pairWithOneDeviceUser(pair, indexDeviceForPair);
-    expect(await pairingRowObject.pairCheckboxes[indexDeviceForPair].getValue()).eq(
-      pair.toString()
-    );
+    expect(await
+      (await pairingRowObject.pairCheckboxes[indexDeviceForPair].$('input'))
+        .getProperty('checked'),
+      `Checkbox ${pairingRowObject.pairCheckboxes[indexDeviceForPair].selector} not equal ${pair}. Value checkbox: ${await (await pairingRowObject.pairCheckboxes[indexDeviceForPair].$('input')).getProperty('checked')}`)
+      .eq(pair);
   });
-  // it('should unpair one planning which one device user', async () => {
-  //   const pair = false;
-  //   const indexDeviceForPair = 1;
-  //   const pairingRowObject = await itemsPlanningPairingPage.getPlanningByIndex(1);
-  //   await pairingRowObject.pairWithOneDeviceUser(pair, indexDeviceForPair);
-  //   expect(await pairingRowObject.pairCheckboxes[indexDeviceForPair].getValue()).eq(
-  //     pair.toString()
-  //   );
-  // tslint:disable-next-line:max-line-length
-  // }); TODO: fix not passing tests, since: element click intercepted: Element <button _ngcontent-oej-c404="" mdbbtn="" id="savePairingGridBtn" class="btn-success btn-small-height btn" ng-reflect-mdb-tooltip="Update pairing" disabled="">...</button> is not clickable at point (1806, 159). Other element would receive the click: <div _ngcontent-oej-c404="" class="p-3">...</div>
+  it('should unpair one planning which one device user', async () => {
+    const pair = false;
+    const indexDeviceForPair = 1;
+    const pairingRowObject = await itemsPlanningPairingPage.getPlanningByIndex(1);
+    await pairingRowObject.pairWithOneDeviceUser(pair, indexDeviceForPair);
+    expect(await
+      (await pairingRowObject.pairCheckboxes[indexDeviceForPair].$('input'))
+        .getProperty('checked'),
+      `Checkbox ${pairingRowObject.pairCheckboxes[indexDeviceForPair].selector} not equal ${pair}. Value checkbox: ${await (await pairingRowObject.pairCheckboxes[indexDeviceForPair].$('input')).getProperty('checked')}`)
+      .eq(pair);
+  });
   after('delete all created for this test', async () => {
     await itemsPlanningPlanningPage.goToPlanningsPage();
     await itemsPlanningPlanningPage.clearTable();

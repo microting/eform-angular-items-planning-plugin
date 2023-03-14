@@ -68,11 +68,8 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
 
   public async countDeviceUserCol(): Promise<number> {
     await browser.pause(500);
-    let i = 0;
-    while (await (await $(`#deviceUserTableHeader${i}`)).isExisting()) {
-      i++;
-    }
-    return i > 0 ? i + 1 : 0;
+    const count = (await $$('.mat-header-cell')).length;
+    return count > 0 ? count - 1 : 0;
   }
 
   public async planningRowByPlanningName(
@@ -131,11 +128,11 @@ export class PairingRowObject {
   public row: WebdriverIO.Element;
 
   async getRow(rowNum: number): Promise<PairingRowObject> {
-    this.row = (await $$('tr'))[rowNum];
-    if (await this.row.isExisting()) {
+    this.row = (await $$('tbody tr'))[rowNum - 1];
+    if (this.row) {
       this.planningName = await (await this.row.$('#planningName')).getText();
       this.pairRow = await this.row.$(`#planningRowCheckbox${rowNum - 1}`);
-      this.pairRowForClick = await this.pairRow.$('..');
+      this.pairRowForClick = await this.pairRow.$('label');
       this.pairCheckboxes = [];
       browser.pause(1000);
       for (
@@ -143,11 +140,11 @@ export class PairingRowObject {
         i < (await itemsPlanningPairingPage.countDeviceUserCol()) - 1;
         i++
       ) {
-        this.pairCheckboxes = [...this.pairCheckboxes, await $(`#deviceUserCheckbox${i}_planning${rowNum - 1}`)];
+        this.pairCheckboxes = [...this.pairCheckboxes, await $(`#deviceUserCheckbox${rowNum - 1}_planning${i}`)];
       }
       this.pairCheckboxesForClick = [];
       for (let i = 0; i < this.pairCheckboxes.length; i++) {
-        this.pairCheckboxesForClick = [...this.pairCheckboxesForClick, await this.pairCheckboxes[i].$('..')];
+        this.pairCheckboxesForClick = [...this.pairCheckboxesForClick, await this.pairCheckboxes[i].$('label')];
       }
     } else {
       return null;
@@ -162,12 +159,12 @@ export class PairingRowObject {
   ) {
     if (clickOnPairRow) {
       await this.pairRowForClick.click();
-      if ((await this.pairRow.getValue()) !== pair.toString()) {
+      if ((await (await this.pairRow.$('input')).getProperty('checked')) !== pair) {
         await this.pairRowForClick.click();
       }
     } else {
       for (let i = 0; i < this.pairCheckboxesForClick.length; i++) {
-        if ((await this.pairCheckboxes[i].getValue()) !== pair.toString()) {
+        if ((await (await this.pairCheckboxes[i].$('input')).getProperty('checked')) !== pair) {
           await this.pairCheckboxesForClick[i].click();
         }
       }
@@ -194,7 +191,7 @@ export class PairingRowObject {
     const index = await itemsPlanningPairingPage.indexColDeviceUserInTableByName(
       `${deviceUser.firstName} ${deviceUser.lastName}`
     );
-    return Boolean(await this.pairCheckboxes[index - 1].getValue()) as boolean;
+    return Boolean(await (await this.pairCheckboxes[index - 1].$('input')).getProperty('checked')) as boolean;
   }
 }
 
@@ -208,12 +205,12 @@ export class PairingColObject {
   public pairCheckboxes: WebdriverIO.Element[];
 
   async getRow(rowNum: number): Promise<PairingColObject> {
-    const ele = await $(`#deviceUserTableHeader${rowNum - 1}`);
+    const ele = await (await $$('.mat-header-cell'))[rowNum];
     await ele.waitForDisplayed({ timeout: 20000 });
-    if (ele.isExisting()) {
-      this.deviceUserName = await ele.getText();
-      this.pairCol = await $(`#deviceUserColumnCheckbox${rowNum - 1}`);
-      this.pairColForClick = await this.pairCol.$('..');
+    if (await ele.isExisting()) {
+      this.deviceUserName = await (await ele.$('.mat-checkbox-label')).getText();
+      this.pairCol = await ele.$('mat-checkbox');
+      this.pairColForClick = await this.pairCol.$('label');
       this.pairCheckboxesForClick = [];
       this.pairCheckboxes = [];
       for (
@@ -222,11 +219,11 @@ export class PairingColObject {
         i++
       ) {
         this.pairCheckboxes.push(
-          await $(`#deviceUserCheckbox${rowNum - 1}_planning${i}`)
+          await $(`#deviceUserCheckbox${i}_planning${rowNum - 1}`)
         );
       }
       for (let i = 0; i < this.pairCheckboxes.length; i++) {
-        this.pairCheckboxesForClick.push(await this.pairCheckboxes[i].$('..'));
+        this.pairCheckboxesForClick.push(await this.pairCheckboxes[i].$('label'));
       }
     }
     return this;
@@ -238,12 +235,12 @@ export class PairingColObject {
   ) {
     if (clickOnPairRow) {
       await this.pairColForClick.click();
-      if ((await this.pairCol.getValue()) !== pair.toString()) {
+      if ((await (await this.pairCol.$('input')).getProperty('checked')) !== pair) {
         await this.pairColForClick.click();
       }
     } else {
       for (let i = 0; i < this.pairCheckboxesForClick.length; i++) {
-        if ((await this.pairCheckboxes[i].getValue()) !== pair.toString()) {
+        if ((await (await this.pairCheckboxes[i].$('input')).getProperty('checked')) !== pair) {
           await this.pairCheckboxesForClick[i].click();
         }
       }
