@@ -505,17 +505,17 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                                     switch (dataModelCaseField.Key)
                                     {
                                         case "date":
-                                            worksheet.Cell(x + 1, y + 1).Value = value;
-                                            worksheet.Cell(x + 1, y + 1).DataType = XLDataType.DateTime;
+                                            worksheet.Cell(x + 1, y + 1).Value = DateTime.Parse(value);
+                                            //worksheet.Cell(x + 1, y + 1).DataType = XLDataType.DateTime;
                                             break;
                                         case "number":
-                                            worksheet.Cell(x + 1, y + 1).Value = value;
+                                            worksheet.Cell(x + 1, y + 1).Value = Double.Parse(value);
                                             //worksheet.Cell(x+1, y+1).Style.NumberFormat.Format = "0.00";
-                                            worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Number;
+                                            //worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Number;
                                             break;
                                         default:
                                             worksheet.Cell(x + 1, y + 1).Value = "'" + value;
-                                            worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Text;
+                                            //worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Text;
                                             break;
                                     }
                                     //worksheet.Cell(x + 1, y + 1).Value =
