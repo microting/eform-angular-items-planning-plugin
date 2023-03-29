@@ -35,6 +35,7 @@ namespace ItemsPlanning.Pn.Controllers
     using System.Threading.Tasks;
 
     [Authorize]
+    [Route("api/items-planning-pn/tags")]
     public class ItemsPlanningTagsController : Controller
     {
         private readonly IItemsPlanningTagsService _itemsPlanningTagsService;
@@ -45,31 +46,35 @@ namespace ItemsPlanning.Pn.Controllers
         }
 
         [HttpGet]
-        [Route("api/items-planning-pn/tags")]
         public async Task<OperationDataResult<List<CommonDictionaryModel>>> GetItemsPlanningTags()
         {
             return await _itemsPlanningTagsService.GetItemsPlanningTags();
         }
 
         [HttpPost]
-        [Route("api/items-planning-pn/tags")]
         public async Task<OperationResult> CreateItemsPlanningTag([FromBody] PlanningTagModel requestModel)
         {
             return await _itemsPlanningTagsService.CreateItemsPlanningTag(requestModel);
         }
 
         [HttpPut]
-        [Route("api/items-planning-pn/tags")]
         public async Task<OperationResult> UpdateItemsPlanningTag([FromBody] PlanningTagModel requestModel)
         {
             return await _itemsPlanningTagsService.UpdateItemsPlanningTag(requestModel);
         }
 
         [HttpDelete]
-        [Route("api/items-planning-pn/tags/{id}")]
+        [Route("{id}")]
         public async Task<OperationResult> DeleteItemsPlanningTag(int id)
         {
             return await _itemsPlanningTagsService.DeleteItemsPlanningTag(id);
+		}
+
+        [HttpPost]
+        [Route("bulk")]
+        public async Task<OperationResult> BulkPlanningTags([FromBody] PlanningBulkTagModel requestModel)
+        {
+	        return await _itemsPlanningTagsService.BulkPlanningTags(requestModel);
         }
-    }
+	}
 }

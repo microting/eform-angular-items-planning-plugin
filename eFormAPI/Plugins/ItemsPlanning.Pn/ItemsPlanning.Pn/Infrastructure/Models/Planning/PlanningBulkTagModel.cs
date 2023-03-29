@@ -1,7 +1,7 @@
-/*
+﻿/*
 The MIT License (MIT)
 
-Copyright (c) 2007 - 2021 Microting A/S
+Copyright (c) 2007 - 2023 Microting A/S
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,24 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
+namespace ItemsPlanning.Pn.Infrastructure.Models.Planning;
+
+using System.Collections.Generic;
+
+public class PlanningBulkTagModel
 {
-    using Infrastructure.Models.Planning;
-    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-    using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-
-    public interface IItemsPlanningTagsService
-    {
-        Task<OperationDataResult<List<CommonDictionaryModel>>> GetItemsPlanningTags();
-
-        Task<OperationResult> UpdateItemsPlanningTag(PlanningTagModel requestModel);
-
-        Task<OperationResult> DeleteItemsPlanningTag(int id);
-
-        Task<OperationResult> CreateItemsPlanningTag(PlanningTagModel requestModel);
-
-		Task<OperationResult> BulkPlanningTags(PlanningBulkTagModel requestModel);
-	}
+	public List<string> TagNames { set; get; }
+		= new();
 }

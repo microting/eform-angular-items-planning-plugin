@@ -11,10 +11,10 @@ import {
 import {
   SharedTagCreateComponent,
   SharedTagDeleteComponent,
-  SharedTagEditComponent,
+  SharedTagEditComponent, SharedTagMultipleCreateComponent,
   SharedTagsComponent
 } from 'src/app/common/modules/eform-shared-tags/components';
-import {CommonDictionaryModel, SharedTagCreateModel, SharedTagModel,} from 'src/app/common/models';
+import {CommonDictionaryModel, SharedTagCreateModel, SharedTagModel, SharedTagMultipleCreateModel,} from 'src/app/common/models';
 import {Subscription} from 'rxjs';
 import {ItemsPlanningPnTagsService} from '../../../../../services';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
@@ -40,30 +40,51 @@ export class PlanningTagsComponent implements OnInit, OnDestroy, OnChanges {
   showDeleteTagSub$: Subscription;
   deletedTagSub$: Subscription;
   updatedTagSub$: Subscription;
+  showMultipleTagTagSub$: Subscription;
+  createdTagsSub$: Subscription;
 
   constructor(
     private tagsService: ItemsPlanningPnTagsService,
     public dialog: MatDialog,
     private overlay: Overlay,
-  ) {}
+  ) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   show() {
     this.dialogRef = this.dialog.open(SharedTagsComponent, dialogConfigHelper(this.overlay, this.availableTags));
+    this.dialogRef.componentInstance.showMultipleCreateBtn = true;
     this.showCreateTagSub$ = this.dialogRef.componentInstance.showCreateTag.subscribe(() => {
       const dialogRefCreateTag = this.dialog.open(SharedTagCreateComponent, dialogConfigHelper(this.overlay));
       this.updatedTagSub$ = dialogRefCreateTag.componentInstance.createdTag.subscribe(tag => this.onTagCreate(tag, dialogRefCreateTag));
-    })
+    });
     this.showEditTagSub$ = this.dialogRef.componentInstance.showEditTag.subscribe((x) => {
       const dialogRefUpdateTag = this.dialog.open(SharedTagEditComponent, dialogConfigHelper(this.overlay, x));
       this.updatedTagSub$ = dialogRefUpdateTag.componentInstance.updatedTag.subscribe(tag => this.onTagUpdate(tag, dialogRefUpdateTag));
-    })
+    });
     this.showDeleteTagSub$ = this.dialogRef.componentInstance.showDeleteTag.subscribe((x) => {
       const dialogRefUpdateTag = this.dialog.open(SharedTagDeleteComponent, dialogConfigHelper(this.overlay, x));
       this.deletedTagSub$ = dialogRefUpdateTag.componentInstance.deletedTag.subscribe(tag => this.onTagDelete(tag, dialogRefUpdateTag));
-    })
+    });
+    this.showMultipleTagTagSub$ = this.dialogRef.componentInstance.showMultipleCreateTag.subscribe(() => {
+      const dialogRefUpdateTag = this.dialog.open(SharedTagMultipleCreateComponent, {...dialogConfigHelper(this.overlay), minWidth: 500});
+      this.createdTagsSub$ = dialogRefUpdateTag.componentInstance.createdTags
+        .subscribe(tags => this.onTagsCreate(tags, dialogRefUpdateTag));
+    });
   }
+
+  onTagsCreate(tags: SharedTagMultipleCreateModel, dialogRefUpdateTag: MatDialogRef<SharedTagMultipleCreateComponent>): void {
+    this.createTag$ = this.tagsService
+      .createPlanningTags(tags)
+      .subscribe((data) => {
+        if (data && data.success) {
+          dialogRefUpdateTag.close();
+          this.tagsChanged.emit();
+        }
+      });
+    }
 
   onTagUpdate(model: SharedTagModel, dialogRefUpdateTag: MatDialogRef<SharedTagEditComponent>) {
     this.updateTag$ = this.tagsService
