@@ -1,29 +1,74 @@
+<!--<h3 mat-dialog-title>{{'Assign Sites' | translate}}</h3>-->
+<!--<div mat-dialog-content class="d-flex">-->
+<!--  <mtx-grid-->
+<!--    class="mt-2"-->
+<!--    [data]="sitesDto"-->
+<!--    [columns]="tableHeaders"-->
+<!--    [showPaginator]="false"-->
+<!--    [rowSelectable]="false"-->
+<!--    [cellTemplate]="{select: selectTpl, status: statusTpl}"-->
+<!--  >-->
+<!--  </mtx-grid>-->
+<!--  <ng-template #selectTpl let-row let-i="index">-->
+<!--    <mat-checkbox-->
+<!--      id="checkboxCreateAssignment{{ i }}"-->
+<!--      (ngModelChange)="addToArray($event, row.id)"-->
+<!--      [ngModel]="getAssignmentBySiteId(row.id)"-->
+<!--    >-->
+<!--    </mat-checkbox>-->
+<!--  </ng-template>-->
+<!--  <ng-template #statusTpl let-row>-->
+<!--    <status-bar-compact-->
+<!--      *ngIf="getAssignmentBySiteId(row.id)"-->
+<!--      [status]="getLatestCaseStatus(row.id)"-->
+<!--    ></status-bar-compact>-->
+<!--  </ng-template>-->
+<!--</div>-->
 <h3 mat-dialog-title>{{'Assign Sites' | translate}}</h3>
-<div mat-dialog-content class="d-flex">
-  <mtx-grid
-    class="mt-2"
-    [data]="sitesDto"
-    [columns]="tableHeaders"
-    [showPaginator]="false"
-    [rowSelectable]="false"
-    [cellTemplate]="{select: selectTpl, status: statusTpl}"
-  >
-  </mtx-grid>
-  <ng-template #selectTpl let-row let-i="index">
-    <mat-checkbox
-      id="checkboxCreateAssignment{{ i }}"
-      (ngModelChange)="addToArray($event, row.id)"
-      [ngModel]="getAssignmentBySiteId(row.id)"
-    >
-    </mat-checkbox>
-  </ng-template>
-  <ng-template #statusTpl let-row>
-    <status-bar-compact
-      *ngIf="getAssignmentBySiteId(row.id)"
-      [status]="getLatestCaseStatus(row.id)"
-    ></status-bar-compact>
-  </ng-template>
+<div class="mtx-grid">
+  <div class="mtx-grid-main mtx-grid-layout">
+    <div class="mtx-grid-content mtx-grid-layout">
+      <div class="mat-table-container mat-table-with-data">
+        <table class="mat-table cdk-table mat-table-striped" style="width: 100%">
+          <thead>
+          <tr role="rowgroup" class="mat-header-row cdk-header-row" mat-header-row>
+            <th role="columnheader" class="mat-header-cell cdk-header-cell cdk-column-id mat-column-id mat-table-sticky mat-table-sticky-border-elem-top">Microting ID</th>
+            <th role="columnheader" class="mat-header-cell cdk-header-cell cdk-column-id mat-column-id mat-table-sticky mat-table-sticky-border-elem-top">{{ 'Device user' | translate }}</th>
+            <th role="columnheader" class="mat-header-cell cdk-header-cell cdk-column-id mat-column-id mat-table-sticky mat-table-sticky-border-elem-top">{{ 'Select' | translate }}</th>
+            <th role="columnheader" class="mat-header-cell cdk-header-cell cdk-column-id mat-column-id mat-table-sticky mat-table-sticky-border-elem-top">{{ 'Status' | translate }}</th>
+          </tr>
+          </thead>
+          <tbody id="pairingModalTableBody" role="rowgroup">
+          <ng-container *ngFor="let worker of sitesDto; let i = index">
+            <tr class="mat-row cdk-row {{i%2 ? 'mat-row-odd' : ''}}">
+              <td role="cell" class="mat-cell cdk-cell cdk-column-id mat-column-id" id="microtingId">{{worker.id}}</td>
+              <td role="cell" class="mat-cell cdk-cell cdk-column-id mat-column-id" id="deviceUserFullName">{{worker.siteName}}</td>
+              <td role="cell" class="mat-cell cdk-cell cdk-column-id mat-column-id">
+                <div class="mat-checkbox">
+                  <mat-checkbox class="mat-checkbox"
+                                id="checkboxCreateAssignment{{ i }}"
+                                (change)="addToArray($event, worker.id)"
+                                [ngModel]="getAssignmentBySiteId(worker.id)"
+                  >
+                  </mat-checkbox>
+                  <label for="checkboxCreateAssignment{{ i }}"></label>
+                </div>
+              </td>
+              <td role="cell" class="mat-cell cdk-cell cdk-column-id mat-column-id">
+                <status-bar-compact
+                  *ngIf="getAssignmentBySiteId(worker.id)"
+                  [status]="getLatestCaseStatus(worker.id)"
+                ></status-bar-compact>
+              </td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
+
 <div mat-dialog-actions class="d-flex flex-row justify-content-end">
   <button
     mat-raised-button
