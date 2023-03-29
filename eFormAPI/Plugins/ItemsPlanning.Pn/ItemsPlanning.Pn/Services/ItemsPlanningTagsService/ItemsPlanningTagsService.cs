@@ -182,5 +182,41 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
                     _itemsPlanningLocalizationService.GetString("ErrorWhileUpdatingItemsPlanningTag"));
             }
         }
-    }
+
+		public async Task<OperationResult> BulkPlanningTags(PlanningBulkTagModel requestModel)
+		{
+			try
+			{
+				foreach (var tagName in requestModel.TagNames)
+				{
+					if (await _dbContext.PlanningTags.AnyAsync(x =>
+						    x.Name == tagName && x.WorkflowState != Constants.WorkflowStates.Removed))
+					{
+                        continue; // skip replies
+					}
+
+					var itemsPlanningTag = new PlanningTag
+					{
+						Name = tagName,
+						CreatedByUserId = _userService.UserId,
+						UpdatedByUserId = _userService.UserId,
+					};
+
+					await itemsPlanningTag.Create(_dbContext);
+				}
+
+				return new OperationResult(
+					true,
+					_itemsPlanningLocalizationService.GetString("ItemsPlanningTagsCreatedSuccessfully"));
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e);
+				_logger.LogError(e.Message);
+				return new OperationResult(
+					false,
+					_itemsPlanningLocalizationService.GetString("ErrorWhileCreatingItemsPlanningTags"));
+			}
+		}
+	}
 }

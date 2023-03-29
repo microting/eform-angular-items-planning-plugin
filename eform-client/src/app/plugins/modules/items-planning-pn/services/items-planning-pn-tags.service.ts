@@ -7,11 +7,13 @@ import {
   OperationResult,
   SharedTagCreateModel,
   SharedTagModel,
+  SharedTagMultipleCreateModel,
 } from 'src/app/common/models';
 import { ApiBaseService } from 'src/app/common/services';
 
 export let ItemsPlanningTagsMethods = {
   Tags: 'api/items-planning-pn/tags',
+  CreateBulkTags: 'api/items-planning-pn/tags/bulk'
 };
 
 @Injectable()
@@ -25,7 +27,7 @@ export class ItemsPlanningPnTagsService {
   }
 
   updatePlanningTag(model: SharedTagModel): Observable<OperationResult> {
-    return this.apiBaseService.put<DeviceUserModel>(
+    return this.apiBaseService.put(
       ItemsPlanningTagsMethods.Tags,
       model
     );
@@ -36,8 +38,15 @@ export class ItemsPlanningPnTagsService {
   }
 
   createPlanningTag(model: SharedTagCreateModel): Observable<OperationResult> {
-    return this.apiBaseService.post<DeviceUserModel>(
+    return this.apiBaseService.post(
       ItemsPlanningTagsMethods.Tags,
+      model
+    );
+  }
+
+  createPlanningTags(model: SharedTagMultipleCreateModel): Observable<OperationResult> {
+    return this.apiBaseService.post(
+      ItemsPlanningTagsMethods.CreateBulkTags,
       model
     );
   }

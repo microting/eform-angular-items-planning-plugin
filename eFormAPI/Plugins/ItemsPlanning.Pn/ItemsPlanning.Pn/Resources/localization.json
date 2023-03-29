@@ -1347,5 +1347,43 @@
       "pt-PT": "Erro ao excluir caso",
       "fi-FI": "Virhe poistettaessa tapausta"
     }
+  },
+  {
+    "Key": "ItemsPlanningTagsCreatedSuccessfully",
+    "LocalizedValue": {
+      "da": "",
+      "de": "",
+      "en-US": "Items planning tags created successfully",
+      "uk-UA": "",
+      "pl-PL": "",
+      "no-NO": "",
+      "sv-SE": "",
+      "es-ES": "",
+      "fr-FR": "",
+      "it-IT": "",
+      "nl-NL": "",
+      "pt-BR": "",
+      "pt-PT": "",
+      "fi-FI": ""
+    }
+  },
+  {
+    "Key": "ErrorWhileCreatingItemsPlanningTags",
+    "LocalizedValue": {
+      "da": "",
+      "de": "",
+      "en-US": "Error while creating items planning tags",
+      "uk-UA": "",
+      "pl-PL": "",
+      "no-NO": "",
+      "sv-SE": "",
+      "es-ES": "",
+      "fr-FR": "",
+      "it-IT": "",
+      "nl-NL": "",
+      "pt-BR": "",
+      "pt-PT": "",
+      "fi-FI": ""
+    }
   }
 ]
