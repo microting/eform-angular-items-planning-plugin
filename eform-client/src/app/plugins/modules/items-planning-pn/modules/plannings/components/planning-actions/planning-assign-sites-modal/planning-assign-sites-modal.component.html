@@ -7,6 +7,10 @@
     [showPaginator]="false"
     [rowSelectable]="false"
     [cellTemplate]="{select: selectTpl, status: statusTpl}"
+    [pageOnFront]="false"
+    [rowStriped]="true"
+    [showToolbar]="false"
+    [showColumnMenuButton]="false"
   >
   </mtx-grid>
   <ng-template #selectTpl let-row let-i="index">
