@@ -580,13 +580,10 @@ export class PlanningRowObject {
       timeout: 40000,
     });
     let pairings: { workerName: string; workerValue: boolean }[] = [];
-    const pairingTable = await $$('#pairingModalTableBody tr.mat-row');
-    for (let i = 0; i < pairingTable.length; i++) {
-      const workerName = await (await pairingTable[i].$$('td.mat-cell')[1]).getText();
-      const workerValue =
-        (await (
-          await (await pairingTable[i].$$('td')[2]).$('.mat-checkbox-input')
-        ).getAttribute('aria-checked')) === 'true';
+    const pairingRows = await $$('#pairingModalTableBody tr.mat-row');
+    for (let i = 0; i < pairingRows.length; i++) {
+      const workerName = await (await pairingRows[i].$('.mat-column-siteName span')).getText();
+      const workerValue = (await (await pairingRows[i].$('.mat-column-select .mat-checkbox-input')).getAttribute('aria-checked')) === 'true'
       pairings = [...pairings, { workerName, workerValue }];
     }
     await changeAssignmentsCancel.click();
