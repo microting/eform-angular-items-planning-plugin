@@ -154,7 +154,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     .Select(x => new CommonDictionaryModel
                     {
                         Id = x.Id,
-                        Name = x.Name,
+                        Name = x.Name
                     }).ToListAsync();
 
                 foreach (var planning in plannings)
@@ -200,7 +200,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         {
                             x.Name,
                             x.Parent,
-                            x.Id,
+                            x.Id
                         })
                         .FirstOrDefaultAsync();
                     if (folder != null)
@@ -395,7 +395,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     {
                         x.Name,
                         x.Parent,
-                        x.Id,
+                        x.Id
                     })
                     .FirstOrDefault(y => y.Id == planning.Folder.EFormSdkFolderId);
                 if (folder != null)
@@ -418,7 +418,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     .Select(x => new CommonDictionaryModel
                     {
                         Id = x.Id,
-                        Name = x.Name,
+                        Name = x.Name
                     }).ToListAsync();
 
                 foreach (var assignedSite in planning.AssignedSites)
@@ -581,7 +581,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         CreatedByUserId = _userService.UserId,
                         UpdatedByUserId = _userService.UserId,
                         PlanningId = planning.Id,
-                        PlanningTagId = tagId,
+                        PlanningTagId = tagId
                     };
 
                     await _dbContext.PlanningsTags.AddAsync(planningsTags);
@@ -679,7 +679,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 BoundEform = new PlanningEformModel
                 {
                     RelatedEFormId = x.RelatedEFormId,
-                    RelatedEFormName = x.RelatedEFormName,
+                    RelatedEFormName = x.RelatedEFormName
                 },
                 Folder = new PlanningFolderModel
                 {
@@ -715,7 +715,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     LocationCodeEnabled = x.LocationCodeEnabled,
                     NumberOfImagesEnabled = x.NumberOfImagesEnabled,
                     TypeEnabled = x.TypeEnabled,
-                    UploadedDataEnabled = x.UploadedDataEnabled,
+                    UploadedDataEnabled = x.UploadedDataEnabled
                 }
             });
         }

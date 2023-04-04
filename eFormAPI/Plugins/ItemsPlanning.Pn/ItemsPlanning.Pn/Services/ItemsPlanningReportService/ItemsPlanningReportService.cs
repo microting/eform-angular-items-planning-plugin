@@ -144,7 +144,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                     .Select(x => new
                     {
                         templateId = x.Key,
-                        cases = x.ToList(),
+                        cases = x.ToList()
                     })
                     .ToList();
 
@@ -183,7 +183,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                             FromDate = $"{fromDate:yyyy-MM-dd}",
                             ToDate = $"{toDate:yyyy-MM-dd}",
                             TextHeaders = new ReportEformTextHeaderModel(),
-                            TableName = checkListTranslation,
+                            TableName = checkListTranslation
                         };
                         // first pass
                         if (result.Count <= 0)
@@ -315,7 +315,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                         {
                             Offset = 0,
                             PageSize = int.MaxValue,
-                            TemplateId = checkList.Id,
+                            TemplateId = checkList.Id
                         };
 
                         var casePostListResult = await _casePostBaseService.GetCommonPosts(casePostRequest);
@@ -360,7 +360,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningReportService
                                     eFormId = planningCase.MicrotingSdkeFormId,
                                     DoneBy = planningCase.DoneByUserName,
                                     ItemName = planningNameTranslation.Name,
-                                    ItemDescription = planningCase.Planning.Description,
+                                    ItemDescription = planningCase.Planning.Description
                                 };
 
 

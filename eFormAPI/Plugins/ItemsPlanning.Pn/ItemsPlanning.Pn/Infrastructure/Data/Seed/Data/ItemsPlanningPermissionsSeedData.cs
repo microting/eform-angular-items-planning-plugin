@@ -50,7 +50,7 @@ namespace ItemsPlanning.Pn.Infrastructure.Data.Seed.Data
             {
                 PermissionName = "Obtain plannings",
                 ClaimName = ItemsPlanningClaims.GetPlannings
-            },
+            }
         };
     }
 }

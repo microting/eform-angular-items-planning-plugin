@@ -83,7 +83,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 var deviceUsers = await sitesQuery.Select(x => new CommonDictionaryModel
                 {
                     Id = x.Id,
-                    Name = x.Name,
+                    Name = x.Name
                 }).ToListAsync();
 
                 var pairingQuery = _dbContext.Plannings
@@ -119,7 +119,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                       {
                           DeviceUserId = y.SiteId,
                           Paired = true
-                      }).ToList(),
+                      }).ToList()
                     }).ToListAsync();
 
                 // Add users who is not paired
@@ -152,7 +152,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                             var pairingValue = new PairingValueModel
                             {
                                 DeviceUserId = (int)deviceUser.Id,
-                                Paired = false,
+                                Paired = false
                             };
 
                             pairingModel.PairingValues.Add(pairingValue);
@@ -168,7 +168,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                 var result = new PairingsModel()
                 {
                     DeviceUsers = deviceUsers.Select(x => new CommonDictionaryModel { Name = x.Name, Id = x.Id}).ToList(),
-                    Pairings = pairing,
+                    Pairings = pairing
                 };
 
                 return new OperationDataResult<PairingsModel>(
@@ -306,7 +306,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         CreatedByUserId = _userService.UserId,
                         UpdatedByUserId = _userService.UserId,
                         PlanningId = planning.Id,
-                        SiteId = assignmentSiteId,
+                        SiteId = assignmentSiteId
                     };
 
                     await planningSite.Create(_dbContext);
@@ -344,7 +344,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                         Entities = x.PlanningSites
                             .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
                             .ToList(),
-                        x.RelatedEFormId,
+                        x.RelatedEFormId
                     })
                     .ToListAsync();
 
@@ -353,7 +353,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                     .Select(x => new
                     {
                         PlanningId = x.Key,
-                        Models = x.ToList(),
+                        Models = x.ToList()
                     }).ToList();
 
                 foreach (var pairing in pairingModel)
@@ -449,7 +449,7 @@ namespace ItemsPlanning.Pn.Services.PairingService
                                 CreatedByUserId = _userService.UserId,
                                 UpdatedByUserId = _userService.UserId,
                                 PlanningId = pairing.PlanningId,
-                                SiteId = assignmentSiteId,
+                                SiteId = assignmentSiteId
                             };
                             await newPlanningSite.Create(_dbContext);
 
