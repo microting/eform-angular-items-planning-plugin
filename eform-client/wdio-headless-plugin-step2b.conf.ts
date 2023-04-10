@@ -1,5 +1,7 @@
-const path = require("path");
-exports.config = {
+//const path = require("path");
+import type { Options } from '@wdio/types'
+
+export const config: Options.Testrunner = {
     runner: 'local',
     path: '/',
     //
@@ -13,9 +15,8 @@ exports.config = {
     //
     specs: [
       'e2e/Tests/items-planning-settings/application-settings.plugins-page.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.add.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.edit.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.delete.spec.ts',
+      'e2e/Tests/items-planning-general/items-planning.sorting.spec.ts',
+      'e2e/Tests/items-planning-general/items-planning.multiple-delete.spec.ts',
     ],
     suites: {
         settings: [
@@ -154,7 +155,7 @@ exports.config = {
     // See the full list at http://mochajs.org/
     mochaOpts: {
         ui: 'bdd',
-        compilers: ['tsconfig-paths/register'],
+        //compilers: ['tsconfig-paths/register'],
         timeout: 1200000
     },
     //
