@@ -25,6 +25,7 @@ SOFTWARE.
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
+using ClosedXML.Graphics;
 using ItemsPlanning.Pn.Infrastructure.Models.Report;
 using ItemsPlanning.Pn.Services.ItemsPlanningLocalizationService;
 using Microting.eForm.Dto;
@@ -68,6 +69,9 @@ namespace ItemsPlanning.Pn.Services.ExcelService
             try
             {
                 var result = new List<PlanningImportExcelModel>();
+                foreach (var fontFamily in SixLabors.Fonts.SystemFonts.Collection.Families)
+                    Console.WriteLine(fontFamily.Name);
+                LoadOptions.DefaultGraphicEngine = new DefaultGraphicEngine("Carlito");
                 var workbook = new XLWorkbook(excelStream);
                 var worksheet = workbook.Worksheet(PlanningImportExcelConsts.EformsWorksheet);
                 var rows = worksheet.RangeUsed()
