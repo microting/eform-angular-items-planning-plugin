@@ -304,7 +304,7 @@ export class ItemsPlanningModalPage extends Page {
     await ngOption.waitForDisplayed({ timeout: 20000 });
     await (
       await (
-        await (await this.createPlanningSelector()).$('ng-dropdown-panel')
+        await $('ng-dropdown-panel')
       ).$(`.ng-option=${planning.eFormName}`)
     ).click();
     await this.waitForSpinnerHide();
@@ -325,7 +325,7 @@ export class ItemsPlanningModalPage extends Page {
       await this.waitForSpinnerHide();
       await ngOption.waitForDisplayed({ timeout: 20000 });
       await (
-        await (await $('#createRepeatType ng-dropdown-panel')).$(
+        await (await $('ng-dropdown-panel')).$(
           `.ng-option=${planning.repeatType}`
         )
       ).click();
@@ -373,7 +373,7 @@ export class ItemsPlanningModalPage extends Page {
         status
       );
       let value = await (
-        await (await this.pushMessageEnabledCreate()).$('ng-dropdown-panel')
+        await $('ng-dropdown-panel')
       ).$(`.ng-option=${status}`);
       await value.waitForDisplayed({ timeout: 40000 });
       await value.click();
@@ -382,9 +382,7 @@ export class ItemsPlanningModalPage extends Page {
         await (await this.createDaysBeforeRedeploymentPushMessage()).$('input')
       ).setValue(planning.daysBeforeRedeploymentPushMessage);
       value = await (
-        await (await this.createDaysBeforeRedeploymentPushMessage()).$(
-          'ng-dropdown-panel'
-        )
+        await $('ng-dropdown-panel')
       ).$(`.ng-option=${planning.daysBeforeRedeploymentPushMessage}`);
       await value.waitForDisplayed({ timeout: 40000 });
       await value.click();
