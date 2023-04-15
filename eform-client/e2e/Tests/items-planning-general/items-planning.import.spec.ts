@@ -13,6 +13,7 @@ describe('Items planning - Import', function () {
   });
   it('should be imported plannings', async () => {
     const localPath = process.cwd();
+    const eformsBeforeImport = await myEformsPage.rowNum();
     await (await myEformsPage.importEformsBtn()).click();
     await browser.pause(2000);
     // import Eforms
@@ -21,13 +22,14 @@ describe('Items planning - Import', function () {
     await (await $('app-eforms-bulk-import-modal * *')).waitForDisplayed({ timeout: 20000 });
     await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
     await (await myEformsPage.xlsxImportInput()).addValue(remoteFilePath);
-    const eformsBeforeImport = await myEformsPage.rowNum();
+    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
     await (await myEformsPage.newEformBtn()).waitForClickable({ timeout: 60000 });
     expect(eformsBeforeImport).not.eq(await myEformsPage.rowNum());
 
     await itemsPlanningPlanningPage.goToPlanningsPage();
     const planningsBeforeImport = await itemsPlanningPlanningPage.rowNum();
     (await itemsPlanningPlanningPage.importPlanningsBtn()).click();
+    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
     // import plannings
     await (await $('app-plannings-bulk-import-modal * *')).waitForDisplayed({
       timeout: 20000,
