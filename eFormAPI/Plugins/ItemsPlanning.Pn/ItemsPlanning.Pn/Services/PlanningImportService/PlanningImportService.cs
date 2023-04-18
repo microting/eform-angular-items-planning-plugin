@@ -211,7 +211,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         .Select(x => new
                         {
                             x.Id,
-                            Name = x.Name,
+                            Name = x.Name
                         }).ToListAsync();
 
                     // Trim tag names
@@ -240,7 +240,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             {
                                 Name = fileTag,
                                 CreatedByUserId = _userService.UserId,
-                                UpdatedByUserId = _userService.UserId,
+                                UpdatedByUserId = _userService.UserId
                             };
                             await planningTag.Create(_dbContext);
                         }
@@ -252,7 +252,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                         .Select(x => new
                         {
                             x.Id,
-                            Name = x.Name,
+                            Name = x.Name
                         }).ToListAsync();
 
                     // Folders
@@ -279,7 +279,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             Id = x.Id,
                             Label = x.Name,
                             Description = x.Description,
-                            ParentId = x.ParentId,
+                            ParentId = x.ParentId
                         }).ToListAsync();
 
                     // Process folders
@@ -493,7 +493,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                         LanguageId = language.Id,
                                         PlanningId = planningFromDb.Id,
                                         CreatedByUserId = _userService.UserId,
-                                        UpdatedByUserId = _userService.UserId,
+                                        UpdatedByUserId = _userService.UserId
                                     };
                                     await planningNameTranslation.Create(_dbContext);
                                 }

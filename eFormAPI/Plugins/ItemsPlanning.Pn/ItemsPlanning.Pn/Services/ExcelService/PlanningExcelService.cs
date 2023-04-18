@@ -25,6 +25,7 @@ SOFTWARE.
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
+using ClosedXML.Graphics;
 using ItemsPlanning.Pn.Infrastructure.Models.Report;
 using ItemsPlanning.Pn.Services.ItemsPlanningLocalizationService;
 using Microting.eForm.Dto;
@@ -68,6 +69,9 @@ namespace ItemsPlanning.Pn.Services.ExcelService
             try
             {
                 var result = new List<PlanningImportExcelModel>();
+                foreach (var fontFamily in SixLabors.Fonts.SystemFonts.Collection.Families)
+                    Console.WriteLine(fontFamily.Name);
+                LoadOptions.DefaultGraphicEngine = new DefaultGraphicEngine("Carlito");
                 var workbook = new XLWorkbook(excelStream);
                 var worksheet = workbook.Worksheet(PlanningImportExcelConsts.EformsWorksheet);
                 var rows = worksheet.RangeUsed()
@@ -92,7 +96,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         {
                             Label = folder1Label,
                             Description = folder1Description,
-                            Level = 1,
+                            Level = 1
                         };
 
                         folders.Add(folderModel);
@@ -108,7 +112,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         {
                             Label = folder2Label,
                             Description = folder2Description,
-                            Level = 2,
+                            Level = 2
                         };
 
                         folders.Add(folderModel);
@@ -124,7 +128,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         {
                             Label = folder3Label,
                             Description = folder3Description,
-                            Level = 3,
+                            Level = 3
                         };
 
                         folders.Add(folderModel);
@@ -140,7 +144,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         {
                             Label = folder4Label,
                             Description = folder4Description,
-                            Level = 4,
+                            Level = 4
                         };
 
                         folders.Add(folderModel);
@@ -156,7 +160,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         {
                             Label = folder5Label,
                             Description = folder5Description,
-                            Level = 5,
+                            Level = 5
                         };
 
                         folders.Add(folderModel);
@@ -172,7 +176,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         {
                             Label = folder6Label,
                             Description = folder6Description,
-                            Level = 6,
+                            Level = 6
                         };
 
                         folders.Add(folderModel);
@@ -188,7 +192,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         {
                             Label = folder7Label,
                             Description = folder7Description,
-                            Level = 7,
+                            Level = 7
                         };
 
                         folders.Add(folderModel);
@@ -204,7 +208,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         {
                             Label = folder8Label,
                             Description = folder8Description,
-                            Level = 8,
+                            Level = 8
                         };
 
                         folders.Add(folderModel);
@@ -220,7 +224,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         {
                             Label = folder9Label,
                             Description = folder9Description,
-                            Level = 9,
+                            Level = 9
                         };
 
                         folders.Add(folderModel);
@@ -236,7 +240,7 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                         {
                             Label = folder10Label,
                             Description = folder10Description,
-                            Level = 10,
+                            Level = 10
                         };
 
                         folders.Add(folderModel);

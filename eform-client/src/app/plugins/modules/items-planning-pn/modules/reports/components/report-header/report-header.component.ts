@@ -66,9 +66,8 @@ export class ReportHeaderComponent implements OnInit, OnDestroy {
     this.valueChangesSub$ = this.generateForm.valueChanges.subscribe(
       (value: { tagIds: number[]; dateRange: string[] }) => {
         if (value.dateRange.length) {
-          const template = `yyyy-MM-dd'T00:00:00.000Z'`;
-          const dateFrom = format(parseISO(value.dateRange[0]), template);
-          const dateTo = format(parseISO(value.dateRange[1]), template);
+          const dateFrom = value.dateRange[0];
+          const dateTo = value.dateRange[1];
           this.planningsReportStateService.updateDateRange([dateFrom, dateTo]);
         }
       }

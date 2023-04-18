@@ -94,7 +94,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
                 {
                     Name = requestModel.Name,
                     CreatedByUserId = _userService.UserId,
-                    UpdatedByUserId = _userService.UserId,
+                    UpdatedByUserId = _userService.UserId
                 };
 
                 await itemsPlanningTag.Create(_dbContext);
@@ -199,8 +199,8 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
 					{
 						Name = tagName,
 						CreatedByUserId = _userService.UserId,
-						UpdatedByUserId = _userService.UserId,
-					};
+						UpdatedByUserId = _userService.UserId
+                    };
 
 					await itemsPlanningTag.Create(_dbContext);
 				}

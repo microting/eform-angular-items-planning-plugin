@@ -6,7 +6,7 @@ export const planningsImportTestData: PlanningImportTest[] = [
       'Døvmark - 10. Lovpligtige egenkontroller og logbøger - 10.01 Planlagte og tilbagevendende opgaver - 01. Miljøledelse - 01.01 Miljøledelse: Gennemgang og evaluering',
     repeatEvery: 12,
     repeatType: 'Uge',
-    relatedEFormName: '01. Gennemgang Miljøledelse',
+    relatedEFormName: '05. Stald_klargøring',
     tags: [
       '00. Døvmark - -',
       '01. Miljøledelse',
@@ -20,7 +20,7 @@ export const planningsImportTestData: PlanningImportTest[] = [
       'Døvmark - 10. Lovpligtige egenkontroller og logbøger - 10.01 Planlagte og tilbagevendende opgaver - 01. Miljøledelse - 01.01 Miljøledelse: Gennemgang og evaluering',
     repeatEvery: 12,
     repeatType: 'Måned',
-    relatedEFormName: '01. Evaluering Miljøledelse',
+    relatedEFormName: '05. Stald_klargøring',
     tags: [
       '00.01 Rapport Tilsynsmyndighed',
       '01. Miljøledelse',
@@ -34,7 +34,7 @@ export const planningsImportTestData: PlanningImportTest[] = [
       'Døvmark - 10. Lovpligtige egenkontroller og logbøger - 10.01 Planlagte og tilbagevendende opgaver - 01. Miljøledelse - 01.02 Vand og elforbrug',
     repeatEvery: 1,
     repeatType: 'Måned',
-    relatedEFormName: '01. Vandforbrug',
+    relatedEFormName: '05. Stald_klargøring',
     tags: [
       '00.01 Rapport Tilsynsmyndighed',
       '01. Miljøledelse',
@@ -48,7 +48,7 @@ export const planningsImportTestData: PlanningImportTest[] = [
       'Døvmark - 10. Lovpligtige egenkontroller og logbøger - 10.01 Planlagte og tilbagevendende opgaver - 01. Miljøledelse - 01.02 Vand og elforbrug',
     repeatEvery: 1,
     repeatType: 'Måned',
-    relatedEFormName: '01. Elforbrug',
+    relatedEFormName: '05. Stald_klargøring',
     tags: [
       '00.01 Rapport Tilsynsmyndighed',
       '01. Miljøledelse',
@@ -62,7 +62,7 @@ export const planningsImportTestData: PlanningImportTest[] = [
       'Døvmark - 10. Lovpligtige egenkontroller og logbøger - 10.01 Planlagte og tilbagevendende opgaver - 02. Beredskabsplan',
     repeatEvery: 12,
     repeatType: 'Måned',
-    relatedEFormName: '02. Gennemgang af beredskabsplan',
+    relatedEFormName: '05. Stald_klargøring',
     tags: [
       '00.01 Rapport Tilsynsmyndighed',
       '02. Beredskabsplan',
@@ -76,7 +76,7 @@ export const planningsImportTestData: PlanningImportTest[] = [
       'Døvmark - 10. Lovpligtige egenkontroller og logbøger - 10.01 Planlagte og tilbagevendende opgaver - 02. Beredskabsplan',
     repeatEvery: 12,
     repeatType: 'Måned',
-    relatedEFormName: '02. Opdatering af beredskabsplan',
+    relatedEFormName: '05. Stald_klargøring',
     tags: [
       '00.01 Rapport Tilsynsmyndighed',
       '02. Beredskabsplan',
@@ -90,7 +90,7 @@ export const planningsImportTestData: PlanningImportTest[] = [
       'Døvmark - 10. Lovpligtige egenkontroller og logbøger - 10.01 Planlagte og tilbagevendende opgaver - 03. Husdyrgødning: Opbevaring og håndtering - 03.1 Gyllebeholdere - 03.01 Beholder 1',
     repeatEvery: 1,
     repeatType: 'Måned',
-    relatedEFormName: '03. Kontrol flydelag',
+    relatedEFormName: '05. Stald_klargøring',
     tags: [
       '00.01 Rapport Tilsynsmyndighed',
       '03. Husdyrgødning: Opbevaring og håndtering',
@@ -104,7 +104,7 @@ export const planningsImportTestData: PlanningImportTest[] = [
       'Døvmark - 10. Lovpligtige egenkontroller og logbøger - 10.01 Planlagte og tilbagevendende opgaver - 03. Husdyrgødning: Opbevaring og håndtering - 03.1 Gyllebeholdere - 03.01 Beholder 1',
     repeatEvery: 1,
     repeatType: 'Måned',
-    relatedEFormName: '03. Kontrol alarmanlæg gyllebeholder',
+    relatedEFormName: '05. Stald_klargøring',
     tags: [
       '00.01 Rapport Tilsynsmyndighed',
       '03. Husdyrgødning: Opbevaring og håndtering',
@@ -118,7 +118,7 @@ export const planningsImportTestData: PlanningImportTest[] = [
       'Døvmark - 10. Lovpligtige egenkontroller og logbøger - 10.01 Planlagte og tilbagevendende opgaver - 03. Husdyrgødning: Opbevaring og håndtering - 03.1 Gyllebeholdere - 03.01 Beholder 1',
     repeatEvery: 12,
     repeatType: 'Måned',
-    relatedEFormName: '03. Kontrol konstruktion',
+    relatedEFormName: '05. Stald_klargøring',
     tags: [
       '00.01 Rapport Tilsynsmyndighed',
       '03. Husdyrgødning: Opbevaring og håndtering',
@@ -132,7 +132,7 @@ export const planningsImportTestData: PlanningImportTest[] = [
       'Døvmark - 10. Lovpligtige egenkontroller og logbøger - 10.01 Planlagte og tilbagevendende opgaver - 03. Husdyrgødning: Opbevaring og håndtering - 03.1 Gyllebeholdere - 03.01 Beholder 1',
     repeatEvery: 120,
     repeatType: 'Måned',
-    relatedEFormName: '03. Anmodning beholderkontrol',
+    relatedEFormName: '05. Stald_klargøring',
     tags: [
       '00.01 Rapport Tilsynsmyndighed',
       '03. Husdyrgødning: Opbevaring og håndtering',

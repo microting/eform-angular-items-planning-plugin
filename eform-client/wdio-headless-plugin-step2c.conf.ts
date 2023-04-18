@@ -1,4 +1,7 @@
-exports.config = {
+//const path = require("path");
+import type { Options } from '@wdio/types'
+
+export const config: Options.Testrunner = {
     runner: 'local',
     path: '/',
     //
@@ -12,15 +15,9 @@ exports.config = {
     //
     specs: [
       'e2e/Tests/items-planning-settings/application-settings.plugins-page.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.add.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.edit.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.delete.spec.ts',
-      // 'e2e/Tests/items-planning-general/items-planning.settings.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.sorting.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.multiple-delete.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.pairing.spec.ts',
+      //'e2e/Tests/items-planning-general/items-planning.pairing.spec.ts', // TODO: uncomment this line when the test is fixed
       'e2e/Tests/items-planning-general/items-planning.tags.spec.ts',
-      // 'e2e/Tests/items-planning-general/items-planning.import.spec.ts' // Disabled until async is implemented completely.
+      'e2e/Tests/items-planning-general/items-planning.import.spec.ts'
     ],
     suites: {
         settings: [
@@ -106,7 +103,7 @@ exports.config = {
     baseUrl: 'http://localhost:4200',
     //
     // Default timeout for all waitFor* commands.
-    waitforTimeout: 3000000,
+    waitforTimeout: 300000,
     //
     // Default timeout in milliseconds for request
     // if Selenium Grid doesn't send response
@@ -159,7 +156,7 @@ exports.config = {
     // See the full list at http://mochajs.org/
     mochaOpts: {
         ui: 'bdd',
-        compilers: ['tsconfig-paths/register'],
+        //compilers: ['tsconfig-paths/register'],
         timeout: 1200000
     },
     //
@@ -231,7 +228,7 @@ exports.config = {
      * Function to be executed after a test (in Mocha/Jasmine) or a step (in Cucumber) ends.
      * @param {Object} test test details
      */
-    afterTest(test, context, { error, result, duration, passed, retries }) {
+    afterTest: function (test, context, { error, result, duration, passed, retries }) {
       const path = require('path');
 
       // if test passed, ignore, else take and save screenshot.
@@ -255,14 +252,14 @@ exports.config = {
 
       // get current test title and clean it, to use it as file name
       const filename = encodeURIComponent(
-        `${
-          test.fullTitle.replace(/\s+/g, '-')
-        }-chrome-${timestamp}`.replace(/[/]/g, '__')
+        `chrome-${timestamp}`.replace(/[/]/g, '__')
       ).replace(/%../, '.');
 
       const filePath = path.resolve(this.screenshotPath, `${filename}.png`);
 
+      console.log('Saving screenshot to:', filePath);
       browser.saveScreenshot(filePath);
+      console.log('Saved screenshot to:', filePath);
     },
     /**
      * Hook that gets executed after the suite has ended

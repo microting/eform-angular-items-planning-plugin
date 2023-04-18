@@ -166,25 +166,25 @@ namespace ItemsPlanning.Pn
                             {
                                  LocaleName = LocaleNames.English,
                                  Name = "Items Planning",
-                                 Language = LanguageNames.English,
+                                 Language = LanguageNames.English
                             },
                             new PluginMenuTranslationModel
                             {
                                  LocaleName = LocaleNames.German,
                                  Name = "Artikelplanung",
-                                 Language = LanguageNames.German,
+                                 Language = LanguageNames.German
                             },
                             new PluginMenuTranslationModel
                             {
                                  LocaleName = LocaleNames.Danish,
                                  Name = "Egenkontrol",
-                                 Language = LanguageNames.Danish,
+                                 Language = LanguageNames.Danish
                             },
                             new PluginMenuTranslationModel
                             {
                                 LocaleName = LocaleNames.Ukrainian,
                                 Name = "Планування елементів",
-                                Language = LanguageNames.Ukrainian,
+                                Language = LanguageNames.Ukrainian
                             }
                         },
                         ChildItems = new List<PluginMenuItemModel>()
@@ -207,8 +207,8 @@ namespace ItemsPlanning.Pn
                                         {
                                             ClaimName = ItemsPlanningClaims.GetPlannings,
                                             PermissionName = "Obtain plannings",
-                                            PermissionTypeName = "Plannings",
-                                        },
+                                            PermissionTypeName = "Plannings"
+                                        }
                                     },
                                     Translations = new List<PluginMenuTranslationModel>
                                     {
@@ -216,25 +216,25 @@ namespace ItemsPlanning.Pn
                                         {
                                             LocaleName = LocaleNames.English,
                                             Name = "Planning",
-                                            Language = LanguageNames.English,
+                                            Language = LanguageNames.English
                                         },
                                         new PluginMenuTranslationModel
                                         {
                                             LocaleName = LocaleNames.German,
                                             Name = "Planung",
-                                            Language = LanguageNames.German,
+                                            Language = LanguageNames.German
                                         },
                                         new PluginMenuTranslationModel
                                         {
                                             LocaleName = LocaleNames.Danish,
                                             Name = "Planlægning",
-                                            Language = LanguageNames.Danish,
+                                            Language = LanguageNames.Danish
                                         },
                                         new PluginMenuTranslationModel
                                         {
                                             LocaleName = LocaleNames.Ukrainian,
                                             Name = "Планування",
-                                            Language = LanguageNames.Ukrainian,
+                                            Language = LanguageNames.Ukrainian
                                         }
                                     }
                                 },
@@ -244,25 +244,25 @@ namespace ItemsPlanning.Pn
                                     {
                                         LocaleName = LocaleNames.English,
                                         Name = "Planning",
-                                        Language = LanguageNames.English,
+                                        Language = LanguageNames.English
                                     },
                                     new PluginMenuTranslationModel
                                     {
                                         LocaleName = LocaleNames.German,
                                         Name = "Planung",
-                                        Language = LanguageNames.German,
+                                        Language = LanguageNames.German
                                     },
                                     new PluginMenuTranslationModel
                                     {
                                         LocaleName = LocaleNames.Danish,
                                         Name = "Planlægning",
-                                        Language = LanguageNames.Danish,
+                                        Language = LanguageNames.Danish
                                     },
                                     new PluginMenuTranslationModel
                                     {
                                         LocaleName = LocaleNames.Ukrainian,
                                         Name = "Планування",
-                                        Language = LanguageNames.Ukrainian,
+                                        Language = LanguageNames.Ukrainian
                                     }
                                 }
                             },
@@ -285,25 +285,25 @@ namespace ItemsPlanning.Pn
                                         {
                                             LocaleName = LocaleNames.English,
                                             Name = "Reports",
-                                            Language = LanguageNames.English,
+                                            Language = LanguageNames.English
                                         },
                                         new PluginMenuTranslationModel
                                         {
                                             LocaleName = LocaleNames.German,
                                             Name = "Berichte",
-                                            Language = LanguageNames.German,
+                                            Language = LanguageNames.German
                                         },
                                         new PluginMenuTranslationModel
                                         {
                                             LocaleName = LocaleNames.Danish,
                                             Name = "Rapporter",
-                                            Language = LanguageNames.Danish,
+                                            Language = LanguageNames.Danish
                                         },
                                         new PluginMenuTranslationModel
                                         {
                                             LocaleName = LocaleNames.Ukrainian,
                                             Name = "Звіти",
-                                            Language = LanguageNames.Ukrainian,
+                                            Language = LanguageNames.Ukrainian
                                         }
                                     }
                                 },
@@ -313,25 +313,25 @@ namespace ItemsPlanning.Pn
                                     {
                                         LocaleName = LocaleNames.English,
                                         Name = "Reports",
-                                        Language = LanguageNames.English,
+                                        Language = LanguageNames.English
                                     },
                                     new PluginMenuTranslationModel
                                     {
                                         LocaleName = LocaleNames.German,
                                         Name = "Berichte",
-                                        Language = LanguageNames.German,
+                                        Language = LanguageNames.German
                                     },
                                     new PluginMenuTranslationModel
                                     {
                                         LocaleName = LocaleNames.Danish,
                                         Name = "Rapporter",
-                                        Language = LanguageNames.Danish,
+                                        Language = LanguageNames.Danish
                                     },
                                     new PluginMenuTranslationModel
                                     {
                                         LocaleName = LocaleNames.Ukrainian,
                                         Name = "Звіти",
-                                        Language = LanguageNames.Ukrainian,
+                                        Language = LanguageNames.Ukrainian
                                     }
                                 }
                             },
@@ -354,25 +354,25 @@ namespace ItemsPlanning.Pn
                                         {
                                             LocaleName = LocaleNames.English,
                                             Name = "Pairing",
-                                            Language = LanguageNames.English,
+                                            Language = LanguageNames.English
                                         },
                                         new PluginMenuTranslationModel
                                         {
                                             LocaleName = LocaleNames.German,
                                             Name = "Koppelen",
-                                            Language = LanguageNames.German,
+                                            Language = LanguageNames.German
                                         },
                                         new PluginMenuTranslationModel
                                         {
                                             LocaleName = LocaleNames.Danish,
                                             Name = "Parring",
-                                            Language = LanguageNames.Danish,
+                                            Language = LanguageNames.Danish
                                         },
                                         new PluginMenuTranslationModel
                                         {
                                             LocaleName = LocaleNames.Ukrainian,
                                             Name = "Зв'язування",
-                                            Language = LanguageNames.Ukrainian,
+                                            Language = LanguageNames.Ukrainian
                                         }
                                     }
                                 },
@@ -382,25 +382,25 @@ namespace ItemsPlanning.Pn
                                         {
                                             LocaleName = LocaleNames.English,
                                             Name = "Pairing",
-                                            Language = LanguageNames.English,
+                                            Language = LanguageNames.English
                                         },
                                         new PluginMenuTranslationModel
                                         {
                                             LocaleName = LocaleNames.German,
                                             Name = "Koppelen",
-                                            Language = LanguageNames.German,
+                                            Language = LanguageNames.German
                                         },
                                         new PluginMenuTranslationModel
                                         {
                                             LocaleName = LocaleNames.Danish,
                                             Name = "Parring",
-                                            Language = LanguageNames.Danish,
+                                            Language = LanguageNames.Danish
                                         },
                                         new PluginMenuTranslationModel
                                         {
                                             LocaleName = LocaleNames.Ukrainian,
                                             Name = "Зв'язування",
-                                            Language = LanguageNames.Ukrainian,
+                                            Language = LanguageNames.Ukrainian
                                         }
                                     }
                             }
@@ -431,14 +431,14 @@ namespace ItemsPlanning.Pn
                         E2EId = "items-planning-pn-plannings",
                         Link = "/plugins/items-planning-pn/plannings",
                         Guards = new List<string>() { ItemsPlanningClaims.GetPlannings },
-                        Position = 0,
+                        Position = 0
                     },
                     new MenuItemModel()
                     {
                         Name = localizationService.GetString("Reports"),
                         E2EId = "items-planning-pn-reports",
                         Link = "/plugins/items-planning-pn/reports",
-                        Position = 2,
+                        Position = 2
                     }
                 }
             });
@@ -531,7 +531,7 @@ namespace ItemsPlanning.Pn
                                     MicrotingCheckListSitId = checkListSite.Id,
                                     PlanningId = plannings[0].Id,
                                     MicrotingSdkCaseId = dbCase.Id,
-                                    MicrotingSdkCaseDoneAt = dbCase.DoneAt,
+                                    MicrotingSdkCaseDoneAt = dbCase.DoneAt
                                 };
                                 await planningCaseSite.Create(itemsPlanningContext);
                                 var site = await sdkDbContext.Sites.SingleOrDefaultAsync(x => x.Id == dbCase.SiteId);
