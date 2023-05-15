@@ -112,6 +112,8 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   }
 
   onGenerateReport(model: ReportPnGenerateModel) {
+    this.dateFrom = model.dateFrom;
+    this.dateTo = model.dateTo;
     this.generateReportSub$ = this.reportService
       .generateReport({
         dateFrom: model.dateFrom,

@@ -509,11 +509,27 @@ namespace ItemsPlanning.Pn.Services.ExcelService
                                     switch (dataModelCaseField.Key)
                                     {
                                         case "date":
-                                            worksheet.Cell(x + 1, y + 1).Value = DateTime.Parse(value);
+                                            var date = DateTime.Parse(value);
+                                            worksheet.Cell(x + 1, y + 1).SetValue(date);
+                                            worksheet.Cell(x + 1, y + 1).Style.DateFormat.Format = "dd.MM.yyyy";
+                                            //worksheet.Cell(x + 1, y + 1).Value = DateTime.Parse(value);
                                             //worksheet.Cell(x + 1, y + 1).DataType = XLDataType.DateTime;
                                             break;
                                         case "number":
-                                            worksheet.Cell(x + 1, y + 1).Value = Double.Parse(value);
+                                            try
+                                            {
+                                                if (!string.IsNullOrEmpty(value))
+                                                {
+                                                    var number = Double.Parse(value, CultureInfo.InvariantCulture);
+                                                    worksheet.Cell(x + 1, y + 1).SetValue(number);
+                                                }
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                Console.WriteLine(e);
+                                                throw;
+                                            }
+                                            //worksheet.Cell(x + 1, y + 1).Value = Double.Parse(value);
                                             //worksheet.Cell(x+1, y+1).Style.NumberFormat.Format = "0.00";
                                             //worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Number;
                                             break;
