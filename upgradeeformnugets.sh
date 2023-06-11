@@ -7,7 +7,7 @@ if (( "$GIT_STATUS" > 0 )); then
 	cd eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn
   CURRENT_NUMBER_OF_COMMITS=`git log --oneline | wc -l`
 
-	PACKAGES=('Microting.eForm' 'Microting.eFormApi.BasePn' 'Microting.ItemsPlanningBase' 'Magick.NET-Q16-x64')
+	PACKAGES=('Microting.eForm' 'Microting.eFormApi.BasePn' 'Microting.ItemsPlanningBase')
 	PROJECT_NAME='ItemsPlanning.Pn.csproj'
 	REPOSITORY='eform-angular-items-planning-plugin'
 
