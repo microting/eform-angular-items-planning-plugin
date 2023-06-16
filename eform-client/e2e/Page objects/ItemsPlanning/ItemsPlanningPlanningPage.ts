@@ -31,28 +31,16 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
 
   public async clickIdTableHeader() {
     await (await $('th.planningId')).click();
-    await (await $('#spinner-animation')).waitForDisplayed({
-      timeout: 90000,
-      reverse: true,
-    });
     await browser.pause(500);
   }
 
   public async clickNameTableHeader() {
     await (await $('th.planningName')).click();
-    await (await $('#spinner-animation')).waitForDisplayed({
-      timeout: 90000,
-      reverse: true,
-    });
     await browser.pause(500);
   }
 
   public async clickDescriptionTableHeader() {
     await (await $('th.planningDescription')).click();
-    await (await $('#spinner-animation')).waitForDisplayed({
-      timeout: 90000,
-      reverse: true,
-    });
     await browser.pause(500);
   }
 
@@ -127,10 +115,8 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public async goToPlanningsPage() {
-    const spinnerAnimation = await $('#spinner-animation');
     await (await this.itemPlanningButton()).click();
     await (await this.planningsButton()).click();
-    await spinnerAnimation.waitForDisplayed({ timeout: 90000, reverse: true });
     await this.planningCreateBtn();
   }
 
@@ -219,10 +205,6 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
       await (await this.planningsMultipleDeleteCancelBtn()).click();
     } else {
       await (await this.planningsMultipleDeleteDeleteBtn()).click();
-      await (await $('#spinner-animation')).waitForDisplayed({
-        timeout: 90000,
-        reverse: true,
-      });
     }
     await (await this.planningCreateBtn()).waitForDisplayed({ timeout: 40000 });
   }
@@ -288,14 +270,11 @@ export class PlanningRowObject {
   public static async closeDelete(clickCancel = false) {
     if (!clickCancel) {
       await (await itemsPlanningPlanningPage.planningDeleteDeleteBtn()).click();
-      await (await $('#spinner-animation')).waitForDisplayed({
-        timeout: 90000,
-        reverse: true,
-      });
     } else {
       await (await itemsPlanningPlanningPage.planningDeleteCancelBtn()).click();
     }
     await browser.pause(500);
+    await (await this.planningCreateBtn()).waitForDisplayed({ timeout: 40000 });
   }
 
   async getRow(rowNum: number): Promise<PlanningRowObject> {
@@ -342,10 +321,6 @@ export class PlanningRowObject {
 
   public async openEdit() {
     await this.updateBtn.click();
-    await (await $('#spinner-animation')).waitForDisplayed({
-      timeout: 90000,
-      reverse: true,
-    });
     await (await itemsPlanningModalPage.planningEditSaveBtn()).waitForDisplayed(
       {
         timeout: 40000,
@@ -359,7 +334,6 @@ export class PlanningRowObject {
     clickCancel = false
   ) {
     await this.openEdit();
-    const spinnerAnimation = await $('#spinner-animation');
     const ngOption = await $('.ng-option');
     if (planning.name && planning.name.length > 0) {
       for (let i = 0; i < planning.name.length; i++) {
@@ -395,20 +369,12 @@ export class PlanningRowObject {
       await (
         await (await itemsPlanningModalPage.editPlanningSelector()).$('input')
       ).setValue(planning.eFormName);
-      await spinnerAnimation.waitForDisplayed({
-        timeout: 90000,
-        reverse: true,
-      });
       await ngOption.waitForDisplayed({ timeout: 40000 });
       await (
         await (
           await $('.ng-dropdown-panel')
         ).$(`.ng-option=${planning.eFormName}`)
       ).click();
-      await spinnerAnimation.waitForDisplayed({
-        timeout: 90000,
-        reverse: true,
-      });
     }
     if (clearTags) {
       const clearButton = await (
@@ -446,10 +412,6 @@ export class PlanningRowObject {
       await (
         await (await itemsPlanningModalPage.editRepeatType()).$('input')
       ).setValue(planning.repeatType);
-      await spinnerAnimation.waitForDisplayed({
-        timeout: 90000,
-        reverse: true,
-      });
       await ngOption.waitForDisplayed({ timeout: 40000 });
       await (
         await (
