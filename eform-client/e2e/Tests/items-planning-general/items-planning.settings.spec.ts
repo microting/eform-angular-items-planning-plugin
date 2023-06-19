@@ -18,7 +18,6 @@ describe('Items planning plugin settings page', function () {
       numberOfWorkers: '1'
     };
     await itemsPlanningSettingsPage.saveSettings(settingsData);
-    await (await $('#spinner-animation')).waitForDisplayed({timeout: 90000, reverse: true});
     // Check that items planning settings saved correctly
     const savedSettings = await itemsPlanningSettingsPage.getSettings();
     expect(await savedSettings.sdkConnectionString, 'SDK connection string is incorrect').equal(settingsData.sdkConnectionString);

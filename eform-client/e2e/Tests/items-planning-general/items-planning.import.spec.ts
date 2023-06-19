@@ -20,16 +20,13 @@ describe('Items planning - Import', function () {
     const filePath = localPath + '/e2e/Assets/Skabelon Døvmark NEW.xlsx';
     const remoteFilePath = await browser.uploadFile(filePath);
     await (await $('app-eforms-bulk-import-modal * *')).waitForDisplayed({ timeout: 20000 });
-    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
     await (await myEformsPage.xlsxImportInput()).addValue(remoteFilePath);
-    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
     await (await myEformsPage.newEformBtn()).waitForClickable({ timeout: 60000 });
     expect(eformsBeforeImport).not.eq(await myEformsPage.rowNum());
 
     await itemsPlanningPlanningPage.goToPlanningsPage();
     const planningsBeforeImport = await itemsPlanningPlanningPage.rowNum();
     (await itemsPlanningPlanningPage.importPlanningsBtn()).click();
-    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
     // import plannings
     await (await $('app-plannings-bulk-import-modal * *')).waitForDisplayed({
       timeout: 20000,

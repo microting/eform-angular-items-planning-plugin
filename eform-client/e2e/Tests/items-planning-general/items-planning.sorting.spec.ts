@@ -56,7 +56,6 @@ describe('Items planning plannings - Sorting', function () {
       }
       expect(sorted, 'Sort by ID incorrect').deep.equal(planningAfter);
     }
-    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
   });
   it('should be able to sort by Name', async () => {
     let list = await $$('td.planningName');
@@ -84,13 +83,8 @@ describe('Items planning plannings - Sorting', function () {
         sorted = planningBefore.sort();
       }
 
-      await (await $('#spinner-animation')).waitForDisplayed({
-        timeout: 90000,
-        reverse: true,
-      });
       expect(sorted, 'Sort by Name incorrect').deep.equal(planningAfter);
     }
-    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
   });
   it('should be able to sort by Description', async () => {
     let list = await $$('td.planningDescription');
@@ -120,7 +114,6 @@ describe('Items planning plannings - Sorting', function () {
 
       expect(sorted, 'Sort by Description incorrect').deep.equal(planningAfter);
     }
-    await (await $('#spinner-animation')).waitForDisplayed({ timeout: 90000, reverse: true });
   });
   it('should clear table', async () => {
     await itemsPlanningPlanningPage.clearTable();

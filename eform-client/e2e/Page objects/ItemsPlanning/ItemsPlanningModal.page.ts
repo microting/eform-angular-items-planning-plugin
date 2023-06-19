@@ -282,7 +282,6 @@ export class ItemsPlanningModalPage extends Page {
     clickCancel = false
   ) {
     await (await itemsPlanningPlanningPage.planningCreateBtn()).click();
-    await this.waitForSpinnerHide();
     const ngOption = $('.ng-option');
     await (await this.planningCreateSaveBtn()).waitForDisplayed();
     for (let i = 0; i < planning.name.length; i++) {
@@ -300,14 +299,12 @@ export class ItemsPlanningModalPage extends Page {
     await (await (await this.createPlanningSelector()).$('input')).setValue(
       planning.eFormName
     );
-    await this.waitForSpinnerHide();
     await ngOption.waitForDisplayed({ timeout: 20000 });
     await (
       await (
         await $('ng-dropdown-panel')
       ).$(`.ng-option=${planning.eFormName}`)
     ).click();
-    await this.waitForSpinnerHide();
     // }
     if (planning.tags && planning.tags.length > 0) {
       for (let i = 0; i < planning.tags.length; i++) {
@@ -322,14 +319,12 @@ export class ItemsPlanningModalPage extends Page {
     }
     if (planning.repeatType) {
       await (await $('#createRepeatType input')).setValue(planning.repeatType);
-      await this.waitForSpinnerHide();
       await ngOption.waitForDisplayed({ timeout: 20000 });
       await (
         await (await $('ng-dropdown-panel')).$(
           `.ng-option=${planning.repeatType}`
         )
       ).click();
-      await this.waitForSpinnerHide();
     }
     if (planning.startFrom) {
       await (await this.createStartFrom()).click();
@@ -389,17 +384,14 @@ export class ItemsPlanningModalPage extends Page {
     }
     if (!clickCancel) {
       await (await this.planningCreateSaveBtn()).click();
-      await this.waitForSpinnerHide();
     } else {
       await (await this.planningCreateCancelBtn()).click();
     }
-    await this.waitForSpinnerHide();
     //await (await this.planningId()).waitForDisplayed();
   }
 
   public async addNewItem() {
     await (await this.addItemBtn()).click();
-    await this.waitForSpinnerHide();
   }
 }
 
@@ -427,9 +419,6 @@ export class PlanningItemRowObject {
 
   public async deleteItem() {
     await this.deleteBtn.click();
-    await (await $('#spinner-animation')).waitForDisplayed({
-      timeout: 90000,
-      reverse: true,
-    });
+    await browser.pause(500);
   }
 }
