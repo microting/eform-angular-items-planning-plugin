@@ -56,7 +56,7 @@ jobs:
       with:
         name: items-planning-container
     - run: docker load -i items-planning-container.tar
-    - name: Create docker network 🖧
+    - name: Create docker network
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
