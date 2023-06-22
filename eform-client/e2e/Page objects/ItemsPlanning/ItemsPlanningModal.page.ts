@@ -282,7 +282,6 @@ export class ItemsPlanningModalPage extends Page {
     clickCancel = false
   ) {
     await (await itemsPlanningPlanningPage.planningCreateBtn()).click();
-    const ngOption = $('.ng-option');
     await (await this.planningCreateSaveBtn()).waitForDisplayed();
     for (let i = 0; i < planning.name.length; i++) {
       await (await this.createPlanningItemName(i)).setValue(planning.name[i]);
@@ -299,6 +298,7 @@ export class ItemsPlanningModalPage extends Page {
     await (await (await this.createPlanningSelector()).$('input')).setValue(
       planning.eFormName
     );
+    let ngOption = await $('.ng-option');
     await ngOption.waitForDisplayed({ timeout: 20000 });
     await (
       await (
@@ -319,6 +319,7 @@ export class ItemsPlanningModalPage extends Page {
     }
     if (planning.repeatType) {
       await (await $('#createRepeatType input')).setValue(planning.repeatType);
+      let ngOption = await $('.ng-option');
       await ngOption.waitForDisplayed({ timeout: 20000 });
       await (
         await (await $('ng-dropdown-panel')).$(
