@@ -2,8 +2,10 @@ import itemsPlanningModalPage from './ItemsPlanningModal.page';
 import { PageWithNavbarPage } from '../PageWithNavbar.page';
 import {
   generateRandmString,
-  selectDateOnDatePicker,
+  selectDateOnDatePicker, selectValueInNgSelector,
 } from '../../Helpers/helper-functions';
+import {format, set} from 'date-fns';
+import {customDaLocale} from '../../../src/app/common/const';
 
 export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   constructor() {
@@ -264,7 +266,7 @@ export class PlanningRowObject {
       await (await itemsPlanningModalPage.planningEditCancelBtn()).click();
     }
     await browser.pause(500);
-    //await (await itemsPlanningPlanningPage.planningId()).waitForDisplayed();
+    await (await itemsPlanningPlanningPage.planningCreateBtn()).waitForDisplayed();
   }
 
   public static async planningCreateBtn() {
@@ -288,30 +290,30 @@ export class PlanningRowObject {
     rowNum = rowNum - 1;
     this.row = await $$('tbody > tr')[rowNum];
     if (this.row) {
-      this.checkboxDelete = await this.row.$('.mat-column-MtxGridCheckboxColumnDef mat-checkbox');
-      this.checkboxDeleteForClick = await this.row.$('.mat-column-MtxGridCheckboxColumnDef mat-checkbox label');
-      this.id = +(await (await this.row.$('.mat-column-id span')).getText());
-      this.name = (await (await this.row.$('.mat-column-translatedName span')).getText());
-      this.description = (await (await this.row.$('.mat-column-description span')).getText());
-      this.folderName = (await (await this.row.$('.mat-column-folder-eFormSdkFolderName span')).getText());
-      this.eFormName = (await (await this.row.$('.mat-column-planningRelatedEformName span')).getText());
+      this.checkboxDelete = await this.row.$('.cdk-column-MtxGridCheckboxColumnDef mat-checkbox');
+      this.checkboxDeleteForClick = await this.row.$('.cdk-column-MtxGridCheckboxColumnDef mat-checkbox label');
+      this.id = +(await (await this.row.$('.cdk-column-id span')).getText());
+      this.name = (await (await this.row.$('.cdk-column-translatedName span')).getText());
+      this.description = (await (await this.row.$('.cdk-column-description span')).getText());
+      this.folderName = (await (await this.row.$('.cdk-column-folder-eFormSdkFolderName span')).getText());
+      this.eFormName = (await (await this.row.$('.cdk-column-planningRelatedEformName span')).getText());
 
-      const tags = (await (await this.row.$('.mat-column-tags')).getText()).split('discount');
+      const tags = (await (await this.row.$('.cdk-column-tags')).getText()).split('discount');
       if(tags.length > 0) {
         tags[tags.length - 1] = tags[tags.length - 1].replace('edit', '');
         this.tags = tags.filter(x => x); // delete empty strings
       }
 
-      this.repeatEvery = +(await (await this.row.$('.mat-column-reiteration-repeatEvery span')).getText());
-      this.repeatType = (await (await this.row.$('.mat-column-reiteration-repeatType span')).getText());
-      this.planningDayOfWeek = (await (await this.row.$('.mat-column-reiteration-dayOfWeek span')).getText());
-      this.lastExecution = (await (await this.row.$('.mat-column-lastExecutedTime span')).getText());
-      this.nextExecution = (await (await this.row.$('.mat-column-nextExecutionTime span')).getText());
+      this.repeatEvery = +(await (await this.row.$('.cdk-column-reiteration-repeatEvery span')).getText());
+      this.repeatType = (await (await this.row.$('.cdk-column-reiteration-repeatType span')).getText());
+      this.planningDayOfWeek = (await (await this.row.$('.cdk-column-reiteration-dayOfWeek span')).getText());
+      this.lastExecution = (await (await this.row.$('.cdk-column-lastExecutedTime span')).getText());
+      this.nextExecution = (await (await this.row.$('.cdk-column-nextExecutionTime span')).getText());
       // const date = row.$('#planningRepeatUntil').getText();
       // this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
-      this.pairingBtn = await this.row.$$('.mat-column-actions button')[0];
-      this.updateBtn = await this.row.$$('.mat-column-actions button')[1];
-      this.deleteBtn = await this.row.$$('.mat-column-actions button')[2];
+      this.pairingBtn = await this.row.$$('.cdk-column-actions button')[0];
+      this.updateBtn = await this.row.$$('.cdk-column-actions button')[1];
+      this.deleteBtn = await this.row.$$('.cdk-column-actions button')[2];
     }
     return this;
   }
@@ -341,7 +343,6 @@ export class PlanningRowObject {
     clickCancel = false
   ) {
     await this.openEdit();
-    const ngOption = await $('.ng-option');
     if (planning.name && planning.name.length > 0) {
       for (let i = 0; i < planning.name.length; i++) {
         if (
@@ -373,15 +374,7 @@ export class PlanningRowObject {
         )
       ).getText()) !== planning.eFormName
     ) {
-      await (
-        await (await itemsPlanningModalPage.editPlanningSelector()).$('input')
-      ).setValue(planning.eFormName);
-      await ngOption.waitForDisplayed({ timeout: 40000 });
-      await (
-        await (
-          await $('.ng-dropdown-panel')
-        ).$(`.ng-option=${planning.eFormName}`)
-      ).click();
+      await selectValueInNgSelector(await itemsPlanningModalPage.editPlanningSelector(), planning.eFormName);
     }
     if (clearTags) {
       const clearButton = await (
@@ -416,20 +409,16 @@ export class PlanningRowObject {
         )
       ).getText()) !== planning.repeatType
     ) {
-      await (
-        await (await itemsPlanningModalPage.editRepeatType()).$('input')
-      ).setValue(planning.repeatType);
-      await ngOption.waitForDisplayed({ timeout: 40000 });
-      await (
-        await (
-          await $('ng-dropdown-panel')
-        ).$(`.ng-option=${planning.repeatType}`)
-      ).click();
+      await selectValueInNgSelector(await itemsPlanningModalPage.editRepeatType(), planning.repeatType);
     }
     if (
       planning.repeatUntil &&
       (await (await itemsPlanningModalPage.editRepeatUntil()).getValue()) !==
-        `${planning.repeatUntil.month}/${planning.repeatUntil.day}/${planning.repeatUntil.year}`
+      format(set(new Date(), {
+        year: planning.repeatUntil.year,
+        month: planning.repeatUntil.month - 1,
+        date: planning.repeatUntil.day,
+      }), 'P', {locale: customDaLocale})
     ) {
       await (await itemsPlanningModalPage.editRepeatUntil()).click();
       await selectDateOnDatePicker(
@@ -441,7 +430,11 @@ export class PlanningRowObject {
     if (
       planning.startFrom &&
       (await (await itemsPlanningModalPage.editStartFrom()).getValue()) !==
-        `${planning.startFrom.month}/${planning.startFrom.day}/${planning.startFrom.year}`
+      format(set(new Date(), {
+        year: planning.startFrom.year,
+        month: planning.startFrom.month - 1,
+        date: planning.startFrom.day,
+      }), 'P', {locale: customDaLocale})
     ) {
       await (await itemsPlanningModalPage.editStartFrom()).click();
       await selectDateOnDatePicker(
@@ -499,24 +492,9 @@ export class PlanningRowObject {
     }
     if (planning.pushMessageEnabled != null) {
       const status = planning.pushMessageEnabled ? 'Aktiveret' : 'Deaktiveret';
-      await (
-        await (await itemsPlanningModalPage.pushMessageEnabledEdit()).$('input')
-      ).setValue(status);
-      let value = await (
-        await $('ng-dropdown-panel')
-      ).$(`.ng-option=${status}`);
-      await value.waitForDisplayed({ timeout: 40000 });
-      await value.click();
-
-      await (
-        await (
-          await itemsPlanningModalPage.editDaysBeforeRedeploymentPushMessage()
-        ).$('input')
-      ).setValue(planning.daysBeforeRedeploymentPushMessage);
-      value = await (await $('ng-dropdown-panel')
-      ).$(`.ng-option=${planning.daysBeforeRedeploymentPushMessage}`);
-      await value.waitForDisplayed({ timeout: 40000 });
-      await value.click();
+      await selectValueInNgSelector(await itemsPlanningModalPage.pushMessageEnabledEdit(), status);
+      await selectValueInNgSelector(
+        await itemsPlanningModalPage.editDaysBeforeRedeploymentPushMessage(), planning.daysBeforeRedeploymentPushMessage.toString());
     }
     await PlanningRowObject.closeEdit(clickCancel);
   }

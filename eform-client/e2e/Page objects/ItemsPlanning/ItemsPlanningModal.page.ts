@@ -2,7 +2,7 @@ import Page from '../Page';
 import itemsPlanningPlanningPage, {
   PlanningCreateUpdate,
 } from './ItemsPlanningPlanningPage';
-import { selectDateOnDatePicker } from '../../Helpers/helper-functions';
+import {selectDateOnDatePicker, selectValueInNgSelector} from '../../Helpers/helper-functions';
 
 export class ItemsPlanningModalPage extends Page {
   constructor() {
@@ -277,6 +277,12 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
 
+  public async createRepeatType(): Promise<WebdriverIO.Element> {
+    const ele = await $('#createRepeatType');
+    await ele.waitForDisplayed({ timeout: 40000 });
+    return ele;
+  }
+
   public async createPlanning(
     planning: PlanningCreateUpdate,
     clickCancel = false
@@ -295,16 +301,7 @@ export class ItemsPlanningModalPage extends Page {
       await this.selectFolder(planning.folderName);
     }
     // if (planning.eFormName) {
-    await (await (await this.createPlanningSelector()).$('input')).setValue(
-      planning.eFormName
-    );
-    let ngOption = await $('.ng-option');
-    await ngOption.waitForDisplayed({ timeout: 20000 });
-    await (
-      await (
-        await $('ng-dropdown-panel')
-      ).$(`.ng-option=${planning.eFormName}`)
-    ).click();
+    await selectValueInNgSelector(await this.createPlanningSelector(), planning.eFormName);
     // }
     if (planning.tags && planning.tags.length > 0) {
       for (let i = 0; i < planning.tags.length; i++) {
@@ -318,14 +315,7 @@ export class ItemsPlanningModalPage extends Page {
       await (await $('input.createRepeatEvery')).setValue(planning.repeatEvery);
     }
     if (planning.repeatType) {
-      await (await $('#createRepeatType input')).setValue(planning.repeatType);
-      let ngOption = await $('.ng-option');
-      await ngOption.waitForDisplayed({ timeout: 20000 });
-      await (
-        await (await $('ng-dropdown-panel')).$(
-          `.ng-option=${planning.repeatType}`
-        )
-      ).click();
+      await selectValueInNgSelector(await this.createRepeatType(), planning.repeatType);
     }
     if (planning.startFrom) {
       await (await this.createStartFrom()).click();
@@ -334,9 +324,6 @@ export class ItemsPlanningModalPage extends Page {
         planning.startFrom.month,
         planning.startFrom.day
       );
-      // await (await this.createStartFrom()).setValue(
-      //   format(planning.startFrom, 'M/d/yyyy')
-      // );
     }
     if (planning.repeatUntil) {
       await (await this.createRepeatUntil()).click();
@@ -345,9 +332,6 @@ export class ItemsPlanningModalPage extends Page {
         planning.repeatUntil.month,
         planning.repeatUntil.day
       );
-      // await (await this.createRepeatUntil()).setValue(
-      //   format(planning.repeatUntil, 'M/d/yyyy')
-      // );
     }
     if (planning.number) {
       await (await this.createItemNumber()).setValue(planning.number);
@@ -365,30 +349,16 @@ export class ItemsPlanningModalPage extends Page {
     }
     if (planning.pushMessageEnabled != null) {
       const status = planning.pushMessageEnabled ? 'Aktiveret' : 'Deaktiveret';
-      await (await (await this.pushMessageEnabledCreate()).$('input')).setValue(
-        status
-      );
-      let value = await (
-        await $('ng-dropdown-panel')
-      ).$(`.ng-option=${status}`);
-      await value.waitForDisplayed({ timeout: 40000 });
-      await value.click();
-
-      await (
-        await (await this.createDaysBeforeRedeploymentPushMessage()).$('input')
-      ).setValue(planning.daysBeforeRedeploymentPushMessage);
-      value = await (
-        await $('ng-dropdown-panel')
-      ).$(`.ng-option=${planning.daysBeforeRedeploymentPushMessage}`);
-      await value.waitForDisplayed({ timeout: 40000 });
-      await value.click();
+      await selectValueInNgSelector(await this.pushMessageEnabledCreate(), status);
+      await selectValueInNgSelector(
+        await this.createDaysBeforeRedeploymentPushMessage(), planning.daysBeforeRedeploymentPushMessage.toString());
     }
     if (!clickCancel) {
       await (await this.planningCreateSaveBtn()).click();
     } else {
       await (await this.planningCreateCancelBtn()).click();
     }
-    //await (await this.planningId()).waitForDisplayed();
+    await (await itemsPlanningPlanningPage.planningCreateBtn()).waitForDisplayed();
   }
 
   public async addNewItem() {

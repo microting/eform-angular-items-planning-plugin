@@ -17,7 +17,7 @@ import {Subscription, take} from 'rxjs';
 import {PlanningFoldersModalComponent} from '../../planning-additions';
 import {FormArray, FormControl, FormGroup} from '@angular/forms';
 import {AuthStateService} from 'src/app/common/store';
-import {applicationLanguagesTranslated} from 'src/app/common/const';
+import {applicationLanguagesTranslated, PARSING_DATE_FORMAT} from 'src/app/common/const';
 import {composeFolderName, dialogConfigHelper} from 'src/app/common/helpers';
 import {
   SitesService,
@@ -33,6 +33,7 @@ import {
 import {format, set} from 'date-fns';
 import {MatDialog} from '@angular/material/dialog';
 import {Overlay} from '@angular/cdk/overlay';
+import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 
 @AutoUnsubscribe()
 @Component({
@@ -56,7 +57,6 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   daysBeforeRedeploymentPushMessage = Array(27)
     .fill(0)
     .map((_e, i) => i);
-  private standartDateTimeFormat = `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`;
 
   selectedFolderName: string;
   folderSelectedSub$: Subscription;
@@ -93,6 +93,8 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadFoldersTree();
+    this.getTags();
+    this.initTranslations();
   }
 
   goBack() {
@@ -122,7 +124,6 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
     this.getTagsSub$ = this.tagsService.getPlanningsTags().subscribe((data) => {
       if (data && data.success) {
         this.availableTags = data.model;
-        this.initTranslations();
       }
     });
   }
@@ -132,6 +133,13 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
       .createPlanning({
         ...this.newPlanningModel,
         translationsName: this.translationsArray.getRawValue(),
+        reiteration: {
+          ...this.newPlanningModel.reiteration,
+          startDate: this.newPlanningModel.reiteration.startDate &&
+            format(this.newPlanningModel.reiteration.startDate as Date, PARSING_DATE_FORMAT),
+          repeatUntil: this.newPlanningModel.reiteration.internalRepeatUntil &&
+            format(this.newPlanningModel.reiteration.internalRepeatUntil as Date, PARSING_DATE_FORMAT),
+        }
       })
       .subscribe((data) => {
         if (data && data.success) {
@@ -158,7 +166,6 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
       .subscribe((operation) => {
         if (operation && operation.success) {
           this.foldersListDto = operation.model;
-          this.getTags();
         }
       });
   }
@@ -182,31 +189,31 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
     this.updateSaveButtonDisabled();
   }
 
-  updateStartDate(e: any) {
-    let date = new Date(e);
+  updateStartDate(e: MatDatepickerInputEvent<any, any>) {
+    let date = new Date(e.value);
     date = set(date, {
       hours: 0,
       minutes: 0,
       seconds: 0,
       milliseconds: 0,
+      date: date.getDate(),
+      year: date.getFullYear(),
+      month: date.getMonth(),
     });
-    this.newPlanningModel.reiteration.startDate = format(
-      date,
-      this.standartDateTimeFormat
-    );
+    this.newPlanningModel.reiteration.startDate = date;
   }
 
-  updateEndDate(e: any) {
-    let date = new Date(e);
+  updateEndDate(e: MatDatepickerInputEvent<any, any>) {
+    let date = new Date(e.value);
     date = set(date, {
       hours: 0,
       minutes: 0,
       seconds: 0,
       milliseconds: 0,
+      date: date.getDate(),
+      year: date.getFullYear(),
+      month: date.getMonth(),
     });
-    this.newPlanningModel.reiteration.repeatUntil = format(
-      date,
-      this.standartDateTimeFormat
-    );
+    this.newPlanningModel.reiteration.internalRepeatUntil = date;
   }
 }

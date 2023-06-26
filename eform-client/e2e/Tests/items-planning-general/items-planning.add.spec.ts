@@ -10,6 +10,8 @@ import {
   generateRandmString,
   getRandomInt,
 } from '../../Helpers/helper-functions';
+import {format, set} from 'date-fns';
+import {customDaLocale} from '../../../src/app/common/const';
 
 const expect = require('chai').expect;
 
@@ -148,12 +150,13 @@ describe('Items planning - Add', function () {
       await (await itemsPlanningModalPage.editItemLocationCode()).getValue(),
       'Saved location code is incorrect'
     ).eq(planningData.locationCode);
+    const startDateForExpect = format(set(new Date(), {
+      year: planningData.startFrom.year,
+      month: planningData.startFrom.month - 1,
+      date: planningData.startFrom.day,
+    }), 'P', {locale: customDaLocale});
     expect(
-      await (await itemsPlanningModalPage.editStartFrom()).getValue(),
-      'Saved start from is incorrect'
-    ).eq(
-      `${planningData.startFrom.month}/${planningData.startFrom.day}/${planningData.startFrom.year}`
-    );
+      await (await itemsPlanningModalPage.editStartFrom()).getValue(), 'Saved start from is incorrect').eq(startDateForExpect);
     expect(
       await (
         await (await itemsPlanningModalPage.pushMessageEnabledEdit()).$(

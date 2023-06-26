@@ -15,6 +15,8 @@ const planningData: PlanningCreateUpdate = {
   repeatEvery: '1',
   repeatType: 'Dag',
   folderName: generateRandmString(),
+  startFrom: { year: 2020, month: 7, day: 9 },
+  repeatUntil: { year: 2021, month: 6, day: 10 },
 };
 
 describe('Items planning actions - Delete', function () {

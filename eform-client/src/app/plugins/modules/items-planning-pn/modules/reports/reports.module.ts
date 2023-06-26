@@ -25,6 +25,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [
@@ -33,26 +34,27 @@ import {MatDialogModule} from '@angular/material/dialog';
     ReportTableComponent,
     PlanningCaseDeleteComponent,
   ],
-  imports: [
-    CommonModule,
-    TranslateModule,
-    RouterModule,
-    OwlDateTimeModule,
-    ReportsRouting,
-    EformSharedModule,
-    MtxGridModule,
-    FormsModule,
-    ReactiveFormsModule,
-    EformCasesModule,
-    EformSharedTagsModule,
-    MatFormFieldModule,
-    MtxSelectModule,
-    MatIconModule,
-    MatInputModule,
-    MatButtonModule,
-    MatExpansionModule,
-    MatDialogModule,
-  ],
+    imports: [
+      CommonModule,
+      TranslateModule,
+      RouterModule,
+      OwlDateTimeModule,
+      ReportsRouting,
+      EformSharedModule,
+      MtxGridModule,
+      FormsModule,
+      ReactiveFormsModule,
+      EformCasesModule,
+      EformSharedTagsModule,
+      MatFormFieldModule,
+      MtxSelectModule,
+      MatIconModule,
+      MatInputModule,
+      MatButtonModule,
+      MatExpansionModule,
+      MatDialogModule,
+      MatDatepickerModule,
+    ],
   providers: [planningsReportPersistProvider],
 })
 export class ReportsModule {
