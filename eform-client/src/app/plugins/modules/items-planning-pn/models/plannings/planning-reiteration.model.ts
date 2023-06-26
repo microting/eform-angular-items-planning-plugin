@@ -4,8 +4,8 @@ export class PlanningReiterationModel {
   dayOfWeek: number;
   dayOfMonth: number;
   repeatUntil: string;
-  startDate: string;
-  internalRepeatUntil: string;
+  startDate: string | Date;
+  internalRepeatUntil: string | Date;
   daysBeforeRedeploymentPushMessage: number;
   pushMessageEnabled: boolean;
   pushMessageOnDeployment: boolean;

@@ -40,6 +40,7 @@ import {MtxButtonModule} from '@ng-matero/extensions/button';
 import {MtxProgressModule} from '@ng-matero/extensions/progress';
 import {MatCardModule} from '@angular/material/card';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [
@@ -82,6 +83,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
         MtxProgressModule,
         MatCardModule,
         MatCheckboxModule,
+        MatDatepickerModule,
     ],
   providers: [planningsPersistProvider],
 })

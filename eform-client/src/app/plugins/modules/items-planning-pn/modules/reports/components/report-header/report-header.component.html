@@ -16,22 +16,14 @@
         [multiple]="true">
       </mtx-select>
     </mat-form-field>
-    <mat-form-field [owlDateTimeTrigger]="dateRangePicker">
-      <mat-label>{{ 'Select date range' | translate }}</mat-label>
-      <mat-icon matPrefix>calendar_today</mat-icon>
-      <input
-        matInput
-        formControlName="dateRange"
-        name="dateRange"
-        required
-        type="text"
-        [owlDateTime]="dateRangePicker"
-        [selectMode]="'range'"
-        id="dateFormInput"
-      >
-      <mat-error class="text-warn" *ngIf="dateRange.errors?.['required']">
-        {{'Date is required'| translate}}*
-      </mat-error>
+    <mat-form-field>
+      <mat-label>{{ 'Select date range' | translate }} *</mat-label>
+      <mat-datepicker-toggle matPrefix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-input [rangePicker]="picker" (click)="picker.open()">
+        <input formControlName="startDate" matStartDate class="dateFormInput">
+        <input formControlName="endDate" matEndDate class="dateFormInput">
+      </mat-date-range-input>
+      <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
     <div class="buttons">
       <button

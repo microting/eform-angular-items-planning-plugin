@@ -22,19 +22,19 @@
   <mat-card-content>
     <div class="d-grid grid-4-columns">
       <ng-container
-        *ngFor="let translationControls of translationsArray.controls;let translationIndex = index;">
-        <ng-container [formGroup]="translationControls">
-          <mat-form-field class="pl-2 pr-2">
-            <mat-label>{{translationControls.get('language').value}}</mat-label>
-            <input
-              matInput
-              type="text"
-              id="createPlanningNameTranslation_{{ translationIndex }}"
-              name="createPlanningNameTranslation_{{translationIndex}}"
-              formControlName="name"
-            >
-          </mat-form-field>
-        </ng-container>
+        *ngFor="let translationControls of translationsArray.controls;let translationIndex = index;"
+        [formGroup]="translationControls"
+      >
+        <mat-form-field class="pl-2 pr-2">
+          <mat-label>{{translationControls.get('language').value}}</mat-label>
+          <input
+            matInput
+            type="text"
+            id="createPlanningNameTranslation_{{ translationIndex }}"
+            name="createPlanningNameTranslation_{{translationIndex}}"
+            formControlName="name"
+          >
+        </mat-form-field>
       </ng-container>
     </div>
   </mat-card-content>
@@ -91,7 +91,7 @@
       </mat-form-field>
 
       <mat-form-field class="pl-2 pr-2"
-      id="createRepeatEvery">
+                      id="createRepeatEvery">
         <mat-label>{{'RepeatEvery' | translate}}</mat-label>
         <input
           matInput
@@ -147,33 +147,35 @@
           />
         </mat-form-field>
       </div>
-      <mat-form-field class="pl-2 pr-2" [owlDateTimeTrigger]="dt2">
+      <mat-form-field class="pl-2 pr-2">
         <mat-label>{{'Start from' | translate}}</mat-label>
         <input
-          matInput
-          [owlDateTime]="dt2"
           [max]="newPlanningModel.reiteration.internalRepeatUntil"
-          [ngModel]="newPlanningModel.reiteration.startDate"
-          (ngModelChange)="updateStartDate($event)"
-          type="text"
+          matInput
+          [matDatepicker]="picker1"
+          [value]="newPlanningModel.reiteration.startDate"
+          (dateChange)="updateStartDate($event)"
+          (dateInput)="updateStartDate($event)"
+          (click)="picker1.open()"
           id="createStartFrom"
           name="createStartFrom"
         >
-        <owl-date-time [pickerType]="'calendar'" #dt2></owl-date-time>
+        <mat-datepicker #picker1></mat-datepicker>
       </mat-form-field>
-      <mat-form-field class="pl-2 pr-2" [owlDateTimeTrigger]="dt1">
+      <mat-form-field class="pl-2 pr-2">
         <mat-label>{{'RepeatUntil' | translate}}</mat-label>
         <input
-          matInput
-          [owlDateTime]="dt1"
           [min]="newPlanningModel.reiteration.startDate"
-          [ngModel]="newPlanningModel.reiteration.internalRepeatUntil"
-          (ngModelChange)="updateEndDate($event)"
-          type="text"
+          matInput
+          [matDatepicker]="picker2"
+          [value]="newPlanningModel.reiteration.internalRepeatUntil"
+          (dateChange)="updateEndDate($event)"
+          (dateInput)="updateEndDate($event)"
+          (click)="picker2.open()"
           id="createRepeatUntil"
           name="createRepeatUntil"
         >
-        <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
+        <mat-datepicker #picker2></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field class="pl-2 pr-2">
