@@ -63,6 +63,7 @@ describe('Items planning plugin - Pairing', function () {
       };
       await itemsPlanningModalPage.createPlanning(planningData);
     }
+    await browser.pause(1000)
     planningRowObjects = [
       ...await itemsPlanningPlanningPage.getAllPlannings(countPlanning),
     ];

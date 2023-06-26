@@ -48,14 +48,13 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
 
   public async savePairing(clickCancel = false) {
     await browser.pause(5000);
-    await (await this.savePairingGridBtn()).waitForDisplayed({ timeout: 60000 });
     await (await this.savePairingGridBtn()).click();
     if (clickCancel) {
       await (await this.updatePairingsSaveCancelBtn()).click();
     } else {
       await (await this.updatePairingsSaveBtn()).click();
     }
-    await (await this.savePairingGridBtn()).waitForDisplayed({ timeout: 60000 });
+    await this.savePairingGridBtn();
   }
 
   public async countDeviceUserCol(): Promise<number> {

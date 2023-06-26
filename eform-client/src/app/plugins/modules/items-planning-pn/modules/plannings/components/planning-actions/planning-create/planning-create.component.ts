@@ -17,7 +17,7 @@ import {Subscription, take} from 'rxjs';
 import {PlanningFoldersModalComponent} from '../../planning-additions';
 import {FormArray, FormControl, FormGroup} from '@angular/forms';
 import {AuthStateService} from 'src/app/common/store';
-import {applicationLanguagesTranslated} from 'src/app/common/const';
+import {applicationLanguagesTranslated, PARSING_DATE_FORMAT} from 'src/app/common/const';
 import {composeFolderName, dialogConfigHelper} from 'src/app/common/helpers';
 import {
   SitesService,
@@ -57,7 +57,6 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   daysBeforeRedeploymentPushMessage = Array(27)
     .fill(0)
     .map((_e, i) => i);
-  private standartDateTimeFormat = `yyyy-MM-dd'T'HH:mm:ss.SSS'Z'`;
 
   selectedFolderName: string;
   folderSelectedSub$: Subscription;
@@ -136,8 +135,10 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
         translationsName: this.translationsArray.getRawValue(),
         reiteration: {
           ...this.newPlanningModel.reiteration,
-          startDate: format(this.newPlanningModel.reiteration.startDate as Date, this.standartDateTimeFormat),
-          repeatUntil: format(this.newPlanningModel.reiteration.internalRepeatUntil as Date, this.standartDateTimeFormat),
+          startDate: this.newPlanningModel.reiteration.startDate &&
+            format(this.newPlanningModel.reiteration.startDate as Date, PARSING_DATE_FORMAT),
+          repeatUntil: this.newPlanningModel.reiteration.internalRepeatUntil &&
+            format(this.newPlanningModel.reiteration.internalRepeatUntil as Date, PARSING_DATE_FORMAT),
         }
       })
       .subscribe((data) => {

@@ -67,8 +67,8 @@
       <mat-form-field class="pl-2 pr-2">
         <mat-label>{{'Selected template' | translate}}</mat-label>
         <mtx-select
-          [items]="templatesModel"
-          bindLabel="name"
+          [items]="templatesModel.templates"
+          bindLabel="label"
           bindValue="id"
           [typeahead]="typeahead"
           [(ngModel)]="selectedPlanningModel.boundEform.relatedEFormId"
@@ -80,7 +80,7 @@
               style="color: red"
             >warning
             </mat-icon>
-            {{ item.name }}
+            {{ item.label }}
           </ng-template>
         </mtx-select>
       </mat-form-field>

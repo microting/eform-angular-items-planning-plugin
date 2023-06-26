@@ -41,7 +41,7 @@ import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 export class PlanningEditComponent implements OnInit, OnDestroy {
   selectedPlanningModel: PlanningModel = new PlanningModel();
   templateRequestModel: TemplateRequestModel = new TemplateRequestModel();
-  templatesModel: CommonDictionaryModel[] = [];
+  templatesModel: TemplateListModel = new TemplateListModel();
   typeahead = new EventEmitter<string>();
   selectedPlanningId: number;
   foldersTreeDto: FolderDto[] = [];
@@ -77,7 +77,7 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
         debounceTime(200),
         switchMap((term) => {
           this.templateRequestModel.nameFilter = term;
-          return this.eFormService.getTemplatesDictionary(term);
+          return this.eFormService.getAll(this.templateRequestModel);
         })
       )
       .subscribe((items) => {
@@ -132,12 +132,11 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
           this.loadFoldersTree();
           this.loadFoldersList();
           this.initTranslations(data.model.translationsName);
-          this.templatesModel = [
+          this.templatesModel.templates = [
             {
               id: this.selectedPlanningModel.boundEform.relatedEFormId,
-              name: this.selectedPlanningModel.boundEform.relatedEFormName,
-              description: '',
-            },
+              label: this.selectedPlanningModel.boundEform.relatedEFormName,
+            } as any,
           ];
         }
       });
@@ -160,8 +159,10 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
       ...this.selectedPlanningModel,
       reiteration: {
         ...this.selectedPlanningModel.reiteration,
-        startDate: format(this.selectedPlanningModel.reiteration.startDate as Date, PARSING_DATE_FORMAT),
-        repeatUntil: format(this.selectedPlanningModel.reiteration.internalRepeatUntil as Date, PARSING_DATE_FORMAT),
+        startDate: this.selectedPlanningModel.reiteration.startDate &&
+          format(this.selectedPlanningModel.reiteration.startDate as Date, PARSING_DATE_FORMAT),
+        repeatUntil: this.selectedPlanningModel.reiteration.internalRepeatUntil &&
+          format(this.selectedPlanningModel.reiteration.internalRepeatUntil as Date, PARSING_DATE_FORMAT),
       },
       translationsName: this.translationsArray.getRawValue(),
     } as PlanningUpdateModel;

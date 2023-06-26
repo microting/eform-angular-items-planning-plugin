@@ -10,6 +10,8 @@ import {
 } from '../../Helpers/helper-functions';
 import myEformsPage from '../../Page objects/MyEforms.page';
 import foldersPage from '../../Page objects/Folders.page';
+import {format, set} from 'date-fns';
+import {customDaLocale} from '../../../src/app/common/const';
 
 const expect = require('chai').expect;
 let planningData: PlanningCreateUpdate = {
@@ -18,8 +20,8 @@ let planningData: PlanningCreateUpdate = {
   description: generateRandmString(),
   repeatEvery: '1',
   repeatType: 'Dag',
-  repeatUntil: { year: 2020, month: 6, day: 10 },
   startFrom: { year: 2020, month: 7, day: 9 },
+  repeatUntil: { year: 2021, month: 6, day: 10 },
   folderName: generateRandmString(),
   type: generateRandmString(),
   buildYear: '10',
@@ -82,7 +84,7 @@ describe('Items planning actions - Edit', function () {
         generateRandmString(),
         generateRandmString(),
       ],
-      repeatType: 'Uge',
+      repeatType: 'Dag',
       description: generateRandmString(),
       folderName: folderNameForEdit,
       eFormName: eFormNameForEdit,
@@ -91,7 +93,7 @@ describe('Items planning actions - Edit', function () {
       locationCode: '54321',
       buildYear: '20',
       type: generateRandmString(),
-      repeatUntil: { year: 2020, month: 10, day: 18 },
+      repeatUntil: { year: 2021, month: 10, day: 18 },
       repeatEvery: '2',
       pushMessageEnabled: true,
       daysBeforeRedeploymentPushMessage: getRandomInt(1, 27),
@@ -129,12 +131,12 @@ describe('Items planning actions - Edit', function () {
       'Saved repeat every is incorrect'
     ).eq(planningData.repeatEvery);
 
-    expect(
-      await (await itemsPlanningModalPage.editRepeatUntil()).getValue(),
-      'Saved repeat until is incorrect'
-    ).eq(
-      `${planningData.repeatUntil.month}/${planningData.repeatUntil.day}/${planningData.repeatUntil.year}`
-    );
+    const repeatUntilForExpect = format(set(new Date(), {
+      year: planningData.repeatUntil.year,
+      month: planningData.repeatUntil.month - 1,
+      date: planningData.repeatUntil.day,
+    }), 'P', {locale: customDaLocale});
+    expect(await (await itemsPlanningModalPage.editRepeatUntil()).getValue(), 'Saved repeat until is incorrect').eq(repeatUntilForExpect);
     expect(
       await (
         await (await itemsPlanningModalPage.editRepeatType()).$(
@@ -163,12 +165,13 @@ describe('Items planning actions - Edit', function () {
       await (await itemsPlanningModalPage.editItemLocationCode()).getValue(),
       'Saved location code is incorrect'
     ).eq(planningData.locationCode);
-    expect(
-      await (await itemsPlanningModalPage.editStartFrom()).getValue(),
-      'Saved start from is incorrect'
-    ).eq(
-      `${planningData.startFrom.month}/${planningData.startFrom.day}/${planningData.startFrom.year}`
-    );
+
+    const startDateForExpect = format(set(new Date(), {
+      year: planningData.startFrom.year,
+      month: planningData.startFrom.month - 1,
+      date: planningData.startFrom.day,
+    }), 'P', {locale: customDaLocale});
+    expect(await (await itemsPlanningModalPage.editStartFrom()).getValue(), 'Saved start from is incorrect').eq(startDateForExpect);
     expect(
       await (
         await (await itemsPlanningModalPage.pushMessageEnabledEdit()).$(
