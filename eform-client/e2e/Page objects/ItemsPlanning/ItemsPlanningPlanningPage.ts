@@ -267,6 +267,13 @@ export class PlanningRowObject {
     //await (await itemsPlanningPlanningPage.planningId()).waitForDisplayed();
   }
 
+  public static async planningCreateBtn() {
+    const el = await $('#planningCreateBtn');
+    await el.waitForDisplayed({ timeout: 40000 });
+    await el.waitForClickable({ timeout: 90000 });
+    return el;
+  }
+
   public static async closeDelete(clickCancel = false) {
     if (!clickCancel) {
       await (await itemsPlanningPlanningPage.planningDeleteDeleteBtn()).click();

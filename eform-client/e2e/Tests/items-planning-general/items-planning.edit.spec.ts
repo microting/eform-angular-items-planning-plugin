@@ -197,10 +197,10 @@ describe('Items planning actions - Edit', function () {
 
     await myEformsPage.Navbar.goToMyEForms();
     await (
-      await myEformsPage.getEformsRowObjByNameEForm(eFormNameForEdit)
+      await myEformsPage.getFirstMyEformsRowObj()
     ).deleteEForm();
     await (
-      await myEformsPage.getEformsRowObjByNameEForm(planningData.eFormName)
+      await myEformsPage.getFirstMyEformsRowObj()
     ).deleteEForm();
   });
 });
