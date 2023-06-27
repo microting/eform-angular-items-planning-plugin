@@ -24,7 +24,7 @@
 
     <ItemGroup>
       <PackageReference Include="ExcelDataReader" Version="3.6.0" />
-      <PackageReference Include="ClosedXML" Version="0.101.0" />
+      <PackageReference Include="ClosedXML" Version="0.102.0" />
       <PackageReference Include="Microting.eForm" Version="7.0.48" />
       <PackageReference Include="Microting.eFormApi.BasePn" Version="7.0.41" />
       <PackageReference Include="McMaster.NETCore.Plugins" Version="1.4.0" />
