@@ -43,20 +43,20 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 
 @NgModule({
-  declarations: [
-    PlanningCasePageComponent,
-    PlanningCreateComponent,
-    PlanningEditComponent,
-    PlanningsContainerComponent,
-    PlanningAssignSitesModalComponent,
-    PlanningDeleteComponent,
-    PlanningFoldersModalComponent,
-    PlanningMultipleDeleteComponent,
-    PlanningsBulkImportModalComponent,
-    PlanningsHeaderComponent,
-    PlanningsTableComponent,
-    PlanningTagsComponent,
-  ],
+    declarations: [
+        PlanningCasePageComponent,
+        PlanningCreateComponent,
+        PlanningEditComponent,
+        PlanningsContainerComponent,
+        PlanningAssignSitesModalComponent,
+        PlanningDeleteComponent,
+        PlanningFoldersModalComponent,
+        PlanningMultipleDeleteComponent,
+        PlanningsBulkImportModalComponent,
+        PlanningsHeaderComponent,
+        PlanningsTableComponent,
+        PlanningTagsComponent,
+    ],
     imports: [
         CommonModule,
         TranslateModule,
@@ -85,7 +85,10 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
         MatCheckboxModule,
         MatDatepickerModule,
     ],
-  providers: [planningsPersistProvider],
+    providers: [planningsPersistProvider],
+    exports: [
+        PlanningTagsComponent
+    ]
 })
 export class PlanningsModule {
 }

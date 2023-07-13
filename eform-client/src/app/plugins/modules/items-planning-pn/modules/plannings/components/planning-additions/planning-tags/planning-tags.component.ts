@@ -53,9 +53,9 @@ export class PlanningTagsComponent implements OnInit, OnDestroy, OnChanges {
   ngOnInit() {
   }
 
-  show() {
+  show(showMultipleCreateBtn: boolean = true) {
     this.dialogRef = this.dialog.open(SharedTagsComponent, dialogConfigHelper(this.overlay, this.availableTags));
-    this.dialogRef.componentInstance.showMultipleCreateBtn = true;
+    this.dialogRef.componentInstance.showMultipleCreateBtn = showMultipleCreateBtn;
     this.showCreateTagSub$ = this.dialogRef.componentInstance.showCreateTag.subscribe(() => {
       const dialogRefCreateTag = this.dialog.open(SharedTagCreateComponent, dialogConfigHelper(this.overlay));
       this.updatedTagSub$ = dialogRefCreateTag.componentInstance.createdTag.subscribe(tag => this.onTagCreate(tag, dialogRefCreateTag));
