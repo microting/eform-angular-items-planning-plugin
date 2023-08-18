@@ -119,7 +119,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
                 var language = sdkDbContext.Languages.First(x => x.LanguageCode == localeString);
-                var planningQueryWithSelect = AddSelectToPlanningQuery(planningsQuery, language);
+                var languages = sdkDbContext.Languages.Where(x => x.IsActive == true).ToList();
+                var planningQueryWithSelect = AddSelectToPlanningQuery(planningsQuery, language, languages);
 
 
                 if (pnRequestModel.Sort == "TranslatedName")
@@ -379,7 +380,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 var language = sdkDbContext.Languages.Single(x => x.LanguageCode == localeString);
                 var planningQuery = _dbContext.Plannings
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == planningId);
-                var planning = await AddSelectToPlanningQuery(planningQuery, language).FirstOrDefaultAsync();
+                var languages = sdkDbContext.Languages.Where(x => x.IsActive == true).ToList();
+                var planning = await AddSelectToPlanningQuery(planningQuery, language, languages).FirstOrDefaultAsync();
 
                 if (planning == null)
                 {
@@ -633,7 +635,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
         }
 
-        private static IQueryable<PlanningPnModel> AddSelectToPlanningQuery(IQueryable<Planning> planningQueryable, Language languageIemPlanning)
+        private static IQueryable<PlanningPnModel> AddSelectToPlanningQuery(IQueryable<Planning> planningQueryable, Language languageIemPlanning, List<Language> languages)
         {
             return planningQueryable.Select(x => new PlanningPnModel
             {
@@ -655,9 +657,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     .Select(y => new PlanningNameTranslations
                     {
                         Id = y.Id,
-                        Language = y.Language.LanguageCode,
+                        Language = languages.First(z => z.Id == y.LanguageId).LanguageCode,
                         Name = y.Name,
-                        LocaleName = y.Language.Name
+                        LocaleName = languages.First(z => z.Id == y.LanguageId).Name
                     }).ToList(),
                 TranslatedName = x.NameTranslations
                     .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)
