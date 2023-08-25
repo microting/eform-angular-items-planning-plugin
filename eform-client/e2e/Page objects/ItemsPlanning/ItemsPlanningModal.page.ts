@@ -37,12 +37,15 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
 
+  // @ts-ignore
   public async selectFolder(nameFolder: string) {
+    await browser.pause(1000);
     if (await (await this.createFolderName()).isExisting()) {
       await (await this.createFolderName()).click();
     } else {
       await (await this.editFolderName()).click();
     }
+    await browser.pause(1000);
     const treeViewport = await $('app-eform-tree-view-picker');
     await treeViewport.waitForDisplayed({ timeout: 20000 });
     await (await $(`#folderTreeName=${nameFolder}`)).click();
@@ -289,6 +292,8 @@ export class ItemsPlanningModalPage extends Page {
   ) {
     await (await itemsPlanningPlanningPage.planningCreateBtn()).click();
     await (await this.planningCreateSaveBtn()).waitForDisplayed();
+    var spinner = await $('#spinner-animation');
+    await spinner.waitForDisplayed({ timeout: 90000, reverse: true });
     for (let i = 0; i < planning.name.length; i++) {
       await (await this.createPlanningItemName(i)).setValue(planning.name[i]);
     }
