@@ -294,6 +294,7 @@ export class ItemsPlanningModalPage extends Page {
     await (await this.planningCreateSaveBtn()).waitForDisplayed();
     var spinner = await $('#spinner-animation');
     await spinner.waitForDisplayed({ timeout: 90000, reverse: true });
+    await browser.pause(1000);
     for (let i = 0; i < planning.name.length; i++) {
       await (await this.createPlanningItemName(i)).setValue(planning.name[i]);
     }
