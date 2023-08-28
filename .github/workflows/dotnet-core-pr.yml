@@ -40,7 +40,7 @@ jobs:
           path: items-planning-container.tar
   test:
     needs: build
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
