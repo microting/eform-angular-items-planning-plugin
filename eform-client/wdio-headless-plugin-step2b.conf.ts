@@ -14,9 +14,10 @@ export const config: Options.Testrunner = {
     // directory is where your package.json resides, so `wdio` will be called from there.
     //
     specs: [
+      // TODO: rewrite in cypress
       'e2e/Tests/items-planning-settings/application-settings.plugins-page.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.sorting.spec.ts',
-      'e2e/Tests/items-planning-general/items-planning.multiple-delete.spec.ts',
+      //'e2e/Tests/items-planning-general/items-planning.sorting.spec.ts',
+      //'e2e/Tests/items-planning-general/items-planning.multiple-delete.spec.ts',
     ],
     suites: {
         settings: [
