@@ -303,9 +303,6 @@ export class ItemsPlanningModalPage extends Page {
         planning.description
       );
     }
-    if (planning.folderName) {
-      await this.selectFolder(planning.folderName);
-    }
     // if (planning.eFormName) {
     await selectValueInNgSelector(await this.createPlanningSelector(), planning.eFormName);
     // }
@@ -358,6 +355,9 @@ export class ItemsPlanningModalPage extends Page {
       await selectValueInNgSelector(await this.pushMessageEnabledCreate(), status);
       await selectValueInNgSelector(
         await this.createDaysBeforeRedeploymentPushMessage(), planning.daysBeforeRedeploymentPushMessage.toString());
+    }
+    if (planning.folderName) {
+      await this.selectFolder(planning.folderName);
     }
     if (!clickCancel) {
       await (await this.planningCreateSaveBtn()).click();
