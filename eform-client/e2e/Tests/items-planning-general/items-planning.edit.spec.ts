@@ -199,6 +199,8 @@ describe('Items planning actions - Edit', function () {
     await (await foldersPage.getFolderByName(folderNameForEdit)).delete();
 
     await myEformsPage.Navbar.goToMyEForms();
+    const spinnerAnimation = $('#spinner-animation');
+    await spinnerAnimation.waitForDisplayed({ timeout: 30000, reverse: true });
     await (
       await myEformsPage.getFirstMyEformsRowObj()
     ).deleteEForm();

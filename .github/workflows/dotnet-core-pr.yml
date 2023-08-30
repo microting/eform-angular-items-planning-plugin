@@ -40,7 +40,7 @@ jobs:
           path: items-planning-container.tar
   test:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -71,7 +71,7 @@ jobs:
     - name: Use Node.ts
       uses: actions/setup-node@v3
       with:
-        node-version: '18.12.1'
+        node-version: 'lts/*'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v3
       with:

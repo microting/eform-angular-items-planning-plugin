@@ -37,12 +37,15 @@ export class ItemsPlanningModalPage extends Page {
     return ele;
   }
 
+  // @ts-ignore
   public async selectFolder(nameFolder: string) {
+    await browser.pause(1000);
     if (await (await this.createFolderName()).isExisting()) {
       await (await this.createFolderName()).click();
     } else {
       await (await this.editFolderName()).click();
     }
+    await browser.pause(1000);
     const treeViewport = await $('app-eform-tree-view-picker');
     await treeViewport.waitForDisplayed({ timeout: 20000 });
     await (await $(`#folderTreeName=${nameFolder}`)).click();
@@ -289,6 +292,9 @@ export class ItemsPlanningModalPage extends Page {
   ) {
     await (await itemsPlanningPlanningPage.planningCreateBtn()).click();
     await (await this.planningCreateSaveBtn()).waitForDisplayed();
+    var spinner = await $('#spinner-animation');
+    await spinner.waitForDisplayed({ timeout: 90000, reverse: true });
+    await browser.pause(1000);
     for (let i = 0; i < planning.name.length; i++) {
       await (await this.createPlanningItemName(i)).setValue(planning.name[i]);
     }
@@ -296,9 +302,6 @@ export class ItemsPlanningModalPage extends Page {
       await (await this.createPlanningItemDescription()).setValue(
         planning.description
       );
-    }
-    if (planning.folderName) {
-      await this.selectFolder(planning.folderName);
     }
     // if (planning.eFormName) {
     await selectValueInNgSelector(await this.createPlanningSelector(), planning.eFormName);
@@ -352,6 +355,9 @@ export class ItemsPlanningModalPage extends Page {
       await selectValueInNgSelector(await this.pushMessageEnabledCreate(), status);
       await selectValueInNgSelector(
         await this.createDaysBeforeRedeploymentPushMessage(), planning.daysBeforeRedeploymentPushMessage.toString());
+    }
+    if (planning.folderName) {
+      await this.selectFolder(planning.folderName);
     }
     if (!clickCancel) {
       await (await this.planningCreateSaveBtn()).click();

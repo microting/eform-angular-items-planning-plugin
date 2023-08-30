@@ -22,13 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
+namespace ItemsPlanning.Pn.Infrastructure.Models.Planning;
+
+public class PlanningNameTranslations
 {
-    public class PlanningNameTranslations
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string LocaleName { get; set; }
-        public string Language { get; set; }
-    }
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string LocaleName { get; set; }
+    public string Language { get; set; }
+
+    public int LanguageId { get; set; }
 }

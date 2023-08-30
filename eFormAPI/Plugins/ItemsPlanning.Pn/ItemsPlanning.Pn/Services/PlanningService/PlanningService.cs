@@ -655,9 +655,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     .Select(y => new PlanningNameTranslations
                     {
                         Id = y.Id,
-                        Language = y.Language.LanguageCode,
-                        Name = y.Name,
-                        LocaleName = y.Language.Name
+                        LanguageId = y.LanguageId,
+                        Name = y.Name
                     }).ToList(),
                 TranslatedName = x.NameTranslations
                     .Where(y => y.WorkflowState != Constants.WorkflowStates.Removed)

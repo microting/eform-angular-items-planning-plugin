@@ -183,8 +183,6 @@ describe('Items planning - Add', function () {
     await (await foldersPage.getFolderByName(planningData.folderName)).delete();
 
     await myEformsPage.Navbar.goToMyEForms();
-    await (
-      await myEformsPage.getEformsRowObjByNameEForm(planningData.eFormName)
-    ).deleteEForm();
+    await myEformsPage.clearEFormTable();
   });
 });
