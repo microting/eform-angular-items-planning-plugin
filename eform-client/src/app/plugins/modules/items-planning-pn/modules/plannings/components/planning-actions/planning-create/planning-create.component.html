@@ -53,18 +53,20 @@
           name="createPlanningItemDescription"
         >
       </mat-form-field>
-      <mat-form-field
-        id="createFolderSelector"
-        class="pl-2 pr-2" *ngIf="foldersTreeDto.length > 0" (click)="openFoldersModal()">
-        <mat-label>{{'Folders' | translate}}</mat-label>
-        <input
-          matInput
-          id="createFolderSelectorInput"
-          [ngModel]="selectedFolderName"
-          [disabled]="true"
-          name="folderSelectorInput"
+      <div style="width: 450px" class="pr-2 d-flex flex-row align-items-center">
+        <button
+          mat-icon-button
+          color="accent"
+          id="createFolderSelector"
+          (click)="openFoldersModal()"
+          style="margin-top: 10px"
+          [disabled]="foldersTreeDto.length <= 0"
+          [matTooltip]="(foldersTreeDto.length <= 0 ? 'You do not have folders': 'Select folder') | translate"
         >
-      </mat-form-field>
+          <mat-icon>folder</mat-icon>
+        </button>
+        <span id="folderName">{{selectedFolderName || ('Folder not selected' | translate)}}</span>
+      </div>
       <mat-form-field class="pl-2 pr-2">
         <mat-label>{{'Selected template' | translate}}</mat-label>
         <mtx-select
