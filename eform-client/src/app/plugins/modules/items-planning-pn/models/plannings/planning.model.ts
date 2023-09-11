@@ -14,7 +14,7 @@ export class PlanningModel {
   tags: SharedTagModel[];
   tagsIds: number[];
 
-  itemNumber: string;
+  planningNumber: string;
   locationCode: string;
   buildYear: string;
   type: string;
