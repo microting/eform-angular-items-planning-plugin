@@ -10,7 +10,7 @@ class ItemPlanningPage extends PageWithNavbarPage {
       }
     });
     this.planningsButton().click();
-    this.planningCreateBtn().should('be.visible');
+    this.planningCreateBtn().should('be.visible').should('be.enabled');
   }
 
   public itemPlanningButton() {
@@ -211,6 +211,62 @@ class ItemPlanningPage extends PageWithNavbarPage {
     return cy.get('#createRepeatType');
   }
 
+  public createDayOfMonth() {
+    return cy.get('#createDayOfMonth');
+  }
+
+  public createDayOfWeek() {
+    return cy.get('#createDayOfWeek');
+  }
+
+  public rowColumnId() {
+    return cy.get('.mat-row .cdk-column-id');
+  }
+
+  public rowColumnTranslatedName() {
+    return cy.get('.mat-row .cdk-column-translatedName');
+  }
+
+  public rowColumnEFormSdkFolderName() {
+    return cy.get('.mat-row .cdk-column-folder-eFormSdkFolderName');
+  }
+
+  public rowColumnPlanningRelatedEformName() {
+    return cy.get('.mat-row .cdk-column-planningRelatedEformName');
+  }
+
+  public rowColumnRepeatEvery() {
+    return cy.get('.mat-row .cdk-column-reiteration-repeatEvery');
+  }
+
+  public rowColumnRepeatType() {
+    return cy.get('.mat-row .cdk-column-reiteration-repeatType');
+  }
+
+  public headerColumnId() {
+    return cy.get('.cdk-header-cell.cdk-column-id');
+  }
+
+  public headerColumnTranslatedName() {
+    return cy.get('.cdk-header-cell.cdk-column-translatedName');
+  }
+
+  public headerColumnEFormSdkFolderName() {
+    return cy.get('.cdk-header-cell.cdk-column-folder-eFormSdkFolderName');
+  }
+
+  public headerColumnPlanningRelatedEformName() {
+    return cy.get('.cdk-header-cell.cdk-column-planningRelatedEformName');
+  }
+
+  public headerColumnRepeatEvery() {
+    return cy.get('.cdk-header-cell.cdk-column-reiteration-repeatEvery');
+  }
+
+  public headerColumnRepeatType() {
+    return cy.get('.cdk-header-cell.cdk-column-reiteration-repeatType');
+  }
+
   public selectFolder(nameFolder: string, edit: boolean = false) {
     if (!edit) {
       this.createFolderSelector().click();
@@ -256,6 +312,16 @@ class ItemPlanningPage extends PageWithNavbarPage {
       }
       if (planning.repeatType) {
         selectValueInNgSelector(this.createRepeatType, planning.repeatType, true);
+        switch (planning.repeatType) {
+          case 'Måned': {
+            this.createDayOfMonth().type(planning.dayOfMonth.toString());
+            break;
+          }
+          case 'Uge': {
+            selectValueInNgSelector(this.createDayOfWeek, planning.dayOfWeek, true);
+            break;
+          }
+        }
       }
       if (planning.startFrom) {
         this.createStartFrom().should('be.visible').click();
@@ -296,6 +362,12 @@ class ItemPlanningPage extends PageWithNavbarPage {
     }
     cy.wait(500);
     this.planningCreateBtn().should('be.visible');
+  }
+
+  public multipleCreatePlanning(plannings: PlanningCreateUpdate[]) {
+    for (let i = 0; i < plannings.length; i++) {
+      this.createPlanning(plannings[i]);
+    }
   }
 
   public editPlanning(planning?: PlanningCreateUpdate, clickCancel = false, index = 0) {
@@ -388,18 +460,47 @@ class ItemPlanningPage extends PageWithNavbarPage {
     this.closeDeletePlanning(clickCancel);
   }
 
-  public openDeletePlanning(index = 0){
+  public openDeletePlanning(index = 0) {
     cy.get('app-plannings-table .mat-row button.mat-warn').eq(index).click();
     this.planningDeleteCancelBtn().should('be.visible');
   }
 
-  public closeDeletePlanning(clickCancel = false){
-    if(clickCancel) {
+  public closeDeletePlanning(clickCancel = false) {
+    if (clickCancel) {
       this.planningDeleteCancelBtn().click();
     } else {
       this.planningDeleteDeleteBtn().click();
     }
     cy.wait(500);
+  }
+
+  public multipleDeletePlannings(all = true, indexesForDelete: number[] = [], clickCancel = false) {
+    this.openMultipleDelete(all, indexesForDelete);
+    this.closeMultipleDelete(clickCancel);
+  }
+
+  public openMultipleDelete(all = true, indexesForDelete: number[] = []) {
+    if (all) {
+      cy.get('.mat-header-cell mat-checkbox input').check({force: true});
+    } else {
+      for (let i = 0; i < indexesForDelete.length; i++) {
+        cy.get(`.mar-row`).eq(i).find('.cdk-column-MtxGridCheckboxColumnDef input').check({force: true});
+      }
+    }
+    cy.wait(500);
+    this.deleteMultiplePluginsBtn().should('be.enabled').click();
+    cy.wait(500);
+    this.planningsMultipleDeleteCancelBtn().should('be.visible');
+  }
+
+  public closeMultipleDelete(clickCancel = false) {
+    if (clickCancel) {
+      this.planningsMultipleDeleteCancelBtn().click();
+    } else {
+      this.planningsMultipleDeleteDeleteBtn().click();
+    }
+    cy.wait(500);
+    this.planningCreateBtn().should('be.visible').should('be.enabled');
   }
 }
 
@@ -412,7 +513,9 @@ export class PlanningCreateUpdate {
   public eFormName: string;
   public tags?: string[];
   public repeatEvery?: string;
-  public repeatType?: string;
+  public repeatType?: 'Dag' | 'Uge' | 'Måned';
+  public dayOfWeek?: 'Mandag' | 'Tirsdag' | 'Onsdag' | 'Torsdag' | 'Fredag' | 'Lørdag' | 'Søndag';
+  public dayOfMonth?: number;
   public startFrom?: { year: number; month: number; day: number; };
   public repeatUntil?: { year: number; month: number; day: number; };
   public number?: string;

@@ -1,6 +1,6 @@
 import loginPage from 'cypress/e2e/Login.page';
 import itemPlanningPage, {PlanningCreateUpdate} from '../ItemPlanning.page';
-import {generateRandmString, getRandomInt} from 'cypress/e2e/helper-functions';
+import {generateRandmString} from 'cypress/e2e/helper-functions';
 
 let planningData: PlanningCreateUpdate = {
   name: [generateRandmString(), generateRandmString()],
