@@ -81,13 +81,13 @@ export class PlanningsTableComponent implements OnInit {
       sortable: true,
       formatter: (rowData: PlanningModel) => {
         switch (rowData.reiteration.dayOfWeek) {
+          case 0: return this.translateService.instant('Sunday');
           case 1: return this.translateService.instant('Monday');
           case 2: return this.translateService.instant('Tuesday');
           case 3: return this.translateService.instant('Wednesday');
           case 4: return this.translateService.instant('Thursday');
           case 5: return this.translateService.instant('Friday');
           case 6: return this.translateService.instant('Saturday');
-          case 7: return this.translateService.instant('Sunday');
           default: return `--`;
         }
       },
