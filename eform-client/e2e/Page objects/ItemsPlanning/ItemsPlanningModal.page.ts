@@ -48,7 +48,7 @@ export class ItemsPlanningModalPage extends Page {
     await browser.pause(1000);
     const treeViewport = await $('app-eform-tree-view-picker');
     await treeViewport.waitForDisplayed({ timeout: 20000 });
-    await (await $(`#folderTreeName=${nameFolder}`)).click();
+    await (await $(`.folder-tree-name=${nameFolder}`)).click();
     await treeViewport.waitForDisplayed({ timeout: 2000, reverse: true });
   }
 
