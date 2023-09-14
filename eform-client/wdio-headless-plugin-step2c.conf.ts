@@ -14,7 +14,7 @@ export const config: Options.Testrunner = {
     // directory is where your package.json resides, so `wdio` will be called from there.
     //
     specs: [
-      //'e2e/Tests/items-planning-settings/application-settings.plugins-page.spec.ts',
+      'e2e/Tests/items-planning-settings/application-settings.plugins-page.spec.ts',
       //'e2e/Tests/items-planning-general/items-planning.pairing.spec.ts', // TODO: uncomment this line when the test is fixed
       'e2e/Tests/items-planning-general/items-planning.tags.spec.ts',
       'e2e/Tests/items-planning-general/items-planning.import.spec.ts'
