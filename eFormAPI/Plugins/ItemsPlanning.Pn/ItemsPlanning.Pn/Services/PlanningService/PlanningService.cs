@@ -87,7 +87,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         x.Description.Contains(pnRequestModel.DescriptionFilter));
                 }
 
-                var excludeSort = new List<string>{ "TranslatedName" };
+                var excludeSort = new List<string>{ "TranslatedName", "SdkFolderName" };
                 // sort
                 planningsQuery = QueryHelper.AddSortToQuery(planningsQuery, pnRequestModel.Sort,
                     pnRequestModel.IsSortDsc, excludeSort);
@@ -118,16 +118,33 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     return new OperationDataResult<Paged<PlanningPnModel>>(false,
                         _itemsPlanningLocalizationService.GetString("LocaleDoesNotExist"));
                 }
+
+
                 var language = sdkDbContext.Languages.First(x => x.LanguageCode == localeString);
+                var folderIds = await planningsQuery
+                    .Where(x => x.SdkFolderId.HasValue)
+                    .Select(x => x.SdkFolderId.Value)
+                    .ToListAsync();
+                var foldersWithNames = await sdkDbContext.FolderTranslations
+                    .Include(x => x.Folder)
+                    .ThenInclude(x => x.Parent)
+                    .ThenInclude(x => x.FolderTranslations)
+                    .Where(x => folderIds.Contains(x.FolderId))
+                    .Where(x => x.LanguageId == language.Id)
+                    .Select(x => new CommonDictionaryModel
+                    {
+                        Id = x.FolderId,
+                        Name = x.Name,
+                        Description = x.Folder.ParentId.HasValue ?
+                            x.Folder.Parent.FolderTranslations
+                                .Where(y => y.LanguageId == language.Id)
+                                .Select(y => y.Name)
+                                .FirstOrDefault() :
+                            "",
+                    })
+                    .ToListAsync();
+
                 var planningQueryWithSelect = AddSelectToPlanningQuery(planningsQuery, language);
-
-
-                if (pnRequestModel.Sort == "TranslatedName")
-                {
-                    planningQueryWithSelect = pnRequestModel.IsSortDsc
-                        ? planningQueryWithSelect.OrderByDescending(x => x.TranslatedName)
-                        : planningQueryWithSelect.OrderBy(x => x.TranslatedName);
-                }
 
                 planningQueryWithSelect
                     = planningQueryWithSelect
@@ -141,10 +158,9 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 // add select and take objects from db
                 //var sql = planningQueryWithSelect.ToQueryString();
-                List<PlanningPnModel> plannings = await planningQueryWithSelect.ToListAsync();
+                var plannings = await planningQueryWithSelect.ToListAsync();
 
                 // get site names
-
                 var assignedSitesFromPlanning = plannings.SelectMany(y => y.AssignedSites).ToList();
 
                 var sites = await sdkDbContext.Sites
@@ -161,22 +177,20 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 {
                     foreach (var assignedSite in assignedSitesFromPlanning)
                     {
-                        foreach (var site in sites.Where(site => site.Id == assignedSite.SiteId))
-                        {
-                            assignedSite.Name = site.Name;
-                            assignedSite.Status = _dbContext.PlanningCaseSites
-                                .Where(x => x.PlanningId == planning.Id
-                                            && x.MicrotingSdkSiteId == site.Id
-                                            && x.WorkflowState != Constants.WorkflowStates.Removed)
-                                .Select(x => x.Status).FirstOrDefault();
-                        }
+                        var site = sites.First(site => site.Id == assignedSite.SiteId);
+                        assignedSite.Name = site.Name;
+                        assignedSite.Status = _dbContext.PlanningCaseSites
+                            .Where(x => x.PlanningId == planning.Id
+                                        && x.MicrotingSdkSiteId == site.Id
+                                        && x.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Select(x => x.Status).FirstOrDefault();
                     }
 
                     var (_, value) = checkListWorkflowState.SingleOrDefault(x => x.Key == planning.BoundEform.RelatedEFormId);
                     planning.BoundEform.IsEformRemoved = value == Constants.WorkflowStates.Removed;
 
                     // This is done to update existing Plannings to using EFormSdkFolderId instead of EFormSdkFolderName
-                    if ((planning.Folder.EFormSdkFolderId == 0 || planning.Folder.EFormSdkFolderId == null) && planning.Folder.EFormSdkFolderName != null)
+                    if (planning.Folder.EFormSdkFolderId is 0 or null)
                     {
                         var locateFolder = await sdkDbContext.Folders
                             .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
@@ -192,29 +206,30 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         }
                     }
 
-                    var folder = await sdkDbContext.Folders
-                        .Include(x => x.Parent)
-                        .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Where(y => y.Id == planning.Folder.EFormSdkFolderId)
-                        .Select(x => new
-                        {
-                            x.Name,
-                            x.Parent,
-                            x.Id
-                        })
-                        .FirstOrDefaultAsync();
-                    if (folder != null)
-                    {
-                        planning.Folder.EFormSdkFolderId = folder.Id;
-                        if (folder.Parent != null)
-                        {
-                            planning.Folder.EFormSdkParentFolderName = folder.Parent.Name;
-                        }
-                        else
-                        {
-                            planning.Folder.EFormSdkFolderName = null;
-                        }
-                    }
+                    // fill folder names
+                    planning.Folder.EFormSdkFolderName = planning.Folder.EFormSdkFolderId.HasValue
+                        ? foldersWithNames
+                            .Where(y => y.Id == planning.Folder.EFormSdkFolderId.Value)
+                            .Select(y => y.Name)
+                            .FirstOrDefault()
+                        : "";
+                    planning.Folder.EFormSdkParentFolderName = planning.Folder.EFormSdkFolderId.HasValue
+                        ? foldersWithNames
+                            .Where(y => y.Id == planning.Folder.EFormSdkFolderId.Value)
+                            .Select(y => y.Description)
+                            .FirstOrDefault()
+                        : "";
+                }
+
+                // sorting after select. some field can't sort before select
+                if (excludeSort.Contains(pnRequestModel.Sort))
+                {
+                    plannings = (pnRequestModel.Sort == "SdkFolderName"
+                        ? pnRequestModel.IsSortDsc
+                            ? plannings.AsQueryable().OrderByDescending(x => x.Folder.EFormSdkFolderName)
+                            : plannings.AsQueryable().OrderBy(x => x.Folder.EFormSdkFolderName)
+                        : QueryHelper.AddSortToQuery(plannings.AsQueryable(), pnRequestModel.Sort,
+                            pnRequestModel.IsSortDsc)).ToList();
                 }
 
                 var planningsModel = new Paged<PlanningPnModel>
@@ -308,7 +323,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     DaysBeforeRedeploymentPushMessageRepeat = model.Reiteration.PushMessageEnabled,
                     DaysBeforeRedeploymentPushMessage = model.Reiteration.DaysBeforeRedeploymentPushMessage,
                     PushMessageOnDeployment = model.Reiteration.PushMessageOnDeployment,
-                    StartDate = model.Reiteration.StartDate ?? DateTime.UtcNow
+                    StartDate = model.Reiteration.StartDate ?? DateTime.UtcNow,
+                    PlanningNumber = model.PlanningNumber
                 };
 
 
@@ -379,6 +395,30 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 var language = sdkDbContext.Languages.Single(x => x.LanguageCode == localeString);
                 var planningQuery = _dbContext.Plannings
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == planningId);
+
+                var folderId = await planningQuery
+                    .Where(x => x.SdkFolderId.HasValue)
+                    .Select(x => x.SdkFolderId.Value)
+                    .SingleAsync();
+                var foldersWithNames = await sdkDbContext.FolderTranslations
+                    .Include(x => x.Folder)
+                    .ThenInclude(x => x.Parent)
+                    .ThenInclude(x => x.FolderTranslations)
+                    .Where(x => folderId == x.FolderId)
+                    .Where(x => x.LanguageId == language.Id)
+                    .Select(x => new CommonDictionaryModel
+                    {
+                        Id = x.FolderId,
+                        Name = x.Name,
+                        Description = x.Folder.ParentId.HasValue ?
+                            x.Folder.Parent.FolderTranslations
+                                .Where(y => y.LanguageId == language.Id)
+                                .Select(y => y.Name)
+                                .FirstOrDefault() :
+                            "",
+                    })
+                    .ToListAsync();
+
                 var planning = await AddSelectToPlanningQuery(planningQuery, language).FirstOrDefaultAsync();
 
                 if (planning == null)
@@ -388,28 +428,18 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                         _itemsPlanningLocalizationService.GetString("ListNotFound"));
                 }
 
-                // get folder
-                var folder = sdkDbContext.Folders
-                    .Include(x => x.Parent)
-                    .Select(x => new
-                    {
-                        x.Name,
-                        x.Parent,
-                        x.Id
-                    })
-                    .FirstOrDefault(y => y.Id == planning.Folder.EFormSdkFolderId);
-                if (folder != null)
-                {
-                    planning.Folder.EFormSdkFolderId = folder.Id;
-                    if (folder.Parent != null)
-                    {
-                        planning.Folder.EFormSdkParentFolderName = folder.Parent.Name;
-                    }
-                    else
-                    {
-                        planning.Folder.EFormSdkFolderName = null;
-                    }
-                }
+                planning.Folder.EFormSdkFolderName = planning.Folder.EFormSdkFolderId.HasValue
+                    ? foldersWithNames
+                        .Where(y => y.Id == planning.Folder.EFormSdkFolderId.Value)
+                        .Select(y => y.Name)
+                        .FirstOrDefault()
+                    : "";
+                planning.Folder.EFormSdkParentFolderName = planning.Folder.EFormSdkFolderId.HasValue
+                    ? foldersWithNames
+                        .Where(y => y.Id == planning.Folder.EFormSdkFolderId.Value)
+                        .Select(y => y.Description)
+                        .FirstOrDefault()
+                    : "";
 
                 // get site names
                 var sites = await sdkDbContext.Sites
@@ -524,6 +554,8 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 }
 
                 planning.DaysBeforeRedeploymentPushMessage = updateModel.Reiteration.DaysBeforeRedeploymentPushMessage;
+                planning.DaysBeforeRedeploymentPushMessageRepeat = updateModel.Reiteration.PushMessageEnabled;
+                planning.PushMessageOnDeployment = updateModel.Reiteration.PushMessageOnDeployment;
                 planning.DoneByUserNameEnabled = updateModel.EnabledFields.DoneByUserNameEnabled;
                 planning.NumberOfImagesEnabled = updateModel.EnabledFields.NumberOfImagesEnabled;
                 planning.PlanningNumberEnabled = updateModel.EnabledFields.PlanningNumberEnabled;
@@ -533,8 +565,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.StartDate = updateModel.Reiteration.StartDate ?? DateTime.UtcNow;
                 planning.DeployedAtEnabled = updateModel.EnabledFields.DeployedAtEnabled;
                 planning.BuildYearEnabled = updateModel.EnabledFields.BuildYearEnabled;
-                planning.DaysBeforeRedeploymentPushMessageRepeat =
-                    updateModel.Reiteration.PushMessageEnabled;
                 planning.DoneAtEnabled = updateModel.EnabledFields.DoneAtEnabled;
                 planning.RelatedEFormId = updateModel.BoundEform.RelatedEFormId;
                 planning.LabelEnabled = updateModel.EnabledFields.LabelEnabled;
@@ -545,6 +575,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.RepeatType = updateModel.Reiteration.RepeatType;
                 planning.DayOfMonth = updateModel.Reiteration.DayOfMonth;
                 planning.DayOfWeek = updateModel.Reiteration.DayOfWeek;
+                planning.PlanningNumber = updateModel.PlanningNumber;
                 planning.LocationCode = updateModel.LocationCode;
                 planning.Description = updateModel.Description;
                 planning.UpdatedByUserId = _userService.UserId;
@@ -553,7 +584,6 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 planning.SdkFolderName = sdkFolder.Name;
                 planning.UpdatedAt = DateTime.UtcNow;
                 planning.Type = updateModel.Type;
-                planning.PushMessageOnDeployment = updateModel.Reiteration.PushMessageOnDeployment;
 
                 var tagIds = planning.PlanningsTags
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
@@ -682,7 +712,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                 },
                 Folder = new PlanningFolderModel
                 {
-                    EFormSdkFolderName = x.SdkFolderName,
+                    EFormSdkFolderName = x.SdkFolderName, // fill it only for "This is done to update existing Plannings to using EFormSdkFolderId instead of EFormSdkFolderName", and refill it's field after
                     EFormSdkFolderId = x.SdkFolderId
                 },
                 AssignedSites = x.PlanningSites

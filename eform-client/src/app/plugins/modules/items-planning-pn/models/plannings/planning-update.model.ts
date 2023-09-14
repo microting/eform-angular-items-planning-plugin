@@ -9,7 +9,7 @@ export class PlanningUpdateModel {
   translationsName: CommonTranslationModel[];
   description: string;
 
-  itemNumber: string;
+  planningNumber: string;
   locationCode: string;
   buildYear: string;
   type: string;
