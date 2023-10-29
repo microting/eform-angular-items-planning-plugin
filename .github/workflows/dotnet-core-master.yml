@@ -74,7 +74,7 @@ jobs:
     - name: Use Node.ts
       uses: actions/setup-node@v3
       with:
-        node-version: 'lts/*'
+        node-version: 18
     - name: Extract branch name
       id: extract_branch
       run: echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
@@ -115,6 +115,7 @@ jobs:
         spec: cypress/e2e/db/*
         config-file: cypress.config.ts
         working-directory: eform-angular-frontend/eform-client
+        command-prefix: "--"
     - name: Load DB dump
       if: matrix.test == 'a'
       run: |
@@ -137,6 +138,7 @@ jobs:
         spec: cypress/e2e/plugins/items-planning-pn/${{matrix.test}}/*
         config-file: cypress.config.ts
         working-directory: eform-angular-frontend/eform-client
+        command-prefix: "--"
     - name: Plugin testing
       run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin2${{matrix.test}}
     - name: The job has failed
