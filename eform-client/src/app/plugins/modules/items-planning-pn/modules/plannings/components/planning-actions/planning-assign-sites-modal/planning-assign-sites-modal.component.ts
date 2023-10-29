@@ -45,10 +45,6 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
   pairSingle$: Subscription;
   // getAllSites$: Subscription;
 
-  get userClaims() {
-    return this.authStateService.currentUserClaims;
-  }
-
   constructor(
     // private eFormService: EFormService,
     // private sitesService: SitesService,

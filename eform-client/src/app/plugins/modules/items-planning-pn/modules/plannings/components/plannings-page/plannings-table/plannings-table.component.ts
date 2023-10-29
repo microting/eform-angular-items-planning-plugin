@@ -139,7 +139,9 @@ export class PlanningsTableComponent implements OnInit {
           icon: 'edit',
           tooltip: this.translateService.stream('Edit Planning'),
           iif: (rowData: PlanningModel) =>
+            // TODO: Fix this
             this.authStateService.checkClaim(ItemsPlanningPnClaims.editPlanning) && rowData.isLocked || rowData.isEditable,
+            // this.authStateService.checkClaim(ItemsPlanningPnClaims.editPlanning) && rowData.isLocked || rowData.isEditable,
           click: (rowData: PlanningModel) => this.router.navigate(['./edit/' + rowData.id], {relativeTo: this.route}),
           class: 'updatePlanningBtn'
         },
