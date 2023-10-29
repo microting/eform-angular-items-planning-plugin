@@ -78,7 +78,7 @@
         [ngClass]="{'mr-2' : getLatestCaseStatus(row, col.field)}"
       >
       </mat-checkbox>
-      <div *ngIf="authStateService.isAdmin">
+      <div *ngIf="isAuth$ | async">
         <small [ngClass]="getIsPaired(row, col.field) ? 'text-accent' : 'text-primary'"
                class="mt-2">{{getTextAfterCheckbox(row, col.field)}}</small>
       </div>

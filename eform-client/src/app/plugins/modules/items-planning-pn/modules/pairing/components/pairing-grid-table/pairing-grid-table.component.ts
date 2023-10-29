@@ -19,6 +19,8 @@ import {ItemsPlanningPnTagsService} from 'src/app/plugins/modules/items-planning
 import {Subscription} from 'rxjs';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {MtxGridColumn} from '@ng-matero/extensions/grid';
+import {selectAuthIsAuth} from 'src/app/state/auth/auth.selector';
+import {Store} from '@ngrx/store';
 
 @AutoUnsubscribe()
 @Component({
@@ -40,8 +42,10 @@ export class PairingGridTableComponent implements OnInit, OnDestroy, OnChanges {
   getTagsSub$: Subscription;
 
   public tableHeaders: MtxGridColumn[] = [];
+  public isAuth$ = this.store.select(selectAuthIsAuth);
 
   constructor(
+    private store: Store,
     public authStateService: AuthStateService,
     public pairingStateService: PairingStateService,
     private sitesService: SitesService,

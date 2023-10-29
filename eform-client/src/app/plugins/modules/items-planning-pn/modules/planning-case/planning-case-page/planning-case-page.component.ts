@@ -18,6 +18,8 @@ import { CaseEditElementComponent } from 'src/app/common/modules/eform-cases/com
 import {ItemsPlanningPnCasesService} from '../../../services';
 import {DateTimeAdapter} from '@danielmoncada/angular-datetime-picker';
 import * as R from 'ramda';
+import {selectCurrentUserLocale} from 'src/app/state/auth/auth.selector';
+import {Store} from '@ngrx/store';
 
 @Component({
   selector: 'app-installation-case-page',
@@ -40,14 +42,12 @@ export class PlanningCasePageComponent implements OnInit {
   replyRequest: ReplyRequest = new ReplyRequest();
   maxDate: Date;
   initialDate: Date;
-
-  get userClaims() {
-    return this.authStateService.currentUserClaims;
-  }
+  private selectCurrentUserLocale$ = this.authStore.select(selectCurrentUserLocale);
 
   constructor(
     dateTimeAdapter: DateTimeAdapter<any>,
     private activateRoute: ActivatedRoute,
+    private authStore: Store,
     private casesService: CasesService,
     private eFormService: EFormService,
     private router: Router,
@@ -60,7 +60,9 @@ export class PlanningCasePageComponent implements OnInit {
       this.eFormId = +params['templateId'];
       this.dateFrom = params['dateFrom'];
       this.dateTo = params['dateTo'];
-      dateTimeAdapter.setLocale(authStateService.currentUserLocale);
+      this.selectCurrentUserLocale$.subscribe((locale) => {
+        dateTimeAdapter.setLocale(locale);
+      });
     });
   }
 
