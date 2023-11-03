@@ -21,11 +21,11 @@ import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {MtxGridColumn} from '@ng-matero/extensions/grid';
 import {selectAuthIsAuth} from 'src/app/state/auth/auth.selector';
 import {Store} from '@ngrx/store';
-import {ItemsPlanningState} from "src/app/plugins/modules/items-planning-pn/state/items-planning.state";
+import {ItemsPlanningState} from 'src/app/plugins/modules/items-planning-pn/state/items-planning.state';
 import {
-  selectParrings, selectParringsSiteIds,
+  selectParringsSiteIds,
   selectParringsTagsIds
-} from "src/app/plugins/modules/items-planning-pn/state/parring/parring.selector";
+} from 'src/app/plugins/modules/items-planning-pn/state/parring/parring.selector';
 
 @AutoUnsubscribe()
 @Component({
@@ -48,7 +48,9 @@ export class PairingGridTableComponent implements OnInit, OnDestroy, OnChanges {
 
   public tableHeaders: MtxGridColumn[] = [];
   public isAuth$ = this.store.select(selectAuthIsAuth);
+  // @ts-ignore
   public selectParringsTagsIds$ = this.itemsPlanningStore.select(selectParringsTagsIds);
+  // @ts-ignore
   public selectParringsSiteIds$ = this.itemsPlanningStore.select(selectParringsSiteIds);
 
   constructor(

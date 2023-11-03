@@ -40,7 +40,7 @@ import * as reportsReducer from './state/reports/reports.reducer';
     OwlDateTimeModule,
     EformCasesModule,
     EformSharedTagsModule,
-    StoreModule.forRoot({
+    StoreModule.forFeature('itemsPlanningPn',{
       pairingsState: parringReducer.reducer,
       planningsState: planningsReducer.reducer,
       planningsReportState: reportsReducer.reducer,

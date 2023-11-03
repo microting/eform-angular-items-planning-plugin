@@ -1,7 +1,8 @@
 import {ItemsPlanningState} from 'src/app/plugins/modules/items-planning-pn/state/items-planning.state';
 import {createSelector} from '@ngrx/store';
 
-export const selectPlannings = (state: ItemsPlanningState) => state.planningsState;
+export const selectItemsPlanningPn = (state: {itemsPlanningPn: ItemsPlanningState}) => state.itemsPlanningPn;
+export const selectPlannings = createSelector(selectItemsPlanningPn, (state) => state.planningsState);
 
 export const selectPlanningsFilters =
   createSelector(selectPlannings, (state) => state.filters);

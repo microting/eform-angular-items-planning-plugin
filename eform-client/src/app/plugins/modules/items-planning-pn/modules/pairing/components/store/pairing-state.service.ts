@@ -9,6 +9,7 @@ import {selectParringsFilters} from 'src/app/plugins/modules/items-planning-pn/s
 
 @Injectable({ providedIn: 'root' })
 export class PairingStateService {
+  // @ts-ignore
   private selectParringsFilters$ = this.store.select(selectParringsFilters);
   constructor(
     private store: Store<ItemsPlanningState>,
