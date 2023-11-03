@@ -12,14 +12,19 @@ import {ReportPnGenerateModel} from '../../../../models';
 import {DateTimeAdapter} from '@danielmoncada/angular-datetime-picker';
 import {SharedTagModel} from 'src/app/common/models';
 import {AuthStateService} from 'src/app/common/store';
-import {PlanningsReportQuery, PlanningsReportStateService} from '../store';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {Subscription} from 'rxjs';
 import {MatIconRegistry} from '@angular/material/icon';
 import {DomSanitizer} from '@angular/platform-browser';
 import {ExcelIcon, PARSING_DATE_FORMAT, WordIcon} from 'src/app/common/const';
-import {selectCurrentUserLocale} from "src/app/state/auth/auth.selector";
-import {Store} from "@ngrx/store";
+import {selectCurrentUserLocale} from 'src/app/state/auth/auth.selector';
+import {Store} from '@ngrx/store';
+import {PlanningsReportStateService} from 'src/app/plugins/modules/items-planning-pn/modules/reports/components/store';
+import {PlanningsState} from 'src/app/plugins/modules/items-planning-pn/state/plannings/plannings.reducer';
+import {
+  selectReportsDateRange,
+  selectReportsFilters
+} from 'src/app/plugins/modules/items-planning-pn/state/reports/reports.selector';
 
 @AutoUnsubscribe()
 @Component({
@@ -39,13 +44,17 @@ export class ReportHeaderComponent implements OnInit, OnDestroy {
   generateForm: FormGroup;
   valueChangesSub$: Subscription;
   private selectCurrentUserLocale$ = this.authStore.select(selectCurrentUserLocale);
+  // @ts-ignore
+  private selectReportsFilters$ = this.planningStore.select(selectReportsFilters);
+  // @ts-ignore
+  private selectReportsDateRange$ = this.planningStore.select(selectReportsDateRange);
 
   constructor(
     dateTimeAdapter: DateTimeAdapter<any>,
+    private planningStore: Store<PlanningsState>,
     private formBuilder: FormBuilder,
     private authStore: Store,
     private planningsReportStateService: PlanningsReportStateService,
-    private planningsReportQuery: PlanningsReportQuery,
     authStateService: AuthStateService,
     iconRegistry: MatIconRegistry,
     sanitizer: DomSanitizer,
@@ -62,13 +71,26 @@ export class ReportHeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.generateForm = this.formBuilder.group({
-      startDate: new FormControl(this.planningsReportQuery.pageSetting.dateRange.startDate ?
-        parse(this.planningsReportQuery.pageSetting.dateRange.startDate, PARSING_DATE_FORMAT, new Date()) : null, [Validators.required]),
-      endDate: new FormControl(this.planningsReportQuery.pageSetting.dateRange.endDate ?
-        parse(this.planningsReportQuery.pageSetting.dateRange.endDate, PARSING_DATE_FORMAT, new Date()) : null, [Validators.required]),
-      tagIds: [this.planningsReportQuery.pageSetting.filters.tagIds],
-    });
+    this.selectReportsFilters$.subscribe((filters) => {
+      if (filters === undefined) {
+        return;
+      }
+      this.generateForm.get('tagIds').setValue(filters.tagIds);
+    }).unsubscribe();
+    this.selectReportsDateRange$.subscribe((dateRange) => {
+      if (dateRange === undefined) {
+        return;
+      }
+      this.generateForm.get('startDate').setValue(parseISO(dateRange.startDate));
+      this.generateForm.get('endDate').setValue(parseISO(dateRange.endDate));
+    }).unsubscribe();
+    // this.generateForm = this.formBuilder.group({
+    //   startDate: new FormControl(this.planningsReportQuery.pageSetting.dateRange.startDate ?
+    //     parse(this.planningsReportQuery.pageSetting.dateRange.startDate, PARSING_DATE_FORMAT, new Date()) : null, [Validators.required]),
+    //   endDate: new FormControl(this.planningsReportQuery.pageSetting.dateRange.endDate ?
+    //     parse(this.planningsReportQuery.pageSetting.dateRange.endDate, PARSING_DATE_FORMAT, new Date()) : null, [Validators.required]),
+    //   tagIds: [this.planningsReportQuery.pageSetting.filters.tagIds],
+    // });
     this.valueChangesSub$ = this.generateForm.valueChanges.subscribe(
       (value: { tagIds: number[]; startDate: Date; endDate: Date; }) => {
         if (value.startDate) {
@@ -105,11 +127,26 @@ export class ReportHeaderComponent implements OnInit, OnDestroy {
   }
 
   private extractData(): ReportPnGenerateModel {
+    this.selectReportsDateRange$.subscribe((dateRange) => {
+      if (dateRange === undefined) {
+        return;
+      }
+      this.generateForm.get('startDate').setValue(parseISO(dateRange.startDate));
+      this.generateForm.get('endDate').setValue(parseISO(dateRange.endDate));
+    }).unsubscribe();
+    const {startDate, endDate, tagIds} = this.generateForm.value;
+    const dateFrom = format(startDate, PARSING_DATE_FORMAT);
+    const dateTo = format(endDate, PARSING_DATE_FORMAT);
     return new ReportPnGenerateModel({
-      dateFrom: this.planningsReportQuery.pageSetting.dateRange.startDate,
-      dateTo: this.planningsReportQuery.pageSetting.dateRange.endDate,
-      tagIds: [...this.planningsReportQuery.pageSetting.filters.tagIds],
+      dateFrom: dateFrom,
+      dateTo: dateTo,
+      tagIds: [...tagIds],
     });
+    // return new ReportPnGenerateModel({
+    //   dateFrom: this.planningsReportQuery.pageSetting.dateRange.startDate,
+    //   dateTo: this.planningsReportQuery.pageSetting.dateRange.endDate,
+    //   tagIds: [...this.planningsReportQuery.pageSetting.filters.tagIds],
+    // });
   }
 
   addOrDeleteTagId(tag: SharedTagModel) {

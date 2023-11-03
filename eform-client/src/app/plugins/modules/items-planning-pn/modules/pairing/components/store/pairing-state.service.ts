@@ -1,46 +1,76 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OperationDataResult } from 'src/app/common/models';
-import { PairingQuery, PairingStore } from './';
-import { arrayToggle } from '@datorama/akita';
 import { PairingsModel } from '../../../../models';
 import { ItemsPlanningPnPairingService } from '../../../../services';
+import {Store} from '@ngrx/store';
+import {ItemsPlanningState} from 'src/app/plugins/modules/items-planning-pn/state/items-planning.state';
+import {selectParringsFilters} from 'src/app/plugins/modules/items-planning-pn/state/parring/parring.selector';
 
 @Injectable({ providedIn: 'root' })
 export class PairingStateService {
+  private selectParringsFilters$ = this.store.select(selectParringsFilters);
   constructor(
-    private store: PairingStore,
+    private store: Store<ItemsPlanningState>,
     private service: ItemsPlanningPnPairingService,
-    private query: PairingQuery
   ) {}
 
   getAllPairings(): Observable<OperationDataResult<PairingsModel>> {
-    return this.service.getAllPairings({ ...this.query.pageSetting.filters });
+    let requestModel = {
+      tagIds: [],
+      siteIds: [],
+    };
+    this.selectParringsFilters$.subscribe((filters) => {
+      if (filters === undefined) {
+        return;
+      }
+      requestModel = {
+        tagIds: filters.tagIds,
+        siteIds: filters.siteIds,
+      };
+    }).unsubscribe();
+    return this.service.getAllPairings(requestModel);
   }
-
-  getTagIds(): Observable<number[]> {
-    return this.query.selectTagIds$;
-  }
-
   addOrRemoveTagId(id: number) {
-    this.store.update((state) => ({
-      filters: {
-        ...state.filters,
-        tagIds: arrayToggle(state.filters.tagIds, id),
+    let currentFilters: any = {};
+    this.selectParringsFilters$.subscribe((filters) => {
+      if (filters === undefined) {
+        return;
+      }
+      currentFilters = filters;
+    }).unsubscribe();
+    currentFilters.tagIds = this.arrayToggle(currentFilters.tagIds, id);
+    this.store.dispatch({
+      type: '[Pairing] Update Pairing Filters',
+      payload: {
+        filters: currentFilters,
       },
-    }));
-  }
-
-  getSiteIds(): Observable<number[]> {
-    return this.query.selectSiteIds$;
+    });
   }
 
   addOrRemoveSiteIds(id: number) {
-    this.store.update((state) => ({
-      filters: {
-        ...state.filters,
-        siteIds: arrayToggle(state.filters.siteIds, id),
+    let currentFilters: any = {};
+    this.selectParringsFilters$.subscribe((filters) => {
+      if (filters === undefined) {
+        return;
+      }
+      currentFilters = filters;
+    }).unsubscribe();
+    currentFilters.siteIds = this.arrayToggle(currentFilters.siteIds, id);
+    this.store.dispatch({
+      type: '[Pairing] Update Pairing Filters',
+      payload: {
+        filters: currentFilters,
       },
-    }));
+    });
+  }
+
+  arrayToggle<T>(arr: T[], val: T, forced?: boolean): T[] {
+    if (forced && arr.includes(val)) {
+      return [...arr];
+    } else if (forced === false || arr.includes(val)) {
+      return arr.filter((v: typeof val) => v !== val);
+    }
+    return [...arr, val];
   }
 }

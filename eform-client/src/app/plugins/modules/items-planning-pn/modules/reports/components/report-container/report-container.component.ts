@@ -1,7 +1,6 @@
-import {Component, OnDestroy, OnInit, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
-// import {CasePostNewComponent} from 'src/app/common/modules/eform-cases/components';
 import {
   ReportEformPnModel,
   ReportPnGenerateModel,
@@ -21,11 +20,16 @@ import {
   SharedTagModel,
 } from 'src/app/common/models';
 import {EmailRecipientsService, TemplateFilesService} from 'src/app/common/services';
-import {PlanningsReportQuery} from '../store';
 import {AuthStateService} from 'src/app/common/store';
 import {Gallery, GalleryItem, ImageItem} from '@ngx-gallery/core';
 import {Lightbox} from '@ngx-gallery/lightbox';
 import {ViewportScroller} from '@angular/common';
+import {Store} from '@ngrx/store';
+import {PlanningsState} from 'src/app/plugins/modules/items-planning-pn/state/plannings/plannings.reducer';
+import {
+  selectReportsFilters,
+  selectReportsScrollPosition
+} from 'src/app/plugins/modules/items-planning-pn/state/reports/reports.selector';
 
 @AutoUnsubscribe()
 @Component({
@@ -51,6 +55,10 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   dateTo: any;
   startWithParams = false;
   private observableReportsModel = new BehaviorSubject<ReportEformPnModel[]>([]);
+  // @ts-ignore
+  private selectReportsFilters$ = this.planningStore.select(selectReportsFilters);
+  // @ts-ignore
+  private selectReportsScrollPosition$ = this.planningStore.select(selectReportsScrollPosition);
 
   getTagsSub$: Subscription;
   // getEmailsTagsSub$: Subscription;
@@ -66,7 +74,7 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
     private toastrService: ToastrService,
     private router: Router,
     private tagsService: ItemsPlanningPnTagsService,
-    private planningsReportQuery: PlanningsReportQuery,
+    private planningStore: Store<PlanningsState>,
     public authStateService: AuthStateService,
     public gallery: Gallery,
     public lightbox: Lightbox,
@@ -79,10 +87,17 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
       this.range.push(parseISO(params['dateFrom']));
       this.range.push(parseISO(params['dateTo']));
       this.startWithParams = !!(this.dateTo && this.dateFrom);
+      let tagsIds: number[] = [];
+      this.selectReportsFilters$.subscribe((filters) => {
+        if (filters === undefined) {
+          return;
+        }
+        tagsIds = filters.tagIds;
+      }).unsubscribe();
       const model = {
         dateFrom: params['dateFrom'],
         dateTo: params['dateTo'],
-        tagIds: planningsReportQuery.pageSetting.filters.tagIds,
+        tagIds: tagsIds,
         type: ''
       };
       if (model.dateFrom !== undefined) {
@@ -91,7 +106,7 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
     });
     this.observableReportsModel.subscribe(x => {
       if(x.length && this.startWithParams){
-        const task = _ => this.planningsReportQuery.selectScrollPosition$
+        const task = (_: any) => this.selectReportsScrollPosition$
           .subscribe(value => this.viewportScroller.scrollToPosition(value));
         asyncScheduler.schedule(task, 1000);
         this.startWithParams = false;
@@ -114,11 +129,18 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   onGenerateReport(model: ReportPnGenerateModel) {
     this.dateFrom = model.dateFrom;
     this.dateTo = model.dateTo;
+    let tagsIds: number[] = [];
+    this.selectReportsFilters$.subscribe((filters) => {
+      if (filters === undefined) {
+        return;
+      }
+      tagsIds = filters.tagIds;
+    }).unsubscribe();
     this.generateReportSub$ = this.reportService
       .generateReport({
         dateFrom: model.dateFrom,
         dateTo: model.dateTo,
-        tagIds: this.planningsReportQuery.pageSetting.filters.tagIds,
+        tagIds: tagsIds,
         type: ''
       })
       .subscribe((data) => {

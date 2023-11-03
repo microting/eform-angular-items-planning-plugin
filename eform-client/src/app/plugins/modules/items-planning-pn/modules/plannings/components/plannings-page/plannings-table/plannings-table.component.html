@@ -8,8 +8,8 @@
   [rowStriped]="true"
   [showToolbar]="false"
   [showColumnMenuButton]="false"
-  [sortActive]="planningsStateService.getActiveSort() | async"
-  [sortDirection]="planningsStateService.getActiveSortDirection() | async"
+  [sortActive]="selectPlanningsPaginationSort$ | async"
+  [sortDirection]="selectPlanningsPaginationIsSortDsc$ | async"
   (sortChange)="onSortTable($event)"
   [multiSelectable]="true"
   [rowSelected]="getSelectedPlannings"
@@ -42,7 +42,7 @@
 </ng-template>
 <ng-template #paginatorTpl>
   <eform-pagination
-    [pagination]="planningsStateService.getPagination() | async"
+    [pagination]="selectPlanningPagination$ | async"
     (paginationChanged)="onPaginationChanged($event)"
   ></eform-pagination>
 </ng-template>

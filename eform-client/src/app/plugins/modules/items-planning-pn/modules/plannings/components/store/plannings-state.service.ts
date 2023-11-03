@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { PlanningsStore, PlanningsQuery } from './';
-import { Observable } from 'rxjs';
+import {Observable, zip} from 'rxjs';
 import {
+  CommonPaginationState,
   OperationDataResult,
   Paged,
   PaginationModel,
@@ -10,174 +10,218 @@ import {
 import { updateTableSort } from 'src/app/common/helpers';
 import { getOffset } from 'src/app/common/helpers/pagination.helper';
 import { map } from 'rxjs/operators';
-import { PlanningModel } from '../../../../models';
+import {PlanningModel, PlanningsRequestModel} from '../../../../models';
 import { ItemsPlanningPnPlanningsService } from '../../../../services';
-import { arrayToggle } from '@datorama/akita';
+import {Store} from '@ngrx/store';
+import {
+  PlanningsFiltrationState,
+  PlanningsState
+} from 'src/app/plugins/modules/items-planning-pn/state/plannings/plannings.reducer';
+import {
+  selectPlanningPagination,
+  selectPlanningsFilters, selectPlanningsTagsIds
+} from 'src/app/plugins/modules/items-planning-pn/state/plannings/plannings.selector';
 
 @Injectable({ providedIn: 'root' })
 export class PlanningsStateService {
+  // @ts-ignore
+  private selectPlanningPagination$ = this.planningStore.select(selectPlanningPagination);
+  // @ts-ignore
+  private selectPlanningsFilters$ = this.planningStore.select(selectPlanningsFilters);
+  // @ts-ignore
+  private selectPlanningsTagsIds$ = this.planningStore.select(selectPlanningsTagsIds);
   constructor(
-    private store: PlanningsStore,
+    private planningStore: Store<PlanningsState>,
     private service: ItemsPlanningPnPlanningsService,
-    private query: PlanningsQuery
   ) {}
 
-  // getOffset(): Observable<number> {
-  //   return this.query.selectOffset$;
-  // }
-
-  getActiveSort(): Observable<string> {
-    return this.query.selectActiveSort$;
-  }
-
-  getActiveSortDirection(): Observable<'asc' | 'desc'> {
-    return this.query.selectActiveSortDirection$;
-  }
-
-  getNameFilter(): Observable<string> {
-    return this.query.selectNameFilter$;
-  }
-
-  getDescriptionFilter(): Observable<string> {
-    return this.query.selectDescriptionFilter$;
-  }
-
-  getTagIds(): Observable<number[]> {
-    return this.query.selectTagIds$;
-  }
-
-  getDeviceUserIds(): Observable<number[]> {
-    return this.query.selectDeviceUsers$;
-  }
-
   getAllPlannings(): Observable<OperationDataResult<Paged<PlanningModel>>> {
-    return this.service
-      .getAllPlannings({
-        ...this.query.pageSetting.pagination,
-        ...this.query.pageSetting.filters,
-        pageIndex: 0,
-      })
-      .pipe(
+    let planningsRequestModel = new PlanningsRequestModel();
+    zip(this.selectPlanningsFilters$, this.selectPlanningPagination$).subscribe(
+        ([filters, pagination]) => {
+            planningsRequestModel = {
+            ...planningsRequestModel,
+            ...filters,
+            ...pagination,
+            };
+        }
+        ).unsubscribe();
+    return this.getAllPlannings().pipe(
         map((response) => {
-          if (response && response.success && response.model) {
-            this.store.update(() => ({
-              totalPlannings: response.model.total,
-            }));
-          }
-          return response;
+            if (response && response.success && response.model) {
+                this.planningStore.dispatch({
+                    type: '[Plannings] Update Plannings Total', payload: {
+                        totalPlannings: response.model.total,
+                    }
+                });
+            }
+            return response;
         })
-      );
+    )
+  }
+
+  updateDescriptionFilter(descriptionFilter: string) {
+    let currentFilters: PlanningsFiltrationState;
+    this.selectPlanningsFilters$.subscribe((filters) => {
+      if (filters === undefined) {
+        return;
+      }
+      currentFilters = filters;
+    }).unsubscribe();
+    this.planningStore.dispatch({
+      type: '[Plannings] Update Plannings Filters', payload: {
+        filters: {descriptionFilter: descriptionFilter, tagIds: currentFilters.tagIds}
+      }
+    });
   }
 
   updateNameFilter(nameFilter: string) {
-    this.store.update((state) => ({
-      filters: {
-        ...state.filters,
-        nameFilter: nameFilter,
-      },
-      pagination: {
-        ...state.pagination,
-        offset: 0,
-      },
-    }));
+    let currentFilters: PlanningsFiltrationState;
+    this.selectPlanningsFilters$.subscribe((filters) => {
+      if (filters === undefined) {
+        return;
+      }
+      currentFilters = filters;
+    }).unsubscribe();
+    this.planningStore.dispatch({
+      type: '[Plannings] Update Plannings Filters', payload: {
+        filters: {nameFilter: nameFilter, tagIds: currentFilters.tagIds}
+      }
+    });
   }
 
   updatePagination(pagination: PaginationModel) {
-    this.store.update((state) => ({
-      pagination: {
-        ...state.pagination,
-        pageSize: pagination.pageSize,
-        offset: pagination.offset,
-      },
-    }));
-    // this.checkOffset();
+    let currentPagination: CommonPaginationState;
+    this.selectPlanningPagination$.subscribe((pagination) => {
+      if (pagination === undefined) {
+        return;
+      }
+      currentPagination = pagination;
+    }).unsubscribe();
+    this.planningStore.dispatch({
+        type: '[Plannings] Update Plannings Pagination', payload: {
+            pagination: {
+            ...currentPagination,
+            ...pagination,
+            }
+        }
+    });
   }
 
   updatePageSize(pageSize: number) {
-    this.store.update((state) => ({
-      pagination: {
-        ...state.pagination,
-        pageSize: pageSize,
-      },
-    }));
-    this.checkOffset();
+    let currentPagination: CommonPaginationState;
+    this.selectPlanningPagination$.subscribe((pagination) => {
+      if (pagination === undefined) {
+        return;
+      }
+      currentPagination = pagination;
+    }).unsubscribe();
+    this.planningStore.dispatch({
+        type: '[Plannings] Update Plannings Pagination', payload: {
+            pagination: {
+            ...currentPagination,
+            pageSize: pageSize,
+            }
+        }
+    });
   }
 
   addOrRemoveTagIds(id: number) {
-    this.store.update((state) => ({
-      filters: {
-        ...state.filters,
-        tagIds: arrayToggle(state.filters.tagIds, id),
-      },
-    }));
+    let currentTagIds: number[];
+    this.selectPlanningsTagsIds$.subscribe((tagIds) => {
+      if (tagIds === undefined) {
+        return;
+      }
+      currentTagIds = tagIds;
+    }).unsubscribe();
+    this.planningStore.dispatch({
+      type: '[Plannings] Update Plannings Filters', payload: {
+        filters: {tagIds: this.arrayToggle(currentTagIds, id)}
+      }
+    });
   }
 
   addOrRemoveDeviceUserIds(id: number) {
-    this.store.update((state) => ({
-      filters: {
-        ...state.filters,
-        deviceUserIds: arrayToggle(state.filters.deviceUserIds, id),
-      },
-    }));
+    let currentDeviceUserIds: number[];
+    this.selectPlanningsFilters$.subscribe((filters) => {
+      if (filters === undefined) {
+        return;
+      }
+      currentDeviceUserIds = filters.deviceUserIds;
+    }).unsubscribe();
+    this.planningStore.dispatch({
+      type: '[Plannings] Update Plannings Filters', payload: {
+        filters: {deviceUserIds: this.arrayToggle(currentDeviceUserIds, id)}
+      }
+    });
   }
 
   changePage(offset: number) {
-    this.store.update((state) => ({
-      pagination: {
-        ...state.pagination,
-        offset: offset,
-      },
-    }));
+    let currentPagination: CommonPaginationState;
+    this.selectPlanningPagination$.subscribe((pagination) => {
+      if (pagination === undefined) {
+        return;
+      }
+      currentPagination = pagination;
+    }).unsubscribe();
+    this.planningStore.dispatch({
+        type: '[Plannings] Update Plannings Pagination', payload: {
+            pagination: {
+            ...currentPagination,
+            offset: offset,
+            }
+        }
+    });
   }
 
   onDelete() {
-    this.store.update((state) => ({
-      totalPlannings: state.totalPlannings - 1,
-    }));
-    this.checkOffset();
+    let currentPagination: CommonPaginationState;
+    this.selectPlanningPagination$.subscribe((pagination) => {
+      if (pagination === undefined) {
+        return;
+      }
+      currentPagination = pagination;
+    }).unsubscribe();
+    this.planningStore.dispatch({
+        type: '[Plannings] Update Plannings Pagination', payload: {
+            pagination: {
+            ...currentPagination,
+            total: currentPagination.total - 1,
+            },
+        }
+    });
   }
 
   onSortTable(sort: string) {
+    let currentPagination: CommonPaginationState;
+    this.selectPlanningPagination$.subscribe((pagination) => {
+      if (pagination === undefined) {
+        return;
+      }
+      currentPagination = pagination;
+    }).unsubscribe();
     const localPageSettings = updateTableSort(
       sort,
-      this.query.pageSetting.pagination.sort,
-      this.query.pageSetting.pagination.isSortDsc
+      currentPagination.sort,
+      currentPagination.isSortDsc
     );
-    this.store.update((state) => ({
-      pagination: {
-        ...state.pagination,
-        isSortDsc: localPageSettings.isSortDsc,
-        sort: localPageSettings.sort,
-      },
-    }));
+    this.planningStore.dispatch({
+        type: '[Plannings] Update Plannings Pagination', payload: {
+            pagination: {
+            ...currentPagination,
+            sort: localPageSettings.sort,
+            isSortDsc: localPageSettings.isSortDsc,
+            }
+        }
+    });
   }
 
-  checkOffset() {
-    const newOffset = getOffset(
-      this.query.pageSetting.pagination.pageSize,
-      this.query.pageSetting.pagination.offset,
-      this.query.pageSetting.totalPlannings
-    );
-    if (newOffset !== this.query.pageSetting.pagination.offset) {
-      this.store.update((state) => ({
-        pagination: {
-          ...state.pagination,
-          offset: newOffset,
-        },
-      }));
+  arrayToggle<T>(arr: T[], val: T, forced?: boolean): T[] {
+    if (forced && arr.includes(val)) {
+      return [...arr];
+    } else if (forced === false || arr.includes(val)) {
+      return arr.filter((v: typeof val) => v !== val);
     }
-  }
-
-  updateDescriptionFilter(newDescriptionFilter: string) {
-    this.store.update((state) => ({
-      filters: {
-        ...state.filters,
-        descriptionFilter: newDescriptionFilter,
-      },
-    }));
-  }
-
-  getPagination(): Observable<PaginationModel> {
-    return this.query.selectPagination$;
+    return [...arr, val];
   }
 }

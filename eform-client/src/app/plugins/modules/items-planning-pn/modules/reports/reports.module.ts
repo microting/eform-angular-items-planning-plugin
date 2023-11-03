@@ -17,7 +17,6 @@ import {MtxGridModule} from '@ng-matero/extensions/grid';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {EformCasesModule} from 'src/app/common/modules/eform-cases/eform-cases.module';
 import {EformSharedTagsModule} from 'src/app/common/modules/eform-shared-tags/eform-shared-tags.module';
-import {planningsReportPersistProvider} from './components/store';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MtxSelectModule} from '@ng-matero/extensions/select';
 import {MatIconModule} from '@angular/material/icon';
@@ -55,7 +54,6 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
       MatDialogModule,
       MatDatepickerModule,
     ],
-  providers: [planningsReportPersistProvider],
 })
 export class ReportsModule {
 }

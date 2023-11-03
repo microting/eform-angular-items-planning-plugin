@@ -27,7 +27,6 @@ import {NgSelectModule} from '@ng-select/ng-select';
 import {FileUploadModule} from 'ng2-file-upload';
 import {EformCasesModule} from 'src/app/common/modules/eform-cases/eform-cases.module';
 import {EformSharedTagsModule} from 'src/app/common/modules/eform-shared-tags/eform-shared-tags.module';
-import {planningsPersistProvider} from './components/store';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
@@ -85,7 +84,6 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
         MatCheckboxModule,
         MatDatepickerModule,
     ],
-    providers: [planningsPersistProvider],
     exports: [
         PlanningTagsComponent
     ]
