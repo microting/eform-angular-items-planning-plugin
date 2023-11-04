@@ -32,17 +32,13 @@ export class PlanningsHeaderComponent implements OnInit {
   @Output() nameFilterChanged: EventEmitter<any> = new EventEmitter<any>();
   @Output()
   descriptionFilterChanged: EventEmitter<any> = new EventEmitter<any>();
-  // @ts-ignore
   public selectPlanningsTagsIds$ = this.planningsStore.select(selectPlanningsTagsIds);
-  // @ts-ignore
   public selectPlanningsDeviceUserIds$ = this.planningsStore.select(selectPlanningsDeviceUserIds);
-  // @ts-ignore
   public selectPlanningsDescriptionFilter$ = this.planningsStore.select(selectPlanningsDescriptionFilter);
-  // @ts-ignore
   public selectPlanningsNameFilter$ = this.planningsStore.select(selectPlanningsNameFilter);
 
   constructor(
-    private planningsStore: Store<PlanningsState>,
+    private planningsStore: Store,
     public planningsStateService: PlanningsStateService) {}
 
   ngOnInit(): void {}

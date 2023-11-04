@@ -3,7 +3,7 @@ import {ItemsPlanningState} from 'src/app/plugins/modules/items-planning-pn/stat
 
 export const selectItemsPlanningPn = (state: {itemsPlanningPn: ItemsPlanningState}) => state.itemsPlanningPn;
 export const selectParringsState =
-  createSelector(selectItemsPlanningPn, (state) => state.pairingsState);
+  createSelector(selectItemsPlanningPn, (state: ItemsPlanningState) => state.pairingsState);
 //export const selectParrings = (state: ItemsPlanningState) => state.pairingsState;
 export const selectParringsTagsIds =
   createSelector(selectParringsState, (state) => state.filters.tagIds);

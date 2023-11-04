@@ -48,14 +48,12 @@ export class PairingGridTableComponent implements OnInit, OnDestroy, OnChanges {
 
   public tableHeaders: MtxGridColumn[] = [];
   public isAuth$ = this.store.select(selectAuthIsAuth);
-  // @ts-ignore
   public selectParringsTagsIds$ = this.itemsPlanningStore.select(selectParringsTagsIds);
-  // @ts-ignore
   public selectParringsSiteIds$ = this.itemsPlanningStore.select(selectParringsSiteIds);
 
   constructor(
     private store: Store,
-    private itemsPlanningStore: Store<ItemsPlanningState>,
+    private itemsPlanningStore: Store,
     public authStateService: AuthStateService,
     public pairingStateService: PairingStateService,
     private sitesService: SitesService,

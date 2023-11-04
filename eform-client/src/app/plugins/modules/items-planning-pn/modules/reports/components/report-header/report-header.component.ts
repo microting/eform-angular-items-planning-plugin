@@ -44,14 +44,12 @@ export class ReportHeaderComponent implements OnInit, OnDestroy {
   generateForm: FormGroup;
   valueChangesSub$: Subscription;
   private selectCurrentUserLocale$ = this.authStore.select(selectCurrentUserLocale);
-  // @ts-ignore
   private selectReportsFilters$ = this.planningStore.select(selectReportsFilters);
-  // @ts-ignore
   private selectReportsDateRange$ = this.planningStore.select(selectReportsDateRange);
 
   constructor(
     dateTimeAdapter: DateTimeAdapter<any>,
-    private planningStore: Store<PlanningsState>,
+    private planningStore: Store,
     private formBuilder: FormBuilder,
     private authStore: Store,
     private planningsReportStateService: PlanningsReportStateService,

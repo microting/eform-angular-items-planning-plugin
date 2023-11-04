@@ -171,11 +171,8 @@ export class PlanningsTableComponent implements OnInit {
   get getSelectedPlannings() {
     return this.planningsModel.entities.filter(x => this.selectedColCheckboxes.some(y => y === x.id));
   }
-  // @ts-ignore
   public selectPlanningPagination$ = this.planningsStore.select(selectPlanningPagination);
-  // @ts-ignore
   public selectPlanningsPaginationSort$ = this.planningsStore.select(selectPlanningsPaginationSort);
-  // @ts-ignore
   public selectPlanningsPaginationIsSortDsc$ = this.planningsStore.select(selectPlanningsPaginationIsSortDsc);
 
   constructor(
@@ -184,7 +181,7 @@ export class PlanningsTableComponent implements OnInit {
     private translateService: TranslateService,
     private router: Router,
     private route: ActivatedRoute,
-    private planningsStore: Store<PlanningsState>
+    private planningsStore: Store
   ) {}
 
   ngOnInit(): void {}

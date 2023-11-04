@@ -55,9 +55,7 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
   dateTo: any;
   startWithParams = false;
   private observableReportsModel = new BehaviorSubject<ReportEformPnModel[]>([]);
-  // @ts-ignore
   private selectReportsFilters$ = this.planningStore.select(selectReportsFilters);
-  // @ts-ignore
   private selectReportsScrollPosition$ = this.planningStore.select(selectReportsScrollPosition);
 
   getTagsSub$: Subscription;
@@ -74,7 +72,7 @@ export class ReportContainerComponent implements OnInit, OnDestroy {
     private toastrService: ToastrService,
     private router: Router,
     private tagsService: ItemsPlanningPnTagsService,
-    private planningStore: Store<PlanningsState>,
+    private planningStore: Store,
     public authStateService: AuthStateService,
     public gallery: Gallery,
     public lightbox: Lightbox,
