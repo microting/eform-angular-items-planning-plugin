@@ -21,13 +21,6 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'reports',
-        loadChildren: () =>
-          import('./modules/reports/reports.module').then(
-            (m) => m.ReportsModule
-          ),
-      },
-      {
         path: 'pairing',
         loadChildren: () =>
           import('./modules/pairing/pairing.module').then(

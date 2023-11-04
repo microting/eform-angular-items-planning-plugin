@@ -5,18 +5,12 @@ import {
   OperationDataResult,
   Paged,
   PaginationModel,
-  SortModel,
 } from 'src/app/common/models';
 import { updateTableSort } from 'src/app/common/helpers';
-import { getOffset } from 'src/app/common/helpers/pagination.helper';
 import { map } from 'rxjs/operators';
 import {PlanningModel, PlanningsRequestModel} from '../../../../models';
 import { ItemsPlanningPnPlanningsService } from '../../../../services';
 import {Store} from '@ngrx/store';
-import {
-  PlanningsFiltrationState,
-  PlanningsState
-} from 'src/app/plugins/modules/items-planning-pn/state/plannings/plannings.reducer';
 import {
   selectPlanningPagination,
   selectPlanningsFilters, selectPlanningsTagsIds
