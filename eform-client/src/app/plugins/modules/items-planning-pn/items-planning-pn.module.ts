@@ -8,10 +8,8 @@ import { ItemsPlanningPnLayoutComponent } from './layouts';
 import { RouterModule } from '@angular/router';
 import { ItemsPlanningPnRouting } from './items-planning-pn.routing';
 import {
-  ItemsPlanningPnCasesService,
   ItemsPlanningPnPairingService,
   ItemsPlanningPnPlanningsService,
-  ItemsPlanningPnReportsService,
   ItemsPlanningPnSettingsService,
   ItemsPlanningPnTagsService,
   ItemsPlanningPnUploadedDataService,
@@ -52,8 +50,6 @@ import * as reportsReducer from './state/reports/reports.reducer';
   providers: [
     ItemsPlanningPnSettingsService,
     ItemsPlanningPnPlanningsService,
-    ItemsPlanningPnReportsService,
-    ItemsPlanningPnCasesService,
     ItemsPlanningPnUploadedDataService,
     ItemsPlanningPnTagsService,
     ItemsPlanningPnPairingService,
