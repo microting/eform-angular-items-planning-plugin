@@ -27,13 +27,6 @@ export const routes: Routes = [
             (m) => m.PairingModule
           ),
       },
-      {
-        path: 'case',
-        loadChildren: () =>
-          import('./modules/planning-case/planning-case.module').then(
-            (m) => m.PlanningCaseModule
-          ),
-      },
     ],
   },
 ];
