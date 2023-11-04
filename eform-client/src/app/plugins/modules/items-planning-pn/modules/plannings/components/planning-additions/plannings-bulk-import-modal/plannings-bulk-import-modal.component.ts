@@ -39,7 +39,7 @@ export class PlanningsBulkImportModalComponent implements OnInit {
     this.selectBearerToken$.subscribe((token) => {
       this.xlsxPlanningsFileUploader = new FileUploader({
         url: '/api/items-planning-pn/plannings/import',
-        authToken: token,
+        authToken: 'Bearer ' +token,
       });
     });
 

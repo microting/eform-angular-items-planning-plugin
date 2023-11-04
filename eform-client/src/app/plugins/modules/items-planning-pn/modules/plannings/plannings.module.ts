@@ -6,7 +6,6 @@ import {
 } from '@danielmoncada/angular-datetime-picker';
 import {TranslateModule} from '@ngx-translate/core';
 import {
-  PlanningCasePageComponent,
   PlanningCreateComponent,
   PlanningEditComponent,
   PlanningsContainerComponent,
@@ -43,7 +42,6 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 
 @NgModule({
     declarations: [
-        PlanningCasePageComponent,
         PlanningCreateComponent,
         PlanningEditComponent,
         PlanningsContainerComponent,
