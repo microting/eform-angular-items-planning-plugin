@@ -1,16 +1,36 @@
 import {createAction} from '@ngrx/store';
 
 export const updatePlanningFilters = createAction(
-  '[Pairing] Update Planning Filters',
+  '[Planning] Update Planning Filters',
   (payload) => ({ payload })
 );
 
 export const updatePlanningPagination = createAction(
-  '[Pairing] Update Planning Pagination',
+  '[Planning] Update Planning Pagination',
   (payload) => ({ payload })
 );
 
 export const updatePlanningTotalPlannings = createAction(
-  '[Pairing] Update Planning Total Plannings',
+  '[Planning] Update Planning Total Plannings',
+  (payload) => ({ payload })
+);
+
+export const updatePlanningFiltersTags = createAction(
+  '[Planning] Update Planning TagIds',
+  (payload) => ({ payload })
+);
+
+export const updatePlanningFiltersSites = createAction(
+  '[Planning] Update Planning SiteIds',
+  (payload) => ({ payload })
+);
+
+export const updatePlanningFiltersName = createAction(
+  '[Planning] Update Planning NameFilter',
+  (payload) => ({ payload })
+);
+
+export const updatePlanningFiltersDescription = createAction(
+  '[Planning] Update Planning DescriptionFilter',
   (payload) => ({ payload })
 );

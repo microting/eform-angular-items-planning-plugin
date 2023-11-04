@@ -24,14 +24,11 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class PlanningsStateService {
-  // @ts-ignore
   private selectPlanningPagination$ = this.planningStore.select(selectPlanningPagination);
-  // @ts-ignore
   private selectPlanningsFilters$ = this.planningStore.select(selectPlanningsFilters);
-  // @ts-ignore
   private selectPlanningsTagsIds$ = this.planningStore.select(selectPlanningsTagsIds);
   constructor(
-    private planningStore: Store<PlanningsState>,
+    private planningStore: Store,
     private service: ItemsPlanningPnPlanningsService,
   ) {}
 
@@ -46,13 +43,16 @@ export class PlanningsStateService {
             };
         }
         ).unsubscribe();
-    return this.getAllPlannings().pipe(
+    return this.service.getAllPlannings(planningsRequestModel).pipe(
         map((response) => {
             if (response && response.success && response.model) {
                 this.planningStore.dispatch({
-                    type: '[Plannings] Update Plannings Total', payload: {
-                        totalPlannings: response.model.total,
-                    }
+                    type: '[Planning] Update Planning Total Plannings', payload: {
+                    pagination: {
+                      total: response.model.total,
+                    },
+                    totalPlannings: response.model.total,
+                  }
                 });
             }
             return response;
@@ -61,31 +61,19 @@ export class PlanningsStateService {
   }
 
   updateDescriptionFilter(descriptionFilter: string) {
-    let currentFilters: PlanningsFiltrationState;
-    this.selectPlanningsFilters$.subscribe((filters) => {
-      if (filters === undefined) {
-        return;
-      }
-      currentFilters = filters;
-    }).unsubscribe();
     this.planningStore.dispatch({
-      type: '[Plannings] Update Plannings Filters', payload: {
-        filters: {descriptionFilter: descriptionFilter, tagIds: currentFilters.tagIds}
+      type: '[Planning] Update Planning DescriptionFilter', payload: {
+        filters: {
+          descriptionFilter: descriptionFilter,
+        }
       }
     });
   }
 
   updateNameFilter(nameFilter: string) {
-    let currentFilters: PlanningsFiltrationState;
-    this.selectPlanningsFilters$.subscribe((filters) => {
-      if (filters === undefined) {
-        return;
-      }
-      currentFilters = filters;
-    }).unsubscribe();
     this.planningStore.dispatch({
-      type: '[Plannings] Update Plannings Filters', payload: {
-        filters: {nameFilter: nameFilter, tagIds: currentFilters.tagIds}
+      type: '[Planning] Update Planning NameFilter', payload: {
+        filters: {nameFilter: nameFilter}
       }
     });
   }
@@ -99,7 +87,7 @@ export class PlanningsStateService {
       currentPagination = pagination;
     }).unsubscribe();
     this.planningStore.dispatch({
-        type: '[Plannings] Update Plannings Pagination', payload: {
+        type: '[Planning] Update Planning Pagination', payload: {
             pagination: {
             ...currentPagination,
             ...pagination,
@@ -117,7 +105,7 @@ export class PlanningsStateService {
       currentPagination = pagination;
     }).unsubscribe();
     this.planningStore.dispatch({
-        type: '[Plannings] Update Plannings Pagination', payload: {
+        type: '[Planning] Update Planning Pagination', payload: {
             pagination: {
             ...currentPagination,
             pageSize: pageSize,
@@ -135,7 +123,7 @@ export class PlanningsStateService {
       currentTagIds = tagIds;
     }).unsubscribe();
     this.planningStore.dispatch({
-      type: '[Plannings] Update Plannings Filters', payload: {
+      type: '[Planning] Update Planning TagIds', payload: {
         filters: {tagIds: this.arrayToggle(currentTagIds, id)}
       }
     });
@@ -150,7 +138,7 @@ export class PlanningsStateService {
       currentDeviceUserIds = filters.deviceUserIds;
     }).unsubscribe();
     this.planningStore.dispatch({
-      type: '[Plannings] Update Plannings Filters', payload: {
+      type: '[Planning] Update Planning SiteIds', payload: {
         filters: {deviceUserIds: this.arrayToggle(currentDeviceUserIds, id)}
       }
     });
