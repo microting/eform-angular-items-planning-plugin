@@ -33,35 +33,39 @@ export class PairingStateService {
     return this.service.getAllPairings(requestModel);
   }
   addOrRemoveTagId(id: number) {
-    let currentFilters: any = {};
+    let tagIds: any = {};
     this.selectParringsFilters$.subscribe((filters) => {
       if (filters === undefined) {
         return;
       }
-      currentFilters = filters;
+      tagIds = filters.tagIds;
     }).unsubscribe();
-    currentFilters.tagIds = this.arrayToggle(currentFilters.tagIds, id);
+    tagIds = this.arrayToggle(tagIds, id);
     this.store.dispatch({
-      type: '[Pairing] Update Pairing Filters',
+      type: '[Pairing] Update Pairing TagIds',
       payload: {
-        filters: currentFilters,
+        filters: {
+          tagIds: tagIds,
+        }
       },
     });
   }
 
   addOrRemoveSiteIds(id: number) {
-    let currentFilters: any = {};
+    let siteIds: any = {};
     this.selectParringsFilters$.subscribe((filters) => {
       if (filters === undefined) {
         return;
       }
-      currentFilters = filters;
+      siteIds = filters.siteIds;
     }).unsubscribe();
-    currentFilters.siteIds = this.arrayToggle(currentFilters.siteIds, id);
+    siteIds = this.arrayToggle(siteIds, id);
     this.store.dispatch({
-      type: '[Pairing] Update Pairing Filters',
+      type: '[Pairing] Update Pairing SiteIds',
       payload: {
-        filters: currentFilters,
+        filters: {
+          siteIds: siteIds,
+        }
       },
     });
   }

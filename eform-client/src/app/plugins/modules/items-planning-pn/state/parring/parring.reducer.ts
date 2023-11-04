@@ -1,6 +1,9 @@
 import {createReducer, on} from '@ngrx/store';
 import { FiltrationStateModel } from 'src/app/common/models';
-import {updatePairingFilters} from 'src/app/plugins/modules/items-planning-pn/state/parring/parring.actions';
+import {
+  updatePairingFilters, updatePairingFiltersSites,
+  updatePairingFiltersTags
+} from 'src/app/plugins/modules/items-planning-pn/state/parring/parring.actions';
 
 export interface PairingState {
   filters: PairingFiltrationState;
@@ -26,7 +29,21 @@ export const _reducer = createReducer(
       nameFilter: payload.filters.nameFilter,
       tagIds: payload.filters.tagIds,
     },
-  }))
+  })),
+  on(updatePairingFiltersTags, (state, { payload }) => ({
+    ...state,
+    filters: {
+      ...state.filters,
+      tagIds: payload.filters.tagIds,
+    },
+  })),
+  on(updatePairingFiltersSites, (state, { payload }) => ({
+    ...state,
+    filters: {
+      ...state.filters,
+      siteIds: payload.filters.siteIds,
+    },
+  })),
 )
 
 export function reducer(state: PairingState | undefined, action: any) {
