@@ -138,24 +138,6 @@ export class PlanningsStateService {
     });
   }
 
-  changePage(offset: number) {
-    let currentPagination: CommonPaginationState;
-    this.selectPlanningPagination$.subscribe((pagination) => {
-      if (pagination === undefined) {
-        return;
-      }
-      currentPagination = pagination;
-    }).unsubscribe();
-    this.planningStore.dispatch({
-        type: '[Plannings] Update Plannings Pagination', payload: {
-            pagination: {
-            ...currentPagination,
-            offset: offset,
-            }
-        }
-    });
-  }
-
   onDelete() {
     let currentPagination: CommonPaginationState;
     this.selectPlanningPagination$.subscribe((pagination) => {

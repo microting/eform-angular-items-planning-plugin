@@ -186,11 +186,6 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterView
     this.getPlannings();
   }
 
-  changePage(newPage: any) {
-    this.planningsStateService.changePage(newPage);
-    this.getPlannings();
-  }
-
   openAssignmentModal(planning: PlanningModel) {
     const planningAssignSitesModal = this.dialog.open(PlanningAssignSitesModalComponent,
       {...dialogConfigHelper(this.overlay, {sitesDto: this.sitesDto, selectedPlanning: planning}), minWidth: 500});
@@ -253,11 +248,6 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterView
       .open(PlanningMultipleDeleteComponent, dialogConfigHelper(this.overlay, this.selectedPlanningsCheckboxes.length));
     this.deleteMultiplePlanningsSub$ = planningMultipleDeleteModal.componentInstance.deleteMultiplePlannings
       .subscribe(_ => this.deleteMultiplePlannings(planningMultipleDeleteModal));
-  }
-
-  onPageSizeChanged(newPageSize: number) {
-    this.planningsStateService.updatePageSize(newPageSize);
-    this.getPlannings();
   }
 
   planningDeleted() {
