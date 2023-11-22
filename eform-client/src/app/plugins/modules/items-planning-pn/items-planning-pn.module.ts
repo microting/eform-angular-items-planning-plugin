@@ -15,7 +15,6 @@ import {
   ItemsPlanningPnUploadedDataService,
 } from './services';
 import { FileUploadModule } from 'ng2-file-upload';
-import { OwlDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { EformSharedModule } from 'src/app/common/modules/eform-shared/eform-shared.module';
 import { EformSharedTagsModule } from 'src/app/common/modules/eform-shared-tags/eform-shared-tags.module';
 import {StoreModule} from '@ngrx/store';
@@ -35,7 +34,6 @@ import * as reportsReducer from './state/reports/reports.reducer';
     ItemsPlanningPnRouting,
     ReactiveFormsModule,
     FileUploadModule,
-    OwlDateTimeModule,
     EformCasesModule,
     EformSharedTagsModule,
     StoreModule.forFeature('itemsPlanningPn',{

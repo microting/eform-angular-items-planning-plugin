@@ -1,9 +1,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
-import {
-  OwlDateTimeModule,
-} from '@danielmoncada/angular-datetime-picker';
 import {TranslateModule} from '@ngx-translate/core';
 import {
   PlanningCreateComponent,
@@ -58,7 +55,6 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
         CommonModule,
         TranslateModule,
         RouterModule,
-        OwlDateTimeModule,
         PlanningsRouting,
         EformSharedModule,
         MtxGridModule,
