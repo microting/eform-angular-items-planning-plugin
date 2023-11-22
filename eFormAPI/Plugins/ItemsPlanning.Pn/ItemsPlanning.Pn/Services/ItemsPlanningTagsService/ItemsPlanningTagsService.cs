@@ -152,8 +152,10 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
 
                 foreach(var planningTag in planningsTags)
                 {
+                    planningTag.UpdatedByUserId = _userService.UserId;
                     await planningTag.Delete(_dbContext);
                 }
+                itemsPlanningTag.UpdatedByUserId = _userService.UserId;
                 await itemsPlanningTag.Delete(_dbContext);
 
                 return new OperationResult(
