@@ -7,6 +7,8 @@ import {AuthStateService} from 'src/app/common/store';
 import {MatDialogRef} from '@angular/material/dialog';
 import {MtxGridColumn} from '@ng-matero/extensions/grid';
 import {OperationDataResult} from 'src/app/common/models';
+import {Store} from '@ngrx/store';
+import {selectBearerToken} from 'src/app/state/auth/auth.selector';
 
 @Component({
   selector: 'app-plannings-bulk-import-modal',
@@ -16,10 +18,7 @@ import {OperationDataResult} from 'src/app/common/models';
 export class PlanningsBulkImportModalComponent implements OnInit {
   @ViewChild('xlsxPlannings', { static: false }) xlsxPlannings: ElementRef;
   importFinished: EventEmitter<void> = new EventEmitter<void>();
-  xlsxPlanningsFileUploader: FileUploader = new FileUploader({
-    url: '/api/items-planning-pn/plannings/import',
-    authToken: this.authStateService.bearerToken,
-  });
+  xlsxPlanningsFileUploader: FileUploader;
   errors: { row: number; col: number; message: string }[] = [];
 
   tableHeaders: MtxGridColumn[] = [
@@ -27,14 +26,22 @@ export class PlanningsBulkImportModalComponent implements OnInit {
     {header: this.translateService.stream('Row'), field: 'row'},
     {header: this.translateService.stream('Error'), field: 'message'},
   ];
+  private selectBearerToken$ = this.store.select(selectBearerToken);
 
   constructor(
+    private store: Store,
     private toastrService: ToastrService,
     private translateService: TranslateService,
     public loaderService: LoaderService,
     private authStateService: AuthStateService,
     public dialogRef: MatDialogRef<PlanningsBulkImportModalComponent>,
   ) {
+    this.selectBearerToken$.subscribe((token) => {
+      this.xlsxPlanningsFileUploader = new FileUploader({
+        url: '/api/items-planning-pn/plannings/import',
+        authToken: 'Bearer ' +token,
+      });
+    });
 
     this.xlsxPlanningsFileUploader.clearQueue();
   }

@@ -3,7 +3,7 @@
     mat-icon-button
     id="importPlanningsBtn"
     matTooltip="{{ 'Import plannings' | translate }}"
-    *ngIf="authStateService.isAdmin"
+    *ngIf="isAuth$ | async"
     (click)="openPlanningsImportModal()"
   >
     <mat-icon>file_upload</mat-icon>

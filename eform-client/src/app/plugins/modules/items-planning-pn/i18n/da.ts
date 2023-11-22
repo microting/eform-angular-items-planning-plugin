@@ -51,7 +51,6 @@ export const da = {
   Friday: 'Fredag',
   Saturday: 'Lørdag',
   Sunday: 'Søndag',
-
   Day: 'Dag',
   Week: 'Uge',
   Month: 'Måned',

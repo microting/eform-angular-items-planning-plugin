@@ -27,6 +27,8 @@ import { PlanningsStateService } from '../../store';
 import { AuthStateService } from 'src/app/common/store';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Overlay} from '@angular/cdk/overlay';
+import {selectAuthIsAuth} from 'src/app/state/auth/auth.selector';
+import {Store} from '@ngrx/store';
 
 @AutoUnsubscribe()
 @Component({
@@ -55,8 +57,10 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterView
   deletePlanningSub$: Subscription;
   tagsChangedSub$: Subscription;
   importFinishedSub$: Subscription;
+  public isAuth$ = this.store.select(selectAuthIsAuth);
 
   constructor(
+    private store: Store,
     private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
     private tagsService: ItemsPlanningPnTagsService,
     private foldersService: FoldersService,
@@ -182,11 +186,6 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterView
     this.getPlannings();
   }
 
-  changePage(newPage: any) {
-    this.planningsStateService.changePage(newPage);
-    this.getPlannings();
-  }
-
   openAssignmentModal(planning: PlanningModel) {
     const planningAssignSitesModal = this.dialog.open(PlanningAssignSitesModalComponent,
       {...dialogConfigHelper(this.overlay, {sitesDto: this.sitesDto, selectedPlanning: planning}), minWidth: 500});
@@ -249,11 +248,6 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterView
       .open(PlanningMultipleDeleteComponent, dialogConfigHelper(this.overlay, this.selectedPlanningsCheckboxes.length));
     this.deleteMultiplePlanningsSub$ = planningMultipleDeleteModal.componentInstance.deleteMultiplePlannings
       .subscribe(_ => this.deleteMultiplePlannings(planningMultipleDeleteModal));
-  }
-
-  onPageSizeChanged(newPageSize: number) {
-    this.planningsStateService.updatePageSize(newPageSize);
-    this.getPlannings();
   }
 
   planningDeleted() {

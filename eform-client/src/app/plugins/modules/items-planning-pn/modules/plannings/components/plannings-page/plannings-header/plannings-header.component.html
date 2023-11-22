@@ -5,7 +5,7 @@
       class="custom"
       dropdownPosition="bottom"
       [items]="availableTags"
-      [ngModel]="planningsStateService.getTagIds() | async"
+      [ngModel]="selectPlanningsTagsIds$ | async"
       (add)="saveTag($event)"
       (remove)="removeSavedTag($event)"
       [clearable]="false"
@@ -21,7 +21,7 @@
       class="custom"
       dropdownPosition="bottom"
       [items]="sites"
-      [ngModel]="planningsStateService.getDeviceUserIds() | async"
+      [ngModel]="selectPlanningsDeviceUserIds$ | async"
       (add)="saveSite($event)"
       (remove)="removeSavedSite($event)"
       [clearable]="false"
@@ -36,7 +36,7 @@
     <input
       matInput
       type="text"
-      [ngModel]="planningsStateService.getNameFilter() | async"
+      [ngModel]="selectPlanningsNameFilter$ | async"
       (ngModelChange)="onNameFilterChanged($event)"
       id="nameFilterInput"
     >
@@ -46,7 +46,7 @@
     <input
       matInput
       type="text"
-      [ngModel]="planningsStateService.getDescriptionFilter() | async"
+      [ngModel]="selectPlanningsDescriptionFilter$ | async"
       (ngModelChange)="onDescriptionFilterChanged($event)"
       id="descriptionFilterInput"
     >

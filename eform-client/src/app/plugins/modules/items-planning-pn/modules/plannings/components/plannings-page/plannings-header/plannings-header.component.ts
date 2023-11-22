@@ -8,6 +8,13 @@ import {
 } from '@angular/core';
 import { CommonDictionaryModel, SiteNameDto } from 'src/app/common/models';
 import { PlanningsStateService } from '../../store';
+import {Store} from "@ngrx/store";
+import {PlanningsState} from "src/app/plugins/modules/items-planning-pn/state/plannings/plannings.reducer";
+import {
+  selectPlanningsDescriptionFilter,
+  selectPlanningsDeviceUserIds, selectPlanningsNameFilter,
+  selectPlanningsTagsIds
+} from "src/app/plugins/modules/items-planning-pn/state/plannings/plannings.selector";
 
 @Component({
   selector: 'app-plannings-header',
@@ -25,8 +32,14 @@ export class PlanningsHeaderComponent implements OnInit {
   @Output() nameFilterChanged: EventEmitter<any> = new EventEmitter<any>();
   @Output()
   descriptionFilterChanged: EventEmitter<any> = new EventEmitter<any>();
+  public selectPlanningsTagsIds$ = this.planningsStore.select(selectPlanningsTagsIds);
+  public selectPlanningsDeviceUserIds$ = this.planningsStore.select(selectPlanningsDeviceUserIds);
+  public selectPlanningsDescriptionFilter$ = this.planningsStore.select(selectPlanningsDescriptionFilter);
+  public selectPlanningsNameFilter$ = this.planningsStore.select(selectPlanningsNameFilter);
 
-  constructor(public planningsStateService: PlanningsStateService) {}
+  constructor(
+    private planningsStore: Store,
+    public planningsStateService: PlanningsStateService) {}
 
   ngOnInit(): void {}
 

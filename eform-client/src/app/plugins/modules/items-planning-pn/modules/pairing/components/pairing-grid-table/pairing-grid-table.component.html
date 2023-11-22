@@ -6,7 +6,7 @@
         class="custom"
         dropdownPosition="bottom"
         [items]="availableTags"
-        [ngModel]="pairingStateService.getTagIds() | async"
+        [ngModel]="selectParringsTagsIds$ | async"
         (add)="saveTag($event)"
         (remove)="removeSavedTag($event.value)"
         [clearable]="false"
@@ -22,7 +22,7 @@
         class="custom"
         dropdownPosition="bottom"
         [items]="sitesDto"
-        [ngModel]="pairingStateService.getSiteIds() | async"
+        [ngModel]="selectParringsSiteIds$ | async"
         (add)="saveSite($event)"
         (remove)="removeSavedSite($event.value)"
         [clearable]="false"
@@ -78,7 +78,7 @@
         [ngClass]="{'mr-2' : getLatestCaseStatus(row, col.field)}"
       >
       </mat-checkbox>
-      <div *ngIf="authStateService.isAdmin">
+      <div *ngIf="isAuth$ | async">
         <small [ngClass]="getIsPaired(row, col.field) ? 'text-accent' : 'text-primary'"
                class="mt-2">{{getTextAfterCheckbox(row, col.field)}}</small>
       </div>

@@ -61,9 +61,9 @@ export class PlanningCreateComponent implements OnInit, OnDestroy {
   selectedFolderName: string;
   folderSelectedSub$: Subscription;
 
-  get userClaims() {
-    return this.authStateService.currentUserClaims;
-  }
+  // get userClaims() {
+  //   return this.authStateService.currentUserClaims;
+  // }
 
   constructor(
     private foldersService: FoldersService,

@@ -1,13 +1,13 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {AuthGuard, PermissionGuard} from 'src/app/common/guards';
+import {AuthGuard, IsPermissionGuard, PermissionGuard} from 'src/app/common/guards';
 import {PlanningCreateComponent, PlanningEditComponent, PlanningsContainerComponent} from './components';
 import {ItemsPlanningPnClaims} from 'src/app/plugins/modules/items-planning-pn/enums';
 
 export const routes: Routes = [
   {
     path: '',
-    canActivate: [PermissionGuard],
+    canActivate: [IsPermissionGuard],
     data: {
       requiredPermission: ItemsPlanningPnClaims.getPlannings,
     },
@@ -15,7 +15,7 @@ export const routes: Routes = [
   },
   {
     path: 'edit/:id',
-    canActivate: [PermissionGuard],
+    canActivate: [IsPermissionGuard],
     data: {
       requiredPermission: ItemsPlanningPnClaims.editPlanning,
     },

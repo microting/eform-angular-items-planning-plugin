@@ -14,6 +14,12 @@ import {Sort} from '@angular/material/sort';
 import {MtxGridColumn} from '@ng-matero/extensions/grid';
 import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {PlanningsState} from "src/app/plugins/modules/items-planning-pn/state/plannings/plannings.reducer";
+import {Store} from "@ngrx/store";
+import {
+  selectPlanningPagination, selectPlanningsPaginationIsSortDsc,
+  selectPlanningsPaginationSort
+} from "src/app/plugins/modules/items-planning-pn/state/plannings/plannings.selector";
 
 @Component({
   selector: 'app-plannings-table',
@@ -139,7 +145,9 @@ export class PlanningsTableComponent implements OnInit {
           icon: 'edit',
           tooltip: this.translateService.stream('Edit Planning'),
           iif: (rowData: PlanningModel) =>
+            // TODO: Fix this
             this.authStateService.checkClaim(ItemsPlanningPnClaims.editPlanning) && rowData.isLocked || rowData.isEditable,
+            // this.authStateService.checkClaim(ItemsPlanningPnClaims.editPlanning) && rowData.isLocked || rowData.isEditable,
           click: (rowData: PlanningModel) => this.router.navigate(['./edit/' + rowData.id], {relativeTo: this.route}),
           class: 'updatePlanningBtn'
         },
@@ -163,6 +171,9 @@ export class PlanningsTableComponent implements OnInit {
   get getSelectedPlannings() {
     return this.planningsModel.entities.filter(x => this.selectedColCheckboxes.some(y => y === x.id));
   }
+  public selectPlanningPagination$ = this.planningsStore.select(selectPlanningPagination);
+  public selectPlanningsPaginationSort$ = this.planningsStore.select(selectPlanningsPaginationSort);
+  public selectPlanningsPaginationIsSortDsc$ = this.planningsStore.select(selectPlanningsPaginationIsSortDsc);
 
   constructor(
     public planningsStateService: PlanningsStateService,
@@ -170,6 +181,7 @@ export class PlanningsTableComponent implements OnInit {
     private translateService: TranslateService,
     private router: Router,
     private route: ActivatedRoute,
+    private planningsStore: Store
   ) {}
 
   ngOnInit(): void {}

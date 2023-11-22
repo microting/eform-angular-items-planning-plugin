@@ -21,24 +21,10 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'reports',
-        loadChildren: () =>
-          import('./modules/reports/reports.module').then(
-            (m) => m.ReportsModule
-          ),
-      },
-      {
         path: 'pairing',
         loadChildren: () =>
           import('./modules/pairing/pairing.module').then(
             (m) => m.PairingModule
-          ),
-      },
-      {
-        path: 'case',
-        loadChildren: () =>
-          import('./modules/planning-case/planning-case.module').then(
-            (m) => m.PlanningCaseModule
           ),
       },
     ],
