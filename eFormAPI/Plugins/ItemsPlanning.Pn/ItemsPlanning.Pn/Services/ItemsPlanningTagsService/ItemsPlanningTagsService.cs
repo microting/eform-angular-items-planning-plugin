@@ -94,9 +94,11 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
             if (currentTag != null)
             {
                 if (currentTag.WorkflowState != Constants.WorkflowStates.Removed)
+                {
                     return new OperationResult(
                         true,
                         _itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"));
+                }
                 currentTag.WorkflowState = Constants.WorkflowStates.Created;
                 currentTag.UpdatedByUserId = _userService.UserId;
                 await currentTag.Update(_dbContext);
