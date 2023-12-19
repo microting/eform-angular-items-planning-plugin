@@ -112,31 +112,31 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                 foreach (var excelModel in fileResult)
                 {
-                    if (string.IsNullOrEmpty(excelModel.EFormName))
-                    {
-                        var error = new ExcelParseErrorModel
-                        {
-                            Col = PlanningImportExcelConsts.EformNameCol,
-                            Row = excelModel.ExcelRow,
-                            Message = _itemsPlanningLocalizationService.GetString(
-                                "EformNameIsEmpty")
-                        };
+                    // if (string.IsNullOrEmpty(excelModel.EFormName))
+                    // {
+                    //     var error = new ExcelParseErrorModel
+                    //     {
+                    //         Col = PlanningImportExcelConsts.EformNameCol,
+                    //         Row = excelModel.ExcelRow,
+                    //         Message = _itemsPlanningLocalizationService.GetString(
+                    //             "EformNameIsEmpty")
+                    //     };
+                    //
+                    //     excelErrors.Add(error);
+                    // }
 
-                        excelErrors.Add(error);
-                    }
-
-                    if (string.IsNullOrEmpty(excelModel.PlanningName))
-                    {
-                        var error = new ExcelParseErrorModel
-                        {
-                            Col = PlanningImportExcelConsts.PlanningItemNameCol,
-                            Row = excelModel.ExcelRow,
-                            Message = _itemsPlanningLocalizationService.GetString(
-                                "ItemNameIsEmpty")
-                        };
-
-                        excelErrors.Add(error);
-                    }
+                    // if (string.IsNullOrEmpty(excelModel.PlanningName))
+                    // {
+                    //     var error = new ExcelParseErrorModel
+                    //     {
+                    //         Col = PlanningImportExcelConsts.PlanningItemNameCol,
+                    //         Row = excelModel.ExcelRow,
+                    //         Message = _itemsPlanningLocalizationService.GetString(
+                    //             "ItemNameIsEmpty")
+                    //     };
+                    //
+                    //     excelErrors.Add(error);
+                    // }
 
                     if (!excelModel.Folders.Any())
                     {
