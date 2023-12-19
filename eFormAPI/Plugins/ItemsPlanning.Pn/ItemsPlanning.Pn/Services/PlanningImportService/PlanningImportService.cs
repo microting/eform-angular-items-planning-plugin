@@ -165,27 +165,27 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                     //    excelErrors.Add(error);
                     //}
 
-                    // var templateByName = templatesDto
-                    //     .FirstOrDefault(x =>
-                    //         x.Label ==
-                    //         excelModel.EFormName);
-                    //
-                    // if (templateByName == null)
-                    // {
-                    //     var error = new ExcelParseErrorModel
-                    //     {
-                    //         Col = PlanningImportExcelConsts.EformNameCol,
-                    //         Row = excelModel.ExcelRow,
-                    //         Message = _itemsPlanningLocalizationService.GetString(
-                    //             "EformNotFound")
-                    //     };
-                    //
-                    //     excelErrors.Add(error);
-                    // }
-                    // else
-                    // {
-                    //     excelModel.EFormId = templateByName.Id;
-                    // }
+                    var templateByName = templatesDto
+                        .FirstOrDefault(x =>
+                            x.Label ==
+                            excelModel.EFormName);
+
+                    if (templateByName == null)
+                    {
+                        var error = new ExcelParseErrorModel
+                        {
+                            Col = PlanningImportExcelConsts.EformNameCol,
+                            Row = excelModel.ExcelRow,
+                            Message = _itemsPlanningLocalizationService.GetString(
+                                "EformNotFound")
+                        };
+
+                        excelErrors.Add(error);
+                    }
+                    else
+                    {
+                        excelModel.EFormId = templateByName.Id;
+                    }
                 }
 
                 result.Errors = excelErrors;
