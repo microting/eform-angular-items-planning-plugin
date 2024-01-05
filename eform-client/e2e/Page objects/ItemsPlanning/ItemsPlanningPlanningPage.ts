@@ -521,7 +521,9 @@ export class PlanningRowObject {
     const pairingRows = await $$('#pairingModalTableBody tr.mat-row');
     for (let i = 0; i < pairingRows.length; i++) {
       const workerName = await (await pairingRows[i].$('.mat-column-siteName span')).getText();
-      const workerValue = (await (await pairingRows[i].$('.mat-column-select .mat-checkbox-input')).getAttribute('aria-checked')) === 'true'
+      // eslint-disable-next-line max-len
+      // const workerValue = (await (await pairingRows[i].$('.mat-column-select .mat-checkbox-input')).getAttribute('aria-checked')) === 'true'
+      const workerValue = (await (await pairingRows[i].$('.mat-column-select .mat-checkbox-input')).getAttribute('class')) === 'mdc-checkbox__native-control mdc-checkbox--selected';
       pairings = [...pairings, { workerName, workerValue }];
     }
     await changeAssignmentsCancel.click();
