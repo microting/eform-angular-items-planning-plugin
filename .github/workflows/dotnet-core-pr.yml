@@ -2,7 +2,7 @@ name: .NET Pull requests
 
 on:
   pull_request:
-    branches: [ master, stable, angular13 ]
+    branches: [ master, stable, angular15 ]
     paths-ignore:
     - '**.md'
     - '.github/**'
@@ -71,7 +71,7 @@ jobs:
     - name: Use Node.ts
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 18.18.2
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v3
       with:
@@ -152,7 +152,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Create docker network 🖧
+    - name: Create docker network
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
@@ -163,7 +163,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 8.0.x
     - name: Build
       run: dotnet build eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
     - name: Unit Tests

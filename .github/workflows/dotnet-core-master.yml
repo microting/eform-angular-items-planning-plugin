@@ -2,7 +2,7 @@ name: .NET Master
 
 on:
   push:
-    branches: [ master, stable, angular14 ]
+    branches: [ master, stable, angular15 ]
     paths-ignore:
     - '**.md'
     - '.github/**'
@@ -74,7 +74,7 @@ jobs:
     - name: Use Node.ts
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 18.18.2
     - name: Extract branch name
       id: extract_branch
       run: echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
@@ -145,16 +145,6 @@ jobs:
       if: ${{ failure() }}
       run: |
         cat docker_run_log
-    - name: Notify slack fail
-      if: ${{ failure() }}
-      env:
-        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-      uses: voxmedia/github-action-slack-notify-build@v1
-      with:
-        message_id: ${{ steps.slack.outputs.message_id }}
-        channel_id: C017TF6Q46T
-        status: FAILED
-        color: danger
     - name: Archive screenshot artifacts
       if: ${{ failure() }}
       uses: actions/upload-artifact@v3
@@ -168,7 +158,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Create docker network 🖧
+    - name: Create docker network
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
@@ -179,7 +169,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 8.0.x
     - name: Build
       run: dotnet build eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
     - name: Unit Tests

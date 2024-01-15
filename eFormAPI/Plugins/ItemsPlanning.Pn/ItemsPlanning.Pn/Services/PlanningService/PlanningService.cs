@@ -165,7 +165,7 @@ namespace ItemsPlanning.Pn.Services.PlanningService
 
                 var sites = await sdkDbContext.Sites
                     .AsNoTracking()
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                    //.Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                     .Where(x => assignedSitesFromPlanning.Select(y => y.SiteId).Contains(x.Id))
                     .Select(x => new CommonDictionaryModel
                     {

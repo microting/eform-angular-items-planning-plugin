@@ -518,14 +518,26 @@ export class PlanningRowObject {
       timeout: 40000,
     });
     let pairings: { workerName: string; workerValue: boolean }[] = [];
-    const pairingRows = await $$('#pairingModalTableBody tr.mat-row');
+    const pairingRows = await $$('#pairingModalTableBody tr.mat-mdc-row');
     for (let i = 0; i < pairingRows.length; i++) {
-      const workerName = await (await pairingRows[i].$('.mat-column-siteName span')).getText();
-      const workerValue = (await (await pairingRows[i].$('.mat-column-select .mat-checkbox-input')).getAttribute('aria-checked')) === 'true'
+      const rows = await $$('.mat-column-siteName > mtx-grid-cell > span');
+      const workerName = await rows[i].getText();
+      // eslint-disable-next-line max-len
+      // const workerValue = (await (await pairingRows[i].$('.mat-column-select .mat-checkbox-input')).getAttribute('aria-checked')) === 'true'
+      const ele = await this.checkboxEditAssignment(i);
+      const workerValue = (await ele.getAttribute('class')) === 'mdc-checkbox__native-control mdc-checkbox--selected';
       pairings = [...pairings, { workerName, workerValue }];
     }
     await changeAssignmentsCancel.click();
     return pairings;
+  }
+
+
+  public async checkboxEditAssignment(i: number) {
+    const ele = await $(`#checkboxCreateAssignment${i}-input`);
+    //await ele.waitForDisplayed({ timeout: 40000 });
+    //await ele.waitForClickable({ timeout: 40000 });
+    return ele;
   }
 }
 
