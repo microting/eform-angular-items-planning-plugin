@@ -1,10 +1,14 @@
 import {CommonPaginationState, FiltrationStateModel} from 'src/app/common/models';
 import {createReducer, on} from '@ngrx/store';
 import {
-  updatePlanningFilters, updatePlanningFiltersDescription, updatePlanningFiltersName,
-  updatePlanningFiltersSites, updatePlanningFiltersTags,
-  updatePlanningPagination, updatePlanningTotalPlannings
-} from 'src/app/plugins/modules/items-planning-pn/state/plannings/plannings.actions';
+  updatePlanningFilters,
+  updatePlanningFiltersDescription,
+  updatePlanningFiltersName,
+  updatePlanningFiltersSites,
+  updatePlanningFiltersTags,
+  updatePlanningPagination,
+  updatePlanningTotalPlannings
+} from './plannings.actions';
 
 export interface PlanningsState {
   pagination: CommonPaginationState;
@@ -19,7 +23,7 @@ export class PlanningsFiltrationState extends FiltrationStateModel {
 
 export const initialPlanningsState: PlanningsState = {
   pagination: {
-    sort: '',
+    sort: 'Id',
     pageIndex: 0,
     pageSize: 10,
     offset: 0,
@@ -35,54 +39,39 @@ export const initialPlanningsState: PlanningsState = {
   totalPlannings: 0,
 };
 
-export const _reducer = createReducer(
+const _reducer = createReducer(
   initialPlanningsState,
   on(updatePlanningPagination, (state, {payload}) => ({
     ...state,
-    pagination: payload.pagination,
+    pagination: {...state.pagination, ...payload},
   })),
   on(updatePlanningFilters, (state, {payload}) => ({
     ...state,
-    filters: payload.filters,
+    filters: {...state.filters, ...payload},
   })),
   on(updatePlanningTotalPlannings, (state, {payload}) => ({
     ...state,
-    pagination: {
-      ...state.pagination,
-      total: payload.pagination.total,
-    },
-    totalPlannings: payload.totalPlannings,
+    pagination: {...state.pagination, total: payload,},
+    totalPlannings: payload,
   })),
   on(updatePlanningFiltersTags, (state, {payload}) => ({
     ...state,
-    filters: {
-      ...state.filters,
-      tagIds: payload.filters.tagIds,
-    },
+    filters: {...state.filters, tagIds: payload,},
   })),
   on(updatePlanningFiltersSites, (state, {payload}) => ({
     ...state,
-    filters: {
-      ...state.filters,
-      deviceUserIds: payload.filters.deviceUserIds,
-    },
+    filters: {...state.filters, deviceUserIds: payload,},
   })),
   on(updatePlanningFiltersName, (state, {payload}) => ({
     ...state,
-    filters: {
-      ...state.filters,
-      nameFilter: payload.filters.nameFilter,
-    },
+    filters: {...state.filters, nameFilter: payload,},
   })),
   on(updatePlanningFiltersDescription, (state, {payload}) => ({
     ...state,
-    filters: {
-      ...state.filters,
-      descriptionFilter: payload.filters.descriptionFilter,
-    },
+    filters: {...state.filters, descriptionFilter: payload,},
   }),
 ));
 
-export function reducer(state: PlanningsState | undefined, action: any) {
+export function planningsReducer(state: PlanningsState | undefined, action: any) {
   return _reducer(state, action);
 }

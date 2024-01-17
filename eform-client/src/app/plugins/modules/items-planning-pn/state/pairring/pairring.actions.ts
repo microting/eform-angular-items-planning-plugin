@@ -1,16 +1,17 @@
 import {createAction} from '@ngrx/store';
+import {PairingFiltrationState} from './';
 
 export const updatePairingFilters = createAction(
   '[Pairing] Update Pairing Filters',
-  (payload: any) => ({payload})
+  (payload: PairingFiltrationState) => ({payload})
 );
 
 export const updatePairingFiltersTags = createAction(
   '[Pairing] Update Pairing TagIds',
-  (payload: any) => ({payload})
+  (payload: number[]) => ({payload})
 );
 
 export const updatePairingFiltersSites = createAction(
   '[Pairing] Update Pairing SiteIds',
-  (payload: any) => ({payload})
+  (payload: number[]) => ({payload})
 );

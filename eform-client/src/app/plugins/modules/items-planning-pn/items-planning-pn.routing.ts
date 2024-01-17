@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {AdminGuard, PermissionGuard} from 'src/app/common/guards';
+import {PermissionGuard} from 'src/app/common/guards';
 import {ItemsPlanningPnLayoutComponent} from './layouts';
 import {ItemsPlanningPnClaims} from './enums';
 
@@ -35,4 +35,5 @@ export const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class ItemsPlanningPnRouting {}
+export class ItemsPlanningPnRouting {
+}
