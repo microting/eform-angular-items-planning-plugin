@@ -225,7 +225,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterView
   }
 
   removeSavedTag(e: any) {
-    this.planningsStateService.addOrRemoveTagIds(e.value.id);
+    this.planningsStateService.addOrRemoveTagIds(e.id);
     this.getPlannings();
   }
 

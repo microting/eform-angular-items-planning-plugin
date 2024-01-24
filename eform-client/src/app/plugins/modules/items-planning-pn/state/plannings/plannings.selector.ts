@@ -1,7 +1,8 @@
-import {ItemsPlanningState} from 'src/app/plugins/modules/items-planning-pn/state/items-planning.state';
+import {ItemsPlanningState} from '../items-planning.state';
 import {createSelector} from '@ngrx/store';
+import {AppState} from 'src/app/state';
 
-export const selectItemsPlanningPn = (state: {itemsPlanningPn: ItemsPlanningState}) => state.itemsPlanningPn;
+const selectItemsPlanningPn = (state: AppState & {itemsPlanningPn: ItemsPlanningState}) => state.itemsPlanningPn;
 export const selectPlannings =
   createSelector(selectItemsPlanningPn, (state: ItemsPlanningState) => state.planningsState);
 
@@ -20,7 +21,7 @@ export const selectPlanningPagination =
 export const selectPlanningsPaginationSort =
   createSelector(selectPlannings, (state) => state.pagination.sort);
 export const selectPlanningsPaginationIsSortDsc =
-  createSelector(selectPlannings, (state) => state.pagination.isSortDsc ? 'asc' : 'desc');
+  createSelector(selectPlannings, (state) => state.pagination.isSortDsc ? 'desc' : 'asc');
 export const selectPlanningsPaginationOffset =
   createSelector(selectPlannings, (state) => state.pagination.offset);
 export const selectPlanningsTotal =

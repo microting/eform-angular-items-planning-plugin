@@ -1,36 +1,38 @@
 import {createAction} from '@ngrx/store';
+import {CommonPaginationState} from 'src/app/common/models';
+import {PlanningsFiltrationState} from './';
 
 export const updatePlanningFilters = createAction(
   '[Planning] Update Planning Filters',
-  (payload) => ({ payload })
+  (payload: PlanningsFiltrationState) => ({payload})
 );
 
 export const updatePlanningPagination = createAction(
   '[Planning] Update Planning Pagination',
-  (payload) => ({ payload })
+  (payload: CommonPaginationState) => ({payload})
 );
 
 export const updatePlanningTotalPlannings = createAction(
   '[Planning] Update Planning Total Plannings',
-  (payload) => ({ payload })
+  (payload: number) => ({payload})
 );
 
 export const updatePlanningFiltersTags = createAction(
   '[Planning] Update Planning TagIds',
-  (payload) => ({ payload })
+  (payload: number[]) => ({payload})
 );
 
 export const updatePlanningFiltersSites = createAction(
   '[Planning] Update Planning SiteIds',
-  (payload) => ({ payload })
+  (payload: number[]) => ({payload})
 );
 
 export const updatePlanningFiltersName = createAction(
   '[Planning] Update Planning NameFilter',
-  (payload) => ({ payload })
+  (payload: string) => ({payload})
 );
 
 export const updatePlanningFiltersDescription = createAction(
   '[Planning] Update Planning DescriptionFilter',
-  (payload) => ({ payload })
+  (payload: string) => ({payload})
 );

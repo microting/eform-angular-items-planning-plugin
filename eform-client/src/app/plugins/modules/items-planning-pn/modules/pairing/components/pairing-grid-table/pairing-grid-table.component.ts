@@ -10,22 +10,21 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import {PairingModel, PairingsModel, PairingUpdateModel} from '../../../../models/pairings';
+import {PairingModel, PairingsModel, PairingUpdateModel} from '../../../../models';
 import {AuthStateService} from 'src/app/common/store';
 import {CommonDictionaryModel, SiteNameDto} from 'src/app/common/models';
 import {PairingStateService} from '../store';
 import {SitesService} from 'src/app/common/services';
-import {ItemsPlanningPnTagsService} from 'src/app/plugins/modules/items-planning-pn/services';
+import {ItemsPlanningPnTagsService} from '../../../../services';
 import {Subscription} from 'rxjs';
 import {AutoUnsubscribe} from 'ngx-auto-unsubscribe';
 import {MtxGridColumn} from '@ng-matero/extensions/grid';
-import {selectAuthIsAuth} from 'src/app/state/auth/auth.selector';
+import {selectAuthIsAuth} from 'src/app/state';
 import {Store} from '@ngrx/store';
-import {ItemsPlanningState} from 'src/app/plugins/modules/items-planning-pn/state/items-planning.state';
 import {
-  selectParringsSiteIds,
-  selectParringsTagsIds
-} from 'src/app/plugins/modules/items-planning-pn/state/parring/parring.selector';
+  selectPairingsSiteIds,
+  selectPairingsTagsIds
+} from '../../../../state';
 
 @AutoUnsubscribe()
 @Component({
@@ -48,8 +47,8 @@ export class PairingGridTableComponent implements OnInit, OnDestroy, OnChanges {
 
   public tableHeaders: MtxGridColumn[] = [];
   public isAuth$ = this.store.select(selectAuthIsAuth);
-  public selectParringsTagsIds$ = this.itemsPlanningStore.select(selectParringsTagsIds);
-  public selectParringsSiteIds$ = this.itemsPlanningStore.select(selectParringsSiteIds);
+  public selectPairingsTagsIds$ = this.itemsPlanningStore.select(selectPairingsTagsIds);
+  public selectPairingsSiteIds$ = this.itemsPlanningStore.select(selectPairingsSiteIds);
 
   constructor(
     private store: Store,

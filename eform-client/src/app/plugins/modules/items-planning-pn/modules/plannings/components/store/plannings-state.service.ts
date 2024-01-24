@@ -1,191 +1,88 @@
-import { Injectable } from '@angular/core';
-import {Observable, zip} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {tap} from 'rxjs';
 import {
   CommonPaginationState,
-  OperationDataResult,
-  Paged,
   PaginationModel,
 } from 'src/app/common/models';
-import { updateTableSort } from 'src/app/common/helpers';
-import { map } from 'rxjs/operators';
-import {PlanningModel, PlanningsRequestModel} from '../../../../models';
-import { ItemsPlanningPnPlanningsService } from '../../../../services';
+import {arrayToggle, updateTableSort} from 'src/app/common/helpers';
+import {ItemsPlanningPnPlanningsService} from '../../../../services';
 import {Store} from '@ngrx/store';
 import {
+  PlanningsFiltrationState,
   selectPlanningPagination,
-  selectPlanningsFilters, selectPlanningsTagsIds
-} from 'src/app/plugins/modules/items-planning-pn/state/plannings/plannings.selector';
+  selectPlanningsFilters,
+  updatePlanningFiltersDescription,
+  updatePlanningFiltersName,
+  updatePlanningFiltersSites,
+  updatePlanningFiltersTags,
+  updatePlanningPagination,
+  updatePlanningTotalPlannings
+} from '../../../../state';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class PlanningsStateService {
-  private selectPlanningPagination$ = this.planningStore.select(selectPlanningPagination);
-  private selectPlanningsFilters$ = this.planningStore.select(selectPlanningsFilters);
-  private selectPlanningsTagsIds$ = this.planningStore.select(selectPlanningsTagsIds);
-  constructor(
-    private planningStore: Store,
-    private service: ItemsPlanningPnPlanningsService,
-  ) {}
+  private selectPlanningPagination$ = this.store.select(selectPlanningPagination);
+  private selectPlanningsFilters$ = this.store.select(selectPlanningsFilters);
+  currentPagination: CommonPaginationState;
+  currentFilters: PlanningsFiltrationState;
 
-  getAllPlannings(): Observable<OperationDataResult<Paged<PlanningModel>>> {
-    let planningsRequestModel = new PlanningsRequestModel();
-    zip(this.selectPlanningsFilters$, this.selectPlanningPagination$).subscribe(
-        ([filters, pagination]) => {
-            planningsRequestModel = {
-            ...planningsRequestModel,
-            ...filters,
-            ...pagination,
-            };
+  constructor(
+    private store: Store,
+    private service: ItemsPlanningPnPlanningsService,
+  ) {
+    this.selectPlanningPagination$.subscribe(x => this.currentPagination = x);
+    this.selectPlanningsFilters$.subscribe(x => this.currentFilters = x);
+  }
+
+  getAllPlannings() {
+    return this.service.getAllPlannings({
+      ...this.currentPagination,
+      ...this.currentFilters,
+    }).pipe(
+      tap((response) => {
+        if (response && response.success && response.model) {
+          this.store.dispatch(updatePlanningTotalPlannings(response.model.total));
         }
-        ).unsubscribe();
-    return this.service.getAllPlannings(planningsRequestModel).pipe(
-        map((response) => {
-            if (response && response.success && response.model) {
-                this.planningStore.dispatch({
-                    type: '[Planning] Update Planning Total Plannings', payload: {
-                    pagination: {
-                      total: response.model.total,
-                    },
-                    totalPlannings: response.model.total,
-                  }
-                });
-            }
-            return response;
-        })
-    )
+      })
+    );
   }
 
   updateDescriptionFilter(descriptionFilter: string) {
-    this.planningStore.dispatch({
-      type: '[Planning] Update Planning DescriptionFilter', payload: {
-        filters: {
-          descriptionFilter: descriptionFilter,
-        }
-      }
-    });
+    this.store.dispatch(updatePlanningFiltersDescription(descriptionFilter));
   }
 
   updateNameFilter(nameFilter: string) {
-    this.planningStore.dispatch({
-      type: '[Planning] Update Planning NameFilter', payload: {
-        filters: {nameFilter: nameFilter}
-      }
-    });
+    this.store.dispatch(updatePlanningFiltersName(nameFilter));
   }
 
   updatePagination(pagination: PaginationModel) {
-    let currentPagination: CommonPaginationState;
-    this.selectPlanningPagination$.subscribe((pagination) => {
-      if (pagination === undefined) {
-        return;
-      }
-      currentPagination = pagination;
-    }).unsubscribe();
-    this.planningStore.dispatch({
-        type: '[Planning] Update Planning Pagination', payload: {
-            pagination: {
-            ...currentPagination,
-            ...pagination,
-            }
-        }
-    });
-  }
-
-  updatePageSize(pageSize: number) {
-    let currentPagination: CommonPaginationState;
-    this.selectPlanningPagination$.subscribe((pagination) => {
-      if (pagination === undefined) {
-        return;
-      }
-      currentPagination = pagination;
-    }).unsubscribe();
-    this.planningStore.dispatch({
-        type: '[Planning] Update Planning Pagination', payload: {
-            pagination: {
-            ...currentPagination,
-            pageSize: pageSize,
-            }
-        }
-    });
+    this.store.dispatch(updatePlanningPagination({
+      ...this.currentPagination,
+      ...pagination,
+    }));
   }
 
   addOrRemoveTagIds(id: number) {
-    let currentTagIds: number[];
-    this.selectPlanningsTagsIds$.subscribe((tagIds) => {
-      if (tagIds === undefined) {
-        return;
-      }
-      currentTagIds = tagIds;
-    }).unsubscribe();
-    this.planningStore.dispatch({
-      type: '[Planning] Update Planning TagIds', payload: {
-        filters: {tagIds: this.arrayToggle(currentTagIds, id)}
-      }
-    });
+    this.store.dispatch(updatePlanningFiltersTags(arrayToggle(this.currentFilters.tagIds, id)));
   }
 
   addOrRemoveDeviceUserIds(id: number) {
-    let currentDeviceUserIds: number[];
-    this.selectPlanningsFilters$.subscribe((filters) => {
-      if (filters === undefined) {
-        return;
-      }
-      currentDeviceUserIds = filters.deviceUserIds;
-    }).unsubscribe();
-    this.planningStore.dispatch({
-      type: '[Planning] Update Planning SiteIds', payload: {
-        filters: {deviceUserIds: this.arrayToggle(currentDeviceUserIds, id)}
-      }
-    });
+    this.store.dispatch(updatePlanningFiltersSites(arrayToggle(this.currentFilters.deviceUserIds, id)));
   }
 
   onDelete() {
-    let currentPagination: CommonPaginationState;
-    this.selectPlanningPagination$.subscribe((pagination) => {
-      if (pagination === undefined) {
-        return;
-      }
-      currentPagination = pagination;
-    }).unsubscribe();
-    this.planningStore.dispatch({
-        type: '[Plannings] Update Plannings Pagination', payload: {
-            pagination: {
-            ...currentPagination,
-            total: currentPagination.total - 1,
-            },
-        }
-    });
+    this.store.dispatch(updatePlanningTotalPlannings(this.currentPagination.total - 1));
   }
 
   onSortTable(sort: string) {
-    let currentPagination: CommonPaginationState;
-    this.selectPlanningPagination$.subscribe((pagination) => {
-      if (pagination === undefined) {
-        return;
-      }
-      currentPagination = pagination;
-    }).unsubscribe();
     const localPageSettings = updateTableSort(
       sort,
-      currentPagination.sort,
-      currentPagination.isSortDsc
+      this.currentPagination.sort,
+      this.currentPagination.isSortDsc
     );
-    this.planningStore.dispatch({
-        type: '[Plannings] Update Plannings Pagination', payload: {
-            pagination: {
-            ...currentPagination,
-            sort: localPageSettings.sort,
-            isSortDsc: localPageSettings.isSortDsc,
-            }
-        }
-    });
-  }
-
-  arrayToggle<T>(arr: T[], val: T, forced?: boolean): T[] {
-    if (forced && arr.includes(val)) {
-      return [...arr];
-    } else if (forced === false || arr.includes(val)) {
-      return arr.filter((v: typeof val) => v !== val);
-    }
-    return [...arr, val];
+    this.store.dispatch(updatePlanningPagination({
+      ...this.currentPagination,
+      ...localPageSettings,
+    }));
   }
 }
