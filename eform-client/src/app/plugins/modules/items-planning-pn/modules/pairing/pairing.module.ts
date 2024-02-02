@@ -1,9 +1,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
-import {
-  OwlDateTimeModule,
-} from '@danielmoncada/angular-datetime-picker';
 import {TranslateModule} from '@ngx-translate/core';
 import {
   PairingGridPageComponent,
@@ -33,7 +30,6 @@ import {MatDialogModule} from '@angular/material/dialog';
         CommonModule,
         TranslateModule,
         RouterModule,
-        OwlDateTimeModule,
         PairingRouting,
         EformSharedModule,
         MtxGridModule,
