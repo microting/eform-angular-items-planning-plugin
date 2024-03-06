@@ -77,7 +77,7 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
     const site = this.sitesDto.find(
       (x) => x.id === siteId
     );
-    if (checked.checked) {
+    if (checked) {
       assignmentObject.siteId = site.id;
       assignmentObject.siteUId = site.siteUId;
       assignmentObject.name = site.siteName;
