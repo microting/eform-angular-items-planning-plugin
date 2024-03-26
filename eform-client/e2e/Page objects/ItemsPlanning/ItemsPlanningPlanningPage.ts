@@ -125,7 +125,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   public async getPlaningByName(namePlanning: string) {
     for (let i = 1; i < (await this.rowNum()) + 1; i++) {
       const planningObj = new PlanningRowObject();
-      const planning = await planningObj.getRow(i);
+      const planning = await planningObj.getRow(i, false);
       if (planning.name === namePlanning) {
         return planning;
       }
@@ -179,21 +179,21 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
       countFirstElements = await this.rowNum();
     }
     for (let i = 1; i < countFirstElements + 1; i++) {
-      resultMas.push(await new PlanningRowObject().getRow(i));
+      resultMas.push(await new PlanningRowObject().getRow(i, false));
     }
     return resultMas;
   }
 
-  async getLastPlanningRowObject(): Promise<PlanningRowObject> {
-    return await new PlanningRowObject().getRow(await this.rowNum());
+  async getLastPlanningRowObject(skipDelete: boolean): Promise<PlanningRowObject> {
+    return await new PlanningRowObject().getRow(await this.rowNum(), skipDelete);
   }
 
   async getFirstPlanningRowObject(): Promise<PlanningRowObject> {
-    return await new PlanningRowObject().getRow(1);
+    return await new PlanningRowObject().getRow(1, false);
   }
 
   async getPlanningByIndex(i: number): Promise<PlanningRowObject> {
-    return await new PlanningRowObject().getRow(i);
+    return await new PlanningRowObject().getRow(i, false);
   }
 
   async openMultipleDelete() {
@@ -286,7 +286,7 @@ export class PlanningRowObject {
     await (await this.planningCreateBtn()).waitForDisplayed({ timeout: 40000 });
   }
 
-  async getRow(rowNum: number): Promise<PlanningRowObject> {
+  async getRow(rowNum: number, skipDelete: boolean): Promise<PlanningRowObject> {
     rowNum = rowNum - 1;
     this.row = await $$('tbody > tr')[rowNum];
     if (this.row) {
@@ -313,7 +313,9 @@ export class PlanningRowObject {
       // this.repeatUntil = parse(date, 'dd.MM.yyyy HH:mm:ss', new Date());
       this.pairingBtn = await this.row.$$('.cdk-column-actions button')[0];
       this.updateBtn = await this.row.$$('.cdk-column-actions button')[1];
-      this.deleteBtn = await this.row.$$('.cdk-column-actions button')[2];
+      if (!skipDelete) {
+        this.deleteBtn = await this.row.$$('.cdk-column-actions button')[2];
+      }
     }
     return this;
   }
