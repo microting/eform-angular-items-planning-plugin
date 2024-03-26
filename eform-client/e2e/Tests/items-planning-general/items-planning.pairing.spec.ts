@@ -65,7 +65,7 @@ describe('Items planning plugin - Pairing', function () {
     }
     await browser.pause(1000)
     planningRowObjects = [
-      ...await itemsPlanningPlanningPage.getAllPlannings(countPlanning),
+      ...await itemsPlanningPlanningPage.getAllPlannings(countPlanning, false),
     ];
 
     await itemsPlanningPairingPage.goToPairingPage();

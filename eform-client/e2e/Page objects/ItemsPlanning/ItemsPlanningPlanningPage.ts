@@ -172,14 +172,14 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     }
   }
 
-  async getAllPlannings(countFirstElements = 0): Promise<PlanningRowObject[]> {
+  async getAllPlannings(countFirstElements = 0, skipDelete: boolean): Promise<PlanningRowObject[]> {
     await browser.pause(1000);
     const resultMas = new Array<PlanningRowObject>();
     if (countFirstElements === 0) {
       countFirstElements = await this.rowNum();
     }
     for (let i = 1; i < countFirstElements + 1; i++) {
-      resultMas.push(await new PlanningRowObject().getRow(i, false));
+      resultMas.push(await new PlanningRowObject().getRow(i, skipDelete));
     }
     return resultMas;
   }
@@ -225,7 +225,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
         await (await this.selectAllPlanningsCheckboxForClick()).click();
       }
     } else {
-      const plannings = await this.getAllPlannings();
+      const plannings = await this.getAllPlannings(0, false);
       for (let i = 0; i < plannings.length; i++) {
         await plannings[i].clickOnCheckboxForMultipleDelete();
       }
