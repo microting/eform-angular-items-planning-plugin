@@ -3,6 +3,7 @@ import itemsPlanningPlanningPage, {
   PlanningCreateUpdate,
 } from './ItemsPlanningPlanningPage';
 import {selectDateOnDatePicker, selectValueInNgSelector} from '../../Helpers/helper-functions';
+import { $ } from '@wdio/globals';
 
 export class ItemsPlanningModalPage extends Page {
   constructor() {

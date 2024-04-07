@@ -11,6 +11,7 @@ import deviceUsersPage, {
 } from '../../Page objects/DeviceUsers.page';
 import itemsPlanningPairingPage from '../../Page objects/ItemsPlanning/ItemsPlanningPairingPage';
 import itemsPlanningModalPage from '../../Page objects/ItemsPlanning/ItemsPlanningModal.page';
+import { $ } from '@wdio/globals';
 
 const expect = require('chai').expect;
 let template = generateRandmString();

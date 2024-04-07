@@ -6,6 +6,7 @@ import itemsPlanningModalPage from '../../Page objects/ItemsPlanning/ItemsPlanni
 import { generateRandmString } from '../../Helpers/helper-functions';
 import myEformsPage from '../../Page objects/MyEforms.page';
 import foldersPage from '../../Page objects/Folders.page';
+import { $ } from '@wdio/globals';
 
 const expect = require('chai').expect;
 const planningData: PlanningCreateUpdate = {

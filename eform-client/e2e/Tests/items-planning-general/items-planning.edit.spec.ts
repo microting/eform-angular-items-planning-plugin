@@ -12,6 +12,7 @@ import myEformsPage from '../../Page objects/MyEforms.page';
 import foldersPage from '../../Page objects/Folders.page';
 import {format, set} from 'date-fns';
 import {customDaLocale} from '../../../src/app/common/const';
+import { $ } from '@wdio/globals';
 
 const expect = require('chai').expect;
 let planningData: PlanningCreateUpdate = {

@@ -1,6 +1,7 @@
 import loginPage from '../../Page objects/Login.page';
 import itemsPlanningPlanningPage from '../../Page objects/ItemsPlanning/ItemsPlanningPlanningPage';
 import tagsModalPage, { TagRowObject } from '../../Page objects/TagsModal.page';
+import { $ } from '@wdio/globals';
 
 const expect = require('chai').expect;
 

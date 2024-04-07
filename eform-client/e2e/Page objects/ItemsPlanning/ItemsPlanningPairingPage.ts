@@ -1,6 +1,7 @@
 import { PageWithNavbarPage } from '../PageWithNavbar.page';
 import itemsPlanningPlanningPage from './ItemsPlanningPlanningPage';
 import { DeviceUsersRowObject } from '../DeviceUsers.page';
+import { $ } from '@wdio/globals';
 
 export class ItemsPlanningPairingPage extends PageWithNavbarPage {
   constructor() {

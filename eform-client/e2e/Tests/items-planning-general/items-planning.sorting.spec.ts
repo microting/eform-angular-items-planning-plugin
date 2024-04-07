@@ -3,6 +3,7 @@ import itemsPlanningPlanningPage from '../../Page objects/ItemsPlanning/ItemsPla
 import myEformsPage from '../../Page objects/MyEforms.page';
 import foldersPage from '../../Page objects/Folders.page';
 import { generateRandmString } from '../../Helpers/helper-functions';
+import { $ } from '@wdio/globals';
 
 const expect = require('chai').expect;
 let template = generateRandmString();

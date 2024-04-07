@@ -1,6 +1,7 @@
 import loginPage from '../../Page objects/Login.page';
 import myEformsPage from '../../Page objects/MyEforms.page';
 import pluginPage from '../../Page objects/Plugin.page';
+import { $ } from '@wdio/globals';
 
 import { expect } from 'chai';
 

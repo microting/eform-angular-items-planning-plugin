@@ -1,5 +1,6 @@
 import loginPage from '../../Page objects/Login.page';
 import itemsPlanningSettingsPage from '../../Page objects/ItemsPlanning/ItemsPlanningSettings.page';
+import { $ } from '@wdio/globals';
 
 const expect = require('chai').expect;
 

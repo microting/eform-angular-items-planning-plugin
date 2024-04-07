@@ -3,6 +3,7 @@ import itemsPlanningPlanningPage from '../../Page objects/ItemsPlanning/ItemsPla
 import myEformsPage from '../../Page objects/MyEforms.page';
 import itemsPlanningModalPage from '../../Page objects/ItemsPlanning/ItemsPlanningModal.page';
 import { planningsImportTestData } from '../../Page objects/ItemsPlanning/PlanningsTestImport.data';
+import { $ } from '@wdio/globals';
 
 const expect = require('chai').expect;
 

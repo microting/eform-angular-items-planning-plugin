@@ -6,6 +6,7 @@ import {
 } from '../../Helpers/helper-functions';
 import {format, set} from 'date-fns';
 import {customDaLocale} from '../../../src/app/common/const';
+import { $ } from '@wdio/globals';
 
 export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   constructor() {
