@@ -531,6 +531,7 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                             planningFromDb.UpdatedByUserId = _userService.UserId;
                             planningFromDb.StartDate = DateTime.Now;
                             planningFromDb.WorkflowState = Constants.WorkflowStates.Created;
+                            planningFromDb.ShowExpireDate = true;
 
                             var tagsIdForAddToPlanningTags = planningFromDb.PlanningsTags
                                 .Where(x => tagIds.Any(y => x.PlanningTagId != y)).ToList();
@@ -582,7 +583,8 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                                 RepeatType = excelModel.RepeatType ?? RepeatType.Month,
                                 IsLocked = false,
                                 IsEditable = true,
-                                IsHidden = false
+                                IsHidden = false,
+                                ShowExpireDate = true
                             };
 
                             foreach (var tagId in tagIds)
