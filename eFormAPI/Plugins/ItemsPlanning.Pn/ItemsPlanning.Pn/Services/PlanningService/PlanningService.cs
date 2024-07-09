@@ -464,6 +464,10 @@ namespace ItemsPlanning.Pn.Services.PlanningService
                     }
                 }
 
+                planning.AssignedSites = planning.AssignedSites
+                    .OrderBy(x => x.Name)
+                    .ToList();
+
                 return new OperationDataResult<PlanningPnModel>(
                     true,
                     planning);
