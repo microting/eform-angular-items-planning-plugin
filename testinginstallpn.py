@@ -1,7 +1,8 @@
 import re
+import os
 
 # Path to the file to be modified
-file_path = "src/app/plugins/plugins.routing.ts"
+file_path = os.path.join("src", "app", "plugins", "plugins.routing.ts")
 
 # Read the content of the file
 with open(file_path, "r") as file:

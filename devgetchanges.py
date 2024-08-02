@@ -1,50 +1,62 @@
-import shutil
 import os
+import shutil
 
 # Change directory to the user's home directory
 os.chdir(os.path.expanduser("~"))
 
 # Define paths
-src_base = "Documents/workspace/microting/eform-angular-frontend"
-dst_base = "Documents/workspace/microting/eform-angular-items-planning-plugin"
+src_base = os.path.join("Documents", "workspace", "microting", "eform-angular-frontend")
+dst_base = os.path.join("Documents", "workspace", "microting", "eform-angular-items-planning-plugin")
 
-# List of files and directories to remove
-remove_paths = [
-    "eform-client/e2e/Tests/items-planning-settings/",
-    "eform-client/e2e/Tests/items-planning-general/",
-    "eform-client/wdio-headless-plugin-step2.conf.ts",
-    "eform-client/e2e/Page objects/ItemsPlanning",
-    "eform-client/e2e/Assets",
-    "eform-client/cypress/e2e/plugins/items-planning-pn",
+# List of test files and directories to remove
+test_files_to_remove = [
+    os.path.join("eform-client", "e2e", "Tests", "items-planning-settings"),
+    os.path.join("eform-client", "e2e", "Tests", "items-planning-general"),
+    os.path.join("eform-client", "wdio-plugin-step2.conf.ts"),
+    os.path.join("eform-client", "e2e", "Page objects", "ItemsPlanning"),
+    os.path.join("eform-client", "e2e", "Assets"),
+    os.path.join("eform-client", "cypress", "e2e", "plugins", "items-planning-pn"),
 ]
 
-# List of files and directories to copy
-copy_paths = [
-    ("eform-client/e2e/Tests/items-planning-settings", "eform-client/e2e/Tests/items-planning-settings"),
-    ("eform-client/e2e/Tests/items-planning-general", "eform-client/e2e/Tests/items-planning-general"),
-    ("eform-client/e2e/Page objects/ItemsPlanning", "eform-client/e2e/Page objects/ItemsPlanning"),
-    ("eform-client/e2e/Assets", "eform-client/e2e/Assets"),
-    ("eform-client/wdio-headless-plugin-step2a.conf.ts", "eform-client/wdio-headless-plugin-step2a.conf.ts"),
-    ("eform-client/wdio-headless-plugin-step2b.conf.ts", "eform-client/wdio-headless-plugin-step2b.conf.ts"),
-    ("eform-client/wdio-headless-plugin-step2c.conf.ts", "eform-client/wdio-headless-plugin-step2c.conf.ts"),
-    ("eform-client/cypress/e2e/plugins/items-planning-pn", "eform-client/cypress/e2e/plugins/items-planning-pn"),
-]
-
-# Remove the destination paths if they exist
-for path in remove_paths:
-    full_path = os.path.join(dst_base, path)
+# Remove the test files and directories
+for rel_path in test_files_to_remove:
+    full_path = os.path.join(dst_base, rel_path)
     if os.path.exists(full_path):
         if os.path.isdir(full_path):
             shutil.rmtree(full_path)
         else:
             os.remove(full_path)
 
-# Copy the source directories to the destination
-for src, dst in copy_paths:
-    src_path = os.path.join(src_base, src)
-    dst_path = os.path.join(dst_base, dst)
+# Ensure the plugins directory exists within the Cypress structure
+cypress_plugins_dir = os.path.join(dst_base, "eform-client", "cypress", "e2e", "plugins")
+os.makedirs(cypress_plugins_dir, exist_ok=True)
 
-    # Ensure the destination directory exists
+# List of test files and directories to copy
+test_files_to_copy = [
+    (os.path.join("eform-client", "e2e", "Tests", "items-planning-settings"),
+     os.path.join("eform-client", "e2e", "Tests", "items-planning-settings")),
+    (os.path.join("eform-client", "e2e", "Tests", "items-planning-general"),
+     os.path.join("eform-client", "e2e", "Tests", "items-planning-general")),
+    (os.path.join("eform-client", "e2e", "Page objects", "ItemsPlanning"),
+     os.path.join("eform-client", "e2e", "Page objects", "ItemsPlanning")),
+    (os.path.join("eform-client", "e2e", "Assets"),
+     os.path.join("eform-client", "e2e", "Assets")),
+    (os.path.join("eform-client", "wdio-headless-plugin-step2a.conf.ts"),
+     os.path.join("eform-client", "wdio-headless-plugin-step2a.conf.ts")),
+    (os.path.join("eform-client", "wdio-headless-plugin-step2b.conf.ts"),
+     os.path.join("eform-client", "wdio-headless-plugin-step2b.conf.ts")),
+    (os.path.join("eform-client", "wdio-headless-plugin-step2c.conf.ts"),
+     os.path.join("eform-client", "wdio-headless-plugin-step2c.conf.ts")),
+    (os.path.join("eform-client", "cypress", "e2e", "plugins", "items-planning-pn"),
+     os.path.join("eform-client", "cypress", "e2e", "plugins", "items-planning-pn")),
+]
+
+# Copy the test files and directories
+for src_rel_path, dst_rel_path in test_files_to_copy:
+    src_path = os.path.join(src_base, src_rel_path)
+    dst_path = os.path.join(dst_base, dst_rel_path)
+
+    # Copy the source directory to the destination
     if os.path.isdir(src_path):
         shutil.copytree(src_path, dst_path)
     else:
