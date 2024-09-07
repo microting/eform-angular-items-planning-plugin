@@ -25,10 +25,11 @@ SOFTWARE.
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
-using ClosedXML.Graphics;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using ItemsPlanning.Pn.Infrastructure.Models.Report;
 using ItemsPlanning.Pn.Services.ItemsPlanningLocalizationService;
-using Microting.eForm.Dto;
 using Microting.eFormApi.BasePn.Abstractions;
 using Microting.eFormApi.BasePn.Infrastructure.Models.API;
 using Microting.ItemsPlanningBase.Infrastructure.Data;
@@ -40,7 +41,6 @@ namespace ItemsPlanning.Pn.Services.ExcelService
     using System.Globalization;
     using System.IO;
     using System.Linq;
-    using ClosedXML.Excel;
     using Infrastructure.Consts;
     using Infrastructure.Models.Import;
     using Microsoft.Extensions.Logging;
@@ -65,502 +65,796 @@ namespace ItemsPlanning.Pn.Services.ExcelService
         }
 
         public List<PlanningImportExcelModel> ParsePlanningImportFile(Stream excelStream)
-        {
-            try
-            {
-                var result = new List<PlanningImportExcelModel>();
-                foreach (var fontFamily in SixLabors.Fonts.SystemFonts.Collection.Families)
-                    Console.WriteLine(fontFamily.Name);
-                LoadOptions.DefaultGraphicEngine = new DefaultGraphicEngine("Carlito");
-                var workbook = new XLWorkbook(excelStream);
-                var worksheet = workbook.Worksheet(PlanningImportExcelConsts.EformsWorksheet);
-                var rows = worksheet.RangeUsed()
-                    .RowsUsed();
+{
+    try
+    {
+        var result = new List<PlanningImportExcelModel>();
 
-                foreach (var row in rows.Skip(1)) // Skip header
+        // Load the Excel file
+        using (var spreadsheetDocument = SpreadsheetDocument.Open(excelStream, false))
+        {
+            var workbookPart = spreadsheetDocument.WorkbookPart;
+            var sheets = workbookPart.Workbook.Descendants<Sheet>().ToList();
+            if (!sheets.Any())
+            {
+                throw new Exception("No sheets found in the Excel file");
+            }
+
+            // Select the sheet based on the index provided in PlanningImportExcelConsts.EformsWorksheet
+            var sheet = sheets[PlanningImportExcelConsts.EformsWorksheet - 1]; // Index is 0-based, so subtract 1
+            var worksheetPart = (WorksheetPart)workbookPart.GetPartById(sheet.Id);
+            var sheetData = worksheetPart.Worksheet.Elements<SheetData>().First();
+            var rows = sheetData.Elements<Row>().Skip(1); // Skip header row
+
+            foreach (var row in rows)
+            {
+                var folders = new List<PlanningImportFolderModel>();
+                var item = new PlanningImportExcelModel
                 {
-                    // Folders
-                    var folders = new List<PlanningImportFolderModel>();
-                    var item = new PlanningImportExcelModel
+                    ExcelRow = (int)row.RowIndex.Value
+                };
+
+                // Parse folders from the row using constants
+                folders.AddRange(ParseFoldersFromRow(row, workbookPart));
+                item.Folders = folders;
+
+                // Parse planning information using constants
+                item.PlanningName = GetCellValue(workbookPart, row, PlanningImportExcelConsts.PlanningItemNameCol);
+                item.RepeatEvery = ParseInt(GetCellValue(workbookPart, row, PlanningImportExcelConsts.PlanningRepeatEveryCol));
+                item.RepeatType = ParseRepeatType(GetCellValue(workbookPart, row, PlanningImportExcelConsts.PlanningRepeatTypeCol));
+                item.RepeatUntil = ParseDate(GetCellValue(workbookPart, row, PlanningImportExcelConsts.PlanningRepeatUntilCol));
+                item.DayOfWeek = ParseDayOfWeek(GetCellValue(workbookPart, row, PlanningImportExcelConsts.PlanningDayOfWeekCol));
+                item.DayOfMonth = ParseInt(GetCellValue(workbookPart, row, PlanningImportExcelConsts.PlanningDayOfMonthCol));
+
+                // Parse EForm name
+                item.EFormName = GetCellValue(workbookPart, row, PlanningImportExcelConsts.EformNameCol);
+
+                // Parse EForm tags using constants
+                item.Tags.AddRange(ParseTagsFromRow(workbookPart, row));
+
+                result.Add(item);
+            }
+        }
+
+        return result;
+    }
+    catch (Exception e)
+    {
+        _logger.LogError(e, e.Message);
+        throw;
+    }
+}
+
+// Helper to parse folders from a row using constants
+private IEnumerable<PlanningImportFolderModel> ParseFoldersFromRow(Row row, WorkbookPart workbookPart)
+{
+    var folders = new List<PlanningImportFolderModel>();
+
+    for (var i = 1; i <= 10; i++) // Assuming there are 10 folder levels
+    {
+        var folderLabel = GetCellValue(workbookPart, row, PlanningImportExcelConsts.Folder1Label + (i - 1) * 2); // Dynamically adjust based on constants
+        var folderDescription = GetCellValue(workbookPart, row, PlanningImportExcelConsts.Folder1Description + (i - 1) * 2);
+
+        if (!string.IsNullOrEmpty(folderLabel))
+        {
+            folders.Add(new PlanningImportFolderModel
+            {
+                Label = folderLabel,
+                Description = folderDescription,
+                Level = i
+            });
+        }
+    }
+
+    return folders;
+}
+
+// Helper to parse integer values
+private int? ParseInt(string value)
+{
+    return int.TryParse(value, out var result) ? result : (int?)null;
+}
+
+// Helper to parse dates
+private DateTime? ParseDate(string value)
+{
+    return DateTime.TryParseExact(value, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date)
+        ? date
+        : (DateTime?)null;
+}
+
+// Helper to parse repeat type
+private RepeatType ParseRepeatType(string value)
+{
+    return value?.ToLower() switch
+    {
+        "month" => RepeatType.Month,
+        "week" => RepeatType.Week,
+        _ => RepeatType.Day
+    };
+}
+
+// Helper to parse day of the week
+private DayOfWeek? ParseDayOfWeek(string value)
+{
+    return value?.ToLower() switch
+    {
+        "mon" => DayOfWeek.Monday,
+        "tue" => DayOfWeek.Tuesday,
+        "wed" => DayOfWeek.Wednesday,
+        "thu" => DayOfWeek.Thursday,
+        "fri" => DayOfWeek.Friday,
+        "sat" => DayOfWeek.Saturday,
+        "sun" => DayOfWeek.Sunday,
+        _ => null
+    };
+}
+
+// Helper to parse tags from a row using constants
+private IEnumerable<string> ParseTagsFromRow(WorkbookPart workbookPart, Row row)
+{
+    var tags = new List<string>();
+    for (var i = PlanningImportExcelConsts.Tag1Col; i <= PlanningImportExcelConsts.Tag10Col; i++)
+    {
+        var tag = GetCellValue(workbookPart, row, i);
+        if (!string.IsNullOrEmpty(tag))
+        {
+            tags.Add(tag);
+        }
+    }
+    return tags;
+}
+
+// Helper to get the cell value by column index
+private string GetCellValue(WorkbookPart workbookPart, Row row, int columnIndex)
+{
+    var cell = row.Elements<Cell>().ElementAtOrDefault(columnIndex - 1); // Subtract 1 as index is 0-based
+    if (cell == null || cell.CellValue == null)
+    {
+        return string.Empty;
+    }
+
+    return cell.DataType != null && cell.DataType.Value == CellValues.SharedString
+        ? workbookPart.SharedStringTablePart.SharedStringTable.ElementAt(int.Parse(cell.CellValue.Text)).InnerText
+        : cell.CellValue.Text;
+}
+
+
+        //
+        // public List<PlanningImportExcelModel> ParsePlanningImportFile(Stream excelStream)
+        // {
+        //     try
+        //     {
+        //         var result = new List<PlanningImportExcelModel>();
+        //         foreach (var fontFamily in SixLabors.Fonts.SystemFonts.Collection.Families)
+        //             Console.WriteLine(fontFamily.Name);
+        //         LoadOptions.DefaultGraphicEngine = new DefaultGraphicEngine("Carlito");
+        //         var workbook = new XLWorkbook(excelStream);
+        //         var worksheet = workbook.Worksheet(PlanningImportExcelConsts.EformsWorksheet);
+        //         var rows = worksheet.RangeUsed()
+        //             .RowsUsed();
+        //
+        //         foreach (var row in rows.Skip(1)) // Skip header
+        //         {
+        //             // Folders
+        //             var folders = new List<PlanningImportFolderModel>();
+        //             var item = new PlanningImportExcelModel
+        //             {
+        //                 ExcelRow = row.RowNumber()
+        //             };
+        //
+        //             // Folder 1
+        //             var folder1Label = row.Cell(PlanningImportExcelConsts.Folder1Label).Value.ToString().Trim();
+        //             var folder1Description = row.Cell(PlanningImportExcelConsts.Folder1Description).Value.ToString().Trim();
+        //
+        //             if (!string.IsNullOrEmpty(folder1Label) && !string.IsNullOrEmpty(folder1Label.Trim()))
+        //             {
+        //                 var folderModel = new PlanningImportFolderModel
+        //                 {
+        //                     Label = folder1Label,
+        //                     Description = folder1Description,
+        //                     Level = 1
+        //                 };
+        //
+        //                 folders.Add(folderModel);
+        //             }
+        //
+        //             // Folder 2
+        //             var folder2Label = row.Cell(PlanningImportExcelConsts.Folder2Label).Value.ToString().Trim();
+        //             var folder2Description = row.Cell(PlanningImportExcelConsts.Folder2Description).Value.ToString().Trim();
+        //
+        //             if (!string.IsNullOrEmpty(folder2Label) && !string.IsNullOrEmpty(folder2Label.Trim()))
+        //             {
+        //                 var folderModel = new PlanningImportFolderModel
+        //                 {
+        //                     Label = folder2Label,
+        //                     Description = folder2Description,
+        //                     Level = 2
+        //                 };
+        //
+        //                 folders.Add(folderModel);
+        //             }
+        //
+        //             // Folder 3
+        //             var folder3Label = row.Cell(PlanningImportExcelConsts.Folder3Label).Value.ToString().Trim();
+        //             var folder3Description = row.Cell(PlanningImportExcelConsts.Folder3Description).Value.ToString().Trim();
+        //
+        //             if (!string.IsNullOrEmpty(folder3Label) && !string.IsNullOrEmpty(folder3Label.Trim()))
+        //             {
+        //                 var folderModel = new PlanningImportFolderModel
+        //                 {
+        //                     Label = folder3Label,
+        //                     Description = folder3Description,
+        //                     Level = 3
+        //                 };
+        //
+        //                 folders.Add(folderModel);
+        //             }
+        //
+        //             // Folder 4
+        //             var folder4Label = row.Cell(PlanningImportExcelConsts.Folder4Label).Value.ToString().Trim();
+        //             var folder4Description = row.Cell(PlanningImportExcelConsts.Folder4Description).Value.ToString().Trim();
+        //
+        //             if (!string.IsNullOrEmpty(folder4Label) && !string.IsNullOrEmpty(folder4Label.Trim()))
+        //             {
+        //                 var folderModel = new PlanningImportFolderModel
+        //                 {
+        //                     Label = folder4Label,
+        //                     Description = folder4Description,
+        //                     Level = 4
+        //                 };
+        //
+        //                 folders.Add(folderModel);
+        //             }
+        //
+        //             // Folder 5
+        //             var folder5Label = row.Cell(PlanningImportExcelConsts.Folder5Label).Value.ToString().Trim();
+        //             var folder5Description = row.Cell(PlanningImportExcelConsts.Folder5Description).Value.ToString().Trim();
+        //
+        //             if (!string.IsNullOrEmpty(folder5Label) && !string.IsNullOrEmpty(folder5Label.Trim()))
+        //             {
+        //                 var folderModel = new PlanningImportFolderModel
+        //                 {
+        //                     Label = folder5Label,
+        //                     Description = folder5Description,
+        //                     Level = 5
+        //                 };
+        //
+        //                 folders.Add(folderModel);
+        //             }
+        //
+        //             // Folder 6
+        //             var folder6Label = row.Cell(PlanningImportExcelConsts.Folder6Label).Value.ToString().Trim();
+        //             var folder6Description = row.Cell(PlanningImportExcelConsts.Folder6Description).Value.ToString().Trim();
+        //
+        //             if (!string.IsNullOrEmpty(folder6Label) && !string.IsNullOrEmpty(folder6Label.Trim()))
+        //             {
+        //                 var folderModel = new PlanningImportFolderModel
+        //                 {
+        //                     Label = folder6Label,
+        //                     Description = folder6Description,
+        //                     Level = 6
+        //                 };
+        //
+        //                 folders.Add(folderModel);
+        //             }
+        //
+        //             // Folder 7
+        //             var folder7Label = row.Cell(PlanningImportExcelConsts.Folder7Label).Value.ToString().Trim();
+        //             var folder7Description = row.Cell(PlanningImportExcelConsts.Folder7Description).Value.ToString().Trim();
+        //
+        //             if (!string.IsNullOrEmpty(folder7Label) && !string.IsNullOrEmpty(folder7Label.Trim()))
+        //             {
+        //                 var folderModel = new PlanningImportFolderModel
+        //                 {
+        //                     Label = folder7Label,
+        //                     Description = folder7Description,
+        //                     Level = 7
+        //                 };
+        //
+        //                 folders.Add(folderModel);
+        //             }
+        //
+        //             // Folder 8
+        //             var folder8Label = row.Cell(PlanningImportExcelConsts.Folder8Label).Value.ToString().Trim();
+        //             var folder8Description = row.Cell(PlanningImportExcelConsts.Folder8Description).Value.ToString().Trim();
+        //
+        //             if (!string.IsNullOrEmpty(folder8Label) && !string.IsNullOrEmpty(folder8Label.Trim()))
+        //             {
+        //                 var folderModel = new PlanningImportFolderModel
+        //                 {
+        //                     Label = folder8Label,
+        //                     Description = folder8Description,
+        //                     Level = 8
+        //                 };
+        //
+        //                 folders.Add(folderModel);
+        //             }
+        //
+        //             // Folder 9
+        //             var folder9Label = row.Cell(PlanningImportExcelConsts.Folder9Label).Value.ToString().Trim();
+        //             var folder9Description = row.Cell(PlanningImportExcelConsts.Folder9Description).Value.ToString().Trim();
+        //
+        //             if (!string.IsNullOrEmpty(folder9Label) && !string.IsNullOrEmpty(folder9Label.Trim()))
+        //             {
+        //                 var folderModel = new PlanningImportFolderModel
+        //                 {
+        //                     Label = folder9Label,
+        //                     Description = folder9Description,
+        //                     Level = 9
+        //                 };
+        //
+        //                 folders.Add(folderModel);
+        //             }
+        //
+        //             // Folder 10
+        //             var folder10Label = row.Cell(PlanningImportExcelConsts.Folder10Label).Value.ToString().Trim();
+        //             var folder10Description = row.Cell(PlanningImportExcelConsts.Folder10Description).Value.ToString().Trim();
+        //
+        //             if (!string.IsNullOrEmpty(folder10Label) && !string.IsNullOrEmpty(folder10Label.Trim()))
+        //             {
+        //                 var folderModel = new PlanningImportFolderModel
+        //                 {
+        //                     Label = folder10Label,
+        //                     Description = folder10Description,
+        //                     Level = 10
+        //                 };
+        //
+        //                 folders.Add(folderModel);
+        //             }
+        //
+        //             item.Folders = folders;
+        //
+        //             // Planning info
+        //             item.PlanningName = row.Cell(PlanningImportExcelConsts.PlanningItemNameCol).Value.ToString();
+        //
+        //             var repeatEveryString = row.Cell(PlanningImportExcelConsts.PlanningRepeatEveryCol).Value.ToString();
+        //             var repeatEveryParseResult = int.TryParse(repeatEveryString, out var repeatEvery);
+        //             if (repeatEveryParseResult)
+        //             {
+        //                 item.RepeatEvery = repeatEvery;
+        //             }
+        //             else
+        //             {
+        //                 item.RepeatEvery = null;
+        //             }
+        //
+        //             var repeatTypeString = row.Cell(PlanningImportExcelConsts.PlanningRepeatTypeCol).Value.ToString();
+        //             var repeatTypeParseResult = int.TryParse(repeatTypeString, out var repeatType);
+        //             if (repeatTypeParseResult)
+        //             {
+        //                 item.RepeatType = (RepeatType) repeatType;
+        //             }
+        //             else
+        //             {
+        //                 item.RepeatType = repeatTypeString.ToLower() == "month"
+        //                     ? RepeatType.Month
+        //                     : (repeatTypeString.ToLower() == "week" ? RepeatType.Week : RepeatType.Day);
+        //             }
+        //
+        //             var repeatUntilString = row.Cell(PlanningImportExcelConsts.PlanningRepeatUntilCol).Value.ToString();
+        //
+        //             if (!string.IsNullOrEmpty(repeatUntilString))
+        //             {
+        //                 var dateIsParse = DateTime.TryParseExact(
+        //                     repeatUntilString,
+        //                     "dd.MM.yyyy",
+        //                     CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime);
+        //
+        //                 if (dateIsParse)
+        //                 {
+        //                     item.RepeatUntil = dateTime;
+        //                 }
+        //                 else
+        //                 {
+        //                     item.RepeatUntil = null;
+        //                 }
+        //             }
+        //             else
+        //             {
+        //                 item.RepeatUntil = null;
+        //             }
+        //
+        //             var dayOfWeekString = row.Cell(PlanningImportExcelConsts.PlanningDayOfWeekCol).Value.ToString();
+        //             var dayOfWeekParseResult = int.TryParse(dayOfWeekString, out var dayOfWeekValue);
+        //             if (dayOfWeekParseResult)
+        //             {
+        //                 item.DayOfWeek = (DayOfWeek)dayOfWeekValue;
+        //             }
+        //             else
+        //             {
+        //                 switch (dayOfWeekString.ToLower())
+        //                 {
+        //                     case "mon":
+        //                         item.DayOfWeek = DayOfWeek.Monday;
+        //                         break;
+        //                     case "tue":
+        //                         item.DayOfWeek = DayOfWeek.Tuesday;
+        //                         break;
+        //                     case "wed":
+        //                         item.DayOfWeek = DayOfWeek.Wednesday;
+        //                         break;
+        //                     case "thu":
+        //                         item.DayOfWeek = DayOfWeek.Thursday;
+        //                         break;
+        //                     case "fri":
+        //                         item.DayOfWeek = DayOfWeek.Friday;
+        //                         break;
+        //                     case "sat":
+        //                         item.DayOfWeek = DayOfWeek.Saturday;
+        //                         break;
+        //                     case "sun":
+        //                         item.DayOfWeek = DayOfWeek.Sunday;
+        //                         break;
+        //                     default:
+        //                         item.DayOfWeek = null;
+        //                         break;
+        //                 }
+        //             }
+        //
+        //             var dayOfMonthString = row.Cell(PlanningImportExcelConsts.PlanningDayOfMonthCol).Value.ToString();
+        //             var dayOfMonthParseResult = int.TryParse(dayOfMonthString, out var dayOfMonth);
+        //             if (dayOfMonthParseResult)
+        //             {
+        //                 item.DayOfMonth = dayOfMonth;
+        //             }
+        //             else
+        //             {
+        //                 item.DayOfMonth = null;
+        //             }
+        //
+        //
+        //             // EForm name
+        //             item.EFormName = row.Cell(PlanningImportExcelConsts.EformNameCol).Value.ToString();
+        //
+        //             // EForm tags
+        //             var tag1 = row.Cell(PlanningImportExcelConsts.Tag1Col).Value.ToString();
+        //             var tag2 = row.Cell(PlanningImportExcelConsts.Tag2Col).Value.ToString();
+        //             var tag3 = row.Cell(PlanningImportExcelConsts.Tag3Col).Value.ToString();
+        //             var tag4 = row.Cell(PlanningImportExcelConsts.Tag4Col).Value.ToString();
+        //             var tag5 = row.Cell(PlanningImportExcelConsts.Tag5Col).Value.ToString();
+        //             var tag6 = row.Cell(PlanningImportExcelConsts.Tag6Col).Value.ToString();
+        //             var tag7 = row.Cell(PlanningImportExcelConsts.Tag7Col).Value.ToString();
+        //             var tag8 = row.Cell(PlanningImportExcelConsts.Tag8Col).Value.ToString();
+        //             var tag9 = row.Cell(PlanningImportExcelConsts.Tag9Col).Value.ToString();
+        //             var tag10 = row.Cell(PlanningImportExcelConsts.Tag10Col).Value.ToString();
+        //
+        //             if (!string.IsNullOrEmpty(tag1))
+        //             {
+        //                 item.Tags.Add(tag1);
+        //             }
+        //
+        //             if (!string.IsNullOrEmpty(tag2))
+        //             {
+        //                 item.Tags.Add(tag2);
+        //             }
+        //
+        //             if (!string.IsNullOrEmpty(tag3))
+        //             {
+        //                 item.Tags.Add(tag3);
+        //             }
+        //
+        //             if (!string.IsNullOrEmpty(tag4))
+        //             {
+        //                 item.Tags.Add(tag4);
+        //             }
+        //
+        //             if (!string.IsNullOrEmpty(tag5))
+        //             {
+        //                 item.Tags.Add(tag5);
+        //             }
+        //
+        //             if (!string.IsNullOrEmpty(tag6))
+        //             {
+        //                 item.Tags.Add(tag6);
+        //             }
+        //
+        //             if (!string.IsNullOrEmpty(tag7))
+        //             {
+        //                 item.Tags.Add(tag7);
+        //             }
+        //
+        //             if (!string.IsNullOrEmpty(tag8))
+        //             {
+        //                 item.Tags.Add(tag8);
+        //             }
+        //
+        //             if (!string.IsNullOrEmpty(tag9))
+        //             {
+        //                 item.Tags.Add(tag9);
+        //             }
+        //
+        //             if (!string.IsNullOrEmpty(tag10))
+        //             {
+        //                 item.Tags.Add(tag10);
+        //             }
+        //
+        //             result.Add(item);
+        //         }
+        //
+        //         return result;
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         _logger.LogError(e, e.Message);
+        //         throw;
+        //     }
+        // }
+
+public async Task<OperationDataResult<Stream>> GenerateExcelDashboard(List<ReportEformModel> reportModel)
+{
+    try
+    {
+        // Create a directory to store the result
+        Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "results"));
+
+        // Generate a timestamp for the result file
+        var timeStamp = $"{DateTime.UtcNow:yyyyMMdd}_{DateTime.UtcNow:hhmmss}";
+
+        // Create the path for the result Excel file
+        var resultDocument = Path.Combine(Path.GetTempPath(), "results", $"{timeStamp}_.xlsx");
+
+        // Create a new Excel file using OpenXml
+        using (var spreadsheetDocument = SpreadsheetDocument.Create(resultDocument, SpreadsheetDocumentType.Workbook))
+        {
+            // Create a workbook and sheets
+            var workbookPart = spreadsheetDocument.AddWorkbookPart();
+            workbookPart.Workbook = new Workbook();
+            var sheets = spreadsheetDocument.WorkbookPart.Workbook.AppendChild(new Sheets());
+
+            // Iterate through each eform report model to create a corresponding worksheet
+            foreach (var eformModel in reportModel)
+            {
+                if (eformModel.FromDate != null)
+                {
+                    var sheetName = CleanSheetName(eformModel.TemplateName);
+                    var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                    worksheetPart.Worksheet = new Worksheet(new SheetData());
+                    var sheetData = worksheetPart.Worksheet.GetFirstChild<SheetData>();
+
+                    // Add the new sheet to the workbook
+                    var sheet = new Sheet
                     {
-                        ExcelRow = row.RowNumber()
+                        Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(worksheetPart),
+                        SheetId = (uint)(reportModel.IndexOf(eformModel) + 1),
+                        Name = sheetName
                     };
+                    sheets.Append(sheet);
 
-                    // Folder 1
-                    var folder1Label = row.Cell(PlanningImportExcelConsts.Folder1Label).Value.ToString().Trim();
-                    var folder1Description = row.Cell(PlanningImportExcelConsts.Folder1Description).Value.ToString().Trim();
+                    // Add the headers row
+                    var headerRow = new Row();
+                    headerRow.Append(
+                        ConstructCell(_localizationService.GetString("Id"), CellValues.String),
+                        ConstructCell(_localizationService.GetString("CreatedAt"), CellValues.String),
+                        ConstructCell(_localizationService.GetString("DoneBy"), CellValues.String),
+                        ConstructCell(_localizationService.GetString("ItemName"), CellValues.String)
+                    );
 
-                    if (!string.IsNullOrEmpty(folder1Label) && !string.IsNullOrEmpty(folder1Label.Trim()))
+                    // Add dynamic headers for item fields
+                    foreach (var itemHeader in eformModel.ItemHeaders)
                     {
-                        var folderModel = new PlanningImportFolderModel
+                        headerRow.Append(ConstructCell(itemHeader.Value, CellValues.String));
+                    }
+                    sheetData.Append(headerRow);
+
+                    // Add data rows
+                    foreach (var dataModel in eformModel.Items)
+                    {
+                        var dataRow = new Row();
+                        dataRow.Append(
+                            ConstructCell(dataModel.MicrotingSdkCaseId.ToString(), CellValues.Number),
+                            ConstructCell(dataModel.MicrotingSdkCaseDoneAt?.ToString("dd.MM.yyyy HH:mm:ss") ?? "", CellValues.String),
+                            ConstructCell(dataModel.DoneBy, CellValues.String),
+                            ConstructCell(dataModel.ItemName, CellValues.String)
+                        );
+
+                        // Add values for each field in the data model
+                        foreach (var caseField in dataModel.CaseFields)
                         {
-                            Label = folder1Label,
-                            Description = folder1Description,
-                            Level = 1
-                        };
+                            var cellValue = caseField.Value == "checked" ? "1" : caseField.Value == "unchecked" ? "0" : caseField.Value;
 
-                        folders.Add(folderModel);
-                    }
-
-                    // Folder 2
-                    var folder2Label = row.Cell(PlanningImportExcelConsts.Folder2Label).Value.ToString().Trim();
-                    var folder2Description = row.Cell(PlanningImportExcelConsts.Folder2Description).Value.ToString().Trim();
-
-                    if (!string.IsNullOrEmpty(folder2Label) && !string.IsNullOrEmpty(folder2Label.Trim()))
-                    {
-                        var folderModel = new PlanningImportFolderModel
-                        {
-                            Label = folder2Label,
-                            Description = folder2Description,
-                            Level = 2
-                        };
-
-                        folders.Add(folderModel);
-                    }
-
-                    // Folder 3
-                    var folder3Label = row.Cell(PlanningImportExcelConsts.Folder3Label).Value.ToString().Trim();
-                    var folder3Description = row.Cell(PlanningImportExcelConsts.Folder3Description).Value.ToString().Trim();
-
-                    if (!string.IsNullOrEmpty(folder3Label) && !string.IsNullOrEmpty(folder3Label.Trim()))
-                    {
-                        var folderModel = new PlanningImportFolderModel
-                        {
-                            Label = folder3Label,
-                            Description = folder3Description,
-                            Level = 3
-                        };
-
-                        folders.Add(folderModel);
-                    }
-
-                    // Folder 4
-                    var folder4Label = row.Cell(PlanningImportExcelConsts.Folder4Label).Value.ToString().Trim();
-                    var folder4Description = row.Cell(PlanningImportExcelConsts.Folder4Description).Value.ToString().Trim();
-
-                    if (!string.IsNullOrEmpty(folder4Label) && !string.IsNullOrEmpty(folder4Label.Trim()))
-                    {
-                        var folderModel = new PlanningImportFolderModel
-                        {
-                            Label = folder4Label,
-                            Description = folder4Description,
-                            Level = 4
-                        };
-
-                        folders.Add(folderModel);
-                    }
-
-                    // Folder 5
-                    var folder5Label = row.Cell(PlanningImportExcelConsts.Folder5Label).Value.ToString().Trim();
-                    var folder5Description = row.Cell(PlanningImportExcelConsts.Folder5Description).Value.ToString().Trim();
-
-                    if (!string.IsNullOrEmpty(folder5Label) && !string.IsNullOrEmpty(folder5Label.Trim()))
-                    {
-                        var folderModel = new PlanningImportFolderModel
-                        {
-                            Label = folder5Label,
-                            Description = folder5Description,
-                            Level = 5
-                        };
-
-                        folders.Add(folderModel);
-                    }
-
-                    // Folder 6
-                    var folder6Label = row.Cell(PlanningImportExcelConsts.Folder6Label).Value.ToString().Trim();
-                    var folder6Description = row.Cell(PlanningImportExcelConsts.Folder6Description).Value.ToString().Trim();
-
-                    if (!string.IsNullOrEmpty(folder6Label) && !string.IsNullOrEmpty(folder6Label.Trim()))
-                    {
-                        var folderModel = new PlanningImportFolderModel
-                        {
-                            Label = folder6Label,
-                            Description = folder6Description,
-                            Level = 6
-                        };
-
-                        folders.Add(folderModel);
-                    }
-
-                    // Folder 7
-                    var folder7Label = row.Cell(PlanningImportExcelConsts.Folder7Label).Value.ToString().Trim();
-                    var folder7Description = row.Cell(PlanningImportExcelConsts.Folder7Description).Value.ToString().Trim();
-
-                    if (!string.IsNullOrEmpty(folder7Label) && !string.IsNullOrEmpty(folder7Label.Trim()))
-                    {
-                        var folderModel = new PlanningImportFolderModel
-                        {
-                            Label = folder7Label,
-                            Description = folder7Description,
-                            Level = 7
-                        };
-
-                        folders.Add(folderModel);
-                    }
-
-                    // Folder 8
-                    var folder8Label = row.Cell(PlanningImportExcelConsts.Folder8Label).Value.ToString().Trim();
-                    var folder8Description = row.Cell(PlanningImportExcelConsts.Folder8Description).Value.ToString().Trim();
-
-                    if (!string.IsNullOrEmpty(folder8Label) && !string.IsNullOrEmpty(folder8Label.Trim()))
-                    {
-                        var folderModel = new PlanningImportFolderModel
-                        {
-                            Label = folder8Label,
-                            Description = folder8Description,
-                            Level = 8
-                        };
-
-                        folders.Add(folderModel);
-                    }
-
-                    // Folder 9
-                    var folder9Label = row.Cell(PlanningImportExcelConsts.Folder9Label).Value.ToString().Trim();
-                    var folder9Description = row.Cell(PlanningImportExcelConsts.Folder9Description).Value.ToString().Trim();
-
-                    if (!string.IsNullOrEmpty(folder9Label) && !string.IsNullOrEmpty(folder9Label.Trim()))
-                    {
-                        var folderModel = new PlanningImportFolderModel
-                        {
-                            Label = folder9Label,
-                            Description = folder9Description,
-                            Level = 9
-                        };
-
-                        folders.Add(folderModel);
-                    }
-
-                    // Folder 10
-                    var folder10Label = row.Cell(PlanningImportExcelConsts.Folder10Label).Value.ToString().Trim();
-                    var folder10Description = row.Cell(PlanningImportExcelConsts.Folder10Description).Value.ToString().Trim();
-
-                    if (!string.IsNullOrEmpty(folder10Label) && !string.IsNullOrEmpty(folder10Label.Trim()))
-                    {
-                        var folderModel = new PlanningImportFolderModel
-                        {
-                            Label = folder10Label,
-                            Description = folder10Description,
-                            Level = 10
-                        };
-
-                        folders.Add(folderModel);
-                    }
-
-                    item.Folders = folders;
-
-                    // Planning info
-                    item.PlanningName = row.Cell(PlanningImportExcelConsts.PlanningItemNameCol).Value.ToString();
-
-                    var repeatEveryString = row.Cell(PlanningImportExcelConsts.PlanningRepeatEveryCol).Value.ToString();
-                    var repeatEveryParseResult = int.TryParse(repeatEveryString, out var repeatEvery);
-                    if (repeatEveryParseResult)
-                    {
-                        item.RepeatEvery = repeatEvery;
-                    }
-                    else
-                    {
-                        item.RepeatEvery = null;
-                    }
-
-                    var repeatTypeString = row.Cell(PlanningImportExcelConsts.PlanningRepeatTypeCol).Value.ToString();
-                    var repeatTypeParseResult = int.TryParse(repeatTypeString, out var repeatType);
-                    if (repeatTypeParseResult)
-                    {
-                        item.RepeatType = (RepeatType) repeatType;
-                    }
-                    else
-                    {
-                        item.RepeatType = repeatTypeString.ToLower() == "month"
-                            ? RepeatType.Month
-                            : (repeatTypeString.ToLower() == "week" ? RepeatType.Week : RepeatType.Day);
-                    }
-
-                    var repeatUntilString = row.Cell(PlanningImportExcelConsts.PlanningRepeatUntilCol).Value.ToString();
-
-                    if (!string.IsNullOrEmpty(repeatUntilString))
-                    {
-                        var dateIsParse = DateTime.TryParseExact(
-                            repeatUntilString,
-                            "dd.MM.yyyy",
-                            CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime);
-
-                        if (dateIsParse)
-                        {
-                            item.RepeatUntil = dateTime;
-                        }
-                        else
-                        {
-                            item.RepeatUntil = null;
-                        }
-                    }
-                    else
-                    {
-                        item.RepeatUntil = null;
-                    }
-
-                    var dayOfWeekString = row.Cell(PlanningImportExcelConsts.PlanningDayOfWeekCol).Value.ToString();
-                    var dayOfWeekParseResult = int.TryParse(dayOfWeekString, out var dayOfWeekValue);
-                    if (dayOfWeekParseResult)
-                    {
-                        item.DayOfWeek = (DayOfWeek)dayOfWeekValue;
-                    }
-                    else
-                    {
-                        switch (dayOfWeekString.ToLower())
-                        {
-                            case "mon":
-                                item.DayOfWeek = DayOfWeek.Monday;
-                                break;
-                            case "tue":
-                                item.DayOfWeek = DayOfWeek.Tuesday;
-                                break;
-                            case "wed":
-                                item.DayOfWeek = DayOfWeek.Wednesday;
-                                break;
-                            case "thu":
-                                item.DayOfWeek = DayOfWeek.Thursday;
-                                break;
-                            case "fri":
-                                item.DayOfWeek = DayOfWeek.Friday;
-                                break;
-                            case "sat":
-                                item.DayOfWeek = DayOfWeek.Saturday;
-                                break;
-                            case "sun":
-                                item.DayOfWeek = DayOfWeek.Sunday;
-                                break;
-                            default:
-                                item.DayOfWeek = null;
-                                break;
-                        }
-                    }
-
-                    var dayOfMonthString = row.Cell(PlanningImportExcelConsts.PlanningDayOfMonthCol).Value.ToString();
-                    var dayOfMonthParseResult = int.TryParse(dayOfMonthString, out var dayOfMonth);
-                    if (dayOfMonthParseResult)
-                    {
-                        item.DayOfMonth = dayOfMonth;
-                    }
-                    else
-                    {
-                        item.DayOfMonth = null;
-                    }
-
-
-                    // EForm name
-                    item.EFormName = row.Cell(PlanningImportExcelConsts.EformNameCol).Value.ToString();
-
-                    // EForm tags
-                    var tag1 = row.Cell(PlanningImportExcelConsts.Tag1Col).Value.ToString();
-                    var tag2 = row.Cell(PlanningImportExcelConsts.Tag2Col).Value.ToString();
-                    var tag3 = row.Cell(PlanningImportExcelConsts.Tag3Col).Value.ToString();
-                    var tag4 = row.Cell(PlanningImportExcelConsts.Tag4Col).Value.ToString();
-                    var tag5 = row.Cell(PlanningImportExcelConsts.Tag5Col).Value.ToString();
-                    var tag6 = row.Cell(PlanningImportExcelConsts.Tag6Col).Value.ToString();
-                    var tag7 = row.Cell(PlanningImportExcelConsts.Tag7Col).Value.ToString();
-                    var tag8 = row.Cell(PlanningImportExcelConsts.Tag8Col).Value.ToString();
-                    var tag9 = row.Cell(PlanningImportExcelConsts.Tag9Col).Value.ToString();
-                    var tag10 = row.Cell(PlanningImportExcelConsts.Tag10Col).Value.ToString();
-
-                    if (!string.IsNullOrEmpty(tag1))
-                    {
-                        item.Tags.Add(tag1);
-                    }
-
-                    if (!string.IsNullOrEmpty(tag2))
-                    {
-                        item.Tags.Add(tag2);
-                    }
-
-                    if (!string.IsNullOrEmpty(tag3))
-                    {
-                        item.Tags.Add(tag3);
-                    }
-
-                    if (!string.IsNullOrEmpty(tag4))
-                    {
-                        item.Tags.Add(tag4);
-                    }
-
-                    if (!string.IsNullOrEmpty(tag5))
-                    {
-                        item.Tags.Add(tag5);
-                    }
-
-                    if (!string.IsNullOrEmpty(tag6))
-                    {
-                        item.Tags.Add(tag6);
-                    }
-
-                    if (!string.IsNullOrEmpty(tag7))
-                    {
-                        item.Tags.Add(tag7);
-                    }
-
-                    if (!string.IsNullOrEmpty(tag8))
-                    {
-                        item.Tags.Add(tag8);
-                    }
-
-                    if (!string.IsNullOrEmpty(tag9))
-                    {
-                        item.Tags.Add(tag9);
-                    }
-
-                    if (!string.IsNullOrEmpty(tag10))
-                    {
-                        item.Tags.Add(tag10);
-                    }
-
-                    result.Add(item);
-                }
-
-                return result;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                throw;
-            }
-        }
-
-#pragma warning disable CS1998
-        public async Task<OperationDataResult<Stream>> GenerateExcelDashboard(List<ReportEformModel> reportModel)
-#pragma warning restore CS1998
-        {
-            try
-            {
-                Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "results"));
-
-                var timeStamp = $"{DateTime.UtcNow:yyyyMMdd}_{DateTime.UtcNow:hhmmss}";
-
-                var resultDocument = Path.Combine(Path.GetTempPath(), "results",
-                    $"{timeStamp}_.xlsx");
-
-                IXLWorkbook wb = new XLWorkbook();
-
-                foreach (var eformModel in reportModel)
-                {
-                    if (eformModel.FromDate != null)
-                    {
-                        var x = 0;
-                        var y = 0;
-                        var sheetName = eformModel.TemplateName;
-
-                        sheetName = sheetName
-                            .Replace(":", "")
-                            .Replace("\\", "")
-                            .Replace("/", "")
-                            .Replace("?", "")
-                            .Replace("*", "")
-                            .Replace("[", "")
-                            .Replace("]", "");
-
-                        if (sheetName.Length > 30)
-                        {
-                            sheetName = sheetName.Substring(0, 30);
-                        }
-                        var worksheet = wb.Worksheets.Add(sheetName);
-
-
-                        if (eformModel.Items.Any())
-                        {
-                            worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("Id");
-                            worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
-                            y++;
-                            worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("CreatedAt");
-                            worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
-                            y++;
-                            worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("DoneBy");
-                            worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
-                            y++;
-                            worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("ItemName");
-                            worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
-                            foreach (var itemHeader in eformModel.ItemHeaders)
+                            switch (caseField.Key)
                             {
-                                y++;
-                                worksheet.Cell(x + 1, y + 1).Value = itemHeader.Value;
-                                worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
-                            }
-                        }
-
-                        x = 1;
-                        foreach (var dataModel in eformModel.Items)
-                        {
-                            y = 0;
-                            worksheet.Cell(x + 1, y + 1).Value = dataModel.MicrotingSdkCaseId;
-                            y++;
-                            worksheet.Cell(x + 1, y + 1).Value = $"{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}";
-                            y++;
-                            worksheet.Cell(x + 1, y + 1).Value = dataModel.DoneBy;
-                            y++;
-                            worksheet.Cell(x + 1, y + 1).Value = dataModel.ItemName;
-                            y++;
-                            foreach (var dataModelCaseField in dataModel.CaseFields)
-                            {
-                                if (dataModelCaseField.Value == "checked")
-                                {
-                                    worksheet.Cell(x + 1, y + 1).Value = 1;
-                                }
-                                else
-                                {
-                                    var value = dataModelCaseField.Value == "unchecked" ? "0" : dataModelCaseField.Value == "checked" ? "1" : dataModelCaseField.Value;
-
-                                    switch (dataModelCaseField.Key)
+                                case "date":
+                                    var date = DateTime.Parse(cellValue);
+                                    dataRow.Append(ConstructCell(date.ToString("dd.MM.yyyy"), CellValues.Date));
+                                    break;
+                                case "number":
+                                    if (double.TryParse(cellValue, out var number))
                                     {
-                                        case "date":
-                                            var date = DateTime.Parse(value);
-                                            worksheet.Cell(x + 1, y + 1).SetValue(date);
-                                            worksheet.Cell(x + 1, y + 1).Style.DateFormat.Format = "dd.MM.yyyy";
-                                            //worksheet.Cell(x + 1, y + 1).Value = DateTime.Parse(value);
-                                            //worksheet.Cell(x + 1, y + 1).DataType = XLDataType.DateTime;
-                                            break;
-                                        case "number":
-                                            try
-                                            {
-                                                if (!string.IsNullOrEmpty(value))
-                                                {
-                                                    var number = Double.Parse(value, CultureInfo.InvariantCulture);
-                                                    worksheet.Cell(x + 1, y + 1).SetValue(number);
-                                                }
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                Console.WriteLine(e);
-                                                throw;
-                                            }
-                                            //worksheet.Cell(x + 1, y + 1).Value = Double.Parse(value);
-                                            //worksheet.Cell(x+1, y+1).Style.NumberFormat.Format = "0.00";
-                                            //worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Number;
-                                            break;
-                                        default:
-                                            worksheet.Cell(x + 1, y + 1).Value = "'" + value;
-                                            //worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Text;
-                                            break;
+                                        dataRow.Append(ConstructCell(number.ToString(CultureInfo.InvariantCulture), CellValues.Number));
                                     }
-                                    //worksheet.Cell(x + 1, y + 1).Value =
-                                }
-
-                                y++;
+                                    else
+                                    {
+                                        dataRow.Append(ConstructCell(cellValue, CellValues.String));
+                                    }
+                                    break;
+                                default:
+                                    dataRow.Append(ConstructCell(cellValue, CellValues.String));
+                                    break;
                             }
-
-                            x++;
                         }
+                        sheetData.Append(dataRow);
                     }
                 }
-                wb.SaveAs(resultDocument);
+            }
 
-                Stream result = File.Open(resultDocument, FileMode.Open);
-                return new OperationDataResult<Stream>(true, result);
-            }
-            catch (Exception e)
-            {
-                Trace.TraceError(e.Message);
-                _logger.LogError(e.Message);
-                return new OperationDataResult<Stream>(
-                    false,
-                    _localizationService.GetString("ErrorWhileCreatingWordFile"));
-            }
+            // Save the workbook
+            workbookPart.Workbook.Save();
         }
+
+        // Return the generated Excel file as a stream
+        Stream result = File.Open(resultDocument, FileMode.Open, FileAccess.Read);
+        return new OperationDataResult<Stream>(true, result);
+    }
+    catch (Exception e)
+    {
+        _logger.LogError(e.Message);
+        return new OperationDataResult<Stream>(false, _localizationService.GetString("ErrorWhileCreatingExcelFile"));
+    }
+}
+
+// Helper method to create a cell
+private Cell ConstructCell(string value, CellValues dataType)
+{
+    return new Cell
+    {
+        CellValue = new CellValue(value),
+        DataType = new EnumValue<CellValues>(dataType)
+    };
+}
+
+// Helper method to clean and format sheet names
+private string CleanSheetName(string sheetName)
+{
+    var invalidChars = new[] { ':', '\\', '/', '?', '*', '[', ']' };
+    foreach (var invalidChar in invalidChars)
+    {
+        sheetName = sheetName.Replace(invalidChar.ToString(), string.Empty);
+    }
+
+    return sheetName.Length > 30 ? sheetName.Substring(0, 30) : sheetName;
+}
+
+        //
+// #pragma warning disable CS1998
+//         public async Task<OperationDataResult<Stream>> GenerateExcelDashboard(List<ReportEformModel> reportModel)
+// #pragma warning restore CS1998
+//         {
+//             try
+//             {
+//                 Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "results"));
+//
+//                 var timeStamp = $"{DateTime.UtcNow:yyyyMMdd}_{DateTime.UtcNow:hhmmss}";
+//
+//                 var resultDocument = Path.Combine(Path.GetTempPath(), "results",
+//                     $"{timeStamp}_.xlsx");
+//
+//                 IXLWorkbook wb = new XLWorkbook();
+//
+//                 foreach (var eformModel in reportModel)
+//                 {
+//                     if (eformModel.FromDate != null)
+//                     {
+//                         var x = 0;
+//                         var y = 0;
+//                         var sheetName = eformModel.TemplateName;
+//
+//                         sheetName = sheetName
+//                             .Replace(":", "")
+//                             .Replace("\\", "")
+//                             .Replace("/", "")
+//                             .Replace("?", "")
+//                             .Replace("*", "")
+//                             .Replace("[", "")
+//                             .Replace("]", "");
+//
+//                         if (sheetName.Length > 30)
+//                         {
+//                             sheetName = sheetName.Substring(0, 30);
+//                         }
+//                         var worksheet = wb.Worksheets.Add(sheetName);
+//
+//
+//                         if (eformModel.Items.Any())
+//                         {
+//                             worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("Id");
+//                             worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
+//                             y++;
+//                             worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("CreatedAt");
+//                             worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
+//                             y++;
+//                             worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("DoneBy");
+//                             worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
+//                             y++;
+//                             worksheet.Cell(x + 1, y + 1).Value = _localizationService.GetString("ItemName");
+//                             worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
+//                             foreach (var itemHeader in eformModel.ItemHeaders)
+//                             {
+//                                 y++;
+//                                 worksheet.Cell(x + 1, y + 1).Value = itemHeader.Value;
+//                                 worksheet.Cell(x + 1, y + 1).Style.Font.Bold = true;
+//                             }
+//                         }
+//
+//                         x = 1;
+//                         foreach (var dataModel in eformModel.Items)
+//                         {
+//                             y = 0;
+//                             worksheet.Cell(x + 1, y + 1).Value = dataModel.MicrotingSdkCaseId;
+//                             y++;
+//                             worksheet.Cell(x + 1, y + 1).Value = $"{dataModel.MicrotingSdkCaseDoneAt:dd.MM.yyyy HH:mm:ss}";
+//                             y++;
+//                             worksheet.Cell(x + 1, y + 1).Value = dataModel.DoneBy;
+//                             y++;
+//                             worksheet.Cell(x + 1, y + 1).Value = dataModel.ItemName;
+//                             y++;
+//                             foreach (var dataModelCaseField in dataModel.CaseFields)
+//                             {
+//                                 if (dataModelCaseField.Value == "checked")
+//                                 {
+//                                     worksheet.Cell(x + 1, y + 1).Value = 1;
+//                                 }
+//                                 else
+//                                 {
+//                                     var value = dataModelCaseField.Value == "unchecked" ? "0" : dataModelCaseField.Value == "checked" ? "1" : dataModelCaseField.Value;
+//
+//                                     switch (dataModelCaseField.Key)
+//                                     {
+//                                         case "date":
+//                                             var date = DateTime.Parse(value);
+//                                             worksheet.Cell(x + 1, y + 1).SetValue(date);
+//                                             worksheet.Cell(x + 1, y + 1).Style.DateFormat.Format = "dd.MM.yyyy";
+//                                             //worksheet.Cell(x + 1, y + 1).Value = DateTime.Parse(value);
+//                                             //worksheet.Cell(x + 1, y + 1).DataType = XLDataType.DateTime;
+//                                             break;
+//                                         case "number":
+//                                             try
+//                                             {
+//                                                 if (!string.IsNullOrEmpty(value))
+//                                                 {
+//                                                     var number = Double.Parse(value, CultureInfo.InvariantCulture);
+//                                                     worksheet.Cell(x + 1, y + 1).SetValue(number);
+//                                                 }
+//                                             }
+//                                             catch (Exception e)
+//                                             {
+//                                                 Console.WriteLine(e);
+//                                                 throw;
+//                                             }
+//                                             //worksheet.Cell(x + 1, y + 1).Value = Double.Parse(value);
+//                                             //worksheet.Cell(x+1, y+1).Style.NumberFormat.Format = "0.00";
+//                                             //worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Number;
+//                                             break;
+//                                         default:
+//                                             worksheet.Cell(x + 1, y + 1).Value = "'" + value;
+//                                             //worksheet.Cell(x + 1, y + 1).DataType = XLDataType.Text;
+//                                             break;
+//                                     }
+//                                     //worksheet.Cell(x + 1, y + 1).Value =
+//                                 }
+//
+//                                 y++;
+//                             }
+//
+//                             x++;
+//                         }
+//                     }
+//                 }
+//                 wb.SaveAs(resultDocument);
+//
+//                 Stream result = File.Open(resultDocument, FileMode.Open);
+//                 return new OperationDataResult<Stream>(true, result);
+//             }
+//             catch (Exception e)
+//             {
+//                 Trace.TraceError(e.Message);
+//                 _logger.LogError(e.Message);
+//                 return new OperationDataResult<Stream>(
+//                     false,
+//                     _localizationService.GetString("ErrorWhileCreatingWordFile"));
+//             }
+//         }
+
     }
 }
