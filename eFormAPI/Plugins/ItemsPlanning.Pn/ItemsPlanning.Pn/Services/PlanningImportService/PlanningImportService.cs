@@ -93,12 +93,12 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
                 var fileResult = _planningExcelService.ParsePlanningImportFile(excelStream);
 
                 // Get planning names list
-                var planningNames = await _dbContext.PlanningNameTranslation
-                    .AsNoTracking()
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed
-                    && x.LanguageId == theLanguage.Id)
-                    .Select(x => x.Name)
-                    .ToListAsync();
+                // var planningNames = await _dbContext.PlanningNameTranslation
+                //     .AsNoTracking()
+                //     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed
+                //     && x.LanguageId == theLanguage.Id)
+                //     .Select(x => x.Name)
+                //     .ToListAsync();
 
                 // Validation
                 var excelErrors = new List<ExcelParseErrorModel>();
