@@ -105,7 +105,12 @@ public class PlanningExcelService(
 
                     // Planning info
                     item.PlanningName = GetCellValue(workbookPart, row, PlanningImportExcelConsts.PlanningItemNameCol);
-                    if (item.PlanningName == "")
+                    // if (item.PlanningName == "")
+                    // {
+                    //     continue;
+                    // }
+
+                    if (item.Folders.Count == 0)
                     {
                         continue;
                     }

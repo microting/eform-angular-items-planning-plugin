@@ -449,6 +449,11 @@ namespace ItemsPlanning.Pn.Services.PlanningImportService
 
                         var planningNameFromExcelModel = excelModel.PlanningName.Split("|").First();
 
+                        if (string.IsNullOrEmpty(planningNameFromExcelModel))
+                        {
+                            continue;
+                        }
+
                         var sdkFolder = excelModel.Folders.Last();
                         // Find planning name
                         var planningName = _dbContext.PlanningNameTranslation
