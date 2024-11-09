@@ -22,222 +22,215 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
+using Sentry;
+
+namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService;
+
+using ItemsPlanningLocalizationService;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microting.eFormApi.BasePn.Abstractions;
+using Microting.eFormApi.BasePn.Infrastructure.Models.API;
+using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
+using Microting.ItemsPlanningBase.Infrastructure.Data;
+using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Infrastructure.Models.Planning;
+using Microting.eForm.Infrastructure.Constants;
+
+public class ItemsPlanningTagsService(
+    IItemsPlanningLocalizationService itemsPlanningLocalizationService,
+    ILogger<ItemsPlanningTagsService> logger,
+    ItemsPlanningPnDbContext dbContext,
+    IUserService userService)
+    : IItemsPlanningTagsService
 {
-    using ItemsPlanningLocalizationService;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Logging;
-    using Microting.eFormApi.BasePn.Abstractions;
-    using Microting.eFormApi.BasePn.Infrastructure.Models.API;
-    using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
-    using Microting.ItemsPlanningBase.Infrastructure.Data;
-    using Microting.ItemsPlanningBase.Infrastructure.Data.Entities;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Infrastructure.Models.Planning;
-    using Microting.eForm.Infrastructure.Constants;
-
-    public class ItemsPlanningTagsService : IItemsPlanningTagsService
+    public async Task<OperationDataResult<List<CommonDictionaryModel>>> GetItemsPlanningTags()
     {
-        private readonly ILogger<ItemsPlanningTagsService> _logger;
-        private readonly IItemsPlanningLocalizationService _itemsPlanningLocalizationService;
-        private readonly ItemsPlanningPnDbContext _dbContext;
-        private readonly IUserService _userService;
-
-        public ItemsPlanningTagsService(
-                IItemsPlanningLocalizationService itemsPlanningLocalizationService,
-                ILogger<ItemsPlanningTagsService> logger,
-                ItemsPlanningPnDbContext dbContext,
-                IUserService userService
-                )
+        try
         {
-            _itemsPlanningLocalizationService = itemsPlanningLocalizationService;
-            _logger = logger;
-            _dbContext = dbContext;
-            _userService = userService;
-        }
-
-        public async Task<OperationDataResult<List<CommonDictionaryModel>>> GetItemsPlanningTags()
-        {
-            try
-            {
-                var itemsPlanningTags = await _dbContext.PlanningTags
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                                    .AsNoTracking()
-                                    .Select(x => new CommonDictionaryModel
-                                    {
-                                        Id = x.Id,
-                                        Name = x.Name
-                                    }).OrderBy(x => x.Name).ToListAsync();
-
-                return new OperationDataResult<List<CommonDictionaryModel>>(
-                    true,
-                    itemsPlanningTags);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                _logger.LogError(e.Message);
-                return new OperationDataResult<List<CommonDictionaryModel>>(
-                    false,
-                    _itemsPlanningLocalizationService.GetString("ErrorWhileObtainingItemsPlanningTags"));
-            }
-        }
-
-        public async Task<OperationResult> CreateItemsPlanningTag(PlanningTagModel requestModel)
-        {
-            var currentTag = await _dbContext.PlanningTags
-                .FirstOrDefaultAsync(x => x.Name == requestModel.Name);
-
-            if (currentTag != null)
-            {
-                if (currentTag.WorkflowState != Constants.WorkflowStates.Removed)
+            var itemsPlanningTags = await dbContext.PlanningTags
+                .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                .AsNoTracking()
+                .Select(x => new CommonDictionaryModel
                 {
-                    return new OperationResult(
-                        true,
-                        _itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"));
-                }
-                currentTag.WorkflowState = Constants.WorkflowStates.Created;
-                currentTag.UpdatedByUserId = _userService.UserId;
-                await currentTag.Update(_dbContext);
+                    Id = x.Id,
+                    Name = x.Name
+                }).OrderBy(x => x.Name).ToListAsync();
+
+            return new OperationDataResult<List<CommonDictionaryModel>>(
+                true,
+                itemsPlanningTags);
+        }
+        catch (Exception e)
+        {
+            SentrySdk.CaptureException(e);
+            logger.LogError(e.Message);
+            logger.LogTrace(e.StackTrace);
+            return new OperationDataResult<List<CommonDictionaryModel>>(
+                false,
+                itemsPlanningLocalizationService.GetString("ErrorWhileObtainingItemsPlanningTags"));
+        }
+    }
+
+    public async Task<OperationResult> CreateItemsPlanningTag(PlanningTagModel requestModel)
+    {
+        var currentTag = await dbContext.PlanningTags
+            .FirstOrDefaultAsync(x => x.Name == requestModel.Name);
+
+        if (currentTag != null)
+        {
+            if (currentTag.WorkflowState != Constants.WorkflowStates.Removed)
+            {
                 return new OperationResult(
                     true,
-                    _itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"));
+                    itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"));
+            }
+            currentTag.WorkflowState = Constants.WorkflowStates.Created;
+            currentTag.UpdatedByUserId = userService.UserId;
+            await currentTag.Update(dbContext);
+            return new OperationResult(
+                true,
+                itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"));
+        }
+
+        try
+        {
+            var itemsPlanningTag = new PlanningTag
+            {
+                Name = requestModel.Name,
+                CreatedByUserId = userService.UserId,
+                UpdatedByUserId = userService.UserId
+            };
+
+            await itemsPlanningTag.Create(dbContext);
+
+            return new OperationResult(
+                true,
+                itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"));
+        }
+        catch (Exception e)
+        {
+            SentrySdk.CaptureException(e);
+            logger.LogError(e.Message);
+            logger.LogTrace(e.StackTrace);
+            return new OperationResult(
+                false,
+                itemsPlanningLocalizationService.GetString("ErrorWhileCreatingItemsPlanningTag"));
+        }
+    }
+
+    public async Task<OperationResult> DeleteItemsPlanningTag(int id)
+    {
+        try
+        {
+            var itemsPlanningTag = await dbContext.PlanningTags
+                .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (itemsPlanningTag == null)
+            {
+                return new OperationResult(
+                    false,
+                    itemsPlanningLocalizationService.GetString("ItemsPlanningTagNotFound"));
             }
 
-            try
+            var planningsTags = await dbContext.PlanningsTags
+                .Where(x => x.PlanningTagId == id).ToListAsync();
+
+            foreach(var planningTag in planningsTags)
             {
+                planningTag.UpdatedByUserId = userService.UserId;
+                await planningTag.Delete(dbContext);
+            }
+            itemsPlanningTag.UpdatedByUserId = userService.UserId;
+            await itemsPlanningTag.Delete(dbContext);
+
+            return new OperationResult(
+                true,
+                itemsPlanningLocalizationService.GetString("ItemsPlanningTagRemovedSuccessfully"));
+        }
+        catch (Exception e)
+        {
+            SentrySdk.CaptureException(e);
+            logger.LogError(e.Message);
+            logger.LogTrace(e.StackTrace);
+            return new OperationResult(
+                false,
+                itemsPlanningLocalizationService.GetString("ErrorWhileRemovingItemsPlanningTag"));
+        }
+    }
+
+    public async Task<OperationResult> UpdateItemsPlanningTag(PlanningTagModel requestModel)
+    {
+        try
+        {
+            var itemsPlanningTag = await dbContext.PlanningTags
+                .Where(x=> x.WorkflowState != Constants.WorkflowStates.Removed)
+                .FirstOrDefaultAsync(x => x.Id == requestModel.Id);
+
+            if (itemsPlanningTag == null)
+            {
+                return new OperationResult(
+                    false,
+                    itemsPlanningLocalizationService.GetString("ItemsPlanningTagNotFound"));
+            }
+
+            itemsPlanningTag.Name = requestModel.Name;
+            itemsPlanningTag.UpdatedByUserId = userService.UserId;
+
+            await itemsPlanningTag.Update(dbContext);
+
+            return new OperationResult(true,
+                itemsPlanningLocalizationService.GetString("ItemsPlanningTagUpdatedSuccessfully"));
+        }
+        catch (Exception e)
+        {
+            SentrySdk.CaptureException(e);
+            logger.LogError(e.Message);
+            logger.LogTrace(e.StackTrace);
+            return new OperationResult(false,
+                itemsPlanningLocalizationService.GetString("ErrorWhileUpdatingItemsPlanningTag"));
+        }
+    }
+
+    public async Task<OperationResult> BulkPlanningTags(PlanningBulkTagModel requestModel)
+    {
+        try
+        {
+            foreach (var tagName in requestModel.TagNames)
+            {
+                if (await dbContext.PlanningTags.AnyAsync(x =>
+                        x.Name == tagName && x.WorkflowState != Constants.WorkflowStates.Removed))
+                {
+                    continue; // skip replies
+                }
+
                 var itemsPlanningTag = new PlanningTag
                 {
-                    Name = requestModel.Name,
-                    CreatedByUserId = _userService.UserId,
-                    UpdatedByUserId = _userService.UserId
+                    Name = tagName,
+                    CreatedByUserId = userService.UserId,
+                    UpdatedByUserId = userService.UserId
                 };
 
-                await itemsPlanningTag.Create(_dbContext);
+                await itemsPlanningTag.Create(dbContext);
+            }
 
-                return new OperationResult(
-                    true,
-                    _itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                _logger.LogError(e.Message);
-                return new OperationResult(
-                    false,
-                    _itemsPlanningLocalizationService.GetString("ErrorWhileCreatingItemsPlanningTag"));
-            }
+            return new OperationResult(
+                true,
+                itemsPlanningLocalizationService.GetString("ItemsPlanningTagsCreatedSuccessfully"));
         }
-
-        public async Task<OperationResult> DeleteItemsPlanningTag(int id)
+        catch (Exception e)
         {
-            try
-            {
-                var itemsPlanningTag = await _dbContext.PlanningTags
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                    .FirstOrDefaultAsync(x => x.Id == id);
-
-                if (itemsPlanningTag == null)
-                {
-                    return new OperationResult(
-                        false,
-                        _itemsPlanningLocalizationService.GetString("ItemsPlanningTagNotFound"));
-                }
-
-                var planningsTags = await _dbContext.PlanningsTags
-                    .Where(x => x.PlanningTagId == id).ToListAsync();
-
-                foreach(var planningTag in planningsTags)
-                {
-                    planningTag.UpdatedByUserId = _userService.UserId;
-                    await planningTag.Delete(_dbContext);
-                }
-                itemsPlanningTag.UpdatedByUserId = _userService.UserId;
-                await itemsPlanningTag.Delete(_dbContext);
-
-                return new OperationResult(
-                    true,
-                    _itemsPlanningLocalizationService.GetString("ItemsPlanningTagRemovedSuccessfully"));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                _logger.LogError(e.Message);
-                return new OperationResult(
-                    false,
-                    _itemsPlanningLocalizationService.GetString("ErrorWhileRemovingItemsPlanningTag"));
-            }
+            SentrySdk.CaptureException(e);
+            logger.LogError(e.Message);
+            logger.LogTrace(e.StackTrace);
+            return new OperationResult(
+                false,
+                itemsPlanningLocalizationService.GetString("ErrorWhileCreatingItemsPlanningTags"));
         }
-
-        public async Task<OperationResult> UpdateItemsPlanningTag(PlanningTagModel requestModel)
-        {
-            try
-            {
-                var itemsPlanningTag = await _dbContext.PlanningTags
-                    .Where(x=> x.WorkflowState != Constants.WorkflowStates.Removed)
-                    .FirstOrDefaultAsync(x => x.Id == requestModel.Id);
-
-                if (itemsPlanningTag == null)
-                {
-                    return new OperationResult(
-                        false,
-                        _itemsPlanningLocalizationService.GetString("ItemsPlanningTagNotFound"));
-                }
-
-                itemsPlanningTag.Name = requestModel.Name;
-                itemsPlanningTag.UpdatedByUserId = _userService.UserId;
-
-                await itemsPlanningTag.Update(_dbContext);
-
-                return new OperationResult(true,
-                    _itemsPlanningLocalizationService.GetString("ItemsPlanningTagUpdatedSuccessfully"));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                _logger.LogError(e.Message);
-                return new OperationResult(false,
-                    _itemsPlanningLocalizationService.GetString("ErrorWhileUpdatingItemsPlanningTag"));
-            }
-        }
-
-		public async Task<OperationResult> BulkPlanningTags(PlanningBulkTagModel requestModel)
-		{
-			try
-			{
-				foreach (var tagName in requestModel.TagNames)
-				{
-					if (await _dbContext.PlanningTags.AnyAsync(x =>
-						    x.Name == tagName && x.WorkflowState != Constants.WorkflowStates.Removed))
-					{
-                        continue; // skip replies
-					}
-
-					var itemsPlanningTag = new PlanningTag
-					{
-						Name = tagName,
-						CreatedByUserId = _userService.UserId,
-						UpdatedByUserId = _userService.UserId
-                    };
-
-					await itemsPlanningTag.Create(_dbContext);
-				}
-
-				return new OperationResult(
-					true,
-					_itemsPlanningLocalizationService.GetString("ItemsPlanningTagsCreatedSuccessfully"));
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-				_logger.LogError(e.Message);
-				return new OperationResult(
-					false,
-					_itemsPlanningLocalizationService.GetString("ErrorWhileCreatingItemsPlanningTags"));
-			}
-		}
-	}
+    }
 }

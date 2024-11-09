@@ -27,15 +27,11 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningLocalizationService
     using Microsoft.Extensions.Localization;
     using Microting.eFormApi.BasePn.Localization.Abstractions;
 
-    public class ItemsPlanningLocalizationService : IItemsPlanningLocalizationService
+    public class ItemsPlanningLocalizationService(IEformLocalizerFactory factory) : IItemsPlanningLocalizationService
     {
-        private readonly IStringLocalizer _localizer;
+        private readonly IStringLocalizer _localizer = factory.Create(typeof(EformItemsPlanningPlugin));
 
         // ReSharper disable once SuggestBaseTypeForParameter
-        public ItemsPlanningLocalizationService(IEformLocalizerFactory factory)
-        {
-            _localizer = factory.Create(typeof(EformItemsPlanningPlugin));
-        }
 
         public string GetString(string key)
         {
