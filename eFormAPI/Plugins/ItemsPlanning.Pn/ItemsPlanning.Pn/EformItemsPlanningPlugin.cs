@@ -173,6 +173,7 @@ namespace ItemsPlanning.Pn
                 {
                     builder.EnableRetryOnFailure();
                     builder.MigrationsAssembly(PluginAssembly().FullName);
+                    builder.TranslateParameterizedCollectionsToConstants();
                 }));
 
             ItemsPlanningPnContextFactory contextFactory = new ItemsPlanningPnContextFactory();
