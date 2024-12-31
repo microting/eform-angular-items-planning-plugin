@@ -28,7 +28,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using eFormCore;
 using ItemsPlanning.Pn.Services.ItemsPlanningCaseService;
-using Microting.eForm.Dto;
 using Microting.eForm.Infrastructure.Constants;
 using Microting.eForm.Infrastructure.Data.Entities;
 using Microting.eFormApi.BasePn.Abstractions;
@@ -44,7 +43,6 @@ namespace ItemsPlanning.Pn
     using Infrastructure.Data.Seed.Data;
     using Infrastructure.Models.Settings;
     using Services.ItemsPlanningTagsService;
-    //using Messages;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -59,7 +57,6 @@ namespace ItemsPlanning.Pn
     using Microting.ItemsPlanningBase.Infrastructure.Const;
     using Microting.ItemsPlanningBase.Infrastructure.Data;
     using Microting.ItemsPlanningBase.Infrastructure.Data.Factories;
-    //using Rebus.Bus;
     using Services.ExcelService;
     using Services.ItemsPlanningLocalizationService;
     using Services.ItemsPlanningPnSettingsService;
@@ -67,7 +64,6 @@ namespace ItemsPlanning.Pn
     using Services.PairingService;
     using Services.PlanningImportService;
     using Services.PlanningService;
-    using Services.RebusService;
     using Services.UploadedDataService;
     using Services.WordService;
 
@@ -96,7 +92,6 @@ namespace ItemsPlanning.Pn
             services.AddTransient<IPlanningService, PlanningService>();
             services.AddTransient<IPairingService, PairingService>();
             services.AddTransient<IUploadedDataService, UploadedDataService>();
-            services.AddSingleton<IRebusService, RebusService>();
             services.AddTransient<IWordService, WordService>();
             services.AddTransient<IPlanningExcelService, PlanningExcelService>();
             services.AddTransient<IPlanningImportService, PlanningImportService>();
@@ -186,10 +181,6 @@ namespace ItemsPlanning.Pn
 
         public void Configure(IApplicationBuilder appBuilder)
         {
-            var serviceProvider = appBuilder.ApplicationServices;
-
-            IRebusService rebusService = serviceProvider.GetService<IRebusService>();
-            rebusService!.Start(_connectionString).GetAwaiter().GetResult();
         }
 
         public List<PluginMenuItemModel> GetNavigationMenu(IServiceProvider serviceProvider)
