@@ -22,9 +22,10 @@ import {
 } from "src/app/plugins/modules/items-planning-pn/state/plannings/plannings.selector";
 
 @Component({
-  selector: 'app-plannings-table',
-  templateUrl: './plannings-table.component.html',
-  styleUrls: ['./plannings-table.component.scss'],
+    selector: 'app-plannings-table',
+    templateUrl: './plannings-table.component.html',
+    styleUrls: ['./plannings-table.component.scss'],
+    standalone: false
 })
 export class PlanningsTableComponent implements OnInit {
   @Input() planningsModel: Paged<PlanningModel> = new Paged<PlanningModel>();

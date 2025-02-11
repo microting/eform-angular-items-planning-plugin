@@ -17,10 +17,11 @@ import {
 } from "src/app/plugins/modules/items-planning-pn/state/plannings/plannings.selector";
 
 @Component({
-  selector: 'app-plannings-header',
-  templateUrl: './plannings-header.component.html',
-  styleUrls: ['./plannings-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-plannings-header',
+    templateUrl: './plannings-header.component.html',
+    styleUrls: ['./plannings-header.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class PlanningsHeaderComponent implements OnInit {
   @Input() availableTags: CommonDictionaryModel[] = [];

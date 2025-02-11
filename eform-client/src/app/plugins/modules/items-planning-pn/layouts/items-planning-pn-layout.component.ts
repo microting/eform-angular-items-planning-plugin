@@ -6,9 +6,10 @@ import {addPluginToVisited, selectPluginsVisitedPlugins} from 'src/app/state';
 import {take} from 'rxjs';
 
 @Component({
-  selector: 'app-items-planning-pn-layout',
-  template: `
+    selector: 'app-items-planning-pn-layout',
+    template: `
     <router-outlet></router-outlet>`,
+    standalone: false
 })
 export class ItemsPlanningPnLayoutComponent implements AfterContentInit, OnInit {
   private pluginName = 'items-planning';

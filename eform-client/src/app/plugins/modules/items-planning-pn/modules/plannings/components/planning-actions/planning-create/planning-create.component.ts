@@ -37,9 +37,10 @@ import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 
 @AutoUnsubscribe()
 @Component({
-  selector: 'app-planning-create',
-  templateUrl: './planning-create.component.html',
-  styleUrls: ['./planning-create.component.scss'],
+    selector: 'app-planning-create',
+    templateUrl: './planning-create.component.html',
+    styleUrls: ['./planning-create.component.scss'],
+    standalone: false
 })
 export class PlanningCreateComponent implements OnInit, OnDestroy {
   typeahead = new EventEmitter<string>();

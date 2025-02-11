@@ -24,9 +24,10 @@ import {dialogConfigHelper} from 'src/app/common/helpers';
 
 @AutoUnsubscribe()
 @Component({
-  selector: 'app-planning-tags',
-  templateUrl: './planning-tags.component.html',
-  styleUrls: ['./planning-tags.component.scss'],
+    selector: 'app-planning-tags',
+    templateUrl: './planning-tags.component.html',
+    styleUrls: ['./planning-tags.component.scss'],
+    standalone: false
 })
 export class PlanningTagsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() availableTags: CommonDictionaryModel[] = [];

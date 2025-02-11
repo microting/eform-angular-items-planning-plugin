@@ -34,9 +34,10 @@ import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 
 @AutoUnsubscribe()
 @Component({
-  selector: 'app-planning-edit',
-  templateUrl: './planning-edit.component.html',
-  styleUrls: ['./planning-edit.component.scss'],
+    selector: 'app-planning-edit',
+    templateUrl: './planning-edit.component.html',
+    styleUrls: ['./planning-edit.component.scss'],
+    standalone: false
 })
 export class PlanningEditComponent implements OnInit, OnDestroy {
   selectedPlanningModel: PlanningModel = new PlanningModel();

@@ -12,9 +12,10 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @AutoUnsubscribe()
 @Component({
-  selector: 'app-planning-folders-modal',
-  templateUrl: './planning-folders-modal.component.html',
-  styleUrls: ['./planning-folders-modal.component.scss'],
+    selector: 'app-planning-folders-modal',
+    templateUrl: './planning-folders-modal.component.html',
+    styleUrls: ['./planning-folders-modal.component.scss'],
+    standalone: false
 })
 export class PlanningFoldersModalComponent implements OnInit, OnDestroy {
   folderSelected: EventEmitter<FolderDto> = new EventEmitter<FolderDto>();

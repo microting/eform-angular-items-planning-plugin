@@ -4,9 +4,10 @@ import {PlanningModel} from '../../../../../models';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-planning-delete',
-  templateUrl: './planning-delete.component.html',
-  styleUrls: ['./planning-delete.component.scss']
+    selector: 'app-planning-delete',
+    templateUrl: './planning-delete.component.html',
+    styleUrls: ['./planning-delete.component.scss'],
+    standalone: false
 })
 export class PlanningDeleteComponent implements OnInit {
   planningDeleted: EventEmitter<void> = new EventEmitter<void>();

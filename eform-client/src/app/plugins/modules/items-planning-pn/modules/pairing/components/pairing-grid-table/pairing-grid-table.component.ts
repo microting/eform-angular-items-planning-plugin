@@ -28,9 +28,10 @@ import {
 
 @AutoUnsubscribe()
 @Component({
-  selector: 'app-pairing-grid-table',
-  templateUrl: './pairing-grid-table.component.html',
-  styleUrls: ['./pairing-grid-table.component.scss'],
+    selector: 'app-pairing-grid-table',
+    templateUrl: './pairing-grid-table.component.html',
+    styleUrls: ['./pairing-grid-table.component.scss'],
+    standalone: false
 })
 export class PairingGridTableComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('firstCellTpl', {static: true}) firstCell!: TemplateRef<any>;

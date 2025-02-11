@@ -32,9 +32,10 @@ import {Store} from '@ngrx/store';
 
 @AutoUnsubscribe()
 @Component({
-  selector: 'app-plannings-container',
-  templateUrl: './plannings-container.component.html',
-  styleUrls: ['./plannings-container.component.scss'],
+    selector: 'app-plannings-container',
+    templateUrl: './plannings-container.component.html',
+    styleUrls: ['./plannings-container.component.scss'],
+    standalone: false
 })
 export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('modalCasesColumns', { static: false }) modalCasesColumnsModal;

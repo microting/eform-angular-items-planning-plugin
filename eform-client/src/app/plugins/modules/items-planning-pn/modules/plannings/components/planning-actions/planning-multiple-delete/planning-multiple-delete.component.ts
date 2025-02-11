@@ -2,9 +2,10 @@ import {Component, EventEmitter, Inject, OnInit,} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-planning-multiple-delete',
-  templateUrl: './planning-multiple-delete.component.html',
-  styleUrls: ['./planning-multiple-delete.component.scss'],
+    selector: 'app-planning-multiple-delete',
+    templateUrl: './planning-multiple-delete.component.html',
+    styleUrls: ['./planning-multiple-delete.component.scss'],
+    standalone: false
 })
 export class PlanningMultipleDeleteComponent implements OnInit {
   deleteMultiplePlannings: EventEmitter<void> = new EventEmitter<void>();

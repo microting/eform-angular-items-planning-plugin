@@ -3,9 +3,10 @@ import {PairingUpdateModel} from '../../../../models';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-pairing-grid-update',
-  templateUrl: './pairing-grid-update.component.html',
-  styleUrls: ['./pairing-grid-update.component.scss'],
+    selector: 'app-pairing-grid-update',
+    templateUrl: './pairing-grid-update.component.html',
+    styleUrls: ['./pairing-grid-update.component.scss'],
+    standalone: false
 })
 export class PairingGridUpdateComponent implements OnInit {
   updatePairings: EventEmitter<void> = new EventEmitter<void>();

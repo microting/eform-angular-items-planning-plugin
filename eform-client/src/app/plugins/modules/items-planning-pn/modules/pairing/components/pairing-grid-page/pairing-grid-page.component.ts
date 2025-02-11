@@ -15,9 +15,10 @@ import {dialogConfigHelper} from 'src/app/common/helpers';
 
 @AutoUnsubscribe()
 @Component({
-  selector: 'app-pairing-grid-page',
-  templateUrl: './pairing-grid-page.component.html',
-  styleUrls: ['./pairing-grid-page.component.scss'],
+    selector: 'app-pairing-grid-page',
+    templateUrl: './pairing-grid-page.component.html',
+    styleUrls: ['./pairing-grid-page.component.scss'],
+    standalone: false
 })
 export class PairingGridPageComponent implements OnInit, OnDestroy {
   sitesDto: SiteNameDto[] = [];

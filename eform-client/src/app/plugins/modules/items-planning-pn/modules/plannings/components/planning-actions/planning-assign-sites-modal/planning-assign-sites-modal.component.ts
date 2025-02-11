@@ -25,9 +25,10 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @AutoUnsubscribe()
 @Component({
-  selector: 'app-planning-assign-sites-modal',
-  templateUrl: './planning-assign-sites-modal.component.html',
-  styleUrls: ['./planning-assign-sites-modal.component.scss'],
+    selector: 'app-planning-assign-sites-modal',
+    templateUrl: './planning-assign-sites-modal.component.html',
+    styleUrls: ['./planning-assign-sites-modal.component.scss'],
+    standalone: false
 })
 export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
   sitesAssigned: EventEmitter<void> = new EventEmitter<void>();

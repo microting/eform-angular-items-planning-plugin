@@ -11,9 +11,10 @@ import {Store} from '@ngrx/store';
 import {selectBearerToken} from 'src/app/state/auth/auth.selector';
 
 @Component({
-  selector: 'app-plannings-bulk-import-modal',
-  templateUrl: './plannings-bulk-import-modal.component.html',
-  styleUrls: ['./plannings-bulk-import-modal.component.scss'],
+    selector: 'app-plannings-bulk-import-modal',
+    templateUrl: './plannings-bulk-import-modal.component.html',
+    styleUrls: ['./plannings-bulk-import-modal.component.scss'],
+    standalone: false
 })
 export class PlanningsBulkImportModalComponent implements OnInit {
   @ViewChild('xlsxPlannings', { static: false }) xlsxPlannings: ElementRef;
