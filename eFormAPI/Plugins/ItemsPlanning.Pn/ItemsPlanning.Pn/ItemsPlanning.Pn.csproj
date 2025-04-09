@@ -29,7 +29,7 @@
       <PackageReference Include="Microting.eForm" Version="9.0.28" />
       <PackageReference Include="Microting.eFormApi.BasePn" Version="9.0.27" />
       <PackageReference Include="Microting.ItemsPlanningBase" Version="8.0.88" />
-      <PackageReference Include="Sentry" Version="5.5.0" />
+      <PackageReference Include="Sentry" Version="5.5.1" />
     </ItemGroup>
 
     <ItemGroup>
