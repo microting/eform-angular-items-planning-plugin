@@ -46,7 +46,7 @@ namespace ItemsPlanning.Pn.Controllers
         }
 
         [HttpGet]
-        public async Task<OperationDataResult<List<CommonDictionaryModel>>> GetItemsPlanningTags()
+        public async Task<OperationDataResult<List<PlanningTagModel>>> GetItemsPlanningTags()
         {
             return await _itemsPlanningTagsService.GetItemsPlanningTags();
         }

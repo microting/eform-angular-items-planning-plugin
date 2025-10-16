@@ -48,20 +48,21 @@ public class ItemsPlanningTagsService(
     IUserService userService)
     : IItemsPlanningTagsService
 {
-    public async Task<OperationDataResult<List<CommonDictionaryModel>>> GetItemsPlanningTags()
+    public async Task<OperationDataResult<List<PlanningTagModel>>> GetItemsPlanningTags()
     {
         try
         {
             var itemsPlanningTags = await dbContext.PlanningTags
                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                 .AsNoTracking()
-                .Select(x => new CommonDictionaryModel
+                .Select(x => new PlanningTagModel
                 {
                     Id = x.Id,
-                    Name = x.Name
+                    Name = x.Name,
+                    IsLocked = x.IsLocked
                 }).OrderBy(x => x.Name).ToListAsync();
 
-            return new OperationDataResult<List<CommonDictionaryModel>>(
+            return new OperationDataResult<List<PlanningTagModel>>(
                 true,
                 itemsPlanningTags);
         }
@@ -70,7 +71,7 @@ public class ItemsPlanningTagsService(
             SentrySdk.CaptureException(e);
             logger.LogError(e.Message);
             logger.LogTrace(e.StackTrace);
-            return new OperationDataResult<List<CommonDictionaryModel>>(
+            return new OperationDataResult<List<PlanningTagModel>>(
                 false,
                 itemsPlanningLocalizationService.GetString("ErrorWhileObtainingItemsPlanningTags"));
         }

@@ -20,7 +20,7 @@ export let ItemsPlanningTagsMethods = {
 export class ItemsPlanningPnTagsService {
   constructor(private apiBaseService: ApiBaseService) {}
 
-  getPlanningsTags(): Observable<OperationDataResult<CommonDictionaryModel[]>> {
+  getPlanningsTags(): Observable<OperationDataResult<SharedTagModel[]>> {
     return this.apiBaseService.get<SharedTagModel[]>(
       ItemsPlanningTagsMethods.Tags
     );
