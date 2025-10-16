@@ -32,7 +32,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
 
     public interface IItemsPlanningTagsService
     {
-        Task<OperationDataResult<List<CommonDictionaryModel>>> GetItemsPlanningTags();
+        Task<OperationDataResult<List<PlanningTagModel>>> GetItemsPlanningTags();
 
         Task<OperationResult> UpdateItemsPlanningTag(PlanningTagModel requestModel);
 

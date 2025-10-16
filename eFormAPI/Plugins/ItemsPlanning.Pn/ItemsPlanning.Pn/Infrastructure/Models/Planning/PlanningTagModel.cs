@@ -22,11 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microting.eFormApi.BasePn.Infrastructure.Models.Common;
+
 namespace ItemsPlanning.Pn.Infrastructure.Models.Planning
 {
-    public class PlanningTagModel
+    public class PlanningTagModel : CommonDictionaryModel
     {
-        public int? Id { get; set; }
-        public string Name { get; set; }
+        public bool IsLocked { get; set; }
     }
 }
