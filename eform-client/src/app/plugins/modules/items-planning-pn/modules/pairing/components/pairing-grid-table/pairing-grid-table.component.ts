@@ -8,7 +8,8 @@ import {
   Output,
   SimpleChanges,
   TemplateRef,
-  ViewChild
+  ViewChild,
+  inject
 } from '@angular/core';
 import {PairingModel, PairingsModel, PairingUpdateModel} from '../../../../models';
 import {AuthStateService} from 'src/app/common/store';
@@ -34,6 +35,13 @@ import {
     standalone: false
 })
 export class PairingGridTableComponent implements OnInit, OnDestroy, OnChanges {
+  private store = inject(Store);
+  private itemsPlanningStore = inject(Store);
+  public authStateService = inject(AuthStateService);
+  public pairingStateService = inject(PairingStateService);
+  private sitesService = inject(SitesService);
+  private tagsService = inject(ItemsPlanningPnTagsService);
+
   @ViewChild('firstCellTpl', {static: true}) firstCell!: TemplateRef<any>;
   @ViewChild('otherCellsTpl', {static: true}) otherCellsTpl!: TemplateRef<any>;
   @Input() pairingsModel: PairingsModel;
@@ -50,16 +58,6 @@ export class PairingGridTableComponent implements OnInit, OnDestroy, OnChanges {
   public isAuth$ = this.store.select(selectAuthIsAuth);
   public selectPairingsTagsIds$ = this.itemsPlanningStore.select(selectPairingsTagsIds);
   public selectPairingsSiteIds$ = this.itemsPlanningStore.select(selectPairingsSiteIds);
-
-  constructor(
-    private store: Store,
-    private itemsPlanningStore: Store,
-    public authStateService: AuthStateService,
-    public pairingStateService: PairingStateService,
-    private sitesService: SitesService,
-    private tagsService: ItemsPlanningPnTagsService,
-  ) {
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.pairingsModel && !changes.pairingsModel.isFirstChange()) {

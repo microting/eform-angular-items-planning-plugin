@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, OnInit,} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit, inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 @Component({
@@ -8,11 +8,10 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
     standalone: false
 })
 export class PlanningMultipleDeleteComponent implements OnInit {
+  public dialogRef = inject(MatDialogRef<PlanningMultipleDeleteComponent>);
+  public selectedPlanningsCount = inject<number>(MAT_DIALOG_DATA);
+
   deleteMultiplePlannings: EventEmitter<void> = new EventEmitter<void>();
-  constructor(
-    public dialogRef: MatDialogRef<PlanningMultipleDeleteComponent>,
-    @Inject(MAT_DIALOG_DATA) public selectedPlanningsCount: number,
-  ) {}
 
   ngOnInit() {}
 
