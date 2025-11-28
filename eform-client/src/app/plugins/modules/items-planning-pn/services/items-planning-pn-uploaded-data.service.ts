@@ -1,7 +1,7 @@
 import { UploadedDatasModel } from '../models/plannings';
 import { Observable } from 'rxjs';
 import { OperationDataResult, OperationResult } from 'src/app/common/models';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ApiBaseService } from 'src/app/common/services';
 
 export let ItemsPlanningPnUploadedDataMethods = {
@@ -12,7 +12,7 @@ export let ItemsPlanningPnUploadedDataMethods = {
   providedIn: 'root',
 })
 export class ItemsPlanningPnUploadedDataService {
-  constructor(private apiBaseService: ApiBaseService) {}
+  private apiBaseService = inject(ApiBaseService);
 
   getAllUploadedData(
     itemCaseId: number

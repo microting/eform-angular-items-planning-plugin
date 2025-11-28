@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {ItemsPlanningPnPairingService} from '../../../../services';
 import {Store} from '@ngrx/store';
 import {
@@ -12,14 +12,14 @@ import {arrayToggle} from 'src/app/common/helpers';
 
 @Injectable({providedIn: 'root'})
 export class PairingStateService {
+  private store = inject(Store<ItemsPlanningState>);
+  private service = inject(ItemsPlanningPnPairingService);
+
   // @ts-ignore
   private selectPairingsFilters$ = this.store.select(selectPairingsFilters);
   currentFilters: PairingFiltrationState;
 
-  constructor(
-    private store: Store<ItemsPlanningState>,
-    private service: ItemsPlanningPnPairingService,
-  ) {
+  constructor() {
     this.selectPairingsFilters$.subscribe((x) => this.currentFilters = x);
   }
 

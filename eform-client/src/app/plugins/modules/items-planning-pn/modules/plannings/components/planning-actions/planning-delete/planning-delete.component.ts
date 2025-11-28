@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, OnInit} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit, inject} from '@angular/core';
 import {ItemsPlanningPnPlanningsService} from '../../../../../services';
 import {PlanningModel} from '../../../../../models';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
@@ -10,12 +10,11 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
     standalone: false
 })
 export class PlanningDeleteComponent implements OnInit {
+  private itemsPlanningPnPlanningsService = inject(ItemsPlanningPnPlanningsService);
+  public dialogRef = inject(MatDialogRef<PlanningDeleteComponent>);
+  public planningModel = inject<PlanningModel>(MAT_DIALOG_DATA);
+
   planningDeleted: EventEmitter<void> = new EventEmitter<void>();
-  constructor(
-    private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
-    public dialogRef: MatDialogRef<PlanningDeleteComponent>,
-    @Inject(MAT_DIALOG_DATA) public planningModel: PlanningModel = new PlanningModel()
-  ) { }
 
   ngOnInit() {
   }

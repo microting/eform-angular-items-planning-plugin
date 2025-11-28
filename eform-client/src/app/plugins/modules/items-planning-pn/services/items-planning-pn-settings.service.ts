@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OperationDataResult, OperationResult } from 'src/app/common/models';
 import { ItemsPlanningBaseSettingsModel } from '../models/items-planning-base-settings.model';
@@ -9,7 +9,7 @@ export let ItemsPlanningSettingsMethods = {
 };
 @Injectable()
 export class ItemsPlanningPnSettingsService {
-  constructor(private apiBaseService: ApiBaseService) {}
+  private apiBaseService = inject(ApiBaseService);
 
   getAllSettings(): Observable<
     OperationDataResult<ItemsPlanningBaseSettingsModel>

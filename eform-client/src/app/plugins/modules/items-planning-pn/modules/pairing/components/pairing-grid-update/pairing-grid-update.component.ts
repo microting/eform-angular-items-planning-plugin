@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, OnInit,} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit, inject} from '@angular/core';
 import {PairingUpdateModel} from '../../../../models';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
@@ -9,16 +9,16 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
     standalone: false
 })
 export class PairingGridUpdateComponent implements OnInit {
+  public dialogRef = inject(MatDialogRef<PairingGridUpdateComponent>);
+  private model = inject<PairingUpdateModel[]>(MAT_DIALOG_DATA);
+
   updatePairings: EventEmitter<void> = new EventEmitter<void>();
   pairingsForDeploy: PairingUpdateModel[] = [];
   pairingsForRetract: PairingUpdateModel[] = [];
 
-  constructor(
-    public dialogRef: MatDialogRef<PairingGridUpdateComponent>,
-    @Inject(MAT_DIALOG_DATA) model: PairingUpdateModel[],
-  ) {
-    this.pairingsForDeploy = model.filter(x => x.paired === true);
-    this.pairingsForRetract = model.filter(x => x.paired === false);
+  constructor() {
+    this.pairingsForDeploy = this.model.filter(x => x.paired === true);
+    this.pairingsForRetract = this.model.filter(x => x.paired === false);
   }
 
   ngOnInit() {

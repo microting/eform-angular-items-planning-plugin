@@ -4,6 +4,7 @@ import {
   Input,
   OnInit,
   Output,
+  inject
 } from '@angular/core';
 import { PlanningModel } from '../../../../../models';
 import {Paged, PaginationModel} from 'src/app/common/models';
@@ -28,6 +29,13 @@ import {
     standalone: false
 })
 export class PlanningsTableComponent implements OnInit {
+  public planningsStateService = inject(PlanningsStateService);
+  public authStateService = inject(AuthStateService);
+  private translateService = inject(TranslateService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private planningsStore = inject(Store);
+
   @Input() planningsModel: Paged<PlanningModel> = new Paged<PlanningModel>();
   @Input() selectedColCheckboxes: number[] = [];
   @Input() allPlanningCheckbox = false;
@@ -175,15 +183,6 @@ export class PlanningsTableComponent implements OnInit {
   public selectPlanningPagination$ = this.planningsStore.select(selectPlanningPagination);
   public selectPlanningsPaginationSort$ = this.planningsStore.select(selectPlanningsPaginationSort);
   public selectPlanningsPaginationIsSortDsc$ = this.planningsStore.select(selectPlanningsPaginationIsSortDsc);
-
-  constructor(
-    public planningsStateService: PlanningsStateService,
-    public authStateService: AuthStateService,
-    private translateService: TranslateService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private planningsStore: Store
-  ) {}
 
   ngOnInit(): void {}
 
