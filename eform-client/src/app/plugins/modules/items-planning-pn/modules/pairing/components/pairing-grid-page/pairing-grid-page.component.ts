@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, inject} from '@angular/core';
 import {
   ItemsPlanningPnPairingService,
 } from '../../../../services';
@@ -21,6 +21,11 @@ import {dialogConfigHelper} from 'src/app/common/helpers';
     standalone: false
 })
 export class PairingGridPageComponent implements OnInit, OnDestroy {
+  private pairingService = inject(ItemsPlanningPnPairingService);
+  public pairingStateService = inject(PairingStateService);
+  public dialog = inject(MatDialog);
+  private overlay = inject(Overlay);
+
   sitesDto: SiteNameDto[] = [];
   pairings: PairingsModel = new PairingsModel();
   availableTags: CommonDictionaryModel[] = [];
@@ -31,14 +36,6 @@ export class PairingGridPageComponent implements OnInit, OnDestroy {
   getAllPairings$: Subscription;
   updatePairings$: Subscription;
   updatePairingsSub$: Subscription;
-
-  constructor(
-    private pairingService: ItemsPlanningPnPairingService,
-    public pairingStateService: PairingStateService,
-    public dialog: MatDialog,
-    private overlay: Overlay,
-  ) {
-  }
 
   ngOnInit(): void {
     this.getAllInitialData();

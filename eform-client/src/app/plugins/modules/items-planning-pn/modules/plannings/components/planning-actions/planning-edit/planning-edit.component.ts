@@ -17,6 +17,7 @@ import {
   EventEmitter,
   OnDestroy,
   OnInit,
+  inject
 } from '@angular/core';
 import { Location } from '@angular/common';
 import { debounceTime, switchMap, take } from 'rxjs/operators';
@@ -40,6 +41,16 @@ import {MatDatepickerInputEvent} from '@angular/material/datepicker';
     standalone: false
 })
 export class PlanningEditComponent implements OnInit, OnDestroy {
+  private foldersService = inject(FoldersService);
+  private activateRoute = inject(ActivatedRoute);
+  private itemsPlanningPnPlanningsService = inject(ItemsPlanningPnPlanningsService);
+  private cd = inject(ChangeDetectorRef);
+  private tagsService = inject(ItemsPlanningPnTagsService);
+  private eFormService = inject(EFormService);
+  private location = inject(Location);
+  public dialog = inject(MatDialog);
+  private overlay = inject(Overlay);
+
   selectedPlanningModel: PlanningModel = new PlanningModel();
   templateRequestModel: TemplateRequestModel = new TemplateRequestModel();
   templatesModel: TemplateListModel = new TemplateListModel();
@@ -62,17 +73,7 @@ export class PlanningEditComponent implements OnInit, OnDestroy {
   activatedRouteSub$: Subscription;
   folderSelectedSub$: Subscription;
 
-  constructor(
-    private foldersService: FoldersService,
-    private activateRoute: ActivatedRoute,
-    private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
-    private cd: ChangeDetectorRef,
-    private tagsService: ItemsPlanningPnTagsService,
-    private eFormService: EFormService,
-    private location: Location,
-    public dialog: MatDialog,
-    private overlay: Overlay,
-  ) {
+  constructor() {
     this.typeahead
       .pipe(
         debounceTime(200),

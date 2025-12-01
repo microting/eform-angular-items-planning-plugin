@@ -4,6 +4,7 @@ import {
   Inject,
   OnDestroy,
   OnInit,
+  inject
 } from '@angular/core';
 import { SiteNameDto } from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -31,6 +32,13 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
     standalone: false
 })
 export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
+  private itemsPlanningPnPlanningsService = inject(ItemsPlanningPnPlanningsService);
+  private itemsPlanningPnPairingService = inject(ItemsPlanningPnPairingService);
+  private authStateService = inject(AuthStateService);
+  public translateService = inject(TranslateService);
+  public dialogRef = inject(MatDialogRef<PlanningAssignSitesModalComponent>);
+  private model = inject<{sitesDto: SiteNameDto[], selectedPlanning: PlanningModel}>(MAT_DIALOG_DATA);
+
   sitesAssigned: EventEmitter<void> = new EventEmitter<void>();
   assignModel: PlanningAssignSitesModel = new PlanningAssignSitesModel();
   selectedPlanning: PlanningModel = new PlanningModel();
@@ -46,19 +54,10 @@ export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
   pairSingle$: Subscription;
   // getAllSites$: Subscription;
 
-  constructor(
-    // private eFormService: EFormService,
-    // private sitesService: SitesService,
-    private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
-    private itemsPlanningPnPairingService: ItemsPlanningPnPairingService,
-    private authStateService: AuthStateService,
-    public translateService: TranslateService,
-    public dialogRef: MatDialogRef<PlanningAssignSitesModalComponent>,
-    @Inject(MAT_DIALOG_DATA) model: {sitesDto: SiteNameDto[], selectedPlanning: PlanningModel}
-  ) {
+  constructor() {
     // debugger;
-    this.sitesDto = model.sitesDto;
-    this.selectedPlanning = model.selectedPlanning;
+    this.sitesDto = this.model.sitesDto;
+    this.selectedPlanning = this.model.selectedPlanning;
   }
 
   ngOnInit() {

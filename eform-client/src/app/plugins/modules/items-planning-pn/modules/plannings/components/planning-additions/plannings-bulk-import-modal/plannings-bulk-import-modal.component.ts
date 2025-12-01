@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, OnInit, ViewChild,} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnInit, ViewChild, inject} from '@angular/core';
 import {FileUploader} from 'ng2-file-upload';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
@@ -17,6 +17,13 @@ import {selectBearerToken} from 'src/app/state/auth/auth.selector';
     standalone: false
 })
 export class PlanningsBulkImportModalComponent implements OnInit {
+  private store = inject(Store);
+  private toastrService = inject(ToastrService);
+  private translateService = inject(TranslateService);
+  public loaderService = inject(LoaderService);
+  private authStateService = inject(AuthStateService);
+  public dialogRef = inject(MatDialogRef<PlanningsBulkImportModalComponent>);
+
   @ViewChild('xlsxPlannings', { static: false }) xlsxPlannings: ElementRef;
   importFinished: EventEmitter<void> = new EventEmitter<void>();
   xlsxPlanningsFileUploader: FileUploader;
@@ -29,14 +36,7 @@ export class PlanningsBulkImportModalComponent implements OnInit {
   ];
   private selectBearerToken$ = this.store.select(selectBearerToken);
 
-  constructor(
-    private store: Store,
-    private toastrService: ToastrService,
-    private translateService: TranslateService,
-    public loaderService: LoaderService,
-    private authStateService: AuthStateService,
-    public dialogRef: MatDialogRef<PlanningsBulkImportModalComponent>,
-  ) {
+  constructor() {
     this.selectBearerToken$.subscribe((token) => {
       this.xlsxPlanningsFileUploader = new FileUploader({
         url: '/api/items-planning-pn/plannings/import',

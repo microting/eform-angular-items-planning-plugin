@@ -5,6 +5,7 @@ import {
   Input,
   OnInit,
   Output,
+  inject
 } from '@angular/core';
 import { CommonDictionaryModel, SiteNameDto } from 'src/app/common/models';
 import { PlanningsStateService } from '../../store';
@@ -24,6 +25,9 @@ import {
     standalone: false
 })
 export class PlanningsHeaderComponent implements OnInit {
+  private planningsStore = inject(Store);
+  public planningsStateService = inject(PlanningsStateService);
+
   @Input() availableTags: CommonDictionaryModel[] = [];
   @Input() sites: SiteNameDto[] = [];
   @Output() tagSaved: EventEmitter<any> = new EventEmitter<any>();
@@ -37,10 +41,6 @@ export class PlanningsHeaderComponent implements OnInit {
   public selectPlanningsDeviceUserIds$ = this.planningsStore.select(selectPlanningsDeviceUserIds);
   public selectPlanningsDescriptionFilter$ = this.planningsStore.select(selectPlanningsDescriptionFilter);
   public selectPlanningsNameFilter$ = this.planningsStore.select(selectPlanningsNameFilter);
-
-  constructor(
-    private planningsStore: Store,
-    public planningsStateService: PlanningsStateService) {}
 
   ngOnInit(): void {}
 

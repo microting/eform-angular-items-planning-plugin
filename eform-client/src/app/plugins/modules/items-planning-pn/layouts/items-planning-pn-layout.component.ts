@@ -1,4 +1,4 @@
-import {AfterContentInit, Component, OnInit} from '@angular/core';
+import {AfterContentInit, Component, OnInit, inject} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {translates} from './../i18n/translates';
 import {Store} from '@ngrx/store';
@@ -12,13 +12,12 @@ import {take} from 'rxjs';
     standalone: false
 })
 export class ItemsPlanningPnLayoutComponent implements AfterContentInit, OnInit {
+  private translateService = inject(TranslateService);
+  private store = inject(Store);
   private pluginName = 'items-planning';
 
-  constructor(
-    private translateService: TranslateService,
-    store: Store
-  ) {
-    store.select(selectPluginsVisitedPlugins)
+  constructor() {
+    this.store.select(selectPluginsVisitedPlugins)
       .pipe(take(1))
       .subscribe(x => {
         // check current plugin in activated plugin
@@ -28,7 +27,7 @@ export class ItemsPlanningPnLayoutComponent implements AfterContentInit, OnInit 
             this.translateService.setTranslation(locale, translates[locale], true);
           });
           // add plugin to visited plugins
-          store.dispatch(addPluginToVisited(this.pluginName));
+          this.store.dispatch(addPluginToVisited(this.pluginName));
         }
       });
   }

@@ -4,6 +4,7 @@ import {
   Inject,
   OnDestroy,
   OnInit,
+  inject
 } from '@angular/core';
 import { FolderDto, SiteNameDto } from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
@@ -18,16 +19,17 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
     standalone: false
 })
 export class PlanningFoldersModalComponent implements OnInit, OnDestroy {
+  public dialogRef = inject(MatDialogRef<PlanningFoldersModalComponent>);
+  private model = inject<{folders: FolderDto[], planningModel?: PlanningModel}>(MAT_DIALOG_DATA);
+
   folderSelected: EventEmitter<FolderDto> = new EventEmitter<FolderDto>();
   selectedPlanning: PlanningModel = new PlanningModel();
   sitesDto: Array<SiteNameDto> = [];
   folders: FolderDto[] = [];
 
-  constructor(
-    public dialogRef: MatDialogRef<PlanningFoldersModalComponent>,
-    @Inject(MAT_DIALOG_DATA) model: {folders: FolderDto[], planningModel?: PlanningModel}) {
-    this.selectedPlanning = model.planningModel;
-    this.folders = model.folders;
+  constructor() {
+    this.selectedPlanning = this.model.planningModel;
+    this.folders = this.model.folders;
   }
 
   ngOnInit() {}

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
 import { PlanningModel } from '../../../../../models';
 import {
   ItemsPlanningPnPlanningsService,
@@ -38,6 +38,16 @@ import {Store} from '@ngrx/store';
     standalone: false
 })
 export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterViewInit {
+  private store = inject(Store);
+  private itemsPlanningPnPlanningsService = inject(ItemsPlanningPnPlanningsService);
+  private tagsService = inject(ItemsPlanningPnTagsService);
+  private foldersService = inject(FoldersService);
+  private sitesService = inject(SitesService);
+  public planningsStateService = inject(PlanningsStateService);
+  public authStateService = inject(AuthStateService);
+  public dialog = inject(MatDialog);
+  private overlay = inject(Overlay);
+
   @ViewChild('modalCasesColumns', { static: false }) modalCasesColumnsModal;
   @ViewChild('planningTagsModal') planningTagsModal: PlanningTagsComponent;
 
@@ -60,17 +70,7 @@ export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterView
   importFinishedSub$: Subscription;
   public isAuth$ = this.store.select(selectAuthIsAuth);
 
-  constructor(
-    private store: Store,
-    private itemsPlanningPnPlanningsService: ItemsPlanningPnPlanningsService,
-    private tagsService: ItemsPlanningPnTagsService,
-    private foldersService: FoldersService,
-    private sitesService: SitesService,
-    public planningsStateService: PlanningsStateService,
-    public authStateService: AuthStateService,
-    public dialog: MatDialog,
-    private overlay: Overlay,
-  ) {
+  constructor() {
     this.nameSearchSubject.pipe(debounceTime(500)).subscribe((val) => {
       this.planningsStateService.updateNameFilter(val.toString());
       this.getPlannings();

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
   OperationDataResult,
@@ -26,7 +26,7 @@ export let ItemsPlanningPnPlanningsMethods = {
   providedIn: 'root',
 })
 export class ItemsPlanningPnPlanningsService {
-  constructor(private apiBaseService: ApiBaseService) {}
+  private apiBaseService = inject(ApiBaseService);
 
   getAllPlannings(
     model: PlanningsRequestModel

@@ -7,6 +7,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  inject
 } from '@angular/core';
 import {
   SharedTagCreateComponent,
@@ -30,6 +31,10 @@ import {dialogConfigHelper} from 'src/app/common/helpers';
     standalone: false
 })
 export class PlanningTagsComponent implements OnInit, OnDestroy, OnChanges {
+  private tagsService = inject(ItemsPlanningPnTagsService);
+  public dialog = inject(MatDialog);
+  private overlay = inject(Overlay);
+
   @Input() availableTags: CommonDictionaryModel[] = [];
   @Output() tagsChanged: EventEmitter<void> = new EventEmitter<void>();
   dialogRef: MatDialogRef<SharedTagsComponent>;
@@ -43,13 +48,6 @@ export class PlanningTagsComponent implements OnInit, OnDestroy, OnChanges {
   updatedTagSub$: Subscription;
   showMultipleTagTagSub$: Subscription;
   createdTagsSub$: Subscription;
-
-  constructor(
-    private tagsService: ItemsPlanningPnTagsService,
-    public dialog: MatDialog,
-    private overlay: Overlay,
-  ) {
-  }
 
   ngOnInit() {
   }
