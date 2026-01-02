@@ -111,9 +111,13 @@ public class ItemsPlanningReportService(
             if (groupedCaseCheckListIds.Count > 0)
             {
                 checkLists = await sdkDbContext.CheckLists
-                    .FromSqlRaw("SELECT * FROM CheckLists WHERE" +
-                                $" Id IN ({string.Join(",", groupedCaseCheckListIds)})" +
-                                "  ORDER BY ReportH1, ReportH2, ReportH3, ReportH4").AsNoTracking().ToListAsync();
+                    .Where(x => groupedCaseCheckListIds.Contains(x.Id))
+                    .OrderBy(x => x.ReportH1)
+                    .ThenBy(x => x.ReportH2)
+                    .ThenBy(x => x.ReportH3)
+                    .ThenBy(x => x.ReportH4)
+                    .AsNoTracking()
+                    .ToListAsync();
             }
 
             var itemCases = await planningCasesQuery
