@@ -168,7 +168,7 @@ namespace ItemsPlanning.Pn
                 {
                     builder.EnableRetryOnFailure();
                     builder.MigrationsAssembly(PluginAssembly().FullName);
-                    builder.TranslateParameterizedCollectionsToConstants();
+                    builder.UseParameterizedCollectionMode(ParameterTranslationMode.Constant);
                 }));
 
             ItemsPlanningPnContextFactory contextFactory = new ItemsPlanningPnContextFactory();
