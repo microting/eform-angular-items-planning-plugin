@@ -26,7 +26,7 @@
       <PackageReference Include="ExcelDataReader" Version="3.8.0" />
       <PackageReference Include="HtmlToOpenXml.dll" Version="3.2.8" />
       <PackageReference Include="McMaster.NETCore.Plugins" Version="2.0.0" />
-      <PackageReference Include="Microting.eForm" Version="10.0.1" />
+      <PackageReference Include="Microting.eForm" Version="10.0.2" />
       <PackageReference Include="Microting.eFormApi.BasePn" Version="10.0.1" />
       <PackageReference Include="Microting.ItemsPlanningBase" Version="10.0.1" />
       <PackageReference Include="Sentry" Version="6.0.0" />
