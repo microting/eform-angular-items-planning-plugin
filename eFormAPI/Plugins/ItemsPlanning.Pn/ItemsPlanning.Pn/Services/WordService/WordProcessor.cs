@@ -58,7 +58,7 @@ namespace ItemsPlanning.Pn.Services.WordService
             }
 
             var converter = new HtmlConverter(mainPart);
-            converter.ParseHtml(html);
+            converter.ParseBody(html);
             mainPart.Document.Save();
         }
 
