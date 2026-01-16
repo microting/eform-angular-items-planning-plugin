@@ -1,31 +1,34 @@
 <eform-new-subheader>
-  <button
-    mat-icon-button
-    id="importPlanningsBtn"
-    matTooltip="{{ 'Import plannings' | translate }}"
-    *ngIf="isAuth$ | async"
-    (click)="openPlanningsImportModal()"
-  >
-    <mat-icon>file_upload</mat-icon>
-  </button>
-  <button
-    mat-icon-button
-    id="planningManageTagsBtn"
-    (click)="openTagsModal()"
-    matTooltip="{{ 'Manage tags' | translate }}"
-  >
-    <mat-icon>discount</mat-icon>
-  </button>
-  <button
-    mat-raised-button
-    *ngIf="authStateService.checkClaim(itemsPlanningPnClaims.createPlannings)"
-    id="planningCreateBtn"
-    color="accent"
-    matTooltip="{{ 'Create Planning' | translate }}"
-    [routerLink]="['./create']"
-  >
-    {{ 'New planning' | translate }}
-  </button>
+  <div class="d-flex flex-row align-items-center gap-12">
+    <button
+      class="btn-secondary btn-secondary--icon-rounded-border"
+      id="importPlanningsBtn"
+      matTooltip="{{ 'Import plannings' | translate }}"
+      *ngIf="isAuth$ | async"
+      (click)="openPlanningsImportModal()"
+    >
+      <mat-icon>file_upload</mat-icon>
+    </button>
+    <button
+      class="btn-secondary btn-secondary--icon-rounded-border"
+      id="planningManageTagsBtn"
+      (click)="openTagsModal()"
+      matTooltip="{{ 'Manage tags' | translate }}"
+    >
+      <mat-icon>discount</mat-icon>
+    </button>
+
+    <div class="line-vert"></div>
+    <button
+      class="btn-primary btn-primary--icon-left"
+      *ngIf="authStateService.checkClaim(itemsPlanningPnClaims.createPlannings)"
+      id="planningCreateBtn"
+      matTooltip="{{ 'Create Planning' | translate }}"
+      [routerLink]="['./create']"
+    >
+      {{ 'New planning' | translate }}
+    </button>
+  </div>
 </eform-new-subheader>
 
 <app-plannings-header
@@ -39,12 +42,11 @@
   (tagSaved)="saveTag($event)"
 ></app-plannings-header>
 <button
-  mat-raised-button
+ class="btn-warning mb-4 ml-3"
   [disabled]="
     !selectedPlanningsCheckboxes || selectedPlanningsCheckboxes.length === 0
   "
   id="deleteMultiplePluginsBtn"
-  color="warn"
   matTooltip="{{ 'Delete selected' | translate }}"
   (click)="showDeleteMultiplePlanningsModal()"
 >
