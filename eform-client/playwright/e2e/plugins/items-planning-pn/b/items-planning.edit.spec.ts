@@ -32,7 +32,7 @@ let planningData: PlanningCreateUpdate = {
 let folderNameForEdit = generateRandmString();
 let eFormNameForEdit = generateRandmString();
 
-test.describe('Items planning actions - Edit', () => {
+test.describe.serial('Items planning actions - Edit', () => {
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     const loginPage = new LoginPage(page);

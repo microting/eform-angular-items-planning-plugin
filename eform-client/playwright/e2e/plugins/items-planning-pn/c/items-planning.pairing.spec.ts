@@ -20,7 +20,7 @@ const deviceUsers: any[] = [];
 const countDeviceUsers = 4;
 const countPlanning = 4;
 
-test.describe('Items planning plugin - Pairing', () => {
+test.describe.serial('Items planning plugin - Pairing', () => {
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     const loginPage = new LoginPage(page);

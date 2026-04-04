@@ -9,7 +9,7 @@ let page;
 let template = generateRandmString();
 let folderName = generateRandmString();
 
-test.describe('Items planning plannings - Sorting', () => {
+test.describe.serial('Items planning plannings - Sorting', () => {
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     const loginPage = new LoginPage(page);

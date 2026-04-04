@@ -8,7 +8,7 @@ let page;
 const tagName = 'Test tag';
 const updatedTagName = 'Test tag 2';
 
-test.describe('Items planning - Tags', () => {
+test.describe.serial('Items planning - Tags', () => {
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     const loginPage = new LoginPage(page);

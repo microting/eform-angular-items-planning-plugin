@@ -30,7 +30,7 @@ const planningData: PlanningCreateUpdate = {
   pushMessageEnabled: true,
 };
 
-test.describe('Items planning - Add', () => {
+test.describe.serial('Items planning - Add', () => {
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     const loginPage = new LoginPage(page);

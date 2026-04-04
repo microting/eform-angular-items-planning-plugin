@@ -10,7 +10,7 @@ let template = generateRandmString();
 let folderName = generateRandmString();
 const countPlannings = 5;
 
-test.describe('Items planning plannings - Multiple delete', () => {
+test.describe.serial('Items planning plannings - Multiple delete', () => {
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     const loginPage = new LoginPage(page);

@@ -8,7 +8,7 @@ import * as path from 'path';
 
 let page;
 
-test.describe('Items planning - Import', () => {
+test.describe.serial('Items planning - Import', () => {
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     const loginPage = new LoginPage(page);

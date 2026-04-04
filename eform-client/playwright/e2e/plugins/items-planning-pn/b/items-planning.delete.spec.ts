@@ -22,7 +22,7 @@ const planningData: PlanningCreateUpdate = {
   repeatUntil: { year: 2021, month: 6, day: 10 },
 };
 
-test.describe('Items planning actions - Delete', () => {
+test.describe.serial('Items planning actions - Delete', () => {
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     const loginPage = new LoginPage(page);

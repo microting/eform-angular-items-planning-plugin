@@ -5,7 +5,7 @@ import { PluginPage } from '../../../Page objects/Plugin.page';
 
 let page;
 
-test.describe('Application settings page - site header section', () => {
+test.describe.serial('Application settings page - site header section', () => {
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
   });
