@@ -265,10 +265,10 @@ export class PlanningRowObject {
       this.checkboxDelete = this.row.locator('.cdk-column-MtxGridCheckboxColumnDef mat-checkbox');
       this.checkboxDeleteForClick = this.row.locator('.cdk-column-MtxGridCheckboxColumnDef mat-checkbox label');
       this.id = +(await this.row.locator('.cdk-column-id span').textContent() || '0');
-      this.name = (await this.row.locator('.cdk-column-translatedName span').textContent()) || '';
-      this.description = (await this.row.locator('.cdk-column-description span').textContent()) || '';
-      this.folderName = (await this.row.locator('.cdk-column-folder-eFormSdkFolderName span').textContent()) || '';
-      this.eFormName = (await this.row.locator('.cdk-column-planningRelatedEformName span').textContent()) || '';
+      this.name = ((await this.row.locator('.cdk-column-translatedName span').textContent()) || '').trim();
+      this.description = ((await this.row.locator('.cdk-column-description span').textContent()) || '').trim();
+      this.folderName = ((await this.row.locator('.cdk-column-folder-eFormSdkFolderName span').textContent()) || '').trim();
+      this.eFormName = ((await this.row.locator('.cdk-column-planningRelatedEformName span').textContent()) || '').trim();
 
       const tagsText = (await this.row.locator('.cdk-column-tags').textContent()) || '';
       const tags = tagsText.split('discount');
@@ -278,10 +278,10 @@ export class PlanningRowObject {
       }
 
       this.repeatEvery = +(await this.row.locator('.cdk-column-reiteration-repeatEvery span').textContent() || '0');
-      this.repeatType = (await this.row.locator('.cdk-column-reiteration-repeatType span').textContent()) || '';
-      this.planningDayOfWeek = (await this.row.locator('.cdk-column-reiteration-dayOfWeek span').textContent()) || '';
-      this.lastExecution = (await this.row.locator('.cdk-column-lastExecutedTime span').textContent()) || '';
-      this.nextExecution = (await this.row.locator('.cdk-column-nextExecutionTime span').textContent()) || '';
+      this.repeatType = ((await this.row.locator('.cdk-column-reiteration-repeatType span').textContent()) || '').trim();
+      this.planningDayOfWeek = ((await this.row.locator('.cdk-column-reiteration-dayOfWeek span').textContent()) || '').trim();
+      this.lastExecution = ((await this.row.locator('.cdk-column-lastExecutedTime span').textContent()) || '').trim();
+      this.nextExecution = ((await this.row.locator('.cdk-column-nextExecutionTime span').textContent()) || '').trim();
       this.pairingBtn = this.row.locator('.cdk-column-actions button').nth(0);
       this.updateBtn = this.row.locator('.cdk-column-actions button').nth(1);
       if (!skipDelete) {

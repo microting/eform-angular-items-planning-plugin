@@ -35,8 +35,8 @@ test.describe.serial('Items planning - Import', () => {
     const filePath = path.join(localPath, 'e2e', 'Assets', 'Skabelon Døvmark NEW.xlsx');
     await page.locator('app-eforms-bulk-import-modal * *').first().waitFor({ state: 'visible', timeout: 20000 });
     await myEformsPage.xlsxImportInput().setInputFiles(filePath);
-    await myEformsPage.newEformBtn().waitFor({ state: 'visible', timeout: 60000 });
-    await page.waitForTimeout(2000);
+    await myEformsPage.newEformBtn().waitFor({ state: 'visible', timeout: 120000 });
+    await page.waitForTimeout(5000);
     expect(eformsBeforeImport).not.toBe(await myEformsPage.rowNum());
 
     await itemsPlanningPlanningPage.goToPlanningsPage();

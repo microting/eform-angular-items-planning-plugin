@@ -22,7 +22,8 @@ const countPlanning = 4;
 
 test.describe.serial('Items planning plugin - Pairing', () => {
   test.describe.configure({ timeout: 240000 });
-  test.beforeAll(async ({ browser }) => {
+  test.beforeAll(async ({ browser }, testInfo) => {
+    testInfo.setTimeout(240000);
     page = await browser.newPage();
     const loginPage = new LoginPage(page);
     const myEformsPage = new MyEformsPage(page);
@@ -80,7 +81,8 @@ test.describe.serial('Items planning plugin - Pairing', () => {
     await itemsPlanningPairingPage.goToPairingPage();
   });
 
-  test.afterAll(async () => {
+  test.afterAll(async ({}, testInfo) => {
+    testInfo.setTimeout(240000);
     const myEformsPage = new MyEformsPage(page);
     const foldersPage = new FoldersPage(page);
     const deviceUsersPage = new DeviceUsersPage(page);

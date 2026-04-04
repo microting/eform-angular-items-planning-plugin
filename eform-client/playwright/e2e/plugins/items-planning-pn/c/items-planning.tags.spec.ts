@@ -28,6 +28,7 @@ test.describe.serial('Items planning - Tags', () => {
     const tagsModalPage = new TagsModalPage(page);
     const tagsRowsBeforeCreate = await tagsModalPage.rowNum();
     await tagsModalPage.createTag(tagName);
+    await page.waitForTimeout(1000);
     const tagsRowsAfterCreate = await tagsModalPage.rowNum();
     const tagRowObject = new TagRowObject(page);
     const tagRowObj = await tagRowObject.getRow(tagsRowsAfterCreate);

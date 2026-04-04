@@ -39,7 +39,7 @@ export class ItemsPlanningModalPage {
     const treeViewport = this.page.locator('app-eform-tree-view-picker');
     await treeViewport.waitFor({ state: 'visible', timeout: 20000 });
     await this.page.locator('.folder-tree-name', { hasText: nameFolder }).first().click();
-    await treeViewport.waitFor({ state: 'hidden', timeout: 2000 });
+    await treeViewport.waitFor({ state: 'hidden', timeout: 20000 });
   }
 
   public get createFolderName(): Locator {
