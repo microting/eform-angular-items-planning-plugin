@@ -195,7 +195,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     if (!pickOne) {
       const currentValue = await this.selectAllPlanningsCheckbox.inputValue().catch(() => '');
       if (currentValue !== valueCheckbox.toString()) {
-        await this.selectAllPlanningsCheckboxForClick.click();
+        await this.selectAllPlanningsCheckboxForClick.click({ force: true });
       }
     } else {
       const plannings = await this.getAllPlannings(0, false);

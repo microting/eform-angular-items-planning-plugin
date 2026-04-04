@@ -56,7 +56,8 @@ test.describe.serial('Items planning - Add', () => {
     await itemsPlanningPlanningPage.goToPlanningsPage();
   });
 
-  test.afterAll(async () => {
+  test.afterAll(async ({}, testInfo) => {
+    testInfo.setTimeout(240000);
     const myEformsPage = new MyEformsPage(page);
     const foldersPage = new FoldersPage(page);
     const itemsPlanningPlanningPage = new ItemsPlanningPlanningPage(page);

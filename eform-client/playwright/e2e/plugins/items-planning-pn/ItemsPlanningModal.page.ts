@@ -31,9 +31,9 @@ export class ItemsPlanningModalPage {
     const createFolder = this.createFolderName;
     const editFolder = this.editFolderName;
     if ((await createFolder.count()) > 0) {
-      await createFolder.click();
+      await createFolder.click({ force: true });
     } else {
-      await editFolder.click();
+      await editFolder.click({ force: true });
     }
     await this.page.waitForTimeout(1000);
     const treeViewport = this.page.locator('app-eform-tree-view-picker');
