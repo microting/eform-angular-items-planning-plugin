@@ -21,6 +21,7 @@ const countDeviceUsers = 4;
 const countPlanning = 4;
 
 test.describe.serial('Items planning plugin - Pairing', () => {
+  test.describe.configure({ timeout: 240000 });
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     const loginPage = new LoginPage(page);

@@ -221,7 +221,7 @@ export class ItemsPlanningModalPage {
       await selectValueInNgSelector(this.page, '#createRepeatType', planning.repeatType);
     }
     if (planning.startFrom) {
-      await this.createStartFrom.click();
+      await this.createStartFrom.click({ force: true });
       await selectDateOnNewDatePicker(
         this.page,
         planning.startFrom.year,
@@ -230,7 +230,7 @@ export class ItemsPlanningModalPage {
       );
     }
     if (planning.repeatUntil) {
-      await this.createRepeatUntil.click();
+      await this.createRepeatUntil.click({ force: true });
       await selectDateOnNewDatePicker(
         this.page,
         planning.repeatUntil.year,

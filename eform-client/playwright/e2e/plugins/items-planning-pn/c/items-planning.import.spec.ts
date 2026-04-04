@@ -27,6 +27,7 @@ test.describe.serial('Items planning - Import', () => {
     const itemsPlanningModalPage = new ItemsPlanningModalPage(page);
 
     const localPath = process.cwd();
+    await myEformsPage.newEformBtn().waitFor({ state: 'visible', timeout: 60000 });
     const eformsBeforeImport = await myEformsPage.rowNum();
     await myEformsPage.importEformsBtn().click();
     await page.waitForTimeout(2000);
@@ -35,6 +36,7 @@ test.describe.serial('Items planning - Import', () => {
     await page.locator('app-eforms-bulk-import-modal * *').first().waitFor({ state: 'visible', timeout: 20000 });
     await myEformsPage.xlsxImportInput().setInputFiles(filePath);
     await myEformsPage.newEformBtn().waitFor({ state: 'visible', timeout: 60000 });
+    await page.waitForTimeout(2000);
     expect(eformsBeforeImport).not.toBe(await myEformsPage.rowNum());
 
     await itemsPlanningPlanningPage.goToPlanningsPage();

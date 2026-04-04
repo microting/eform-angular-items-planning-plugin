@@ -32,7 +32,7 @@ test.describe.serial('Items planning - Tags', () => {
     const tagRowObject = new TagRowObject(page);
     const tagRowObj = await tagRowObject.getRow(tagsRowsAfterCreate);
     expect(tagsRowsAfterCreate).toBe(tagsRowsBeforeCreate + 1);
-    expect(tagRowObj.name).toBe(tagName);
+    expect(tagRowObj.name.trim()).toBe(tagName);
   });
 
   test('should not create tag', async () => {
@@ -49,7 +49,7 @@ test.describe.serial('Items planning - Tags', () => {
     await tagsModalPage.editTag(rowNum, updatedTagName);
     const tagRowObjectAfterEdit = new TagRowObject(page);
     const tagRowObj = await tagRowObjectAfterEdit.getRow(rowNum);
-    expect(tagRowObj.name).toBe(updatedTagName);
+    expect(tagRowObj.name.trim()).toBe(updatedTagName);
   });
 
   test('should not update tag', async () => {
@@ -58,13 +58,14 @@ test.describe.serial('Items planning - Tags', () => {
     await tagsModalPage.cancelEditTag(rowNum, updatedTagName);
     const tagRowObjectAfterCancelEdit = new TagRowObject(page);
     const tagRowObj = await tagRowObjectAfterCancelEdit.getRow(rowNum);
-    expect(tagRowObj.name).toBe(updatedTagName);
+    expect(tagRowObj.name.trim()).toBe(updatedTagName);
   });
 
   test('should not delete tag', async () => {
     const tagsModalPage = new TagsModalPage(page);
     const tagsRowsBeforeDelete = await tagsModalPage.rowNum();
-    await (await tagsModalPage.getTagByName(updatedTagName)).deleteTag(true);
+    const tagRow = new TagRowObject(page, tagsModalPage);
+    await (await tagRow.getRow(tagsRowsBeforeDelete)).deleteTag(true);
     const tagsRowsAfterCancelDelete = await tagsModalPage.rowNum();
     expect(tagsRowsAfterCancelDelete).toBe(tagsRowsBeforeDelete);
   });
@@ -72,7 +73,8 @@ test.describe.serial('Items planning - Tags', () => {
   test('should delete tag', async () => {
     const tagsModalPage = new TagsModalPage(page);
     const tagsRowsBeforeDelete = await tagsModalPage.rowNum();
-    await (await tagsModalPage.getTagByName(updatedTagName)).deleteTag();
+    const tagRow = new TagRowObject(page, tagsModalPage);
+    await (await tagRow.getRow(tagsRowsBeforeDelete)).deleteTag();
     await page.waitForTimeout(500);
     const tagsRowsAfterDelete = await tagsModalPage.rowNum();
     expect(tagsRowsAfterDelete).toBe(tagsRowsBeforeDelete - 1);

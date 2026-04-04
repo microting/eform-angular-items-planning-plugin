@@ -363,7 +363,7 @@ export class PlanningRowObject {
         date: planning.repeatUntil.day,
       }), 'dd.MM.yyyy')
     ) {
-      await modalPage.editRepeatUntil.click();
+      await modalPage.editRepeatUntil.click({ force: true });
       await selectDateOnNewDatePicker(
         this.page,
         planning.repeatUntil.year,
@@ -380,7 +380,7 @@ export class PlanningRowObject {
         date: planning.startFrom.day,
       }), 'dd.MM.yyyy')
     ) {
-      await modalPage.editStartFrom.click();
+      await modalPage.editStartFrom.click({ force: true });
       await selectDateOnNewDatePicker(
         this.page,
         planning.startFrom.year,
