@@ -5,6 +5,7 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   timeout: 120_000,
+  reporter: [['html', { open: 'never' }]],
   use: {
     baseURL: 'http://localhost:4200',
     viewport: { width: 1920, height: 1080 },
