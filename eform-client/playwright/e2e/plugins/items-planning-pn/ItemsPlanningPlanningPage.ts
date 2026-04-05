@@ -211,18 +211,11 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
 
   async selectAllPlanningsForDelete(valueCheckbox = true, pickOne = false) {
     if (!pickOne) {
-      // Click the mdc-checkbox div which has visible dimensions
-      const mdcCheckbox = this.selectAllPlanningsCheckbox.locator('.mdc-checkbox');
-      await mdcCheckbox.waitFor({ state: 'attached', timeout: 10000 });
-      const box = await mdcCheckbox.boundingBox();
-      if (box && box.width > 0 && box.height > 0) {
-        await this.page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-      } else {
-        // Fallback: click the mat-checkbox via evaluate
-        await this.selectAllPlanningsCheckbox.evaluate((el: HTMLElement) => {
-          el.click();
-        });
-      }
+      // Click the native input inside mat-checkbox — triggers Angular Material's _handleInputClick
+      await this.selectAllPlanningsCheckbox.evaluate((el: HTMLElement) => {
+        const input = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
+        if (input) input.click();
+      });
       await this.page.waitForTimeout(1000);
     } else {
       const plannings = await this.getAllPlannings(0, false);
@@ -462,13 +455,10 @@ export class PlanningRowObject {
   async clickOnCheckboxForMultipleDelete(valueCheckbox = true) {
     const isChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
     if (isChecked !== valueCheckbox) {
-      const mdcCheckbox = this.checkboxDelete.locator('.mdc-checkbox');
-      const box = await mdcCheckbox.boundingBox();
-      if (box && box.width > 0 && box.height > 0) {
-        await this.page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-      } else {
-        await this.checkboxDelete.evaluate((el: HTMLElement) => { el.click(); });
-      }
+      await this.checkboxDelete.evaluate((el: HTMLElement) => {
+        const input = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
+        if (input) input.click();
+      });
       await this.page.waitForTimeout(500);
     }
   }
