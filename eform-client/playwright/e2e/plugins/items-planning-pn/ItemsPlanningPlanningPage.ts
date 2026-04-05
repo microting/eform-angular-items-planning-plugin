@@ -135,7 +135,18 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   public async clearTable(deleteWithMultipleDelete: boolean = true) {
     if (deleteWithMultipleDelete) {
       await this.selectAllPlanningsForDelete();
-      await this.multipleDelete();
+      // Check if delete button is enabled (checkbox selection worked)
+      const isDisabled = await this.deleteMultiplePluginsBtn.evaluate((el: HTMLElement) => el.hasAttribute('disabled'));
+      if (!isDisabled) {
+        await this.multipleDelete();
+      } else {
+        // Fallback to single delete if checkbox selection failed
+        await this.page.waitForTimeout(2000);
+        const rowCount = await this.rowNum();
+        for (let i = 1; i <= rowCount; i++) {
+          await (await this.getFirstPlanningRowObject()).delete();
+        }
+      }
     } else {
       await this.page.waitForTimeout(2000);
       const rowCount = await this.rowNum();
@@ -195,9 +206,26 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     if (!pickOne) {
       const isChecked = await this.selectAllPlanningsCheckbox.locator('input').isChecked().catch(() => false);
       if (isChecked !== valueCheckbox) {
-        // Use JavaScript click on the internal checkbox input to ensure Angular detects the change
-        await this.selectAllPlanningsCheckbox.locator('input').evaluate((el: HTMLInputElement) => el.click());
-        await this.page.waitForTimeout(1000);
+        // Try multiple click strategies for MDC mat-checkbox
+        const checkbox = this.selectAllPlanningsCheckbox;
+        // Strategy: use Playwright's click with force on the label element
+        const label = checkbox.locator('label');
+        if ((await label.count()) > 0) {
+          await label.click({ force: true });
+        } else {
+          await checkbox.click({ force: true });
+        }
+        await this.page.waitForTimeout(500);
+        // Verify the click worked, if not try evaluate
+        const nowChecked = await checkbox.locator('input').isChecked().catch(() => false);
+        if (nowChecked === isChecked) {
+          // Click didn't register, try JS click on the native control
+          await checkbox.evaluate((el: HTMLElement) => {
+            const input = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
+            if (input) { input.click(); }
+          });
+          await this.page.waitForTimeout(500);
+        }
       }
     } else {
       const plannings = await this.getAllPlannings(0, false);
@@ -437,8 +465,21 @@ export class PlanningRowObject {
   async clickOnCheckboxForMultipleDelete(valueCheckbox = true) {
     const isChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
     if (isChecked !== valueCheckbox) {
-      await this.checkboxDelete.locator('input').evaluate((el: HTMLInputElement) => el.click());
+      const label = this.checkboxDelete.locator('label');
+      if ((await label.count()) > 0) {
+        await label.click({ force: true });
+      } else {
+        await this.checkboxDelete.click({ force: true });
+      }
       await this.page.waitForTimeout(500);
+      const nowChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
+      if (nowChecked === isChecked) {
+        await this.checkboxDelete.evaluate((el: HTMLElement) => {
+          const input = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
+          if (input) { input.click(); }
+        });
+        await this.page.waitForTimeout(500);
+      }
     }
   }
 
