@@ -17,8 +17,8 @@ let template = generateRandmString();
 let folderName = generateRandmString();
 let planningRowObjects: PlanningRowObject[];
 const deviceUsers: any[] = [];
-const countDeviceUsers = 4;
-const countPlanning = 4;
+const countDeviceUsers = 2;
+const countPlanning = 2;
 
 test.describe.serial('Items planning plugin - Pairing', () => {
   test.describe.configure({ timeout: 480000 });

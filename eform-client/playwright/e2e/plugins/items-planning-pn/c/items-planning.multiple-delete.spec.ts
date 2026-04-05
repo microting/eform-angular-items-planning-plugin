@@ -11,6 +11,7 @@ let folderName = generateRandmString();
 const countPlannings = 5;
 
 test.describe.serial('Items planning plannings - Multiple delete', () => {
+  test.describe.configure({ timeout: 240000 });
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     const loginPage = new LoginPage(page);

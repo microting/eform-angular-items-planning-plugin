@@ -29,12 +29,8 @@ test.describe.serial('Items planning - Tags', () => {
     const tagsModalPage = new TagsModalPage(page);
     const tagsRowsBeforeCreate = await tagsModalPage.rowNum();
     await tagsModalPage.createTag(tagName);
-    // Wait for the tag list to refresh after API call
-    await page.waitForFunction(
-      (expectedCount: number) => document.querySelectorAll('#tagName').length >= expectedCount,
-      tagsRowsBeforeCreate + 1,
-      { timeout: 30000 }
-    );
+    // Wait for the tag to appear in the list (API call + list refresh)
+    await page.locator('#tagName', { hasText: tagName }).waitFor({ state: 'visible', timeout: 30000 });
     const tagsRowsAfterCreate = await tagsModalPage.rowNum();
     const tagRowObject = new TagRowObject(page, tagsModalPage);
     const tagRowObj = await tagRowObject.getRow(tagsRowsAfterCreate);

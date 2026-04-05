@@ -46,14 +46,15 @@ test.describe.serial('Items planning plannings - Sorting', () => {
     await itemsPlanningPlanningPage.clickIdTableHeader();
     let list = await page.locator('td.planningId').all();
     const ascValues = await Promise.all(list.map((item) => item.textContent()));
-    const sortedAsc = [...ascValues].sort();
+    // IDs are numeric, so sort numerically
+    const sortedAsc = [...ascValues].sort((a, b) => +(a || 0) - +(b || 0));
     expect(ascValues).toEqual(sortedAsc);
 
     // Click again for descending sort
     await itemsPlanningPlanningPage.clickIdTableHeader();
     list = await page.locator('td.planningId').all();
     const descValues = await Promise.all(list.map((item) => item.textContent()));
-    const sortedDesc = [...descValues].sort().reverse();
+    const sortedDesc = [...descValues].sort((a, b) => +(b || 0) - +(a || 0));
     expect(descValues).toEqual(sortedDesc);
   });
 

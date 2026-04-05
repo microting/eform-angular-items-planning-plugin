@@ -78,7 +78,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public get selectAllPlanningsCheckboxForClick(): Locator {
-    return this.selectAllPlanningsCheckbox;
+    return this.selectAllPlanningsCheckbox.locator('input');
   }
 
   public get importPlanningsBtn(): Locator {
@@ -170,9 +170,9 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   async openMultipleDelete() {
-    if (await this.deleteMultiplePluginsBtn.isVisible()) {
-      await this.deleteMultiplePluginsBtn.click();
-    }
+    await this.deleteMultiplePluginsBtn.waitFor({ state: 'visible', timeout: 40000 });
+    await this.page.waitForTimeout(500);
+    await this.deleteMultiplePluginsBtn.click();
   }
 
   async closeMultipleDelete(clickCancel = false) {
@@ -196,6 +196,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
       const isChecked = await this.selectAllPlanningsCheckbox.locator('input').isChecked().catch(() => false);
       if (isChecked !== valueCheckbox) {
         await this.selectAllPlanningsCheckboxForClick.click({ force: true });
+        await this.page.waitForTimeout(500);
       }
     } else {
       const plannings = await this.getAllPlannings(0, false);
@@ -263,7 +264,7 @@ export class PlanningRowObject {
     this.row = this.page.locator('tbody > tr').nth(rowNum);
     if ((await this.page.locator('tbody > tr').count()) > rowNum) {
       this.checkboxDelete = this.row.locator('.cdk-column-MtxGridCheckboxColumnDef mat-checkbox');
-      this.checkboxDeleteForClick = this.row.locator('.cdk-column-MtxGridCheckboxColumnDef mat-checkbox label');
+      this.checkboxDeleteForClick = this.row.locator('.cdk-column-MtxGridCheckboxColumnDef mat-checkbox input');
       this.id = +(await this.row.locator('.cdk-column-id span').textContent() || '0');
       this.name = ((await this.row.locator('.cdk-column-translatedName span').textContent()) || '').trim();
       this.description = ((await this.row.locator('.cdk-column-description span').textContent()) || '').trim();
