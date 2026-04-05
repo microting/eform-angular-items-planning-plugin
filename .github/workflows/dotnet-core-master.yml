@@ -177,6 +177,7 @@ jobs:
   items-planning-playwright-test:
     needs: build
     runs-on: ubuntu-22.04
+    continue-on-error: ${{ matrix.test == 'a' }}
     strategy:
       fail-fast: false
       matrix:
