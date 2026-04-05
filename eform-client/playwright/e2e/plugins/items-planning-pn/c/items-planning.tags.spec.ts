@@ -31,19 +31,19 @@ test.describe.serial('Items planning - Tags', () => {
     await tagsModalPage.newTagBtn().click();
     await page.waitForTimeout(500);
     await page.locator('#newTagName').waitFor({ state: 'visible', timeout: 90000 });
-    await tagsModalPage.newTagNameInput().fill(tagName);
-    await page.waitForTimeout(500);
-    // Dispatch input event to ensure Angular ngModel picks up the value
-    await tagsModalPage.newTagNameInput().evaluate((el: HTMLInputElement) => {
-      el.dispatchEvent(new Event('input', { bubbles: true }));
-    });
+    await tagsModalPage.newTagNameInput().click();
+    await tagsModalPage.newTagNameInput().pressSequentially(tagName, { delay: 50 });
     await page.waitForTimeout(500);
     await page.locator('#newTagSaveBtn:not([disabled])').waitFor({ state: 'visible', timeout: 10000 });
     await tagsModalPage.newTagSaveBtn().click();
     await page.waitForTimeout(500);
     await page.locator('#newTagBtn').waitFor({ state: 'visible', timeout: 40000 });
-    // Wait for tag list to refresh
-    await page.waitForTimeout(3000);
+    // Wait for tag count to increase (API call + list refresh)
+    await page.waitForFunction(
+      (expectedCount: number) => document.querySelectorAll('#tagName').length >= expectedCount,
+      tagsRowsBeforeCreate + 1,
+      { timeout: 30000 }
+    );
     const tagsRowsAfterCreate = await tagsModalPage.rowNum();
     const tagRowObject = new TagRowObject(page, tagsModalPage);
     const tagRowObj = await tagRowObject.getRow(tagsRowsAfterCreate);

@@ -204,9 +204,9 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
 
   async selectAllPlanningsForDelete(valueCheckbox = true, pickOne = false) {
     if (!pickOne) {
-      const isChecked = await this.selectAllPlanningsCheckbox.locator('input').isChecked().catch(() => false);
-      if (isChecked !== valueCheckbox) {
-        // MDC mat-checkbox label is invisible (zero-size). Dispatch click on the host element.
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const isChecked = await this.selectAllPlanningsCheckbox.locator('input').isChecked().catch(() => false);
+        if (isChecked === valueCheckbox) break;
         await this.selectAllPlanningsCheckbox.dispatchEvent('click');
         await this.page.waitForTimeout(1000);
       }
