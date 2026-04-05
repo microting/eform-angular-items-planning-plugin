@@ -56,16 +56,28 @@ export class ItemsPlanningModalPage {
     await this.page.waitForTimeout(1000);
     const treeViewport = this.page.locator('app-eform-tree-view-picker');
     await treeViewport.waitFor({ state: 'visible', timeout: 20000 });
-    // Find the tree node containing our folder name and click the .cursor div (Angular click handler)
-    const treeNode = treeViewport.locator('mat-tree-node').filter({ hasText: nameFolder }).first();
-    await treeNode.waitFor({ state: 'visible', timeout: 10000 });
-    const clickTarget = treeNode.locator('.cursor');
-    if (await clickTarget.count() > 0) {
-      await clickTarget.click();
-    } else {
-      // Fallback for expandable nodes or different structure
-      await treeNode.locator('.folder-tree-name').click();
-    }
+    // Find the folder in the tree and click it using JavaScript to ensure Angular handler fires
+    const folderNode = treeViewport.locator('.folder-tree-name', { hasText: nameFolder }).first();
+    await folderNode.waitFor({ state: 'visible', timeout: 10000 });
+    await this.page.evaluate((name) => {
+      const nodes = document.querySelectorAll('.folder-tree-name');
+      for (const node of nodes) {
+        if (node.textContent && node.textContent.trim().includes(name)) {
+          // Walk up to find the div with cursor class (has Angular click handler)
+          let el: HTMLElement | null = node as HTMLElement;
+          while (el && !el.classList.contains('cursor')) {
+            el = el.parentElement;
+          }
+          if (el) {
+            el.click();
+          } else {
+            // Fallback: click the node itself
+            (node as HTMLElement).click();
+          }
+          break;
+        }
+      }
+    }, nameFolder);
     await treeViewport.waitFor({ state: 'hidden', timeout: 20000 });
   }
 
