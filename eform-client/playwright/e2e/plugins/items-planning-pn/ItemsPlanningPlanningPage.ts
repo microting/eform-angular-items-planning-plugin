@@ -206,26 +206,9 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     if (!pickOne) {
       const isChecked = await this.selectAllPlanningsCheckbox.locator('input').isChecked().catch(() => false);
       if (isChecked !== valueCheckbox) {
-        // Try multiple click strategies for MDC mat-checkbox
-        const checkbox = this.selectAllPlanningsCheckbox;
-        // Strategy: use Playwright's click with force on the label element
-        const label = checkbox.locator('label');
-        if ((await label.count()) > 0) {
-          await label.click({ force: true });
-        } else {
-          await checkbox.click({ force: true });
-        }
-        await this.page.waitForTimeout(500);
-        // Verify the click worked, if not try evaluate
-        const nowChecked = await checkbox.locator('input').isChecked().catch(() => false);
-        if (nowChecked === isChecked) {
-          // Click didn't register, try JS click on the native control
-          await checkbox.evaluate((el: HTMLElement) => {
-            const input = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
-            if (input) { input.click(); }
-          });
-          await this.page.waitForTimeout(500);
-        }
+        // MDC mat-checkbox label is invisible (zero-size). Dispatch click on the host element.
+        await this.selectAllPlanningsCheckbox.dispatchEvent('click');
+        await this.page.waitForTimeout(1000);
       }
     } else {
       const plannings = await this.getAllPlannings(0, false);
@@ -465,21 +448,8 @@ export class PlanningRowObject {
   async clickOnCheckboxForMultipleDelete(valueCheckbox = true) {
     const isChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
     if (isChecked !== valueCheckbox) {
-      const label = this.checkboxDelete.locator('label');
-      if ((await label.count()) > 0) {
-        await label.click({ force: true });
-      } else {
-        await this.checkboxDelete.click({ force: true });
-      }
+      await this.checkboxDelete.dispatchEvent('click');
       await this.page.waitForTimeout(500);
-      const nowChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
-      if (nowChecked === isChecked) {
-        await this.checkboxDelete.evaluate((el: HTMLElement) => {
-          const input = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
-          if (input) { input.click(); }
-        });
-        await this.page.waitForTimeout(500);
-      }
     }
   }
 
