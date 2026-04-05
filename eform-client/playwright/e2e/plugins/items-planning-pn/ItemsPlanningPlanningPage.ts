@@ -211,8 +211,8 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
 
   async selectAllPlanningsForDelete(valueCheckbox = true, pickOne = false) {
     if (!pickOne) {
-      // Use force:true to fire a trusted click on the mat-checkbox even if visually hidden
-      await this.selectAllPlanningsCheckbox.click({ force: true });
+      // Click the hidden native input with force — fires a trusted click event
+      await this.selectAllPlanningsCheckbox.locator('input').click({ force: true });
       await this.page.waitForTimeout(1000);
     } else {
       const plannings = await this.getAllPlannings(0, false);
@@ -452,7 +452,7 @@ export class PlanningRowObject {
   async clickOnCheckboxForMultipleDelete(valueCheckbox = true) {
     const isChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
     if (isChecked !== valueCheckbox) {
-      await this.checkboxDelete.click({ force: true });
+      await this.checkboxDelete.locator('input').click({ force: true });
       await this.page.waitForTimeout(500);
     }
   }
