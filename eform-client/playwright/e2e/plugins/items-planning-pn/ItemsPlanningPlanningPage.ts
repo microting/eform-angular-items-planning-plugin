@@ -195,12 +195,8 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     if (!pickOne) {
       const isChecked = await this.selectAllPlanningsCheckbox.locator('input').isChecked().catch(() => false);
       if (isChecked !== valueCheckbox) {
-        // Use evaluate to click the mat-checkbox's internal div that handles the toggle
-        await this.selectAllPlanningsCheckbox.evaluate((el: HTMLElement) => {
-          const inner = el.querySelector('.mdc-checkbox') as HTMLElement;
-          if (inner) inner.click();
-          else el.click();
-        });
+        // Click on the mat-checkbox element itself to toggle
+        await this.selectAllPlanningsCheckbox.click({ force: true, position: { x: 10, y: 10 } });
         await this.page.waitForTimeout(500);
       }
     } else {
@@ -326,7 +322,7 @@ export class PlanningRowObject {
     }
     if (
       planning.folderName &&
-      (await modalPage.editFolderName.locator('#editFolderSelectorInput').inputValue()) !== planning.folderName
+      ((await this.page.locator('#folderName').textContent()) || '').trim() !== planning.folderName
     ) {
       await modalPage.selectFolder(planning.folderName);
     }
@@ -441,11 +437,7 @@ export class PlanningRowObject {
   async clickOnCheckboxForMultipleDelete(valueCheckbox = true) {
     const isChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
     if (isChecked !== valueCheckbox) {
-      await this.checkboxDelete.evaluate((el: HTMLElement) => {
-        const inner = el.querySelector('.mdc-checkbox') as HTMLElement;
-        if (inner) inner.click();
-        else el.click();
-      });
+      await this.checkboxDelete.click({ force: true, position: { x: 10, y: 10 } });
     }
   }
 

@@ -28,14 +28,22 @@ test.describe.serial('Items planning - Tags', () => {
   test('should create tag', async () => {
     const tagsModalPage = new TagsModalPage(page);
     const tagsRowsBeforeCreate = await tagsModalPage.rowNum();
-    await tagsModalPage.createTag(tagName);
-    // Wait for tag list to refresh — retry rowNum until it increases
-    let tagsRowsAfterCreate = tagsRowsBeforeCreate;
-    for (let attempt = 0; attempt < 10; attempt++) {
-      await page.waitForTimeout(1000);
-      tagsRowsAfterCreate = await tagsModalPage.rowNum();
-      if (tagsRowsAfterCreate > tagsRowsBeforeCreate) break;
-    }
+    // Manually create tag — click new tag button, type name, click save
+    await tagsModalPage.newTagBtn().click();
+    await page.waitForTimeout(500);
+    await page.locator('#newTagName').waitFor({ state: 'visible', timeout: 90000 });
+    // Use click + type instead of fill to ensure Angular ngModel picks up the value
+    await tagsModalPage.newTagNameInput().click();
+    await tagsModalPage.newTagNameInput().pressSequentially(tagName, { delay: 50 });
+    await page.waitForTimeout(500);
+    // Verify button is enabled before clicking
+    await page.locator('#newTagSaveBtn:not([disabled])').waitFor({ state: 'visible', timeout: 10000 });
+    await tagsModalPage.newTagSaveBtn().click();
+    await page.waitForTimeout(500);
+    await page.locator('#newTagBtn').waitFor({ state: 'visible', timeout: 40000 });
+    // Wait for tag list to refresh
+    await page.waitForTimeout(3000);
+    const tagsRowsAfterCreate = await tagsModalPage.rowNum();
     const tagRowObject = new TagRowObject(page, tagsModalPage);
     const tagRowObj = await tagRowObject.getRow(tagsRowsAfterCreate);
     expect(tagsRowsAfterCreate).toBe(tagsRowsBeforeCreate + 1);

@@ -163,7 +163,7 @@ test.describe.serial('Items planning actions - Edit', () => {
       await itemsPlanningModalPage.editItemBuildYear.inputValue()
     ).toBe(planningData.buildYear);
     expect(
-      await itemsPlanningModalPage.editFolderName.locator('#editFolderSelectorInput').inputValue()
+      (await page.locator('#folderName').textContent() || '').trim()
     ).toBe(planningData.folderName);
     expect(
       await itemsPlanningModalPage.editItemLocationCode.inputValue()
