@@ -211,11 +211,8 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
 
   async selectAllPlanningsForDelete(valueCheckbox = true, pickOne = false) {
     if (!pickOne) {
-      // Click the native input inside mat-checkbox — triggers Angular Material's _handleInputClick
-      await this.selectAllPlanningsCheckbox.evaluate((el: HTMLElement) => {
-        const input = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
-        if (input) input.click();
-      });
+      // Use force:true to fire a trusted click on the mat-checkbox even if visually hidden
+      await this.selectAllPlanningsCheckbox.click({ force: true });
       await this.page.waitForTimeout(1000);
     } else {
       const plannings = await this.getAllPlannings(0, false);
@@ -455,10 +452,7 @@ export class PlanningRowObject {
   async clickOnCheckboxForMultipleDelete(valueCheckbox = true) {
     const isChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
     if (isChecked !== valueCheckbox) {
-      await this.checkboxDelete.evaluate((el: HTMLElement) => {
-        const input = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
-        if (input) input.click();
-      });
+      await this.checkboxDelete.click({ force: true });
       await this.page.waitForTimeout(500);
     }
   }
