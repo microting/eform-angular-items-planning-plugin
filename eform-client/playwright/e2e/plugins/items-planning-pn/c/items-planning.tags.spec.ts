@@ -27,23 +27,15 @@ test.describe.serial('Items planning - Tags', () => {
 
   test('should create tag', async () => {
     const tagsModalPage = new TagsModalPage(page);
+    const itemsPlanningPlanningPage = new ItemsPlanningPlanningPage(page);
     const tagsRowsBeforeCreate = await tagsModalPage.rowNum();
-    await tagsModalPage.newTagBtn().click();
-    await page.waitForTimeout(500);
-    await page.locator('#newTagName').waitFor({ state: 'visible', timeout: 90000 });
-    await tagsModalPage.newTagNameInput().click();
-    await tagsModalPage.newTagNameInput().pressSequentially(tagName, { delay: 50 });
-    await page.waitForTimeout(500);
-    await page.locator('#newTagSaveBtn:not([disabled])').waitFor({ state: 'visible', timeout: 10000 });
-    await tagsModalPage.newTagSaveBtn().click();
-    await page.waitForTimeout(500);
-    await page.locator('#newTagBtn').waitFor({ state: 'visible', timeout: 40000 });
-    // Wait for tag count to increase (API call + list refresh)
-    await page.waitForFunction(
-      (expectedCount: number) => document.querySelectorAll('#tagName').length >= expectedCount,
-      tagsRowsBeforeCreate + 1,
-      { timeout: 30000 }
-    );
+    await tagsModalPage.createTag(tagName);
+    await page.waitForTimeout(1000);
+    // Close and reopen tags modal to force fresh data load
+    await tagsModalPage.tagsModalCloseBtn().click();
+    await page.waitForTimeout(1000);
+    await itemsPlanningPlanningPage.planningManageTagsBtn.click();
+    await page.waitForTimeout(2000);
     const tagsRowsAfterCreate = await tagsModalPage.rowNum();
     const tagRowObject = new TagRowObject(page, tagsModalPage);
     const tagRowObj = await tagRowObject.getRow(tagsRowsAfterCreate);

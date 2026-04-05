@@ -204,16 +204,18 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
 
   async selectAllPlanningsForDelete(valueCheckbox = true, pickOne = false) {
     if (!pickOne) {
-      for (let attempt = 0; attempt < 3; attempt++) {
-        const isChecked = await this.selectAllPlanningsCheckbox.locator('input').isChecked().catch(() => false);
-        if (isChecked === valueCheckbox) break;
-        await this.selectAllPlanningsCheckbox.dispatchEvent('click');
-        await this.page.waitForTimeout(1000);
+      // Use check/uncheck on the input element with force, matching Cypress approach
+      const input = this.page.locator('.mat-header-cell mat-checkbox input');
+      if (valueCheckbox) {
+        await input.check({ force: true });
+      } else {
+        await input.uncheck({ force: true });
       }
+      await this.page.waitForTimeout(1000);
     } else {
       const plannings = await this.getAllPlannings(0, false);
       for (let i = 0; i < plannings.length; i++) {
-        await plannings[i].clickOnCheckboxForMultipleDelete();
+        await plannings[i].clickOnCheckboxForMultipleDelete(valueCheckbox);
       }
     }
   }
@@ -446,11 +448,13 @@ export class PlanningRowObject {
   }
 
   async clickOnCheckboxForMultipleDelete(valueCheckbox = true) {
-    const isChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
-    if (isChecked !== valueCheckbox) {
-      await this.checkboxDelete.dispatchEvent('click');
-      await this.page.waitForTimeout(500);
+    const input = this.checkboxDelete.locator('input');
+    if (valueCheckbox) {
+      await input.check({ force: true });
+    } else {
+      await input.uncheck({ force: true });
     }
+    await this.page.waitForTimeout(500);
   }
 
   async readPairing(): Promise<{ workerName: string; workerValue: boolean }[]> {
