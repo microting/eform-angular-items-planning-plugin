@@ -48,11 +48,7 @@ test.describe.serial('Items planning - Add', () => {
       ).eFormName;
     }
     await myEformsPage.Navbar.goToFolderPage();
-    if ((await foldersPage.rowNum()) <= 0) {
-      await foldersPage.createNewFolder(planningData.folderName, 'Description');
-    } else {
-      planningData.folderName = (await foldersPage.getFolder(1)).name;
-    }
+    await foldersPage.createNewFolder(planningData.folderName, 'Description');
     await itemsPlanningPlanningPage.goToPlanningsPage();
   });
 

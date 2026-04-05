@@ -25,11 +25,7 @@ test.describe.serial('Items planning plannings - Sorting', () => {
       template = (await myEformsPage.getFirstMyEformsRowObj()).eFormName;
     }
     await myEformsPage.Navbar.goToFolderPage();
-    if ((await foldersPage.rowNum()) <= 0) {
-      await foldersPage.createNewFolder(folderName, 'Description');
-    } else {
-      folderName = (await foldersPage.getFolder(1)).name;
-    }
+    await foldersPage.createNewFolder(folderName, 'Description');
     await itemsPlanningPlanningPage.goToPlanningsPage();
   });
 

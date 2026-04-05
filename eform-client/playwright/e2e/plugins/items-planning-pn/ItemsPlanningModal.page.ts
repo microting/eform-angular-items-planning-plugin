@@ -56,28 +56,7 @@ export class ItemsPlanningModalPage {
     await this.page.waitForTimeout(1000);
     const treeViewport = this.page.locator('app-eform-tree-view-picker');
     await treeViewport.waitFor({ state: 'visible', timeout: 20000 });
-    // Find the folder in the tree and click it using JavaScript to ensure Angular handler fires
-    const folderNode = treeViewport.locator('.folder-tree-name', { hasText: nameFolder }).first();
-    await folderNode.waitFor({ state: 'visible', timeout: 10000 });
-    await this.page.evaluate((name) => {
-      const nodes = document.querySelectorAll('.folder-tree-name');
-      for (const node of nodes) {
-        if (node.textContent && node.textContent.trim().includes(name)) {
-          // Walk up to find the div with cursor class (has Angular click handler)
-          let el: HTMLElement | null = node as HTMLElement;
-          while (el && !el.classList.contains('cursor')) {
-            el = el.parentElement;
-          }
-          if (el) {
-            el.click();
-          } else {
-            // Fallback: click the node itself
-            (node as HTMLElement).click();
-          }
-          break;
-        }
-      }
-    }, nameFolder);
+    await this.page.locator('.folder-tree-name', { hasText: nameFolder }).first().click();
     await treeViewport.waitFor({ state: 'hidden', timeout: 20000 });
   }
 

@@ -57,20 +57,8 @@ test.describe.serial('Items planning actions - Edit', () => {
     }
 
     await myEformsPage.Navbar.goToFolderPage();
-    if ((await foldersPage.rowNum()) >= 2) {
-      planningData.folderName = (await foldersPage.getFolder(1)).name;
-      folderNameForEdit = (await foldersPage.getFolder(2)).name;
-    } else {
-      if ((await foldersPage.rowNum()) === 1) {
-        planningData.folderName = (await foldersPage.getFolder(1)).name;
-      } else {
-        await foldersPage.createNewFolder(
-          planningData.folderName,
-          'Description'
-        );
-      }
-      await foldersPage.createNewFolder(folderNameForEdit, 'Description');
-    }
+    await foldersPage.createNewFolder(planningData.folderName, 'Description');
+    await foldersPage.createNewFolder(folderNameForEdit, 'Description');
     await itemsPlanningPlanningPage.goToPlanningsPage();
   });
 

@@ -54,11 +54,7 @@ test.describe.serial('Items planning plugin - Pairing', () => {
     }
 
     await myEformsPage.Navbar.goToFolderPage();
-    if ((await foldersPage.rowNum()) <= 0) {
-      await foldersPage.createNewFolder(folderName, 'Description');
-    } else {
-      folderName = (await foldersPage.getFolder(1)).name;
-    }
+    await foldersPage.createNewFolder(folderName, 'Description');
 
     await itemsPlanningPlanningPage.goToPlanningsPage();
     while ((await itemsPlanningPlanningPage.rowNum()) < countPlanning) {
