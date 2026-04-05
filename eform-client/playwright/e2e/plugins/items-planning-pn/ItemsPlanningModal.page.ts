@@ -56,16 +56,16 @@ export class ItemsPlanningModalPage {
     await this.page.waitForTimeout(1000);
     const treeViewport = this.page.locator('app-eform-tree-view-picker');
     await treeViewport.waitFor({ state: 'visible', timeout: 20000 });
-    // Find the folder and click the row with the Angular click handler
-    const folderNode = treeViewport.locator('.folder-tree-name', { hasText: nameFolder }).first();
-    await folderNode.waitFor({ state: 'visible', timeout: 10000 });
-    // Use evaluate to dispatch click on the parent div with the (click) handler
-    await folderNode.evaluate((el) => {
-      const clickableParent = el.closest('.cursor') || el.parentElement;
-      if (clickableParent) {
-        clickableParent.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-      }
-    });
+    // Find the tree node containing our folder name and click the .cursor div (Angular click handler)
+    const treeNode = treeViewport.locator('mat-tree-node').filter({ hasText: nameFolder }).first();
+    await treeNode.waitFor({ state: 'visible', timeout: 10000 });
+    const clickTarget = treeNode.locator('.cursor');
+    if (await clickTarget.count() > 0) {
+      await clickTarget.click();
+    } else {
+      // Fallback for expandable nodes or different structure
+      await treeNode.locator('.folder-tree-name').click();
+    }
     await treeViewport.waitFor({ state: 'hidden', timeout: 20000 });
   }
 
