@@ -142,14 +142,18 @@ export class PairingRowObject {
     clickCancel = false
   ) {
     if (clickOnPairRow) {
-      const input = this.pairRowForClick.locator('input');
-      if (pair) { await input.check({ force: true }); } else { await input.uncheck({ force: true }); }
+      await this.pairRowForClick.dispatchEvent('click');
       await this.page.waitForTimeout(500);
+      if ((await this.pairRow.locator('input').isChecked()) !== pair) {
+        await this.pairRowForClick.dispatchEvent('click');
+        await this.page.waitForTimeout(500);
+      }
     } else {
       for (let i = 0; i < this.pairCheckboxesForClick.length; i++) {
-        const input = this.pairCheckboxes[i].locator('input');
-        if (pair) { await input.check({ force: true }); } else { await input.uncheck({ force: true }); }
-        await this.page.waitForTimeout(500);
+        if ((await this.pairCheckboxes[i].locator('input').isChecked()) !== pair) {
+          await this.pairCheckboxesForClick[i].dispatchEvent('click');
+          await this.page.waitForTimeout(500);
+        }
       }
     }
     await this.pairingPage.savePairing(clickCancel);
@@ -160,8 +164,7 @@ export class PairingRowObject {
     indexDeviceForPair: number,
     clickCancel = false
   ) {
-    const input = this.pairCheckboxesForClick[indexDeviceForPair].locator('input');
-    if (pair) { await input.check({ force: true }); } else { await input.uncheck({ force: true }); }
+    await this.pairCheckboxesForClick[indexDeviceForPair].dispatchEvent('click');
     await this.page.waitForTimeout(1000);
     await this.pairingPage.savePairing(clickCancel);
   }
@@ -213,14 +216,18 @@ export class PairingColObject {
     clickCancel = false
   ) {
     if (clickOnPairRow) {
-      const input = this.pairColForClick.locator('input');
-      if (pair) { await input.check({ force: true }); } else { await input.uncheck({ force: true }); }
+      await this.pairColForClick.dispatchEvent('click');
       await this.page.waitForTimeout(500);
+      if ((await this.pairCol.locator('input').isChecked()) !== pair) {
+        await this.pairColForClick.dispatchEvent('click');
+        await this.page.waitForTimeout(500);
+      }
     } else {
       for (let i = 0; i < this.pairCheckboxesForClick.length; i++) {
-        const input = this.pairCheckboxes[i].locator('input');
-        if (pair) { await input.check({ force: true }); } else { await input.uncheck({ force: true }); }
-        await this.page.waitForTimeout(500);
+        if ((await this.pairCheckboxes[i].locator('input').isChecked()) !== pair) {
+          await this.pairCheckboxesForClick[i].dispatchEvent('click');
+          await this.page.waitForTimeout(500);
+        }
       }
     }
     await this.pairingPage.savePairing(clickCancel);
