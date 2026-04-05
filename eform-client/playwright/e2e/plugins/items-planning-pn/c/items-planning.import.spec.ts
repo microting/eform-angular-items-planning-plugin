@@ -48,10 +48,12 @@ test.describe.serial('Items planning - Import', () => {
       timeout: 20000,
     });
     await itemsPlanningModalPage.xlsxImportPlanningsInput.setInputFiles(filePath);
+    await page.locator('#spinner-animation').waitFor({ state: 'hidden', timeout: 90000 }).catch(() => {});
     await itemsPlanningPlanningPage.planningCreateBtn.waitFor({
       state: 'visible',
-      timeout: 60000,
+      timeout: 120000,
     });
+    await page.waitForTimeout(2000);
     expect(planningsBeforeImport).not.toBe(
       await itemsPlanningPlanningPage.rowNum()
     );

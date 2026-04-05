@@ -42,76 +42,51 @@ test.describe.serial('Items planning plannings - Sorting', () => {
     const itemsPlanningPlanningPage = new ItemsPlanningPlanningPage(page);
     await page.waitForTimeout(1000);
 
+    // Click once for ascending sort
+    await itemsPlanningPlanningPage.clickIdTableHeader();
     let list = await page.locator('td.planningId').all();
-    const planningBefore = await Promise.all(list.map((item) => item.textContent()));
+    const ascValues = await Promise.all(list.map((item) => item.textContent()));
+    const sortedAsc = [...ascValues].sort();
+    expect(ascValues).toEqual(sortedAsc);
 
-    for (let i = 0; i < 2; i++) {
-      await itemsPlanningPlanningPage.clickIdTableHeader();
-
-      list = await page.locator('td.planningId').all();
-      const planningAfter = await Promise.all(list.map((item) => item.textContent()));
-
-      const sortIcon = await page.locator('th.planningId').locator('.ng-trigger-leftPointer').getAttribute('style');
-      let sorted;
-      if (sortIcon === 'transform: rotate(45deg);') {
-        sorted = [...planningBefore].sort().reverse();
-      } else if (sortIcon === 'expand_less') {
-        sorted = planningBefore;
-      } else {
-        sorted = [...planningBefore].sort();
-      }
-      expect(sorted).toEqual(planningAfter);
-    }
+    // Click again for descending sort
+    await itemsPlanningPlanningPage.clickIdTableHeader();
+    list = await page.locator('td.planningId').all();
+    const descValues = await Promise.all(list.map((item) => item.textContent()));
+    const sortedDesc = [...descValues].sort().reverse();
+    expect(descValues).toEqual(sortedDesc);
   });
 
   test('should be able to sort by Name', async () => {
     const itemsPlanningPlanningPage = new ItemsPlanningPlanningPage(page);
 
+    await itemsPlanningPlanningPage.clickNameTableHeader();
     let list = await page.locator('td.planningName').all();
-    const planningBefore = await Promise.all(list.map((item) => item.textContent()));
+    const ascValues = await Promise.all(list.map((item) => item.textContent()));
+    const sortedAsc = [...ascValues].sort();
+    expect(ascValues).toEqual(sortedAsc);
 
-    for (let i = 0; i < 2; i++) {
-      await itemsPlanningPlanningPage.clickNameTableHeader();
-
-      list = await page.locator('td.planningName').all();
-      const planningAfter = await Promise.all(list.map((item) => item.textContent()));
-
-      const sortIcon = await page.locator('th.planningName').locator('.ng-trigger-leftPointer').getAttribute('style');
-      let sorted;
-      if (sortIcon === 'transform: rotate(45deg);') {
-        sorted = [...planningBefore].sort().reverse();
-      } else if (sortIcon === 'expand_less') {
-        sorted = planningBefore;
-      } else {
-        sorted = [...planningBefore].sort();
-      }
-      expect(sorted).toEqual(planningAfter);
-    }
+    await itemsPlanningPlanningPage.clickNameTableHeader();
+    list = await page.locator('td.planningName').all();
+    const descValues = await Promise.all(list.map((item) => item.textContent()));
+    const sortedDesc = [...descValues].sort().reverse();
+    expect(descValues).toEqual(sortedDesc);
   });
 
   test('should be able to sort by Description', async () => {
     const itemsPlanningPlanningPage = new ItemsPlanningPlanningPage(page);
 
+    await itemsPlanningPlanningPage.clickDescriptionTableHeader();
     let list = await page.locator('td.planningDescription').all();
-    const planningBefore = await Promise.all(list.map((item) => item.textContent()));
+    const ascValues = await Promise.all(list.map((item) => item.textContent()));
+    const sortedAsc = [...ascValues].sort();
+    expect(ascValues).toEqual(sortedAsc);
 
-    for (let i = 0; i < 2; i++) {
-      await itemsPlanningPlanningPage.clickDescriptionTableHeader();
-
-      list = await page.locator('td.planningDescription').all();
-      const planningAfter = await Promise.all(list.map((item) => item.textContent()));
-
-      const sortIcon = await page.locator('th.planningDescription').locator('.ng-trigger-leftPointer').getAttribute('style');
-      let sorted;
-      if (sortIcon === 'transform: rotate(45deg);') {
-        sorted = [...planningBefore].sort().reverse();
-      } else if (sortIcon === 'expand_less') {
-        sorted = planningBefore;
-      } else {
-        sorted = [...planningBefore].sort();
-      }
-      expect(sorted).toEqual(planningAfter);
-    }
+    await itemsPlanningPlanningPage.clickDescriptionTableHeader();
+    list = await page.locator('td.planningDescription').all();
+    const descValues = await Promise.all(list.map((item) => item.textContent()));
+    const sortedDesc = [...descValues].sort().reverse();
+    expect(descValues).toEqual(sortedDesc);
   });
 
   test('should clear table', async () => {

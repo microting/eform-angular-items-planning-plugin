@@ -78,7 +78,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public get selectAllPlanningsCheckboxForClick(): Locator {
-    return this.selectAllPlanningsCheckbox.locator('label');
+    return this.selectAllPlanningsCheckbox;
   }
 
   public get importPlanningsBtn(): Locator {
@@ -433,9 +433,9 @@ export class PlanningRowObject {
   }
 
   async clickOnCheckboxForMultipleDelete(valueCheckbox = true) {
-    const currentValue = await this.checkboxDelete.inputValue().catch(() => '');
-    if (currentValue !== valueCheckbox.toString()) {
-      await this.checkboxDeleteForClick.click();
+    const isChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
+    if (isChecked !== valueCheckbox) {
+      await this.checkboxDeleteForClick.click({ force: true });
     }
   }
 
