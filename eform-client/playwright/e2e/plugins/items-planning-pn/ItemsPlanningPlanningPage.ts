@@ -170,7 +170,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   async openMultipleDelete() {
-    await this.deleteMultiplePluginsBtn.waitFor({ state: 'visible', timeout: 40000 });
+    await this.page.locator('#deleteMultiplePluginsBtn:not([disabled])').waitFor({ state: 'visible', timeout: 40000 });
     await this.page.waitForTimeout(500);
     await this.deleteMultiplePluginsBtn.click();
   }
@@ -195,9 +195,9 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     if (!pickOne) {
       const isChecked = await this.selectAllPlanningsCheckbox.locator('input').isChecked().catch(() => false);
       if (isChecked !== valueCheckbox) {
-        // Click on the mat-checkbox element itself to toggle
-        await this.selectAllPlanningsCheckbox.click({ force: true, position: { x: 10, y: 10 } });
-        await this.page.waitForTimeout(500);
+        // Use JavaScript click on the internal checkbox input to ensure Angular detects the change
+        await this.selectAllPlanningsCheckbox.locator('input').evaluate((el: HTMLInputElement) => el.click());
+        await this.page.waitForTimeout(1000);
       }
     } else {
       const plannings = await this.getAllPlannings(0, false);
@@ -437,7 +437,8 @@ export class PlanningRowObject {
   async clickOnCheckboxForMultipleDelete(valueCheckbox = true) {
     const isChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
     if (isChecked !== valueCheckbox) {
-      await this.checkboxDelete.click({ force: true, position: { x: 10, y: 10 } });
+      await this.checkboxDelete.locator('input').evaluate((el: HTMLInputElement) => el.click());
+      await this.page.waitForTimeout(500);
     }
   }
 

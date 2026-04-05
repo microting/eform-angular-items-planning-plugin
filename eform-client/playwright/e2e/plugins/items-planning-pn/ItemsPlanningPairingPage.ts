@@ -142,14 +142,17 @@ export class PairingRowObject {
     clickCancel = false
   ) {
     if (clickOnPairRow) {
-      await this.pairRowForClick.click({ force: true });
+      await this.pairRowForClick.locator('input').evaluate((el: HTMLInputElement) => el.click());
+      await this.page.waitForTimeout(500);
       if ((await this.pairRow.locator('input').isChecked()) !== pair) {
-        await this.pairRowForClick.click({ force: true });
+        await this.pairRowForClick.locator('input').evaluate((el: HTMLInputElement) => el.click());
+        await this.page.waitForTimeout(500);
       }
     } else {
       for (let i = 0; i < this.pairCheckboxesForClick.length; i++) {
         if ((await this.pairCheckboxes[i].locator('input').isChecked()) !== pair) {
-          await this.pairCheckboxesForClick[i].click({ force: true });
+          await this.pairCheckboxesForClick[i].locator('input').evaluate((el: HTMLInputElement) => el.click());
+          await this.page.waitForTimeout(500);
         }
       }
     }
@@ -161,7 +164,7 @@ export class PairingRowObject {
     indexDeviceForPair: number,
     clickCancel = false
   ) {
-    await this.pairCheckboxesForClick[indexDeviceForPair].click({ force: true });
+    await this.pairCheckboxesForClick[indexDeviceForPair].locator('input').evaluate((el: HTMLInputElement) => el.click());
     await this.page.waitForTimeout(1000);
     await this.pairingPage.savePairing(clickCancel);
   }
@@ -213,14 +216,17 @@ export class PairingColObject {
     clickCancel = false
   ) {
     if (clickOnPairRow) {
-      await this.pairColForClick.click({ force: true });
+      await this.pairColForClick.locator('input').evaluate((el: HTMLInputElement) => el.click());
+      await this.page.waitForTimeout(500);
       if ((await this.pairCol.locator('input').isChecked()) !== pair) {
-        await this.pairColForClick.click({ force: true });
+        await this.pairColForClick.locator('input').evaluate((el: HTMLInputElement) => el.click());
+        await this.page.waitForTimeout(500);
       }
     } else {
       for (let i = 0; i < this.pairCheckboxesForClick.length; i++) {
         if ((await this.pairCheckboxes[i].locator('input').isChecked()) !== pair) {
-          await this.pairCheckboxesForClick[i].click({ force: true });
+          await this.pairCheckboxesForClick[i].locator('input').evaluate((el: HTMLInputElement) => el.click());
+          await this.page.waitForTimeout(500);
         }
       }
     }

@@ -28,15 +28,16 @@ test.describe.serial('Items planning - Tags', () => {
   test('should create tag', async () => {
     const tagsModalPage = new TagsModalPage(page);
     const tagsRowsBeforeCreate = await tagsModalPage.rowNum();
-    // Manually create tag — click new tag button, type name, click save
     await tagsModalPage.newTagBtn().click();
     await page.waitForTimeout(500);
     await page.locator('#newTagName').waitFor({ state: 'visible', timeout: 90000 });
-    // Use click + type instead of fill to ensure Angular ngModel picks up the value
-    await tagsModalPage.newTagNameInput().click();
-    await tagsModalPage.newTagNameInput().pressSequentially(tagName, { delay: 50 });
+    await tagsModalPage.newTagNameInput().fill(tagName);
     await page.waitForTimeout(500);
-    // Verify button is enabled before clicking
+    // Dispatch input event to ensure Angular ngModel picks up the value
+    await tagsModalPage.newTagNameInput().evaluate((el: HTMLInputElement) => {
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    await page.waitForTimeout(500);
     await page.locator('#newTagSaveBtn:not([disabled])').waitFor({ state: 'visible', timeout: 10000 });
     await tagsModalPage.newTagSaveBtn().click();
     await page.waitForTimeout(500);
