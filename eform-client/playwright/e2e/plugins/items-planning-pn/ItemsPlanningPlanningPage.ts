@@ -204,8 +204,18 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
 
   async selectAllPlanningsForDelete(valueCheckbox = true, pickOne = false) {
     if (!pickOne) {
-      // Use dispatchEvent on the mat-checkbox host element
-      await this.selectAllPlanningsCheckbox.dispatchEvent('click');
+      // Simulate Cypress check({force:true}) by setting checked and dispatching events
+      const input = this.page.locator('.mat-header-cell mat-checkbox input');
+      await input.evaluate((el: HTMLInputElement, val: boolean) => {
+        el.checked = val;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        // Also click the mat-checkbox component to trigger Angular's handler
+        const matCheckbox = el.closest('mat-checkbox');
+        if (matCheckbox) {
+          matCheckbox.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        }
+      }, valueCheckbox);
       await this.page.waitForTimeout(1000);
     } else {
       const plannings = await this.getAllPlannings(0, false);
@@ -443,11 +453,19 @@ export class PlanningRowObject {
   }
 
   async clickOnCheckboxForMultipleDelete(valueCheckbox = true) {
-    const isChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
-    if (isChecked !== valueCheckbox) {
-      await this.checkboxDelete.dispatchEvent('click');
-      await this.page.waitForTimeout(500);
-    }
+    const input = this.checkboxDelete.locator('input');
+    await input.evaluate((el: HTMLInputElement, val: boolean) => {
+      if (el.checked !== val) {
+        el.checked = val;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        const matCheckbox = el.closest('mat-checkbox');
+        if (matCheckbox) {
+          matCheckbox.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        }
+      }
+    }, valueCheckbox);
+    await this.page.waitForTimeout(500);
   }
 
   async readPairing(): Promise<{ workerName: string; workerValue: boolean }[]> {
