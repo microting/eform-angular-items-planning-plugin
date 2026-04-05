@@ -78,7 +78,7 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
   }
 
   public get selectAllPlanningsCheckboxForClick(): Locator {
-    return this.selectAllPlanningsCheckbox.locator('..');
+    return this.selectAllPlanningsCheckbox.locator('label');
   }
 
   public get importPlanningsBtn(): Locator {
@@ -193,8 +193,8 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
 
   async selectAllPlanningsForDelete(valueCheckbox = true, pickOne = false) {
     if (!pickOne) {
-      const currentValue = await this.selectAllPlanningsCheckbox.inputValue().catch(() => '');
-      if (currentValue !== valueCheckbox.toString()) {
+      const isChecked = await this.selectAllPlanningsCheckbox.locator('input').isChecked().catch(() => false);
+      if (isChecked !== valueCheckbox) {
         await this.selectAllPlanningsCheckboxForClick.click({ force: true });
       }
     } else {

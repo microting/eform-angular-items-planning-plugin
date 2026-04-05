@@ -31,9 +31,27 @@ export class ItemsPlanningModalPage {
     const createFolder = this.createFolderName;
     const editFolder = this.editFolderName;
     if ((await createFolder.count()) > 0) {
-      await createFolder.click({ force: true });
+      await createFolder.waitFor({ state: 'visible', timeout: 20000 });
+      await this.page.waitForFunction(
+        (selector: string) => {
+          const el = document.querySelector(selector) as HTMLButtonElement;
+          return el && !el.disabled;
+        },
+        '#createFolderSelector',
+        { timeout: 30000 }
+      );
+      await createFolder.click();
     } else {
-      await editFolder.click({ force: true });
+      await editFolder.waitFor({ state: 'visible', timeout: 20000 });
+      await this.page.waitForFunction(
+        (selector: string) => {
+          const el = document.querySelector(selector) as HTMLButtonElement;
+          return el && !el.disabled;
+        },
+        '#editFolderSelector',
+        { timeout: 30000 }
+      );
+      await editFolder.click();
     }
     await this.page.waitForTimeout(1000);
     const treeViewport = this.page.locator('app-eform-tree-view-picker');

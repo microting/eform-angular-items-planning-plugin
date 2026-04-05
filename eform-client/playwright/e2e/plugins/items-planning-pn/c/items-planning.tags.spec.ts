@@ -2,11 +2,12 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../../../Page objects/Login.page';
 import { TagsModalPage, TagRowObject } from '../../../Page objects/TagsModal.page';
 import { ItemsPlanningPlanningPage } from '../ItemsPlanningPlanningPage';
+import { generateRandmString } from '../../../helper-functions';
 
 let page;
 
-const tagName = 'Test tag';
-const updatedTagName = 'Test tag 2';
+const tagName = generateRandmString();
+const updatedTagName = generateRandmString();
 
 test.describe.serial('Items planning - Tags', () => {
   test.beforeAll(async ({ browser }) => {
@@ -28,7 +29,7 @@ test.describe.serial('Items planning - Tags', () => {
     const tagsModalPage = new TagsModalPage(page);
     const tagsRowsBeforeCreate = await tagsModalPage.rowNum();
     await tagsModalPage.createTag(tagName);
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
     const tagsRowsAfterCreate = await tagsModalPage.rowNum();
     const tagRowObject = new TagRowObject(page);
     const tagRowObj = await tagRowObject.getRow(tagsRowsAfterCreate);
