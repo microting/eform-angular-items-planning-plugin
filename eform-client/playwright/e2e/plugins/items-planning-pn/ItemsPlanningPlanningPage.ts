@@ -195,7 +195,12 @@ export class ItemsPlanningPlanningPage extends PageWithNavbarPage {
     if (!pickOne) {
       const isChecked = await this.selectAllPlanningsCheckbox.locator('input').isChecked().catch(() => false);
       if (isChecked !== valueCheckbox) {
-        await this.selectAllPlanningsCheckboxForClick.click({ force: true });
+        // Use evaluate to click the mat-checkbox's internal div that handles the toggle
+        await this.selectAllPlanningsCheckbox.evaluate((el: HTMLElement) => {
+          const inner = el.querySelector('.mdc-checkbox') as HTMLElement;
+          if (inner) inner.click();
+          else el.click();
+        });
         await this.page.waitForTimeout(500);
       }
     } else {
@@ -436,7 +441,11 @@ export class PlanningRowObject {
   async clickOnCheckboxForMultipleDelete(valueCheckbox = true) {
     const isChecked = await this.checkboxDelete.locator('input').isChecked().catch(() => false);
     if (isChecked !== valueCheckbox) {
-      await this.checkboxDeleteForClick.click({ force: true });
+      await this.checkboxDelete.evaluate((el: HTMLElement) => {
+        const inner = el.querySelector('.mdc-checkbox') as HTMLElement;
+        if (inner) inner.click();
+        else el.click();
+      });
     }
   }
 

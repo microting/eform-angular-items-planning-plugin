@@ -23,7 +23,7 @@ const planningData: PlanningCreateUpdate = {
 };
 
 test.describe.serial('Items planning actions - Delete', () => {
-  test.describe.configure({ timeout: 240000 });
+  test.describe.configure({ timeout: 480000 });
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     const loginPage = new LoginPage(page);

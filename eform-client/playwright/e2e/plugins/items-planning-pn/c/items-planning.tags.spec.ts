@@ -29,9 +29,13 @@ test.describe.serial('Items planning - Tags', () => {
     const tagsModalPage = new TagsModalPage(page);
     const tagsRowsBeforeCreate = await tagsModalPage.rowNum();
     await tagsModalPage.createTag(tagName);
-    // Wait for the tag to appear in the list (API call + list refresh)
-    await page.locator('#tagName', { hasText: tagName }).waitFor({ state: 'visible', timeout: 30000 });
-    const tagsRowsAfterCreate = await tagsModalPage.rowNum();
+    // Wait for tag list to refresh — retry rowNum until it increases
+    let tagsRowsAfterCreate = tagsRowsBeforeCreate;
+    for (let attempt = 0; attempt < 10; attempt++) {
+      await page.waitForTimeout(1000);
+      tagsRowsAfterCreate = await tagsModalPage.rowNum();
+      if (tagsRowsAfterCreate > tagsRowsBeforeCreate) break;
+    }
     const tagRowObject = new TagRowObject(page, tagsModalPage);
     const tagRowObj = await tagRowObject.getRow(tagsRowsAfterCreate);
     expect(tagsRowsAfterCreate).toBe(tagsRowsBeforeCreate + 1);

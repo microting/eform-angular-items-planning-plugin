@@ -42,52 +42,55 @@ test.describe.serial('Items planning plannings - Sorting', () => {
     const itemsPlanningPlanningPage = new ItemsPlanningPlanningPage(page);
     await page.waitForTimeout(1000);
 
-    // Click once for ascending sort
+    // First click sorts descending (default view is already ascending by ID)
     await itemsPlanningPlanningPage.clickIdTableHeader();
     let list = await page.locator('td.planningId').all();
-    const ascValues = await Promise.all(list.map((item) => item.textContent()));
-    // IDs are numeric, so sort numerically
-    const sortedAsc = [...ascValues].sort((a, b) => +(a || 0) - +(b || 0));
-    expect(ascValues).toEqual(sortedAsc);
-
-    // Click again for descending sort
-    await itemsPlanningPlanningPage.clickIdTableHeader();
-    list = await page.locator('td.planningId').all();
     const descValues = await Promise.all(list.map((item) => item.textContent()));
     const sortedDesc = [...descValues].sort((a, b) => +(b || 0) - +(a || 0));
     expect(descValues).toEqual(sortedDesc);
+
+    // Second click sorts ascending
+    await itemsPlanningPlanningPage.clickIdTableHeader();
+    list = await page.locator('td.planningId').all();
+    const ascValues = await Promise.all(list.map((item) => item.textContent()));
+    const sortedAsc = [...ascValues].sort((a, b) => +(a || 0) - +(b || 0));
+    expect(ascValues).toEqual(sortedAsc);
   });
 
   test('should be able to sort by Name', async () => {
     const itemsPlanningPlanningPage = new ItemsPlanningPlanningPage(page);
 
+    // First click = ascending by name
     await itemsPlanningPlanningPage.clickNameTableHeader();
     let list = await page.locator('td.planningName').all();
-    const ascValues = await Promise.all(list.map((item) => item.textContent()));
-    const sortedAsc = [...ascValues].sort();
-    expect(ascValues).toEqual(sortedAsc);
+    const firstValues = await Promise.all(list.map((item) => item.textContent()));
+    const sortedAsc = [...firstValues].sort();
+    expect(firstValues).toEqual(sortedAsc);
 
+    // Second click = descending by name
     await itemsPlanningPlanningPage.clickNameTableHeader();
     list = await page.locator('td.planningName').all();
-    const descValues = await Promise.all(list.map((item) => item.textContent()));
-    const sortedDesc = [...descValues].sort().reverse();
-    expect(descValues).toEqual(sortedDesc);
+    const secondValues = await Promise.all(list.map((item) => item.textContent()));
+    const sortedDesc = [...secondValues].sort().reverse();
+    expect(secondValues).toEqual(sortedDesc);
   });
 
   test('should be able to sort by Description', async () => {
     const itemsPlanningPlanningPage = new ItemsPlanningPlanningPage(page);
 
+    // First click = ascending by description
     await itemsPlanningPlanningPage.clickDescriptionTableHeader();
     let list = await page.locator('td.planningDescription').all();
-    const ascValues = await Promise.all(list.map((item) => item.textContent()));
-    const sortedAsc = [...ascValues].sort();
-    expect(ascValues).toEqual(sortedAsc);
+    const firstValues = await Promise.all(list.map((item) => item.textContent()));
+    const sortedAsc = [...firstValues].sort();
+    expect(firstValues).toEqual(sortedAsc);
 
+    // Second click = descending by description
     await itemsPlanningPlanningPage.clickDescriptionTableHeader();
     list = await page.locator('td.planningDescription').all();
-    const descValues = await Promise.all(list.map((item) => item.textContent()));
-    const sortedDesc = [...descValues].sort().reverse();
-    expect(descValues).toEqual(sortedDesc);
+    const secondValues = await Promise.all(list.map((item) => item.textContent()));
+    const sortedDesc = [...secondValues].sort().reverse();
+    expect(secondValues).toEqual(sortedDesc);
   });
 
   test('should clear table', async () => {
