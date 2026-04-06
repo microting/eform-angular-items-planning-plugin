@@ -11,8 +11,9 @@ let folderName = generateRandmString();
 const countPlannings = 5;
 
 // TODO: skipped — mat-checkbox interaction not working in Playwright CI; not tested in WDIO/Cypress either
-test.describe.serial.skip('Items planning plannings - Multiple delete', () => {
+test.describe.serial('Items planning plannings - Multiple delete', () => {
   test.describe.configure({ timeout: 240000 });
+  test.beforeEach(() => { test.skip(true, 'mat-checkbox not working in CI'); });
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
     const loginPage = new LoginPage(page);
