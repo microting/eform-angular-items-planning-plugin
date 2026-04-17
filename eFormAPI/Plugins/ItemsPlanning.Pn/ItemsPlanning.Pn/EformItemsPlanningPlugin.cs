@@ -162,7 +162,7 @@ namespace ItemsPlanning.Pn
                 });
             }
             _connectionString = connectionString;
-            services.AddDbContext<ItemsPlanningPnDbContext>(o =>
+            services.AddDbContextPool<ItemsPlanningPnDbContext>(o =>
                 o.UseMySql(connectionString, new MariaDbServerVersion(
                     ServerVersion.AutoDetect(connectionString)), mySqlOptionsAction: builder =>
                 {
