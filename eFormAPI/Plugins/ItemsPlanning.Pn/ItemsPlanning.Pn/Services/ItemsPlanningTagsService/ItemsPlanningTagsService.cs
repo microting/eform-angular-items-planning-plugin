@@ -77,7 +77,7 @@ public class ItemsPlanningTagsService(
         }
     }
 
-    public async Task<OperationResult> CreateItemsPlanningTag(PlanningTagModel requestModel)
+    public async Task<OperationDataResult<PlanningTagModel>> CreateItemsPlanningTag(PlanningTagModel requestModel)
     {
         var currentTag = await dbContext.PlanningTags
             .FirstOrDefaultAsync(x => x.Name == requestModel.Name);
@@ -86,16 +86,28 @@ public class ItemsPlanningTagsService(
         {
             if (currentTag.WorkflowState != Constants.WorkflowStates.Removed)
             {
-                return new OperationResult(
+                return new OperationDataResult<PlanningTagModel>(
                     true,
-                    itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"));
+                    itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"),
+                    new PlanningTagModel
+                    {
+                        Id = currentTag.Id,
+                        Name = currentTag.Name,
+                        IsLocked = currentTag.IsLocked
+                    });
             }
             currentTag.WorkflowState = Constants.WorkflowStates.Created;
             currentTag.UpdatedByUserId = userService.UserId;
             await currentTag.Update(dbContext);
-            return new OperationResult(
+            return new OperationDataResult<PlanningTagModel>(
                 true,
-                itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"));
+                itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"),
+                new PlanningTagModel
+                {
+                    Id = currentTag.Id,
+                    Name = currentTag.Name,
+                    IsLocked = currentTag.IsLocked
+                });
         }
 
         try
@@ -109,16 +121,22 @@ public class ItemsPlanningTagsService(
 
             await itemsPlanningTag.Create(dbContext);
 
-            return new OperationResult(
+            return new OperationDataResult<PlanningTagModel>(
                 true,
-                itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"));
+                itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"),
+                new PlanningTagModel
+                {
+                    Id = itemsPlanningTag.Id,
+                    Name = itemsPlanningTag.Name,
+                    IsLocked = itemsPlanningTag.IsLocked
+                });
         }
         catch (Exception e)
         {
             SentrySdk.CaptureException(e);
             logger.LogError(e.Message);
             logger.LogTrace(e.StackTrace);
-            return new OperationResult(
+            return new OperationDataResult<PlanningTagModel>(
                 false,
                 itemsPlanningLocalizationService.GetString("ErrorWhileCreatingItemsPlanningTag"));
         }

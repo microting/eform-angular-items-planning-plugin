@@ -37,8 +37,8 @@ export class ItemsPlanningPnTagsService {
     return this.apiBaseService.delete(ItemsPlanningTagsMethods.Tags + '/' + id);
   }
 
-  createPlanningTag(model: SharedTagCreateModel): Observable<OperationResult> {
-    return this.apiBaseService.post(
+  createPlanningTag(model: SharedTagCreateModel): Observable<OperationDataResult<SharedTagModel>> {
+    return this.apiBaseService.post<SharedTagModel>(
       ItemsPlanningTagsMethods.Tags,
       model
     );

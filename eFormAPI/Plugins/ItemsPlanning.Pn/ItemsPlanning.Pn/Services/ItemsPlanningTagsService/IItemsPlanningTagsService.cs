@@ -38,7 +38,7 @@ namespace ItemsPlanning.Pn.Services.ItemsPlanningTagsService
 
         Task<OperationResult> DeleteItemsPlanningTag(int id);
 
-        Task<OperationResult> CreateItemsPlanningTag(PlanningTagModel requestModel);
+        Task<OperationDataResult<PlanningTagModel>> CreateItemsPlanningTag(PlanningTagModel requestModel);
 
 		Task<OperationResult> BulkPlanningTags(PlanningBulkTagModel requestModel);
 	}

@@ -52,7 +52,7 @@ namespace ItemsPlanning.Pn.Controllers
         }
 
         [HttpPost]
-        public async Task<OperationResult> CreateItemsPlanningTag([FromBody] PlanningTagModel requestModel)
+        public async Task<OperationDataResult<PlanningTagModel>> CreateItemsPlanningTag([FromBody] PlanningTagModel requestModel)
         {
             return await _itemsPlanningTagsService.CreateItemsPlanningTag(requestModel);
         }
