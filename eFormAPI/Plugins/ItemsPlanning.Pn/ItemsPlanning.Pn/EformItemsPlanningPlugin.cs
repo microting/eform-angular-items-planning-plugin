@@ -45,6 +45,8 @@ namespace ItemsPlanning.Pn
     using Services.ItemsPlanningTagsService;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Infrastructure;
+    using Microsoft.EntityFrameworkCore.Migrations;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microting.eFormApi.BasePn;
@@ -173,7 +175,11 @@ namespace ItemsPlanning.Pn
 
             ItemsPlanningPnContextFactory contextFactory = new ItemsPlanningPnContextFactory();
             var context = contextFactory.CreateDbContext(new[] { connectionString });
-            context.Database.Migrate();
+            var historyRepo = context.GetService<IHistoryRepository>();
+            if (!historyRepo.Exists() || context.Database.GetPendingMigrations().Any())
+            {
+                context.Database.Migrate();
+            }
 
             // Seed database
             SeedDatabase(connectionString);
