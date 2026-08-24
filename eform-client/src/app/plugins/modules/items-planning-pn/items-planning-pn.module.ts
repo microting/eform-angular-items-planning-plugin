@@ -56,3 +56,5 @@ import {
 })
 export class ItemsPlanningPnModule {
 }
+
+// ci: control probe — no functional change (see PR #2118)
