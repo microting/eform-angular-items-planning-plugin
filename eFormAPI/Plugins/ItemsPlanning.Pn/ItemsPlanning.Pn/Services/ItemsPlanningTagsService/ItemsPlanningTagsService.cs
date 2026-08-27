@@ -79,26 +79,19 @@ public class ItemsPlanningTagsService(
 
     public async Task<OperationDataResult<PlanningTagModel>> CreateItemsPlanningTag(PlanningTagModel requestModel)
     {
+        // Match live tags only. Reviving a removed row would hand back its id, and
+        // backend-configuration's AreaRulePlanningTag rows store that id as a bare int
+        // in another database - DeleteItemsPlanningTag cannot reach them, so they
+        // outlive the delete and would silently re-tag every task the tag was removed
+        // from. Fall through and insert a new row instead, as BulkPlanningTags does.
         var currentTag = await dbContext.PlanningTags
-            .FirstOrDefaultAsync(x => x.Name == requestModel.Name);
+            .FirstOrDefaultAsync(x => x.Name == requestModel.Name
+                                      && x.WorkflowState != Constants.WorkflowStates.Removed);
 
         if (currentTag != null)
         {
-            if (currentTag.WorkflowState != Constants.WorkflowStates.Removed)
-            {
-                return new OperationDataResult<PlanningTagModel>(
-                    true,
-                    itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"),
-                    new PlanningTagModel
-                    {
-                        Id = currentTag.Id,
-                        Name = currentTag.Name,
-                        IsLocked = currentTag.IsLocked
-                    });
-            }
-            currentTag.WorkflowState = Constants.WorkflowStates.Created;
-            currentTag.UpdatedByUserId = userService.UserId;
-            await currentTag.Update(dbContext);
+            // Re-creating a live tag stays an idempotent no-op: the create-on-type
+            // affordances expect the existing id back rather than an error.
             return new OperationDataResult<PlanningTagModel>(
                 true,
                 itemsPlanningLocalizationService.GetString("ItemsPlanningTagCreatedSuccessfully"),
