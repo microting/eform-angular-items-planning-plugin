@@ -38,6 +38,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Helpers;
 using Infrastructure.Models.Planning;
 using Microting.eForm.Infrastructure.Constants;
 
@@ -60,11 +61,12 @@ public class ItemsPlanningTagsService(
                     Id = x.Id,
                     Name = x.Name,
                     IsLocked = x.IsLocked
-                }).OrderBy(x => x.Name).ToListAsync();
+                }).ToListAsync();
 
+            // Sorted in memory: the column collation folds Å to A (#2126).
             return new OperationDataResult<List<PlanningTagModel>>(
                 true,
-                itemsPlanningTags);
+                itemsPlanningTags.OrderBy(x => x.Name, TagNameComparer.Danish).ToList());
         }
         catch (Exception e)
         {
