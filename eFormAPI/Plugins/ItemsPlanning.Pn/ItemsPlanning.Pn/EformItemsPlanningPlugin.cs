@@ -41,6 +41,7 @@ namespace ItemsPlanning.Pn
     using System.Reflection;
     using Infrastructure.Data.Seed;
     using Infrastructure.Data.Seed.Data;
+    using Infrastructure.Helpers;
     using Infrastructure.Models.Settings;
     using Services.ItemsPlanningTagsService;
     using Microsoft.AspNetCore.Builder;
@@ -49,6 +50,8 @@ namespace ItemsPlanning.Pn
     using Microsoft.EntityFrameworkCore.Migrations;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using Microting.EformAngularFrontendBase.Infrastructure.Data;
     using Microting.eFormApi.BasePn;
     using Microting.eFormApi.BasePn.Infrastructure.Consts;
     using Microting.eFormApi.BasePn.Infrastructure.Database.Extensions;
@@ -197,6 +200,21 @@ namespace ItemsPlanning.Pn
 
         public void Configure(IApplicationBuilder appBuilder)
         {
+            using var scope = appBuilder.ApplicationServices.CreateScope();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<EformItemsPlanningPlugin>>();
+            try
+            {
+                var baseDbContext = scope.ServiceProvider.GetService<BaseDbContext>();
+                if (baseDbContext != null)
+                {
+                    DeadReportsMenuCleaner.Remove(baseDbContext, logger);
+                }
+            }
+            catch (Exception e)
+            {
+                // A failed cleanup leaves a dead menu entry behind; it must never stop the host from starting.
+                logger.LogError(e, "Could not remove the dead items-planning Reports menu");
+            }
         }
 
         public List<PluginMenuItemModel> GetNavigationMenu(IServiceProvider serviceProvider)
@@ -318,75 +336,6 @@ namespace ItemsPlanning.Pn
                             },
                             new PluginMenuItemModel
                             {
-                                Name = "Reports",
-                                E2EId = "items-planning-pn-reports",
-                                Link = "/plugins/items-planning-pn/reports",
-                                Type = MenuItemTypeEnum.Link,
-                                Position = 1,
-                                MenuTemplate = new PluginMenuTemplateModel()
-                                {
-                                    Name = "Reports",
-                                    E2EId = "items-planning-pn-reports",
-                                    DefaultLink = "/plugins/items-planning-pn/reports",
-                                    Permissions = new List<PluginMenuTemplatePermissionModel>(),
-                                    Translations = new List<PluginMenuTranslationModel>
-                                    {
-                                        new PluginMenuTranslationModel
-                                        {
-                                            LocaleName = LocaleNames.English,
-                                            Name = "Reports",
-                                            Language = LanguageNames.English
-                                        },
-                                        new PluginMenuTranslationModel
-                                        {
-                                            LocaleName = LocaleNames.German,
-                                            Name = "Berichte",
-                                            Language = LanguageNames.German
-                                        },
-                                        new PluginMenuTranslationModel
-                                        {
-                                            LocaleName = LocaleNames.Danish,
-                                            Name = "Rapporter",
-                                            Language = LanguageNames.Danish
-                                        },
-                                        new PluginMenuTranslationModel
-                                        {
-                                            LocaleName = LocaleNames.Ukrainian,
-                                            Name = "Звіти",
-                                            Language = LanguageNames.Ukrainian
-                                        }
-                                    }
-                                },
-                                Translations = new List<PluginMenuTranslationModel>
-                                {
-                                    new PluginMenuTranslationModel
-                                    {
-                                        LocaleName = LocaleNames.English,
-                                        Name = "Reports",
-                                        Language = LanguageNames.English
-                                    },
-                                    new PluginMenuTranslationModel
-                                    {
-                                        LocaleName = LocaleNames.German,
-                                        Name = "Berichte",
-                                        Language = LanguageNames.German
-                                    },
-                                    new PluginMenuTranslationModel
-                                    {
-                                        LocaleName = LocaleNames.Danish,
-                                        Name = "Rapporter",
-                                        Language = LanguageNames.Danish
-                                    },
-                                    new PluginMenuTranslationModel
-                                    {
-                                        LocaleName = LocaleNames.Ukrainian,
-                                        Name = "Звіти",
-                                        Language = LanguageNames.Ukrainian
-                                    }
-                                }
-                            },
-                            new PluginMenuItemModel
-                            {
                                 Name = "Pairing",
                                 E2EId = "items-planning-pn-pairing",
                                 Link = "/plugins/items-planning-pn/pairing",
@@ -482,13 +431,6 @@ namespace ItemsPlanning.Pn
                         Link = "/plugins/items-planning-pn/plannings",
                         Guards = new List<string>() { ItemsPlanningClaims.GetPlannings },
                         Position = 0
-                    },
-                    new MenuItemModel()
-                    {
-                        Name = localizationService.GetString("Reports"),
-                        E2EId = "items-planning-pn-reports",
-                        Link = "/plugins/items-planning-pn/reports",
-                        Position = 2
                     }
                 }
             });
