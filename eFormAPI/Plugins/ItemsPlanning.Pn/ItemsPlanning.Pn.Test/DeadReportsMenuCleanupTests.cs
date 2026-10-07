@@ -41,7 +41,8 @@ using Testcontainers.MariaDb;
 
 /// <summary>
 /// Plugin start removes the dead "Reports" menu entry (#2136) from the host's Angular database: the item,
-/// its template and their child rows go; a second start changes nothing; other menu entries are untouched.
+/// its template and their child rows go, whatever E2E id they carry; a second start changes nothing; other
+/// menu entries, including ones whose link merely starts like the dead one, are untouched.
 /// Runs <see cref="EformItemsPlanningPlugin.Configure"/> against a real MariaDB, the way the host calls it.
 /// </summary>
 [TestFixture]
@@ -161,6 +162,99 @@ public class DeadReportsMenuCleanupTests
             Assert.That(await db.MenuItemSecurityGroups.CountAsync(x => x.MenuItemId == planningItemId),
                 Is.EqualTo(1));
             Assert.That((await db.MenuItems.SingleAsync(x => x.Id == detachedItemId)).MenuTemplateId, Is.Null);
+        }
+
+        new EformItemsPlanningPlugin().Configure(_appBuilder);
+
+        Assert.That(await SnapshotAsync(), Is.EqualTo(after).Using<Snapshot>(SameSnapshot),
+            "a second start changes nothing");
+    }
+
+    [Test]
+    public async Task PluginStart_RemovesTheDeadLink_WhateverItsE2EIdAndWithoutATemplate()
+    {
+        int advancedItemId, trailingSlashItemId, lookalikeItemId, renamedTemplateId;
+        await using (var db = NewDbContext())
+        {
+            var securityGroup = new SecurityGroup { Name = "Example group" };
+            db.SecurityGroups.Add(securityGroup);
+            await db.SaveChangesAsync();
+
+            // The shape a menu save leaves behind: the dead link under the "advanced" E2E id, no template.
+            var advanced = new MenuItem
+            {
+                Name = "Reports",
+                E2EId = "advanced",
+                Link = DeadReportsMenuCleaner.Link,
+                Type = MenuItemTypeEnum.Link,
+                Translations = { new MenuItemTranslation { Name = "Reports", LocaleName = "en-US", Language = "English" } },
+                MenuItemSecurityGroups = { new MenuItemSecurityGroup { SecurityGroup = securityGroup } }
+            };
+            var trailingSlash = new MenuItem
+            {
+                Name = "Reports",
+                E2EId = "example-reports",
+                Link = DeadReportsMenuCleaner.Link + "/",
+                Type = MenuItemTypeEnum.Link
+            };
+            // A user's own entry whose link only starts like the dead one: it stays.
+            var lookalike = new MenuItem
+            {
+                Name = "Example reports archive",
+                E2EId = "advanced",
+                Link = DeadReportsMenuCleaner.Link + "-archive",
+                Type = MenuItemTypeEnum.Link,
+                Translations =
+                {
+                    new MenuItemTranslation { Name = "Example reports archive", LocaleName = "en-US", Language = "English" }
+                },
+                MenuItemSecurityGroups = { new MenuItemSecurityGroup { SecurityGroup = securityGroup } }
+            };
+            // A template on the dead link under another E2E id goes too.
+            var renamedTemplate = new MenuTemplate
+            {
+                Name = "Reports",
+                E2EId = "example-reports-template",
+                DefaultLink = DeadReportsMenuCleaner.Link,
+                Translations =
+                {
+                    new MenuTemplateTranslation { Name = "Reports", LocaleName = "en-US", Language = "English" }
+                }
+            };
+            db.MenuItems.AddRange(advanced, trailingSlash, lookalike);
+            db.MenuTemplates.Add(renamedTemplate);
+            await db.SaveChangesAsync();
+
+            advancedItemId = advanced.Id;
+            trailingSlashItemId = trailingSlash.Id;
+            lookalikeItemId = lookalike.Id;
+            renamedTemplateId = renamedTemplate.Id;
+        }
+
+        var before = await SnapshotAsync();
+
+        new EformItemsPlanningPlugin().Configure(_appBuilder);
+
+        var after = await SnapshotAsync();
+        Assert.That(after, Is.EqualTo(before with
+        {
+            MenuItemIds = before.MenuItemIds.Where(x => x != advancedItemId && x != trailingSlashItemId).ToList(),
+            MenuItemTranslations = before.MenuItemTranslations - 1,
+            MenuItemSecurityGroups = before.MenuItemSecurityGroups - 1,
+            MenuTemplates = before.MenuTemplates - 1,
+            MenuTemplateTranslations = before.MenuTemplateTranslations - 1
+        }).Using<Snapshot>(SameSnapshot));
+
+        await using (var db = NewDbContext())
+        {
+            Assert.That(await db.MenuTemplates.AnyAsync(x => x.Id == renamedTemplateId), Is.False);
+            var kept = await db.MenuItems.SingleAsync(x => x.Id == lookalikeItemId);
+            Assert.That(kept.Link, Is.EqualTo(DeadReportsMenuCleaner.Link + "-archive"));
+            Assert.That(kept.E2EId, Is.EqualTo("advanced"));
+            Assert.That(await db.MenuItemTranslations.CountAsync(x => x.MenuItemId == lookalikeItemId),
+                Is.EqualTo(1));
+            Assert.That(await db.MenuItemSecurityGroups.CountAsync(x => x.MenuItemId == lookalikeItemId),
+                Is.EqualTo(1));
         }
 
         new EformItemsPlanningPlugin().Configure(_appBuilder);
