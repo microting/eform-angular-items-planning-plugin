@@ -32,21 +32,24 @@ using Microting.EformAngularFrontendBase.Infrastructure.Data;
 /// The "reports" page left the Angular module in 2023, but the plugin kept registering a "Reports" menu
 /// entry for it. Clicking it matches no route and the frontend's catch-all silently lands on "My eForms"
 /// (#2136). The host only ever adds plugin menu entries, so the plugin removes its own dead one on start.
-/// Only rows that carry both the dead link and its E2E id are touched; a second run finds nothing.
+/// Rows are matched on the dead link alone (with or without a trailing slash): a menu save can re-create
+/// the item with another E2E id and no template, and no live page answers that link anyway. A second run
+/// finds nothing.
 /// </summary>
 public static class DeadReportsMenuCleaner
 {
     public const string Link = "/plugins/items-planning-pn/reports";
     public const string E2EId = "items-planning-pn-reports";
+    private const string LinkWithTrailingSlash = Link + "/";
 
     /// <returns>The number of menu items plus menu templates removed.</returns>
     public static int Remove(BaseDbContext dbContext, ILogger logger)
     {
         var menuItems = dbContext.MenuItems
-            .Where(x => x.Link == Link && x.E2EId == E2EId)
+            .Where(x => x.Link == Link || x.Link == LinkWithTrailingSlash)
             .ToList();
         var menuTemplates = dbContext.MenuTemplates
-            .Where(x => x.DefaultLink == Link && x.E2EId == E2EId)
+            .Where(x => x.DefaultLink == Link || x.DefaultLink == LinkWithTrailingSlash)
             .ToList();
 
         if (menuItems.Count == 0 && menuTemplates.Count == 0)
@@ -57,24 +60,25 @@ public static class DeadReportsMenuCleaner
         // Child rows are matched through their parent's link rather than an id list, so the queries need no
         // IN (...) translation.
         dbContext.MenuItemTranslations.RemoveRange(dbContext.MenuItemTranslations
-            .Where(x => x.MenuItem.Link == Link && x.MenuItem.E2EId == E2EId));
+            .Where(x => x.MenuItem.Link == Link || x.MenuItem.Link == LinkWithTrailingSlash));
         dbContext.MenuItemSecurityGroups.RemoveRange(dbContext.MenuItemSecurityGroups
-            .Where(x => x.MenuItem.Link == Link && x.MenuItem.E2EId == E2EId));
+            .Where(x => x.MenuItem.Link == Link || x.MenuItem.Link == LinkWithTrailingSlash));
         dbContext.MenuItems.RemoveRange(menuItems);
 
         // A menu item that still points at a removed template would block the delete; detach it the way
         // the host does when it removes a plugin's templates.
         foreach (var remaining in dbContext.MenuItems
-                     .Where(x => x.MenuTemplate.DefaultLink == Link && x.MenuTemplate.E2EId == E2EId)
-                     .Where(x => x.Link != Link || x.E2EId != E2EId))
+                     .Where(x => x.MenuTemplate.DefaultLink == Link
+                                 || x.MenuTemplate.DefaultLink == LinkWithTrailingSlash)
+                     .Where(x => !(x.Link == Link || x.Link == LinkWithTrailingSlash)))
         {
             remaining.MenuTemplateId = null;
         }
 
         dbContext.MenuTemplateTranslations.RemoveRange(dbContext.MenuTemplateTranslations
-            .Where(x => x.MenuTemplate.DefaultLink == Link && x.MenuTemplate.E2EId == E2EId));
+            .Where(x => x.MenuTemplate.DefaultLink == Link || x.MenuTemplate.DefaultLink == LinkWithTrailingSlash));
         dbContext.MenuTemplatePermissions.RemoveRange(dbContext.MenuTemplatePermissions
-            .Where(x => x.MenuTemplate.DefaultLink == Link && x.MenuTemplate.E2EId == E2EId));
+            .Where(x => x.MenuTemplate.DefaultLink == Link || x.MenuTemplate.DefaultLink == LinkWithTrailingSlash));
         dbContext.MenuTemplates.RemoveRange(menuTemplates);
 
         dbContext.SaveChanges();
