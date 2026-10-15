@@ -181,11 +181,7 @@ public class ShiftedLookupIdsTests
     [Test]
     public async Task ImportPlannings_StoresNameTranslationsPerLanguage_WhenLanguageIdsAreShifted()
     {
-        var eFormName = await TemplateLabel(await CreatePictureTemplate());
-        var danishName = $"Dansk navn {Guid.NewGuid():N}";
-        var folderLabel = $"Folder {Guid.NewGuid():N}";
-
-        await ImportPlanning(PlanningNameCell(danishName), eFormName, folderLabel);
+        var (danishName, _, _) = await ImportNewPlanning();
 
         Assert.That(await PlanningNamesByLanguageCode(danishName), Is.EquivalentTo(ExpectedNames(danishName)));
     }
@@ -197,14 +193,20 @@ public class ShiftedLookupIdsTests
         // language; with hard-coded language ids that walk threw or created duplicates.
         // (A re-import does not rename existing translations - that is existing
         // behaviour, not asserted here.)
-        var eFormName = await TemplateLabel(await CreatePictureTemplate());
-        var danishName = $"Dansk navn {Guid.NewGuid():N}";
-        var folderLabel = $"Folder {Guid.NewGuid():N}";
-        await ImportPlanning(PlanningNameCell(danishName), eFormName, folderLabel);
+        var (danishName, eFormName, folderLabel) = await ImportNewPlanning();
 
         await ImportPlanning(PlanningNameCell(danishName), eFormName, folderLabel);
 
         Assert.That(await PlanningNamesByLanguageCode(danishName), Is.EquivalentTo(ExpectedNames(danishName)));
+    }
+
+    private async Task<(string DanishName, string EFormName, string FolderLabel)> ImportNewPlanning()
+    {
+        var eFormName = await TemplateLabel(await CreatePictureTemplate());
+        var danishName = $"Dansk navn {Guid.NewGuid():N}";
+        var folderLabel = $"Folder {Guid.NewGuid():N}";
+        await ImportPlanning(PlanningNameCell(danishName), eFormName, folderLabel);
+        return (danishName, eFormName, folderLabel);
     }
 
     private static string PlanningNameCell(string danishName) => $"{danishName}|English name|Deutscher Name";
