@@ -262,7 +262,7 @@ public class ItemsPlanningReportService(
                         .Include(x => x.UploadedData)
                         .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
                         .Where(x => x.UploadedData.WorkflowState != Constants.WorkflowStates.Removed)
-                        .Where(x => x.Field.FieldTypeId == 5)
+                        .Where(x => x.Field.FieldType.Type == Constants.FieldTypes.Picture)
                         .Where(x => templateCaseIds.Contains(x.CaseId))
                         .Where(x => x.UploadedDataId != null)
                         .OrderBy(x => x.CaseId)
@@ -470,7 +470,7 @@ public class ItemsPlanningReportService(
 
                             item.ImagesCount = await sdkDbContext.FieldValues
                                 .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed)
-                                .Where(x => x.Field.FieldTypeId == 5)
+                                .Where(x => x.Field.FieldType.Type == Constants.FieldTypes.Picture)
                                 .Where(x => x.CaseId == planningCase.MicrotingSdkCaseId)
                                 .Where(x => x.UploadedDataId != null)
                                 .Select(x => x.Id)

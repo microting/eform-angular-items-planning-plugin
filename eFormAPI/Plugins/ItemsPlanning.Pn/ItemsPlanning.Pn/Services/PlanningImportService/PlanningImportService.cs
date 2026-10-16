@@ -86,6 +86,12 @@ public class PlanningImportService(
                 "en-US",
                 "de-DE"
             };
+            // The "|"-separated planning name holds one name per language, in this order.
+            // Resolve the languages by code: their ids are not 1, 2, 3 on every install.
+            var languageIdsByCode = await dbContext.Languages
+                .Where(x => languageCodes.Contains(x.LanguageCode))
+                .ToDictionaryAsync(x => x.LanguageCode, x => x.Id);
+            var planningNameLanguageIds = languageCodes.Select(code => languageIdsByCode[code]).ToList();
 
             foreach (var excelModel in fileResult)
             {
@@ -415,20 +421,19 @@ public class PlanningImportService(
                             .ToList();
 
                         // create or update name tranlations planning
-                        var i = 1;
-                        foreach (var translationText in excelModel.PlanningName.Split("|"))
+                        foreach (var (translationText, languageId) in
+                                 excelModel.PlanningName.Split("|").Zip(planningNameLanguageIds))
                         {
-                            var language = await dbContext.Languages.SingleAsync(x => x.Id == i);
                             var planningNameTranslation =
                                 planningTranslations
                                     .Where(x => x.PlanningId == planningFromDb.Id)
-                                    .FirstOrDefault(x => x.LanguageId == i);
+                                    .FirstOrDefault(x => x.LanguageId == languageId);
                             if (planningNameTranslation == null)
                             {
                                 planningNameTranslation = new PlanningNameTranslation
                                 {
                                     Name = translationText,
-                                    LanguageId = language.Id,
+                                    LanguageId = languageId,
                                     PlanningId = planningFromDb.Id,
                                     CreatedByUserId = userService.UserId,
                                     UpdatedByUserId = userService.UserId
@@ -442,8 +447,6 @@ public class PlanningImportService(
 
                                 await planningNameTranslation.Update(context);
                             }
-
-                            i++;
                         }
 
                         if (excelModel.DayOfMonth != null && planningFromDb.DayOfMonth != excelModel.DayOfMonth)
@@ -541,18 +544,16 @@ public class PlanningImportService(
 
                         await newPlanning.Create(context);
 
-                        var i = 1;
-                        foreach (var translationText in excelModel.PlanningName.Split("|"))
+                        foreach (var (translationText, languageId) in
+                                 excelModel.PlanningName.Split("|").Zip(planningNameLanguageIds))
                         {
-                            var language = await dbContext.Languages.SingleAsync(x => x.Id == i);
                             var planningNameTranslation = new PlanningNameTranslation()
                             {
                                 Name = translationText,
-                                LanguageId = language.Id,
+                                LanguageId = languageId,
                                 PlanningId = newPlanning.Id
                             };
                             await planningNameTranslation.Create(context);
-                            i += 1;
                         }
                     }
 
