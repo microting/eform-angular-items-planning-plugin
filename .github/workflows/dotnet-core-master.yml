@@ -119,6 +119,8 @@ jobs:
         cp -av main/eform-client/cypress/e2e/plugins/items-planning-pn eform-angular-frontend/eform-client/cypress/e2e/plugins/items-planning-pn
         cp -av main/eform-client/e2e/Assets eform-angular-frontend/eform-client/e2e/
         cd eform-angular-frontend/eform-client && ../../main/testinginstallpn.sh
+    - name: Enable Corepack
+      run: corepack enable
     - name: yarn install
       run: cd eform-angular-frontend/eform-client && yarn install
     - name: Install Playwright browsers
