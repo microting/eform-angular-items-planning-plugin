@@ -32,12 +32,12 @@
 </ng-template>
 <ng-template #tagsTpl let-row let-i="index">
   <div id="planningTags{{ i }}">
-    <mat-chip-list>
+    <mat-chip-set>
       <mat-chip *ngFor="let tag of row.tags" color="primary" (click)="onTagSelected(tag.id)">
         <mat-icon>discount</mat-icon>
         <span>{{ tag.name }}</span>
       </mat-chip>
-    </mat-chip-list>
+    </mat-chip-set>
   </div>
 </ng-template>
 <ng-template #paginatorTpl>
