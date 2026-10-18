@@ -30,14 +30,14 @@
   <mat-icon *ngIf="row.pushMessageSent">done</mat-icon>
   <mat-icon *ngIf="!row.pushMessageSent">close</mat-icon>
 </ng-template>
-<ng-template #tagsTpl let-row>
-  <div id="planningTags">
-    <mat-chip-list>
+<ng-template #tagsTpl let-row let-i="index">
+  <div id="planningTags{{ i }}">
+    <mat-chip-set>
       <mat-chip *ngFor="let tag of row.tags" color="primary" (click)="onTagSelected(tag.id)">
         <mat-icon>discount</mat-icon>
         <span>{{ tag.name }}</span>
       </mat-chip>
-    </mat-chip-list>
+    </mat-chip-set>
   </div>
 </ng-template>
 <ng-template #paginatorTpl>

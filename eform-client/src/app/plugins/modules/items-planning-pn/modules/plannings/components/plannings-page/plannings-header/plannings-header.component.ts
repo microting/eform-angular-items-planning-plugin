@@ -7,6 +7,12 @@ import {
   Output,
   inject
 } from '@angular/core';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MtxSelect} from '@ng-matero/extensions/select';
+import {FormsModule} from '@angular/forms';
+import {MatInput} from '@angular/material/input';
+import {AsyncPipe} from '@angular/common';
+import {TranslatePipe} from '@ngx-translate/core';
 import { CommonDictionaryModel, SiteNameDto } from 'src/app/common/models';
 import { PlanningsStateService } from '../../store';
 import {Store} from "@ngrx/store";
@@ -22,7 +28,7 @@ import {
     templateUrl: './plannings-header.component.html',
     styleUrls: ['./plannings-header.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [MatFormField, MatLabel, MtxSelect, FormsModule, MatInput, AsyncPipe, TranslatePipe]
 })
 export class PlanningsHeaderComponent implements OnInit {
   private planningsStore = inject(Store);

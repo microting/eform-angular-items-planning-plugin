@@ -46,6 +46,32 @@ jobs:
         with:
           name: items-planning-container
           path: items-planning-container.tar
+  angular-unit-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: eform-angular-items-planning-plugin
+      - name: 'Preparing Frontend checkout'
+        uses: actions/checkout@v3
+        with:
+          repository: microting/eform-angular-frontend
+          ref: ${{ github.ref_name }}
+          path: eform-angular-frontend
+      - name: Copy dependencies
+        run: |
+          cp -av eform-angular-items-planning-plugin/eform-client/src/app/plugins/modules/items-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
+          cd eform-angular-frontend/eform-client && ../../eform-angular-items-planning-plugin/testinginstallpn.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Enable Corepack
+        run: corepack enable
+      - name: yarn install
+        run: cd eform-angular-frontend/eform-client && yarn install
+      - name: Unit tests
+        run: cd eform-angular-frontend/eform-client && npx ng test --watch=false --include='src/app/plugins/modules/items-planning-pn/**/*.spec.ts'
   test-dotnet:
     runs-on: ubuntu-latest
     steps:
@@ -119,6 +145,8 @@ jobs:
         cp -av main/eform-client/cypress/e2e/plugins/items-planning-pn eform-angular-frontend/eform-client/cypress/e2e/plugins/items-planning-pn
         cp -av main/eform-client/e2e/Assets eform-angular-frontend/eform-client/e2e/
         cd eform-angular-frontend/eform-client && ../../main/testinginstallpn.sh
+    - name: Enable Corepack
+      run: corepack enable
     - name: yarn install
       run: cd eform-angular-frontend/eform-client && yarn install
     - name: Install Playwright browsers

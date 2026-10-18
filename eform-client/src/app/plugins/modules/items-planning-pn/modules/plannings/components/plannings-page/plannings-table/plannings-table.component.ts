@@ -6,6 +6,13 @@ import {
   Output,
   inject
 } from '@angular/core';
+import {MtxGrid} from '@ng-matero/extensions/grid';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {NgIf, NgFor, AsyncPipe} from '@angular/common';
+import {TranslatePipe} from '@ngx-translate/core';
+import {MatChip, MatChipSet} from '@angular/material/chips';
+import {EformPaginationComponent} from 'src/app/common/modules/eform-shared/components';
 import { PlanningModel } from '../../../../../models';
 import {Paged, PaginationModel} from 'src/app/common/models';
 import { ItemsPlanningPnClaims } from '../../../../../enums';
@@ -26,7 +33,7 @@ import {
     selector: 'app-plannings-table',
     templateUrl: './plannings-table.component.html',
     styleUrls: ['./plannings-table.component.scss'],
-    standalone: false
+    imports: [MtxGrid, MatIcon, MatTooltip, NgIf, NgFor, AsyncPipe, TranslatePipe, MatChip, MatChipSet, EformPaginationComponent]
 })
 export class PlanningsTableComponent implements OnInit {
   public planningsStateService = inject(PlanningsStateService);

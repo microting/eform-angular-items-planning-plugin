@@ -1,4 +1,6 @@
 import {Component, EventEmitter, Inject, OnInit, inject} from '@angular/core';
+import {MatDialogTitle, MatDialogContent, MatDialogActions} from '@angular/material/dialog';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PairingUpdateModel} from '../../../../models';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
@@ -6,7 +8,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
     selector: 'app-pairing-grid-update',
     templateUrl: './pairing-grid-update.component.html',
     styleUrls: ['./pairing-grid-update.component.scss'],
-    standalone: false
+    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, TranslatePipe]
 })
 export class PairingGridUpdateComponent implements OnInit {
   public dialogRef = inject(MatDialogRef<PairingGridUpdateComponent>);

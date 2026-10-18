@@ -6,6 +6,13 @@ import {
   OnInit,
   inject
 } from '@angular/core';
+import {MatDialogTitle, MatDialogContent, MatDialogActions} from '@angular/material/dialog';
+import {MtxGrid} from '@ng-matero/extensions/grid';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {FormsModule} from '@angular/forms';
+import {NgIf} from '@angular/common';
+import {StatusBarCompactComponent} from 'src/app/common/modules/eform-shared/components';
+import {TranslatePipe} from '@ngx-translate/core';
 import { SiteNameDto } from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import {
@@ -29,7 +36,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
     selector: 'app-planning-assign-sites-modal',
     templateUrl: './planning-assign-sites-modal.component.html',
     styleUrls: ['./planning-assign-sites-modal.component.scss'],
-    standalone: false
+    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MtxGrid, MatCheckbox, FormsModule, NgIf, StatusBarCompactComponent, TranslatePipe]
 })
 export class PlanningAssignSitesModalComponent implements OnInit, OnDestroy {
   private itemsPlanningPnPlanningsService = inject(ItemsPlanningPnPlanningsService);

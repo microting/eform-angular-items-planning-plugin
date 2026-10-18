@@ -1,4 +1,12 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild, inject} from '@angular/core';
+import {EformNewSubheaderComponent} from 'src/app/common/modules/eform-shared/components';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {NgIf, AsyncPipe} from '@angular/common';
+import {RouterLink} from '@angular/router';
+import {TranslatePipe} from '@ngx-translate/core';
+import {PlanningsHeaderComponent} from '../plannings-header/plannings-header.component';
+import {PlanningsTableComponent} from '../plannings-table/plannings-table.component';
 import { PlanningModel } from '../../../../../models';
 import {
   ItemsPlanningPnPlanningsService,
@@ -35,7 +43,7 @@ import {Store} from '@ngrx/store';
     selector: 'app-plannings-container',
     templateUrl: './plannings-container.component.html',
     styleUrls: ['./plannings-container.component.scss'],
-    standalone: false
+    imports: [EformNewSubheaderComponent, MatTooltip, MatIcon, NgIf, AsyncPipe, RouterLink, TranslatePipe, PlanningsHeaderComponent, PlanningsTableComponent, PlanningTagsComponent]
 })
 export class PlanningsContainerComponent implements OnInit, OnDestroy, AfterViewInit {
   private store = inject(Store);

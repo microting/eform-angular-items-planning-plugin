@@ -1,20 +1,24 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {describe, it, expect, beforeEach, vi} from 'vitest';
+import {provideNoopAnimations} from '@angular/platform-browser/animations';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {TranslateModule} from '@ngx-translate/core';
+import {PlanningFoldersModalComponent} from './planning-folders-modal.component';
 
-import {PlanningAssignSitesModalComponent} from './planning-folders-modal.component';
+describe('PlanningFoldersModalComponent', () => {
+  let component: PlanningFoldersModalComponent;
+  let fixture: ComponentFixture<PlanningFoldersModalComponent>;
 
-describe('PlanningAssignSitesModalComponent', () => {
-  let component: PlanningAssignSitesModalComponent;
-  let fixture: ComponentFixture<PlanningAssignSitesModalComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ PlanningAssignSitesModalComponent ]
-    })
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(PlanningAssignSitesModalComponent);
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [PlanningFoldersModalComponent, TranslateModule.forRoot()],
+      providers: [
+        provideNoopAnimations(),
+        {provide: MatDialogRef, useValue: {close: vi.fn()}},
+        {provide: MAT_DIALOG_DATA, useValue: {folders: [], planningModel: undefined}},
+      ],
+    }).compileComponents();
+    fixture = TestBed.createComponent(PlanningFoldersModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

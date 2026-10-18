@@ -19,6 +19,18 @@ import {
   OnInit,
   inject
 } from '@angular/core';
+import {EformNewSubheaderComponent} from 'src/app/common/modules/eform-shared/components';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatCard, MatCardHeader, MatCardContent} from '@angular/material/card';
+import {NgFor, NgIf} from '@angular/common';
+import {ReactiveFormsModule, FormsModule} from '@angular/forms';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {MtxSelect, MtxSelectLabelTemplate} from '@ng-matero/extensions/select';
+import {MatDatepicker, MatDatepickerInput} from '@angular/material/datepicker';
+import {TranslatePipe} from '@ngx-translate/core';
 import { Location } from '@angular/common';
 import { debounceTime, switchMap, take } from 'rxjs/operators';
 import { PlanningModel, PlanningUpdateModel } from '../../../../../models';
@@ -38,7 +50,7 @@ import {MatDatepickerInputEvent} from '@angular/material/datepicker';
     selector: 'app-planning-edit',
     templateUrl: './planning-edit.component.html',
     styleUrls: ['./planning-edit.component.scss'],
-    standalone: false
+    imports: [EformNewSubheaderComponent, MatButton, MatIconButton, MatCard, MatCardHeader, MatCardContent, NgFor, NgIf, ReactiveFormsModule, FormsModule, MatFormField, MatLabel, MatInput, MatTooltip, MatIcon, MtxSelect, MtxSelectLabelTemplate, MatDatepicker, MatDatepickerInput, TranslatePipe]
 })
 export class PlanningEditComponent implements OnInit, OnDestroy {
   private foldersService = inject(FoldersService);
