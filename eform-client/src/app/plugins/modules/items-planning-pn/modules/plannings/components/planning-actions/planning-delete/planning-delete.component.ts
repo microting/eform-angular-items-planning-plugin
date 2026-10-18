@@ -1,4 +1,6 @@
 import {Component, EventEmitter, Inject, OnInit, inject} from '@angular/core';
+import {MatDialogTitle, MatDialogContent, MatDialogActions} from '@angular/material/dialog';
+import {TranslatePipe} from '@ngx-translate/core';
 import {ItemsPlanningPnPlanningsService} from '../../../../../services';
 import {PlanningModel} from '../../../../../models';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
@@ -7,7 +9,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
     selector: 'app-planning-delete',
     templateUrl: './planning-delete.component.html',
     styleUrls: ['./planning-delete.component.scss'],
-    standalone: false
+    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, TranslatePipe]
 })
 export class PlanningDeleteComponent implements OnInit {
   private itemsPlanningPnPlanningsService = inject(ItemsPlanningPnPlanningsService);

@@ -1,4 +1,5 @@
 import {AfterContentInit, Component, OnInit, inject} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {translates} from './../i18n/translates';
 import {Store} from '@ngrx/store';
@@ -9,7 +10,7 @@ import {take} from 'rxjs';
     selector: 'app-items-planning-pn-layout',
     template: `
     <router-outlet></router-outlet>`,
-    standalone: false
+    imports: [RouterOutlet]
 })
 export class ItemsPlanningPnLayoutComponent implements AfterContentInit, OnInit {
   private translateService = inject(TranslateService);

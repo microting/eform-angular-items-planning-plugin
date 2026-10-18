@@ -27,8 +27,7 @@ import {dialogConfigHelper} from 'src/app/common/helpers';
 @Component({
     selector: 'app-planning-tags',
     templateUrl: './planning-tags.component.html',
-    styleUrls: ['./planning-tags.component.scss'],
-    standalone: false
+    styleUrls: ['./planning-tags.component.scss']
 })
 export class PlanningTagsComponent implements OnInit, OnDestroy, OnChanges {
   private tagsService = inject(ItemsPlanningPnTagsService);
@@ -120,7 +119,7 @@ export class PlanningTagsComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!changes.availableTags.firstChange && changes.availableTags && this.dialogRef) {
-      this.dialogRef.componentInstance.availableTags = changes.availableTags.currentValue;
+      this.dialogRef.componentInstance.setAvailableTags(changes.availableTags.currentValue);
     }
   }
 

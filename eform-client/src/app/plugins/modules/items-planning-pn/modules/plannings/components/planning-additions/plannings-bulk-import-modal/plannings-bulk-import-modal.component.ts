@@ -1,4 +1,12 @@
 import {Component, ElementRef, EventEmitter, OnInit, ViewChild, inject} from '@angular/core';
+import {MatDialogTitle, MatDialogContent, MatDialogActions} from '@angular/material/dialog';
+import {MatButton} from '@angular/material/button';
+import {MatButtonLoading} from '@ng-matero/extensions/button';
+import {MtxProgress} from '@ng-matero/extensions/progress';
+import {MtxGrid} from '@ng-matero/extensions/grid';
+import {FileUploadModule} from 'ng2-file-upload';
+import {AsyncPipe} from '@angular/common';
+import {TranslatePipe} from '@ngx-translate/core';
 import {FileUploader} from 'ng2-file-upload';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
@@ -14,7 +22,7 @@ import {selectBearerToken} from 'src/app/state/auth/auth.selector';
     selector: 'app-plannings-bulk-import-modal',
     templateUrl: './plannings-bulk-import-modal.component.html',
     styleUrls: ['./plannings-bulk-import-modal.component.scss'],
-    standalone: false
+    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatButton, MatButtonLoading, MtxProgress, MtxGrid, FileUploadModule, AsyncPipe, TranslatePipe]
 })
 export class PlanningsBulkImportModalComponent implements OnInit {
   private store = inject(Store);

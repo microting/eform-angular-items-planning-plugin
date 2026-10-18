@@ -23,7 +23,7 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
 
   public async countPlanningRow(): Promise<number> {
     await browser.pause(500);
-    return (await $$('#planningName')).length;
+    return (await $$('[id^="planningName"]')).length;
   }
 
   public async savePairingGridBtn(): Promise<WebdriverIO.Element> {

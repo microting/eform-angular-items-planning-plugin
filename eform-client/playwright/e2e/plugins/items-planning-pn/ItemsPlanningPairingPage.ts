@@ -22,7 +22,7 @@ export class ItemsPlanningPairingPage extends PageWithNavbarPage {
 
   public async countPlanningRow(): Promise<number> {
     await this.page.waitForTimeout(500);
-    return await this.page.locator('#planningName').count();
+    return await this.page.locator('[id^="planningName"]').count();
   }
 
   public get savePairingGridBtn(): Locator {
@@ -117,7 +117,7 @@ export class PairingRowObject {
   async getRow(rowNum: number): Promise<PairingRowObject | null> {
     this.row = this.page.locator('tbody tr').nth(rowNum - 1);
     if ((await this.page.locator('tbody tr').count()) >= rowNum) {
-      this.planningName = (await this.row.locator('#planningName').textContent()) || '';
+      this.planningName = (await this.row.locator('[id^="planningName"]').textContent()) || '';
       this.pairRow = this.page.locator(`#planningRowCheckbox${rowNum - 1}`);
       this.pairRowForClick = this.pairRow;
       this.pairCheckboxes = [];
