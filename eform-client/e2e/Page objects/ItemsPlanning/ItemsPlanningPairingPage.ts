@@ -122,7 +122,7 @@ export class PairingRowObject {
   async getRow(rowNum: number): Promise<PairingRowObject> {
     this.row = (await $$('tbody tr'))[rowNum - 1];
     if (this.row) {
-      this.planningName = await (await this.row.$('#planningName')).getText();
+      this.planningName = await (await this.row.$('[id^="planningName"]')).getText();
       this.pairRow = await this.row.$(`#planningRowCheckbox${rowNum - 1}`);
       this.pairRowForClick = await this.pairRow.$('label');
       this.pairCheckboxes = [];

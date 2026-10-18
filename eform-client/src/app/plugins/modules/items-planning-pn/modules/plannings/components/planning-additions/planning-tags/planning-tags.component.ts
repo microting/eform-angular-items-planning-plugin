@@ -118,7 +118,7 @@ export class PlanningTagsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (!changes.availableTags.firstChange && changes.availableTags && this.dialogRef) {
+    if (changes.availableTags && !changes.availableTags.firstChange && this.dialogRef) {
       this.dialogRef.componentInstance.setAvailableTags(changes.availableTags.currentValue);
     }
   }
