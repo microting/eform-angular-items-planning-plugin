@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {MatDialogModule} from '@angular/material/dialog';
 import {
   PairingGridPageComponent,
   PairingGridTableComponent,
@@ -8,6 +9,7 @@ import {PairingRouting} from './pairing.routing';
 
 @NgModule({
   imports: [
+    MatDialogModule,
     PairingRouting,
     PairingGridPageComponent,
     PairingGridTableComponent,

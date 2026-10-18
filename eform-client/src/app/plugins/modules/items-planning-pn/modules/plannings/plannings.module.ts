@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {MatDialogModule} from '@angular/material/dialog';
 import {
   PlanningCreateComponent,
   PlanningEditComponent,
@@ -16,6 +17,7 @@ import {PlanningsRouting} from './plannings.routing';
 
 @NgModule({
     imports: [
+    MatDialogModule,
         PlanningsRouting,
         PlanningCreateComponent,
         PlanningEditComponent,
