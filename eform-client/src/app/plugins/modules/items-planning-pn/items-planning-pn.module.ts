@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {MatDialogModule} from '@angular/material/dialog';
 import {ItemsPlanningPnLayoutComponent} from './layouts';
 import {ItemsPlanningPnRouting} from './items-planning-pn.routing';
 import {
@@ -17,6 +18,7 @@ import {
 
 @NgModule({
   imports: [
+    MatDialogModule,
     ItemsPlanningPnLayoutComponent,
     ItemsPlanningPnRouting,
     StoreModule.forFeature('itemsPlanningPn', {
