@@ -59,7 +59,7 @@
 </ng-template>
 
 <ng-template #firstCellTpl let-row let-index="index" let-col="colDef">
-  <div id="planningName">
+  <div id="planningName{{ index }}">
     <mat-checkbox
       [ngModel]="getIsSelectedRowCheckboxByIndex(row.planningId)"
       (ngModelChange)="selectPlanningRow($event, row.planningId)"

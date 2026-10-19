@@ -11,6 +11,14 @@ import {
   ViewChild,
   inject
 } from '@angular/core';
+import {MtxGrid} from '@ng-matero/extensions/grid';
+import {MtxSelect} from '@ng-matero/extensions/select';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {FormsModule} from '@angular/forms';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {NgIf, NgClass, AsyncPipe} from '@angular/common';
+import {TranslatePipe} from '@ngx-translate/core';
+import {StatusBarCompactComponent} from 'src/app/common/modules/eform-shared/components';
 import {PairingModel, PairingsModel, PairingUpdateModel} from '../../../../models';
 import {AuthStateService} from 'src/app/common/store';
 import {CommonDictionaryModel, SiteNameDto} from 'src/app/common/models';
@@ -32,7 +40,7 @@ import {
     selector: 'app-pairing-grid-table',
     templateUrl: './pairing-grid-table.component.html',
     styleUrls: ['./pairing-grid-table.component.scss'],
-    standalone: false
+    imports: [MtxGrid, MtxSelect, MatFormField, MatLabel, FormsModule, MatCheckbox, NgIf, NgClass, AsyncPipe, TranslatePipe, StatusBarCompactComponent]
 })
 export class PairingGridTableComponent implements OnInit, OnDestroy, OnChanges {
   private store = inject(Store);

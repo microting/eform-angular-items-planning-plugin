@@ -6,6 +6,10 @@ import {
   OnInit,
   inject
 } from '@angular/core';
+import {MatDialogTitle, MatDialogContent} from '@angular/material/dialog';
+import {MatCard, MatCardContent} from '@angular/material/card';
+import {EformTreeViewPickerComponent} from 'src/app/common/modules/eform-shared/components';
+import {TranslatePipe} from '@ngx-translate/core';
 import { FolderDto, SiteNameDto } from 'src/app/common/models';
 import { AutoUnsubscribe } from 'ngx-auto-unsubscribe';
 import { PlanningModel } from '../../../../../models';
@@ -16,7 +20,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
     selector: 'app-planning-folders-modal',
     templateUrl: './planning-folders-modal.component.html',
     styleUrls: ['./planning-folders-modal.component.scss'],
-    standalone: false
+    imports: [MatDialogTitle, MatDialogContent, MatCard, MatCardContent, EformTreeViewPickerComponent, TranslatePipe]
 })
 export class PlanningFoldersModalComponent implements OnInit, OnDestroy {
   public dialogRef = inject(MatDialogRef<PlanningFoldersModalComponent>);

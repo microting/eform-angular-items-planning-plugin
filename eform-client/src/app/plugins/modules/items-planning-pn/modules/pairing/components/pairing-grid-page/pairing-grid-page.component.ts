@@ -1,4 +1,8 @@
 import {Component, OnDestroy, OnInit, inject} from '@angular/core';
+import {EformNewSubheaderComponent} from 'src/app/common/modules/eform-shared/components';
+import {PairingGridTableComponent} from '../pairing-grid-table/pairing-grid-table.component';
+import {MatTooltip} from '@angular/material/tooltip';
+import {TranslatePipe} from '@ngx-translate/core';
 import {
   ItemsPlanningPnPairingService,
 } from '../../../../services';
@@ -18,7 +22,7 @@ import {dialogConfigHelper} from 'src/app/common/helpers';
     selector: 'app-pairing-grid-page',
     templateUrl: './pairing-grid-page.component.html',
     styleUrls: ['./pairing-grid-page.component.scss'],
-    standalone: false
+    imports: [EformNewSubheaderComponent, PairingGridTableComponent, MatTooltip, TranslatePipe]
 })
 export class PairingGridPageComponent implements OnInit, OnDestroy {
   private pairingService = inject(ItemsPlanningPnPairingService);
