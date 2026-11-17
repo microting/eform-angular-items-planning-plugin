@@ -11,14 +11,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: eform-angular-items-planning-plugin
       - name: Extract branch
         id: extract_branch
         run: echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
       - name: 'Preparing Frontend checkout'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: microting/eform-angular-frontend
           ref: ${{ steps.extract_branch.outputs.BRANCH }}
@@ -50,11 +50,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: eform-angular-items-planning-plugin
       - name: 'Preparing Frontend checkout'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: microting/eform-angular-frontend
           ref: ${{ github.ref_name }}
@@ -75,7 +75,7 @@ jobs:
   test-dotnet:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Create docker network
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
@@ -85,9 +85,9 @@ jobs:
     - name: Sleep 15
       run: sleep 15        
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Build
       run: dotnet build eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
     - name: Unit Tests
@@ -100,7 +100,7 @@ jobs:
       matrix:
         test: [a,b,c]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - uses: actions/download-artifact@v4
@@ -130,7 +130,7 @@ jobs:
       id: extract_branch
       run: echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microting/eform-angular-frontend
         ref: ${{ steps.extract_branch.outputs.BRANCH }}
